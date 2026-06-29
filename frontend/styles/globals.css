@@ -5,32 +5,55 @@
 :root {
   /* Brand Colors */
 
-  --color-primary: #1d4ed8;
-  --color-primary-hover: #1e40af;
+  /* --color-primary: #1d4ed8;
+  --color-primary-hover: #1e40af; */
+  --color-primary: #6D5DF6;
+  --color-primary-hover: #5B4AE6;
 
-  --color-secondary: #0f172a;
+  /* --color-secondary: #0f172a; */
+  --color-secondary: #1B2A52;
 
-  --color-accent: #f59e0b;
+  /* --color-accent: #f59e0b; */
+  --color-accent: #3ABEFF;
 
-  --color-success: #22c55e;
+  /* Status */
+
+  /* --color-success: #22c55e;
   --color-warning: #f97316;
-  --color-error: #ef4444;
+  --color-error: #ef4444; */
+  --color-success: #1FD286;
+  --color-warning: #FFB547;
+  --color-error: #FF5B79;
 
   /* Background */
 
-  --color-background: #ffffff;
-  --color-background-alt: #f8fafc;
+  /* --color-background: #ffffff;
+  --color-background-alt: #f8fafc; */
+  --color-background: #070B17;
+  --color-background-alt: #0C1326;
 
-  --color-card: #ffffff;
+  /* --color-card: #ffffff; */
+  --color-card: #11192F;
+  --color-card-hover: #182241;
 
   /* Text */
 
-  --color-text-primary: #0f172a;
-  --color-text-secondary: #64748b;
+  /* --color-text-primary: #0f172a;
+  --color-text-secondary: #64748b; */
+  --color-text-primary: #FFFFFF;
+  --color-text-secondary: #A7B2D3;
+  --color-text-muted: #6D7898;
 
   /* Border */
 
-  --color-border: #e2e8f0;
+  /* --color-border: #e2e8f0; */
+  --color-border: #ffffff14;
+
+  /* GLOW */
+
+  --color-glow-blue: #33B9FF;
+  --color-glow-purple: #7A5CFF;
+  --color-glow-cyan: #38E1FF;
 }
 
 html {
@@ -39,8 +62,13 @@ html {
 
 body {
   font-family: var(--font-cairo);
-  background: var(--color-background);
+  background: var(--color-background-alt);
+  /* background:
+    radial-gradient(circle at top right,#3827a433 0%,transparent 30%),
+    radial-gradient(circle at left,#1495ff22 0%,transparent 25%),
+    #070B17; */
   color: var(--color-text-primary);
+  min-height: 300vh;
 }
 
 * {
@@ -53,4 +81,90 @@ button {
 
 img {
   user-select: none;
+}
+
+/* Gradient Utilities */
+.gradient-primary {
+  background: linear-gradient(135deg,
+      #7A5CFF,
+      #4F8BFF);
+}
+
+.gradient-card {
+  background: linear-gradient(180deg,
+      #11192F,
+      #0D1529);
+}
+
+.gradient-button {
+  background: linear-gradient(90deg,
+      #7A5CFF,
+      #4A8CFF);
+}
+
+.gradient-border {
+  background: linear-gradient(135deg,
+      rgba(122, 92, 255, .6),
+      rgba(51, 185, 255, .6));
+}
+
+/* Glass Effect */
+.glass {
+  background: #11192fbf;
+  backdrop-filter: blur(20px);
+  border: 1px solid #ffffff14;
+}
+
+/* Glow Classes */
+.glow-purple {
+  box-shadow: 0 0 35px rgba(122, 92, 255, .45);
+}
+
+.glow-blue {
+  box-shadow: 0 0 35px rgba(52, 183, 255, .35);
+}
+
+.glow {
+  box-shadow:
+    0 0 15px rgba(122, 92, 255, .25),
+    0 0 45px rgba(51, 185, 255, .15);
+}
+
+
+/* Animation */
+@keyframes float {
+  0% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+
+/* Utility */
+.section-title {
+  @apply text-4xl lg:text-5xl font-bold text-text-primary;
+}
+
+.section-subtitle {
+  @apply text-text-secondary text-lg leading-8;
+}
+
+
+.btn-primary {
+  @apply px-6 py-3 rounded-button text-white gradient-button hover:scale-105 duration-300;
+}
+
+.btn-outline {
+  @apply border border-border bg-card hover:bg-card-hover rounded-button px-6 py-3 duration-300;
 }
