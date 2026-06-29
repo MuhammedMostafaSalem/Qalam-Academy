@@ -1,42 +1,26 @@
-export const NAVIGATION = [
+export const navigation = [
     {
-        id: 1,
-        title: "Home",
+        title: "الرئيسية",
         href: "/",
     },
     {
-        id: 2,
-        title: "About",
+        title: "من نحن",
         href: "/about",
     },
     {
-        id: 3,
-        title: "Services",
+        title: "خدماتنا",
         href: "/services",
     },
     {
-        id: 4,
-        title: "Courses",
+        title: "كورساتنا",
         href: "/courses",
     },
     {
-        id: 5,
-        title: "Portfolio",
+        title: "المعرض",
         href: "/portfolio",
     },
     {
-        id: 6,
-        title: "Store",
-        href: "/store",
-    },
-    {
-        id: 7,
-        title: "Blog",
+        title: "المدونة",
         href: "/blog",
-    },
-    {
-        id: 8,
-        title: "Contact",
-        href: "/contact",
     },
 ];
