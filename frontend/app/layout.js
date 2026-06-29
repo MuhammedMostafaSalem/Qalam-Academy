@@ -19,8 +19,8 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html
-      lang="en"
-      // suppressHydrationWarning
+      lang="ar"
+      dir="rtl"
     >
       <body className={`${cairo.variable} ${inter.variable}`}>
         {children}
