@@ -1,25 +1,62 @@
-import Container from "@/components/ui/Container"
+"use client";
+
 import NavLinks from "./NavLinks"
-import LanguageSwitcher from "./LanguageSwitcher"
-import MobileMenu from "./MobileMenu"
+import Logo from "./Logo"
+import CTAButton from "./CTAButton"
+import { HiOutlineMenuAlt3, HiX } from "react-icons/hi";
+import LanguageSwitcher from "./LanguageSwitcher";
 
-const Navbar = () => {
+const Navbar = ({ isTop, openMenu, setOpenMenu }) => {
     return (
-        <nav className="border-b border-border bg-white">
-            <Container className="flex h-20 items-center justify-between">
+        <nav
+            className="container
+            transition-all
+            duration-300"
+        >
+            <div
+                className={`
+                    flex
+                    items-center
+                    justify-between
 
-                <div className="text-2xl font-bold text-primary">
-                    Qalam Academy
-                </div>
+                    ${isTop
+                        ? "h-20"
+                        : "h-16"
+                    }
 
-                <NavLinks />
+                    transition-all
+                    duration-300
+                `}
+            >
 
-                <div className="flex items-center gap-4">
+                <Logo />
+
+                <NavLinks
+                    isTop={isTop}
+                    open={openMenu}
+                    onClose={() => setOpenMenu(false)}
+                />
+
+                <div className="flex items-center gap-3">
                     <LanguageSwitcher />
-                    <MobileMenu />
+                    
+                    <div className="hidden lg:block">
+                        <CTAButton />
+                    </div>
+
+                    <button
+                        onClick={() => setOpenMenu(!openMenu)}
+                        className="lg:hidden flex h-12 w-12 items-center justify-center rounded-full glass"
+                    >
+                        {openMenu ? (
+                            <HiX size={24} />
+                        ) : (
+                            <HiOutlineMenuAlt3 size={24} />
+                        )}
+                    </button>
                 </div>
 
-            </Container>
+            </div>
         </nav>
     )
 }
