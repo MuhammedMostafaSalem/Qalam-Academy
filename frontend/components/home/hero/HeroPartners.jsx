@@ -1,0 +1,91 @@
+import React from 'react'
+
+const HeroPartners = () => {
+    const partners = [
+        {
+            id: 1,
+            name: "SaaSMax",
+        },
+        {
+            id: 2,
+            name: "Uideck",
+        },
+        {
+            id: 3,
+            name: "Layers",
+        },
+        {
+            id: 4,
+            name: "Circle",
+        },
+        {
+            id: 5,
+            name: "Catalog",
+        },
+        {
+            id: 6,
+            name: "Luminous",
+        },
+    ];
+
+    return (
+        <div
+            className="
+                mt-24
+                bg-background-alt
+            "
+        >
+            <div className="px-8 py-8">
+                <div className="mb-8 flex items-center">
+                    <div className="h-px flex-1 bg-white/10" />
+
+                    <span
+                        className="
+                            px-4
+                            text-sm
+                            font-medium
+                            text-white/60
+                            whitespace-nowrap
+                        "
+                    >
+                        نثق برفقة عملائنا
+                    </span>
+
+                    <div className="h-px flex-1 bg-white/10" />
+                </div>
+
+                <div
+                    className="
+                        grid
+                        grid-cols-2
+                        md:grid-cols-3
+                        lg:grid-cols-6
+                        gap-8
+                    "
+                >
+                    {partners.map((partner) => (
+                        <div
+                            key={partner.id}
+                            className="
+                                flex
+                                justify-center
+                                text-lg
+                                font-semibold
+                                text-white/50
+                                transition-all
+                                duration-300
+                                hover:text-primary
+                                hover:scale-105
+                            "
+                        >
+                            {partner.name}
+                        </div>
+                    ))}
+                </div>
+
+            </div>
+        </div>
+    );
+}
+
+export default HeroPartners
