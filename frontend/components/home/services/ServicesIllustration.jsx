@@ -1,5 +1,5 @@
 import Image from "next/image"
-import services from '@/public/assets/services2.png';
+import services from '@/public/assets/services.png';
 
 const ServicesIllustration = () => {
     return (
