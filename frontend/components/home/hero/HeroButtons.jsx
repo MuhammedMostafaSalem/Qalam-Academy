@@ -13,8 +13,8 @@ const HeroButtons = () => {
                 استكشف الكورسات
             </Button>
 
-            <Button variant="secondary" onClick={() => router.push("/contact")}>
-                تواصل معنا
+            <Button variant="secondary" onClick={() => router.push("/about")}>
+                من نحن
             </Button>
 
         </div>

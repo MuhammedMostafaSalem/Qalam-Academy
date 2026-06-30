@@ -5,46 +5,19 @@ import { IoRocketOutline } from "react-icons/io5";
 const HeroContent = () => {
     return (
         <div className="flex flex-col justify-center">
-
-            {/* Badge */}
-            <span
-                className="
-                    inline-flex
-                    items-center gap-3
-                    w-fit
-                    rounded-full
-                    border
-                    border-primary/20
-                    bg-primary/10
-                    px-4
-                    py-2
-                    text-sm
-                    font-semibold
-                    text-primary
-                "
-            >
-                <IoRocketOutline className="text-text-primary" size={15} /> مرحبًا بكم في قلم أكاديمي
-            </span>
-
             {/* Heading */}
-            <h1
-                className="
-                    mt-6
-                    max-w-2xl
-                    text-5xl
-                    font-extrabold
-                    leading-tight
-                    text-text-primary
-                    lg:text-6xl
-                "
-            >
-                تعلم مهارات.
-                <br />
+            <h1 className="mt-6 max-w-2xl">
+                <span className="block text-4xl md:text-5xl lg:text-[60px] text-white">
+                    نحو مستقبل رقمي
+                </span>
 
-                ابنِ مستقبلك
-                <br />
+                <span className="block mt-2 text-4xl md:text-5xl lg:text-[60px]">
+                    <span className="text-white">نصنع </span>
 
-                بثقة.
+                    <span className="bg-gradient-to-r from-[#3ABEFF] via-[#4F8BFF] to-[#7A5CFF] bg-clip-text text-transparent">
+                        الحلول البرمجية
+                    </span>
+                </span>
             </h1>
 
             {/* Description */}
@@ -58,7 +31,7 @@ const HeroContent = () => {
                     text-text-secondary
                 "
             >
-                انضم إلى آلاف الطلاب الذين يتعلمون البرمجة والتكنولوجيا والمهارات الرقمية من خلال دورات عملية قائمة على المشاريع ومصممة لتلائم متطلبات الواقع العملي.
+                نحن شركة برمجيات متكاملة. تساعد الشركات و الافراد على تحويل أفكارهم الى منتجات رقمية مبتكرة وفعالة
             </p>
 
             <HeroButtons />

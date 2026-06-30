@@ -31,10 +31,10 @@ const HeroPartners = () => {
     return (
         <div
             className="
-                mt-24
+                mt-[60px]
             "
         >
-            <div className="px-8 py-8">
+            <div className="px-8 pb-8">
                 <div className="mb-8 flex items-center">
                     <div className="h-px flex-1 bg-white/10" />
 

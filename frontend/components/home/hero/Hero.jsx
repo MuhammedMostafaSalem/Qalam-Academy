@@ -20,8 +20,8 @@ const Hero = () => {
                         lg:grid-cols-2
                     "
                 >
-                    <HeroContent />
                     <HeroImage />
+                    <HeroContent />
                 </div>
 
 
