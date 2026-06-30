@@ -14,7 +14,7 @@ const Logo = () => {
                 alt="Qalam Academy Logo"
                 height={55}
                 priority
-                className="w-auto h-aut"
+                className="w-auto h-auto"
             />
             <span>قلم أكاديمي</span>
         </Link>
