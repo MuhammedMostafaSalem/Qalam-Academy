@@ -32,7 +32,6 @@ const HeroPartners = () => {
         <div
             className="
                 mt-24
-                bg-background-alt
             "
         >
             <div className="px-8 py-8">

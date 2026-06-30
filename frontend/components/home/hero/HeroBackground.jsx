@@ -7,7 +7,7 @@ const HeroBackground = () => {
                     absolute
                     inset-0
                     -z-20
-                    bg-[radial-gradient(circle_at_top,#1D4ED833,transparent_60%)]
+                    bg-[radial-gradient(circle_at_top,#1D4ED805,#070B17_60%)]
                 "
             />
 
@@ -21,7 +21,7 @@ const HeroBackground = () => {
                     h-72
                     w-72
                     rounded-full
-                    bg-primary/20
+                    bg-primary/80
                     blur-[140px]
                 "
             />
@@ -47,9 +47,11 @@ const HeroBackground = () => {
                     absolute
                     inset-0
                     -z-10
-                    opacity-[0.03]
+                    opacity-[0.008]
                     [background-image:linear-gradient(#fff_1px,transparent_1px),linear-gradient(to_right,#fff_1px,transparent_1px)]
                     [background-size:60px_60px]
+                    [mask-image:radial-gradient(circle_at_center,black_55%,transparent)]
+                    [-webkit-mask-image:radial-gradient(circle_at_center,black_55%,transparent)]
                 "
             />
 
