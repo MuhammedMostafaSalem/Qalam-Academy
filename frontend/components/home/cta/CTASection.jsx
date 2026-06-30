@@ -117,12 +117,11 @@ const CTASection = () => {
                                     "
                                 />
 
-                                <Button
-                                    size="icon"
-                                    className="rounded-none bg-white text-secondary"
+                                <button
+                                    className="rounded-none bg-white text-secondary px-6 py-3"
                                 >
                                     <HiArrowRight className="h-5 w-5" />
-                                </Button>
+                                </button>
 
                             </div>
 
