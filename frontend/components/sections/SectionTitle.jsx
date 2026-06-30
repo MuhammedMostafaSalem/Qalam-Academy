@@ -5,12 +5,11 @@ const SectionTitle = ({
     return (
         <h2
             className={`
-                mt-5
-                text-4xl
+                text-lg
+                md:text-2xl
                 font-bold
                 leading-tight
                 text-white
-                md:text-5xl
                 ${center ? "text-center" : ""}
             `}
         >

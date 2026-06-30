@@ -5,10 +5,8 @@ const SectionDescription = ({
     return (
         <p
             className={`
-                mt-5
-                max-w-2xl
-                text-lg
-                leading-8
+                max-w-[380px]
+                text-sm
                 text-text-secondary
                 ${center ? "mx-auto text-center" : ""}
             `}
