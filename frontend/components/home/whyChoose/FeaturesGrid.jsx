@@ -11,6 +11,8 @@ const FeaturesGrid = () => {
                 gap-6
                 sm:grid-cols-2
                 xl:grid-cols-4
+                place-items-center
+                justify-items-center
             "
         >
             {whyChoose.map((feature) => (

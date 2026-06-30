@@ -27,11 +27,11 @@ const Services = () => {
                     xl:gap-20
                     items-center
                 ">
+                    <div className="lg:col-span-5 hidden lg:flex justify-center">
+                        <ServicesIllustration />
+                    </div>
                     <div className="lg:col-span-7">
                         <ServicesGrid />
-                    </div>
-                    <div className="lg:col-span-5 flex justify-center">
-                        <ServicesIllustration />
                     </div>
                 </div>
             </Container>
