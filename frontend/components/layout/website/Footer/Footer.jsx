@@ -128,7 +128,7 @@ const Footer = () => {
                                 <p className="text-text-secondary leading-7">
                                     مصر
                                     <br />
-                                    القاهرة
+                                    الفيوم
                                 </p>
                             </div>
 
