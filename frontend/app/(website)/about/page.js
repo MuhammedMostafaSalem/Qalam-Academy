@@ -1,5 +1,6 @@
 import AboutHero from "@/components/about/hero/AboutHero";
 import StorySection from "@/components/about/story/StorySection";
+import TeamSection from "@/components/about/team/TeamSection";
 import ValuesSection from "@/components/about/values/ValuesSection";
 
 export default function About() {
@@ -8,6 +9,7 @@ export default function About() {
             <AboutHero />
             <StorySection />
             <ValuesSection />
+            <TeamSection />
         </>
     );
 }
