@@ -1,3 +1,4 @@
+import CTASection from "@/components/services/CTASection";
 import ServicesHero from "@/components/services/hero/ServicesHero";
 import ProcessSection from "@/components/services/process/ProcessSection";
 import ServicesSection from "@/components/services/ServicesSection";
@@ -10,6 +11,7 @@ export default function Courses() {
             <ServicesSection />
             <WhyChooseSection />
             <ProcessSection />
+            <CTASection />
         </>
     )
 }
