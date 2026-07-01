@@ -11,49 +11,6 @@ import { useRouter } from "next/navigation";
 const AboutHeroContent = () => {
     const router = useRouter();
 
-    // <div className="max-w-xl flex flex-col justify-center items-center gap-7">
-
-    //     <SectionBadge>
-    //         من نحن
-    //     </SectionBadge>
-
-    //     <SectionTitle center className="flex flex-col gap-2">
-    //         <div className="text-[40px] leading-[1.2]">
-    //             <div>نحوّل الأفكار إلى</div>
-
-    //             <div className="gradient-text">
-    //                 حلول برمجية متكاملة
-    //             </div>
-    //         </div>
-    //     </SectionTitle>
-
-    //     <SectionDescription>
-    //         قلم أكاديمي هي شركة متخصصة في تقديم حلول رقمية مبتكرة تساعد الشركات والأفراد على النمو والتطور في عالم يتغير بسرعة
-    //     </SectionDescription>
-
-    //     <div className="flex flex-col items-center gap-4">
-
-    //         <Button
-    //             className="gradient-button flex justify-center items-center gap-2 w-[250px]"
-    //             onClick={() => router.push("/contact")}
-    //         >
-    //             <HiArrowRight className="h-5 w-5" />
-    //             <span>اعرف المزيد عن رحلتنا</span>
-    //         </Button>
-
-    //         <Button
-    //             variant={null}
-    //             size="lg"
-    //             className="flex items-center gap-2 text-text-secondary"
-    //         >
-    //             <HiOutlinePlay size={18} className="glass border-text-secondary rounded-full w-[30px] h-auto p-[5px]" />
-
-    //             <span>شاهد فيديو تعريفي</span>
-    //         </Button>
-
-    //     </div>
-
-    // </div>
     return (
         <div
             className="
