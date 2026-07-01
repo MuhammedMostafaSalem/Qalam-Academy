@@ -1,11 +1,13 @@
 import ServicesHero from "@/components/services/hero/ServicesHero";
 import ServicesSection from "@/components/services/ServicesSection";
+import WhyChooseSection from "@/components/services/whyChoose/WhyChooseSection";
 
 export default function Courses() {
     return (
         <>
             <ServicesHero />
             <ServicesSection />
+            <WhyChooseSection />
         </>
     )
 }
