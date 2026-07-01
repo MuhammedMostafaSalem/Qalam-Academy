@@ -126,9 +126,9 @@ const Footer = () => {
                                 <FaMapMarkerAlt className="text-primary mt-1" />
 
                                 <p className="text-text-secondary leading-7">
-                                    المملكة العربية السعودية
+                                    مصر
                                     <br />
-                                    مكة المكرمة
+                                    القاهرة
                                 </p>
                             </div>
 
@@ -136,7 +136,7 @@ const Footer = () => {
                                 <FaEnvelope className="text-primary" />
 
                                 <span className="text-text-secondary">
-                                    info@codenext.sa
+                                    info@qlam-academy.dev
                                 </span>
                             </div>
 
@@ -144,7 +144,7 @@ const Footer = () => {
                                 <FaPhoneAlt className="text-primary" />
 
                                 <span className="text-text-secondary">
-                                    +966 50 123 4567
+                                    +20 100 123 4567
                                 </span>
                             </div>
 
@@ -175,7 +175,7 @@ const Footer = () => {
 
                 <div className="mt-14 pt-6 border-t border-border flex items-center justify-center relative">
                     <p className="text-text-muted text-sm">
-                        جميع الحقوق محفوظة © CodeNext 2024
+                        جميع الحقوق محفوظة ل © Qalam Academy 2024 - صمم بواسطة <Link href="https://taninss.com/" className="text-primary ">Digital Dragon</Link>
                     </p>
                 </div>
             </Container>
