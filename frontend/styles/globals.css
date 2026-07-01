@@ -63,12 +63,7 @@ html {
 body {
   font-family: var(--font-cairo);
   background: var(--color-background-alt);
-  /* background:
-    radial-gradient(circle at top right,#3827a433 0%,transparent 30%),
-    radial-gradient(circle at left,#1495ff22 0%,transparent 25%),
-    #070B17; */
   color: var(--color-text-primary);
-  min-height: 300vh;
 }
 
 * {
@@ -106,6 +101,13 @@ img {
   background: linear-gradient(135deg,
       rgba(122, 92, 255, .6),
       rgba(51, 185, 255, .6));
+}
+.gradient-text {
+  background: linear-gradient(90deg, #7A5CFF, #33B9FF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
 }
 
 /* Glass Effect */
