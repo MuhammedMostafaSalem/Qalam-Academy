@@ -45,7 +45,7 @@ const RelatedCourses = () => {
                     </div>
 
                     <Button
-                        onclick={() => router.push("/courses")}
+                        onClick={() => router.push("/courses")}
                         className="gradient-button"
                     >
                         عرض جميع الكورسات

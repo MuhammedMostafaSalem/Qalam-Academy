@@ -4,6 +4,7 @@ import InstructorSection from "@/components/courseDetails/instructor/InstructorS
 import CourseOverview from "@/components/courseDetails/overview/CourseOverview";
 import RelatedCourses from "@/components/courseDetails/related/RelatedCourses";
 import ReviewsSection from "@/components/courseDetails/reviews/ReviewsSection";
+import CourseSidebar from "@/components/courseDetails/sidebar/CourseSidebar";
 import Section from "@/components/sections/Section";
 import Container from "@/components/ui/Container";
 
@@ -28,9 +29,11 @@ export default function CourseDetailsPage() {
                             <InstructorSection />
                             <ReviewsSection />
                             <RelatedCourses />
-                        </div>
-                    </div>
 
+                        </div>
+
+                        <CourseSidebar />
+                    </div>
                 </Container>
             </Section>
         </>
