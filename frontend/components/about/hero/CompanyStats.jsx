@@ -49,6 +49,7 @@ const CompanyStats = () => {
             >
                 {stats.map((stat, index) => (
                     <CompanyStatCard
+                        index={index}
                         key={stat.id}
                         {...stat}
                         isLast={index === stats.length - 1}

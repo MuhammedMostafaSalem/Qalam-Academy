@@ -1,10 +1,12 @@
 import { whyChoose } from '@/constants/whyChoose'
 import React from 'react'
 import FeatureCard from './FeatureCard'
+import { fadeUp } from '@/lib/animationHelpers'
 
 const FeaturesGrid = () => {
     return (
         <div
+            {...fadeUp()}
             className="
                 grid
                 grid-cols-1
@@ -15,8 +17,9 @@ const FeaturesGrid = () => {
                 justify-items-center
             "
         >
-            {whyChoose.map((feature) => (
+            {whyChoose.map((feature, index) => (
                 <FeatureCard
+                    index={index}
                     key={feature.id}
                     feature={feature}
                 />

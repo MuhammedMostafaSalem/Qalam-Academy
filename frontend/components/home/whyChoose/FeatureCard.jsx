@@ -1,8 +1,11 @@
-const FeatureCard = ({ feature }) => {
+import { cardAnimation } from "@/lib/animation/cardAnimation";
+
+const FeatureCard = ({ feature, index }) => {
     const Icon = feature.icon;
 
     return (
         <article
+            {...cardAnimation(index)}
             className="
                 group
                 p-8

@@ -1,3 +1,5 @@
+import { animations } from "@/lib/animations"
+
 const Button = ({
     children,
     variant = "primary",
@@ -24,6 +26,8 @@ const Button = ({
                 font-semibold
                 duration-300
                 ${variants[variant]}
+                ${animations.transition}
+                ${animations.press}
                 ${className}
             `}
             {...props}

@@ -23,6 +23,7 @@ const HeroBackground = () => {
                     rounded-full
                     bg-primary/80
                     blur-[140px]
+                    animate-pulse-glow
                 "
             />
 
@@ -38,6 +39,7 @@ const HeroBackground = () => {
                     rounded-full
                     bg-secondary/20
                     blur-[160px]
+                    animate-pulse-glow
                 "
             />
 
@@ -67,6 +69,7 @@ const HeroBackground = () => {
                     opacity-40
                     [background-image:radial-gradient(circle,#3B82F6_2px,transparent_2px)]
                     [background-size:18px_18px]
+                    animate-float
                 "
             />
 
@@ -82,6 +85,7 @@ const HeroBackground = () => {
                     opacity-30
                     [background-image:radial-gradient(circle,#8B5CF6_2px,transparent_2px)]
                     [background-size:20px_20px]
+                    animate-float
                 "
             />
         </>

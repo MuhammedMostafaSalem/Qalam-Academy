@@ -15,6 +15,7 @@ const ContactHeroBackground = () => {
                     rounded-full
                     bg-primary/10
                     blur-[120px]
+                    animate-pulse-glow
                 "
             />
 
@@ -31,6 +32,7 @@ const ContactHeroBackground = () => {
                     rounded-full
                     bg-secondary/10
                     blur-[120px]
+                    animate-pulse-glow
                 "
             />
 
@@ -47,6 +49,7 @@ const ContactHeroBackground = () => {
                     rounded-full
                     bg-primary/10
                     blur-[120px]
+                    animate-pulse-glow
                 "
             />
 
@@ -63,6 +66,7 @@ const ContactHeroBackground = () => {
                     bg-[radial-gradient(circle,_rgba(59,130,246,0.45)_1.5px,_transparent_1.5px)]
                     [background-size:18px_18px]
                     opacity-40
+                    animate-float
                 "
             />
 
@@ -79,6 +83,7 @@ const ContactHeroBackground = () => {
                     bg-[radial-gradient(circle,_rgba(139,92,246,0.45)_1.5px,_transparent_1.5px)]
                     [background-size:18px_18px]
                     opacity-40
+                    animate-float
                 "
             />
 

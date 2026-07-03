@@ -4,6 +4,7 @@ import SectionBadge from "@/components/sections/SectionBadge"
 import Button from "@/components/ui/Button"
 import StatsGrid from "./StatsGrid";
 import { useRouter } from "next/navigation";
+import { ctaAnimation } from "@/lib/animation/ctaAnimation";
 
 const WhyChooseContent = () => {
     const router = useRouter();
@@ -39,6 +40,7 @@ const WhyChooseContent = () => {
             <StatsGrid />
 
             <Button
+                {...ctaAnimation.buttons}
                 onClick={() => router.push("/contact")}
                 size="lg"
                 className="gradient-button"

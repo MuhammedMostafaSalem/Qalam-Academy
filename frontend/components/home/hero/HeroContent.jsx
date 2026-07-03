@@ -1,12 +1,16 @@
 import HeroButtons from "./HeroButtons";
 import HeroStats from "./HeroStats";
 import { IoRocketOutline } from "react-icons/io5";
+import { heroAnimation } from "@/lib/animation/heroAnimation";
 
 const HeroContent = () => {
     return (
         <div className="flex flex-col justify-center">
             {/* Heading */}
-            <h1 className="mt-6 max-w-2xl">
+            <h1
+                {...heroAnimation.title}
+                className="mt-6 max-w-2xl"
+            >
                 <span className="block text-4xl md:text-5xl lg:text-[60px] text-white">
                     نحو مستقبل رقمي
                 </span>
@@ -23,6 +27,7 @@ const HeroContent = () => {
             {/* Description */}
 
             <p
+                {...heroAnimation.description}
                 className="
                     mt-6
                     max-w-xl
@@ -34,9 +39,13 @@ const HeroContent = () => {
                 نحن شركة برمجيات متكاملة. تساعد الشركات و الافراد على تحويل أفكارهم الى منتجات رقمية مبتكرة وفعالة
             </p>
 
-            <HeroButtons />
+            <div {...heroAnimation.buttons}>
+                <HeroButtons />
+            </div>
 
-            <HeroStats />
+            <div {...heroAnimation.buttons}>
+                <HeroStats />
+            </div>
 
         </div>
     );

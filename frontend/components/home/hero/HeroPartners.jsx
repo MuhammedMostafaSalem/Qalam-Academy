@@ -1,4 +1,5 @@
-import React from 'react'
+import { fadeUp } from '@/lib/animationHelpers';
+import { animations } from '@/lib/animations'
 
 const HeroPartners = () => {
     const partners = [
@@ -64,18 +65,19 @@ const HeroPartners = () => {
                 >
                     {partners.map((partner) => (
                         <div
+                            {...fadeUp(partner.id * 80)}
                             key={partner.id}
-                            className="
+                            className={`
                                 flex
                                 justify-center
                                 text-lg
                                 font-semibold
                                 text-white/50
-                                transition-all
-                                duration-300
+
+                                ${animations.transition}
                                 hover:text-primary
-                                hover:scale-105
-                            "
+                                hover:scale-110
+                            `}
                         >
                             {partner.name}
                         </div>

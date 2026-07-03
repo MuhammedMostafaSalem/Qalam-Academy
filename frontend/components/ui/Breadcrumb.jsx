@@ -1,9 +1,11 @@
+import { fadeDown } from "@/lib/animationHelpers";
 import Link from "next/link";
 import { HiChevronLeft } from "react-icons/hi2";
 
 const Breadcrumb = ({ items = [] }) => {
     return (
         <nav
+            {...fadeDown()}
             aria-label="Breadcrumb"
             className="flex justify-start"
         >

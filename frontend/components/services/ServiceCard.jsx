@@ -1,11 +1,13 @@
+import { cardAnimation } from "@/lib/animation/cardAnimation";
 import Link from "next/link";
 import { HiArrowRight } from "react-icons/hi";
 
-const ServiceCard = ({ service, botton }) => {
+const ServiceCard = ({ service, botton, index }) => {
     const Icon = service.icon;
 
     return (
         <article
+            {...cardAnimation(index)}
             className="
                 relative
                 glass

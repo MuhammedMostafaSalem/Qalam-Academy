@@ -1,4 +1,5 @@
-import SectionBadge from "@/components/sections/Section";
+import SectionBadge from "@/components/sections/SectionBadge";
+import { heroAnimation } from "@/lib/animation/heroAnimation";
 
 const ContactHeader = () => {
     return (
@@ -14,6 +15,7 @@ const ContactHeader = () => {
             </SectionBadge>
 
             <h1
+                {...heroAnimation.title}
                 className="
                     mt-6
                     text-4xl
@@ -28,6 +30,7 @@ const ContactHeader = () => {
             </h1>
 
             <p
+                {...heroAnimation.description}
                 className="
                     mx-auto
                     mt-6

@@ -1,9 +1,11 @@
 import Image from "next/image";
 import heroImage from "@/public/assets/images/services-hero.png";
+import { heroAnimation } from "@/lib/animation/heroAnimation";
+import { animations } from "@/lib/animations";
 
 const ServicesHeroImage = () => {
     return (
-        <div className="relative hidden lg:flex lg:justify-start">
+        <div {...heroAnimation.image} className="relative hidden lg:flex lg:justify-start">
             {/* Background Glow */}
             <div
                 className="
@@ -13,6 +15,7 @@ const ServicesHeroImage = () => {
                     flex
                     items-center
                     justify-center
+                    animate-pulse-glow
                 "
             >
                 <div
@@ -42,12 +45,13 @@ const ServicesHeroImage = () => {
                     src={heroImage}
                     alt="Software Development Services"
                     priority
-                    className="
+                    className={`
                         h-auto
                         w-full
                         object-contain
                         drop-shadow-2xl
-                    "
+                        ${animations.floating}
+                    `}
                 />
             </div>
         </div>

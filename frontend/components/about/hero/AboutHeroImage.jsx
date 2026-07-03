@@ -1,10 +1,12 @@
 import Image from "next/image";
 import officeImage from "@/public/assets/images/about-hero.png";
 import { HiOutlineRocketLaunch } from "react-icons/hi2";
+import { heroAnimation } from "@/lib/animation/heroAnimation";
+import { animations } from "@/lib/animations";
 
 const AboutHeroImage = () => {
     return (
-        <div className="relative">
+        <div {...heroAnimation.image} className="relative">
 
             {/* Glow */}
 
@@ -29,20 +31,21 @@ const AboutHeroImage = () => {
                     border
                     border-white/10
                     bg-card
+                    animate-pulse-glow
                 "
             >
                 <Image
                     src={officeImage}
                     alt="Qalam Academy Office"
                     priority
-                    className="h-full w-full object-cover"
+                    className={`h-full w-full object-cover ${animations.floating}`}
                 />
             </div>
 
             {/* Experience Card */}
 
             <div
-                className="
+                className={`
                     absolute
                     -bottom-8
                     left-0
@@ -57,7 +60,8 @@ const AboutHeroImage = () => {
                     py-4
                     backdrop-blur-xl
                     shadow-2xl
-                "
+                    ${animations.hoverLift}
+                `}
             >
                 <div className="flex flex-col justify-end items-end gap-1">
 
@@ -91,7 +95,7 @@ const AboutHeroImage = () => {
                         -left-3
                     "
                 >
-                    <HiOutlineRocketLaunch className="h-7 w-7 text-white" />
+                    <HiOutlineRocketLaunch className={`h-7 w-7 text-white ${animations.floating}`} />
                 </div>
             </div>
 

@@ -1,6 +1,7 @@
 import services from '@/constants/services'
 import React from 'react'
 import ServiceCard from './ServiceCard'
+import { cardAnimation } from '@/lib/animation/cardAnimation'
 
 const ServicesGrid = () => {
     return (
@@ -13,9 +14,10 @@ const ServicesGrid = () => {
                 xl:grid-cols-3
             "
         >
-            {services.map((service) => (
+            {services.map((service, index) => (
                 <ServiceCard
-                    key={service.id}
+                    index={index}
+                    key={index}
                     service={service}
                 />
             ))}

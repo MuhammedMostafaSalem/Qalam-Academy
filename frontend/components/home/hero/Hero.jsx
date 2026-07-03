@@ -4,10 +4,21 @@ import HeroBackground from "./HeroBackground"
 import HeroContent from "./HeroContent"
 import HeroImage from "./HeroImage"
 import HeroPartners from "./HeroPartners"
+import { fadeIn } from "@/lib/animationHelpers"
 
 const Hero = () => {
     return (
-        <Section className="relative overflow-hidden min-h-screen pt-[110px] flex flex-col">
+        <Section
+            {...fadeIn()}
+            className="
+                relative
+                overflow-hidden
+                min-h-screen
+                pt-[110px]
+                flex
+                flex-col
+            "
+        >
 
             <HeroBackground />
 
@@ -26,7 +37,7 @@ const Hero = () => {
 
 
             </Container>
-            
+
             <HeroPartners />
 
         </Section>

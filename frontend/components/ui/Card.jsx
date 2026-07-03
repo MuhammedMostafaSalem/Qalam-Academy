@@ -1,3 +1,5 @@
+import { animations } from "@/lib/animations"
+
 const Card = ({
     children,
     className = "",
@@ -15,6 +17,7 @@ const Card = ({
                 duration-300
                 hover:-translate-y-2
                 hover:shadow-xl
+                ${animations.hoverLift}
                 ${className}
             `}
         >

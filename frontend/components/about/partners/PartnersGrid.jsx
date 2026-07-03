@@ -1,9 +1,11 @@
+import { fadeUp } from "@/lib/animationHelpers"
 import PartnerCard from "./PartnerCard"
 import partners from "./partners"
 
 const PartnersGrid = () => {
     return (
         <div
+            {...fadeUp()}
             className="
                 grid
                 grid-cols-2
@@ -12,9 +14,10 @@ const PartnersGrid = () => {
                 lg:grid-cols-5
             "
         >
-            {partners.map((partner) => (
+            {partners.map((partner, index) => (
                 <PartnerCard
-                    key={partner.id}
+                    key={index}
+                    index={index}
                     partner={partner}
                 />
             ))}

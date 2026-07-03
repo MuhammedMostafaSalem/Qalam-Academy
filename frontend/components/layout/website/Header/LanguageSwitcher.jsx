@@ -1,10 +1,11 @@
 import { MdOutlineLanguage } from "react-icons/md";
+import { animations } from "@/lib/animations"
 
 const LanguageSwitcher = () => {
     return <button
         type="button"
         aria-label="Change Language"
-        className="
+        className={`
             flex
             flex-row-reverse
             items-center
@@ -15,11 +16,12 @@ const LanguageSwitcher = () => {
             text-sm
             font-medium
             text-text-primary
-            transition-all
-            duration-300
+
+            ${animations.transition}
+
             hover:text-primary
-            
-        "
+            hover:scale-105
+        `}
     >
         <MdOutlineLanguage size={18} />
 

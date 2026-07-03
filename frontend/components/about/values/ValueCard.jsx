@@ -1,8 +1,11 @@
-const ValueCard = ({ value }) => {
+import { cardAnimation } from "@/lib/animation/cardAnimation";
+
+const ValueCard = ({ value, index }) => {
     const Icon = value.icon;
 
     return (
         <article
+        {...cardAnimation(index)}
             className="
                 relative
                 overflow-hidden

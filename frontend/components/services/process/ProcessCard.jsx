@@ -1,8 +1,10 @@
-const ProcessCard = ({ step }) => {
+import { cardAnimation } from "@/lib/animation/cardAnimation";
+
+const ProcessCard = ({ step, index }) => {
     const Icon = step.icon;
 
     return (
-        <article className="relative text-center">
+        <article {...cardAnimation(index)} className="relative text-center">
 
             {/* Timeline Circle */}
 

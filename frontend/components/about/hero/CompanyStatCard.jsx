@@ -1,14 +1,20 @@
+import { cardAnimation } from "@/lib/animation/cardAnimation"
+import { animations } from "@/lib/animations"
+
 const CompanyStatCard = ({
     icon: Icon,
     value,
     label,
     isLast,
+    index,
 }) => {
     return (
         <div
+            {...cardAnimation(index)}
             className={`
-            relative
+                relative
                 p-8
+                ${animations.hoverLift}
             `}
         >
             <div
@@ -30,9 +36,9 @@ const CompanyStatCard = ({
                     </p>
 
                 </div>
-                
+
                 <div
-                    className="
+                    className={`
                         flex
                         h-16
                         w-16
@@ -41,7 +47,8 @@ const CompanyStatCard = ({
                         rounded-full
                         bg-primary/10
                         text-primary
-                    "
+                        ${animations.hoverIcon}
+                    `}
                 >
                     <Icon size={30} />
                 </div>

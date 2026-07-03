@@ -1,3 +1,4 @@
+import { fadeRight } from "@/lib/animationHelpers";
 import Link from "next/link";
 import {
     HiOutlineEnvelope,
@@ -37,7 +38,7 @@ const contactItems = [
 
 const ContactInfo = () => {
     return (
-        <div className="flex h-full flex-col">
+        <div {...fadeRight()} className="flex h-full flex-col">
 
             <div>
 

@@ -5,10 +5,12 @@ import Logo from "./Logo"
 import CTAButton from "./CTAButton"
 import { HiOutlineMenuAlt3, HiX } from "react-icons/hi";
 import LanguageSwitcher from "./LanguageSwitcher";
+import { fadeDown } from "@/lib/animationHelpers";
 
 const Navbar = ({ isTop, openMenu, setOpenMenu }) => {
     return (
         <nav
+            {...fadeDown()}
             className="container
             transition-all
             duration-300"

@@ -4,6 +4,7 @@ import { navigation } from '@/constants/navigation';
 import { usePathname } from 'next/navigation';
 import Link from "next/link";
 import MobileMenu from './MobileMenu';
+import { fadeDown } from '@/lib/animationHelpers';
 
 const NavLinks = ({ isTop, open, onClose, menuRef }) => {
     const pathname = usePathname();
@@ -20,16 +21,24 @@ const NavLinks = ({ isTop, open, onClose, menuRef }) => {
                 px-6 py-2`}
             >
 
-                {navigation.map((link) => (
+                {navigation.map((link, index) => (
 
-                    <li key={link.href}>
+                    <li
+                        key={index}
+                        {...fadeDown(index * 70)}
+                    >
 
                         <Link
                             href={link.href}
-                            className={`transition duration-300 hover:text-primary ${pathname === link.href
-                                ? "text-primary"
-                                : "text-text-secondary"
-                                }`}
+                            className={`
+                                transition
+                                duration-300
+                                hover:text-primary
+                                ${pathname === link.href
+                                    ? "text-primary"
+                                    : "text-text-secondary"
+                                }
+                            `}
                         >
                             {link.title}
                         </Link>

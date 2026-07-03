@@ -45,7 +45,8 @@ const MobileMenu = ({ open, onClose }) => {
                 rounded-card
                 glass
                 transition-all
-                duration-300
+                duration-500
+                ease-out
                 lg:hidden
 
                 ${open

@@ -4,11 +4,13 @@ import Section from "@/components/sections/Section";
 import ContactHeroBackground from "./ContactHeroBackground";
 import ContactHeader from "./ContactHeader";
 import ContactSection from "./ContactSection";
+import { fadeUp } from "@/lib/animationHelpers";
 
 
 const ContactHero = () => {
     return (
         <Section
+            {...fadeUp()}
             className="
                 relative
                 overflow-hidden

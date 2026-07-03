@@ -7,6 +7,7 @@ import SectionDescription from "@/components/sections/SectionDescription";
 import Button from "@/components/ui/Button";
 import { HiArrowRight, HiOutlinePlay } from "react-icons/hi2";
 import { useRouter } from "next/navigation";
+import { heroAnimation } from "@/lib/animation/heroAnimation";
 
 const AboutHeroContent = () => {
     const router = useRouter();
@@ -35,7 +36,6 @@ const AboutHeroContent = () => {
                     flex
                     flex-col
                     gap-2
-
                     lg:items-start
                 "
             >
@@ -54,6 +54,7 @@ const AboutHeroContent = () => {
             </SectionDescription>
 
             <div
+                {...heroAnimation.buttons}
                 className="
                     flex
                     w-full

@@ -1,8 +1,10 @@
+import { cardAnimation } from "@/lib/animation/cardAnimation";
 import Image from "next/image";
 import Link from "next/link";
-const PartnerCard = ({ partner }) => {
+const PartnerCard = ({ partner, index }) => {
     return (
         <Link
+            {...cardAnimation(index)}
             href={partner.website}
             target="_blank"
             rel="noopener noreferrer"

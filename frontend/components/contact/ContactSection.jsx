@@ -1,3 +1,4 @@
+import { fadeUp } from "@/lib/animationHelpers";
 import ContactForm from "./ContactForm";
 import ContactInfo from "./ContactInfo";
 
@@ -17,6 +18,7 @@ const ContactSection = () => {
             "
         >
             <div
+                {...fadeUp(300)}
                 className="
                     grid
                     lg:grid-cols-[380px_1fr]

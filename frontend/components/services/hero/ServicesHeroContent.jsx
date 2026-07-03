@@ -5,6 +5,9 @@ import {
 } from "react-icons/hi2";
 
 import SectionBadge from "@/components/sections/SectionBadge"
+import { heroAnimation } from "@/lib/animation/heroAnimation";
+import { cardAnimation } from "@/lib/animation/cardAnimation";
+import { animations } from "@/lib/animations";
 
 const features = [
     {
@@ -35,6 +38,7 @@ const ServicesHeroContent = () => {
             </SectionBadge>
 
             <h1
+                {...heroAnimation.title}
                 className="
                     text-3xl leading-[1.5] md:text-[40px]
                 "
@@ -48,6 +52,7 @@ const ServicesHeroContent = () => {
             </h1>
 
             <p
+                {...heroAnimation.description}
                 className="
                     max-w-2xl
                     text-lg
@@ -69,12 +74,13 @@ const ServicesHeroContent = () => {
                     sm:grid-cols-3
                 "
             >
-                {features.map((feature) => {
+                {features.map((feature, index) => {
                     const Icon = feature.icon;
 
                     return (
                         <div
-                            key={feature.id}
+                            key={index}
+                            {...cardAnimation(index)}
                             className="flex items-start gap-4"
                         >
                             <div
@@ -89,12 +95,13 @@ const ServicesHeroContent = () => {
                                     text-primary
                                 "
                             >
-                                <Icon className="h-7 w-7" />
+                                <Icon className={`h-7 w-7 ${animations.hoverIcon}`} />
                             </div>
 
                             <div>
 
                                 <h3
+                                    {...heroAnimation.title}
                                     className="
                                         font-bold
                                         text-text-primary
@@ -104,6 +111,7 @@ const ServicesHeroContent = () => {
                                 </h3>
 
                                 <p
+                                    {...heroAnimation.description}
                                     className="
                                         mt-2
                                         text-sm

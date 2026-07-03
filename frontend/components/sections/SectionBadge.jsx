@@ -1,14 +1,18 @@
+import { heroAnimation } from "@/lib/animation/heroAnimation";
+import { animations } from "@/lib/animations";
+
 const SectionBadge = ({
     children,
 }) => {
     return (
         <span
-            className="
-                
+            {...heroAnimation.badge}
+            className={`
                 text-sm
                 font-medium
                 text-primary
-            "
+                ${animations.transition}
+            `}
         >
             {children}
         </span>

@@ -1,9 +1,11 @@
+import { fadeUp } from "@/lib/animationHelpers"
 import ValueCard from "./ValueCard"
 import values from "./values"
 
 const ValuesGrid = () => {
     return (
         <div
+            {...fadeUp()}
             className="
                 grid
                 gap-6
@@ -13,9 +15,10 @@ const ValuesGrid = () => {
                 lg:grid-cols-6
             "
         >
-            {values.map((value) => (
+            {values.map((value, index) => (
                 <ValueCard
-                    key={value.id}
+                    key={index}
+                    index={index}
                     value={value}
                 />
             ))}

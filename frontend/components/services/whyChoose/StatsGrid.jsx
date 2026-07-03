@@ -1,9 +1,11 @@
+import { fadeUp } from "@/lib/animationHelpers"
 import StatItem from "./StatItem"
 import whyChooseStats from "./whyChooseStats"
 
 const StatsGrid = () => {
     return (
         <div
+            {...fadeUp()}
             className="
                 grid
                 grid-cols-2
@@ -14,7 +16,8 @@ const StatsGrid = () => {
         >
             {whyChooseStats.map((stat, index) => (
                 <StatItem
-                    key={stat.id}
+                    key={index}
+                    index={index}
                     {...stat}
                     isLast={index === whyChooseStats.length - 1}
                 />

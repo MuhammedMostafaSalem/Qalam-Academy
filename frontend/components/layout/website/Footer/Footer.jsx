@@ -14,6 +14,9 @@ import Container from "@/components/ui/Container"
 import logo from "@/public/assets/logos/logo-white.png"
 import Image from "next/image";
 
+import { gridAnimation } from "@/lib/animation/gridAnimation";
+import { animations } from "@/lib/animations";
+
 const Footer = () => {
     return (
         <footer className="relative bg-background border-t border-border mt-[80px]">
@@ -22,14 +25,14 @@ const Footer = () => {
                 <div className="grid gap-10 lg:grid-cols-5 md:grid-cols-2">
 
                     {/* Logo */}
-                    <div>
+                    <div {...gridAnimation(0)}>
                         <div className="flex items-center gap-3 mb-5">
                             <Image
                                 src={logo}
                                 alt="Qalam Academy Logo"
                                 width={16}
                                 priority
-                                className="w-auto h-auto"
+                                className={`w-auto h-auto ${animations.transition} hover:scale-105`}
                             />
 
                             <div>
@@ -50,80 +53,88 @@ const Footer = () => {
                     </div>
 
                     {/* Resources */}
-                    <div>
+                    <div {...gridAnimation(1)}>
                         <h3 className="font-bold text-lg mb-6">الموارد</h3>
 
                         <ul className="space-y-4 text-text-secondary">
-                            <li>
-                                <Link href="/">كورساتنا</Link>
-                            </li>
-
-                            <li>
-                                <Link href="/">المدونة</Link>
-                            </li>
-
-                            <li>
-                                <Link href="/">الأسئلة الشائعة</Link>
-                            </li>
-
-                            <li>
-                                <Link href="/">سياسة الخصوصية</Link>
-                            </li>
-
-                            <li>
-                                <Link href="/">الشروط والأحكام</Link>
-                            </li>
+                            {
+                                [
+                                    "كورساتنا",
+                                    "المدونة",
+                                    "الأسئلة الشائعة",
+                                    "سياسة الخصوصية",
+                                    "الشروط والأحكام",
+                                ].map(item => (
+                                    <li key={item}>
+                                        <Link
+                                            href="/"
+                                            className={`${animations.transition} hover:text-primary`}
+                                        >
+                                            {item}
+                                        </Link>
+                                    </li>
+                                ))
+                            }
                         </ul>
                     </div>
 
                     {/* Services */}
-                    <div>
+                    <div {...gridAnimation(2)}>
                         <h3 className="font-bold text-lg mb-6">خدماتنا</h3>
 
                         <ul className="space-y-4 text-text-secondary">
-                            <li>تطوير المواقع</li>
-                            <li>تطبيقات الجوال</li>
-                            <li>الأنظمة المخصصة</li>
-                            <li>تصميم UI/UX</li>
-                            <li>التسويق الرقمي</li>
+                            {
+                                [
+                                    "تطوير المواقع",
+                                    "تطبيقات الجوال",
+                                    "الأنظمة المخصصة",
+                                    "تصميم UI/UX",
+                                    "التسويق الرقمي",
+                                ].map(item => (
+                                    <li
+                                        key={item}
+                                        className={`${animations.transition} hover:text-primary`}>
+                                        {item}
+                                    </li>
+                                ))
+                            }
                         </ul>
                     </div>
 
                     {/* Quick Links */}
-                    <div>
+                    <div {...gridAnimation(3)}>
                         <h3 className="font-bold text-lg mb-6">روابط سريعة</h3>
 
                         <ul className="space-y-4 text-text-secondary">
-                            <li>
-                                <Link href="/">الرئيسية</Link>
-                            </li>
-
-                            <li>
-                                <Link href="/">من نحن</Link>
-                            </li>
-
-                            <li>
-                                <Link href="/">خدماتنا</Link>
-                            </li>
-
-                            <li>
-                                <Link href="/">المعرض</Link>
-                            </li>
-
-                            <li>
-                                <Link href="/">تواصل معنا</Link>
-                            </li>
+                            {
+                                [
+                                    "الرئيسية",
+                                    "من نحن",
+                                    "خدماتنا",
+                                    "المعرض",
+                                    "تواصل معنا",
+                                ].map((item) => (
+                                    <li key={item}>
+                                        <Link
+                                            href="/"
+                                            className={`${animations.transition} hover:text-primary`}
+                                        >
+                                            {item}
+                                        </Link>
+                                    </li>
+                                ))
+                            }
                         </ul>
                     </div>
 
                     {/* Contact */}
-                    <div>
+                    <div {...gridAnimation(4)}>
                         <h3 className="font-bold text-lg mb-6">تواصل معنا</h3>
 
                         <div className="space-y-5">
 
                             <div className="flex items-start gap-3">
-                                <FaMapMarkerAlt className="text-primary mt-1" />
+                                <FaMapMarkerAlt className={`mt-1 text-primary ${animations.floating}`} />
 
                                 <p className="text-text-secondary leading-7">
                                     مصر
@@ -157,13 +168,29 @@ const Footer = () => {
                                     FaTwitter,
                                     FaInstagram,
                                 ].map((Icon, index) => (
-                                    <a
+                                    <Link
                                         key={index}
                                         href="#"
-                                        className="w-10 h-10 rounded-full border border-border bg-card hover:bg-primary duration-300 flex items-center justify-center"
+                                        className={`
+                                            flex
+                                            h-10
+                                            w-10
+                                            items-center
+                                            justify-center
+                                            rounded-full
+                                            border
+                                            border-border
+                                            bg-card
+
+                                            ${animations.transition}
+                                            ${animations.hoverLift}
+
+                                            hover:bg-primary
+                                            hover:text-white
+                                        `}
                                     >
                                         <Icon size={16} />
-                                    </a>
+                                    </Link>
                                 ))}
 
                             </div>
@@ -173,9 +200,17 @@ const Footer = () => {
 
                 {/* Bottom */}
 
-                <div className="mt-14 pt-6 border-t border-border flex items-center justify-center relative">
+                <div
+                    {...gridAnimation(5)}
+                    className="mt-14 pt-6 border-t border-border flex items-center justify-center relative">
                     <p className="text-text-muted text-sm">
-                        جميع الحقوق محفوظة ل © Qalam Academy 2024 - صمم بواسطة <Link href="https://taninss.com/" className="text-primary ">Digital Dragon</Link>
+                        جميع الحقوق محفوظة ل © Qalam Academy 2024 - صمم بواسطة{" "}
+                        <Link
+                            href="https://taninss.com/"
+                            className={`${animations.transition} text-primary hover:underline`}
+                        >
+                            Digital Dragon
+                        </Link>
                     </p>
                 </div>
             </Container>

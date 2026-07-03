@@ -1,7 +1,10 @@
-const StatItem = ({ value, label, isLast }) => {
-    // const isLast = stat.length - 1;
+import { cardAnimation } from "@/lib/animation/cardAnimation";
+
+const StatItem = ({ value, label, isLast, index }) => {
+    
     return (
         <div
+            {...cardAnimation(index)}
             className="
                 relative
                 flex

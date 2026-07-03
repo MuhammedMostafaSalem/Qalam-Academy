@@ -1,6 +1,7 @@
 "use client";
 
 import Button from "@/components/ui/Button";
+import { fadeUp } from "@/lib/animationHelpers";
 import {
     HiOutlineEnvelope,
     HiOutlineUser,
@@ -10,7 +11,7 @@ import {
 
 const ContactForm = () => {
     return (
-        <div>
+        <div {...fadeUp(300)}>
 
             <div className="mb-8">
 

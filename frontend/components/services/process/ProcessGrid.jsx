@@ -1,8 +1,9 @@
+import { fadeUp } from "@/lib/animationHelpers"
 import process from "./process"
 import ProcessCard from "./ProcessCard"
 const ProcessGrid = () => {
     return (
-        <div className="relative">
+        <div {...fadeUp()} className="relative">
 
             {/* Connection Line (Desktop) */}
 
@@ -30,9 +31,10 @@ const ProcessGrid = () => {
                     lg:gap-8
                 "
             >
-                {process.map((step) => (
+                {process.map((step, index) => (
                     <ProcessCard
-                        key={step.id}
+                        key={index}
+                        index={index}
                         step={step}
                     />
                 ))}

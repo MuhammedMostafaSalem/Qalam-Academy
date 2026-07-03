@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Navbar from "./Navbar"
 import useScrollNavbar from "@/hooks/useScrollNavbar";
+import { animations } from "@/lib/animations"
 
 const Header = () => {
     const { showNavbar, isTop } = useScrollNavbar();
@@ -16,8 +17,8 @@ const Header = () => {
                 left-0
                 w-full
                 z-50
-                transition-all
-                duration-300
+
+                ${animations.transition}
                 ${showNavbar ? "translate-y-0" : "-translate-y-full"}
                 ${isTop ? "py-6" : "py-3"}
             `}
