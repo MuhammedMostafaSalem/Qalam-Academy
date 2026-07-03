@@ -6,9 +6,11 @@ import {
 
 const LessonItem = ({
     lesson,
+    onclick
 }) => {
     return (
         <div
+            onClick={onclick}
             className="
                 flex
                 items-center

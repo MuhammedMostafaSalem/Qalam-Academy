@@ -5,76 +5,65 @@ import {
     HiChevronDown,
     HiChevronUp,
 } from "react-icons/hi2";
+import lessonData from "../lessonData";
 import LessonItem from "./LessonItem";
-import curriculum from "./curriculum";
-import { useRouter } from "next/navigation";
 
 const CurriculumAccordion = () => {
-    const router = useRouter();
     const [openModule, setOpenModule] = useState(0);
 
-    const toggleModule = (index) => {
-        setOpenModule(
-            openModule === index
-                ? null
-                : index
-        );
-    };
-
     return (
-        <div className="space-y-5">
-            {curriculum.map((module, index) => {
+        <div>
+            {lessonData.modules.map((module, index) => {
                 const opened = openModule === index;
 
                 return (
                     <div
                         key={module.id}
-                        className="
-                            overflow-hidden
-                            rounded-3xl
-                            border
-                            border-border
-                            bg-card
-                        "
+                        className={`${index !== lessonData.modules.length - 1
+                                ? "border-b border-border"
+                                : ""
+                            }`}
                     >
                         <button
-                            onClick={() => toggleModule(index)}
+                            onClick={() =>
+                                setOpenModule(
+                                    opened ? null : index
+                                )
+                            }
                             className="
                                 flex
                                 w-full
                                 items-center
                                 justify-between
-                                p-6
+                                px-6
+                                py-5
                                 text-right
+                                hover:bg-background-alt
+                                transition
                             "
                         >
                             <div>
-
-                                <h3 className="text-xl font-bold">
+                                <h3 className="font-semibold">
                                     {module.title}
                                 </h3>
 
-                                <p className="mt-2 text-sm text-text-secondary">
-                                    {module.lessons.length} دروس
-                                    • {module.duration}
+                                <p className="mt-1 text-sm text-text-secondary">
+                                    {module.lessons.length} درس
                                 </p>
-
                             </div>
 
                             {opened
-                                ? <HiChevronUp size={24} />
-                                : <HiChevronDown size={24} />
+                                ? <HiChevronUp />
+                                : <HiChevronDown />
                             }
-
                         </button>
 
                         {opened && (
-                            <div className="border-t border-border">
+                            <div>
                                 {module.lessons.map((lesson) => (
                                     <LessonItem
                                         key={lesson.id}
                                         lesson={lesson}
-                                        onclick={() => router.push(`/courses/slag/lesson/${lesson.id}`)}
                                     />
                                 ))}
                             </div>
