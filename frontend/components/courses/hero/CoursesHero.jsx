@@ -26,9 +26,9 @@ const CoursesHero = () => {
                         lg:grid-cols-2
                     "
                 >
-                    <CoursesHeroContent />
-
                     <CoursesHeroImage />
+
+                    <CoursesHeroContent />
                 </div>
             </Container>
         </Section>
