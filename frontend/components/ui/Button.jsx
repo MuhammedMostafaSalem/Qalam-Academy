@@ -1,3 +1,4 @@
+import { heroAnimation } from "@/lib/animation/heroAnimation";
 import { animations } from "@/lib/animations"
 
 const Button = ({
@@ -19,6 +20,7 @@ const Button = ({
 
     return (
         <button
+            {...heroAnimation.buttons}
             className={`
                 rounded-button
                 px-6
