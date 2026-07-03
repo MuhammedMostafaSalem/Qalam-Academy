@@ -4,7 +4,7 @@ import CurriculumAccordion from "./CurriculumAccordion";
 
 const CourseCurriculum = () => {
     return (
-        <Section className="mt-24">
+        <Section>
             <Container>
                 <div className="mb-10">
                     <h2 className="text-3xl font-bold">

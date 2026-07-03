@@ -12,7 +12,7 @@ const RelatedCourses = () => {
     const relatedCourses = courses.slice(0, 3);
 
     return (
-        <Section className="py-20">
+        <Section>
             <Container>
                 <div
                     className="

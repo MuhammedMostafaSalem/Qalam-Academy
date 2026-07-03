@@ -5,7 +5,7 @@ import ReviewsList from "./ReviewsList";
 
 const ReviewsSection = () => {
     return (
-        <Section className="py-20">
+        <Section>
             <Container>
                 <div className="mb-12">
                     <h2 className="text-3xl font-bold">

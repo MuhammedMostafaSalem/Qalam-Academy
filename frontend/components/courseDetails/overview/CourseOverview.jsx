@@ -6,7 +6,7 @@ import OverviewContent from "./OverviewContent";
 
 const CourseOverview = () => {
     return (
-        <Section className="py-20">
+        <Section>
             <Container>
                 <div
                     className="
