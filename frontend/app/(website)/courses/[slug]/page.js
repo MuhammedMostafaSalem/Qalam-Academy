@@ -1,3 +1,4 @@
+import CourseCurriculum from "@/components/courseDetails/curriculum/CourseCurriculum";
 import CourseDetailsHero from "@/components/courseDetails/hero/CourseDetailsHero";
 import CourseOverview from "@/components/courseDetails/overview/CourseOverview";
 import Section from "@/components/sections/Section";
@@ -20,6 +21,7 @@ export default function CourseDetailsPage() {
                     >
                         <div className="space-y-20">
                             <CourseOverview />
+                            <CourseCurriculum />
                         </div>
                     </div>
 
