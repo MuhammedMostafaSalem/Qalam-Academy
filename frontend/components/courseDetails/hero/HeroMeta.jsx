@@ -5,10 +5,34 @@ import {
     HiOutlineAcademicCap,
 } from "react-icons/hi2";
 import MetaItem from "./MetaItem";
+import { fadeUp } from "@/lib/animationHelpers";
 
+const metas = [
+    {
+        icon: HiOutlineStar,
+        title: "4.9",
+        subtitle: "التقييم"
+    },
+    {
+        icon: HiOutlineUserGroup,
+        title: "1,250+",
+        subtitle: "طالب"
+    },
+    {
+        icon: HiOutlineClock,
+        title: "12 أسبوع",
+        subtitle: "مدة الكورس"
+    },
+    {
+        icon: HiOutlineAcademicCap,
+        title: "48",
+        subtitle: "درس"
+    },
+]
 const HeroMeta = () => {
     return (
         <div
+            {...fadeUp()}
             className="
                 mt-10
                 grid
@@ -17,29 +41,18 @@ const HeroMeta = () => {
                 sm:grid-cols-2
             "
         >
-            <MetaItem
-                icon={HiOutlineStar}
-                title="4.9"
-                subtitle="التقييم"
-            />
 
-            <MetaItem
-                icon={HiOutlineUserGroup}
-                title="1,250+"
-                subtitle="طالب"
-            />
-
-            <MetaItem
-                icon={HiOutlineClock}
-                title="12 أسبوع"
-                subtitle="مدة الكورس"
-            />
-
-            <MetaItem
-                icon={HiOutlineAcademicCap}
-                title="48"
-                subtitle="درس"
-            />
+            {
+                metas.map((item, index) => {
+                    return (
+                        <MetaItem
+                            key={index}
+                            index={index}
+                            item={item}
+                        />
+                    )
+                })
+            }
         </div>
     );
 };
