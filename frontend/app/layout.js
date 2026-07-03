@@ -1,4 +1,5 @@
 import { Cairo, Inter } from "next/font/google";
+import AnimationProvider from "@/components/providers/AnimationProvider";
 import "@/styles/globals.css";
 
 const cairo = Cairo({
@@ -23,7 +24,9 @@ export default function RootLayout({ children }) {
       dir="rtl"
     >
       <body className={`${cairo.variable} ${inter.variable}`}>
-        {children}
+        <AnimationProvider>
+          {children}
+        </AnimationProvider>
       </body>
     </html>
   );
