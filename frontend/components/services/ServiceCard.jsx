@@ -3,7 +3,7 @@ import { HiArrowRight } from "react-icons/hi";
 
 const ServiceCard = ({ service, botton }) => {
     const Icon = service.icon;
-console.log(service.color);
+
     return (
         <article
             className="
