@@ -9,7 +9,6 @@ const SectionDescription = ({
         <p
             {...heroAnimation.description}
             className={`
-                max-w-[380px]
                 text-sm
                 text-text-secondary
                 ${center ? "mx-auto text-center" : ""}
