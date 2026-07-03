@@ -1,10 +1,14 @@
+import { cardAnimation } from "@/lib/animation/cardAnimation";
+
 const MetaItem = ({
-    icon: Icon,
-    title,
-    subtitle,
+    index,
+    item,
 }) => {
+    const Icon = item.icon;
+
     return (
         <div
+            {...cardAnimation(index)}
             className="
                 flex
                 items-center
@@ -34,11 +38,11 @@ const MetaItem = ({
             <div>
 
                 <h3 className="text-xl font-bold">
-                    {title}
+                    {item.title}
                 </h3>
 
                 <p className="text-sm text-text-secondary">
-                    {subtitle}
+                    {item.subtitle}
                 </p>
 
             </div>
