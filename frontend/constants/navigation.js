@@ -20,6 +20,10 @@ export const navigation = [
         href: "/portfolio",
     },
     {
+        title: "المتجر",
+        href: "/store",
+    },
+    {
         title: "المدونة",
         href: "/blog",
     },
