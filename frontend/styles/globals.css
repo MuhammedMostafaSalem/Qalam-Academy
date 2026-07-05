@@ -56,10 +56,6 @@
   --color-glow-cyan: #38E1FF;
 }
 
-html {
-  scroll-behavior: smooth;
-}
-
 body {
   font-family: var(--font-cairo);
   background: var(--color-background-alt);
