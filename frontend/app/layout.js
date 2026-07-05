@@ -22,6 +22,8 @@ export default function RootLayout({ children }) {
     <html
       lang="ar"
       dir="rtl"
+      className="scroll-smooth"
+      data-scroll-behavior="smooth"
     >
       <body className={`${cairo.variable} ${inter.variable}`}>
         <AnimationProvider>
