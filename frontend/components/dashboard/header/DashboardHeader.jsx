@@ -44,12 +44,7 @@ const DashboardHeader = ({
                 sticky
                 top-0
                 z-30
-
-                border-b
-                border-border
-
                 bg-background
-                backdrop-blur-xl
             "
         >
             <div
@@ -60,8 +55,7 @@ const DashboardHeader = ({
                     justify-between
                     gap-6
 
-                    px-5
-                    lg:px-8
+                    px-3
                 "
             >
                 {/* Left */}
@@ -123,8 +117,8 @@ const DashboardHeader = ({
 
                                 border
                                 border-border
-
-                                bg-background
+                                
+                                bg-transparent
 
                                 pr-12
                                 pl-5
