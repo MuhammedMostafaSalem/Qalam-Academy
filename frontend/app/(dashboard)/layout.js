@@ -1,3 +1,5 @@
-export default function DashboardLayout({ children }) {
-    return children;
+import DashboardLayout from "@/components/layout/dashboard/DashboardLayout";
+
+export default function AdminLayout({ children }) {
+    return <DashboardLayout>{children}</DashboardLayout>;
 }

@@ -123,6 +123,8 @@ const LoginBanner = () => {
                 >
                     © 2026 Qalam Academy. جميع الحقوق محفوظة.
                 </p>
+
+                <Link href="/dashboard">dashboard</Link>
             </div>
 
             {/* Floating Elements */}
