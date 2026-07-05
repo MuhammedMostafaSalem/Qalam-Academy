@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { HiArrowRight } from "react-icons/hi2";
+import { BsPersonPlus } from "react-icons/bs";
 
 import Button from "@/components/ui/Button";
 import { fadeLeft } from "@/lib/animationHelpers";
@@ -11,7 +11,7 @@ import RememberMe from "../RememberMe";
 import SectionTitle from "@/components/sections/SectionTitle"
 import SectionDescription from "@/components/sections/SectionDescription"
 
-const LoginForm = () => {
+const RegisterForm = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
 
@@ -35,23 +35,27 @@ const LoginForm = () => {
             {/* Header */}
             <div className="flex flex-col items-center gap-2">
                 <SectionTitle>
-                    تسجيل الدخول
+                    انشاء حساب جديد
                 </SectionTitle>
 
                 <SectionDescription>
-                    سجل الدخول إلى حسابك للمتابعة
+                    املأ البيانات التالية لانشاء حساب جديد
                 </SectionDescription>
             </div>
 
             {/* Form */}
-
             <form
                 onSubmit={handleSubmit}
                 className="
-                mt-5
                     space-y-6
                 "
             >
+                <AuthInput
+                    type="text"
+                    name="name"
+                    label="الأسم بالكامل"
+                    placeholder="اكتب اسمك بالكامل هنا"
+                />
                 <AuthInput
                     type="email"
                     name="email"
@@ -62,11 +66,16 @@ const LoginForm = () => {
                 <AuthInput
                     type="password"
                     name="password"
+                    label="تأكيد كلمة المرور"
+                    placeholder="••••••••••"
+                />
+                
+                <AuthInput
+                    type="password"
+                    name="confirm password"
                     label="كلمة المرور"
                     placeholder="••••••••••"
                 />
-
-                <RememberMe />
 
                 <Button
                     type="submit"
@@ -79,7 +88,7 @@ const LoginForm = () => {
                         gap-2
                     "
                 >
-                    <HiArrowRight size={20} />
+                    <BsPersonPlus size={20} />
 
                     <span>تسجيل الدخول</span>
                 </Button>
@@ -94,10 +103,10 @@ const LoginForm = () => {
                     text-text-secondary
                 "
             >
-                ليس لديك حساب؟
+                لديك حساب بالفعل؟
 
                 <Link
-                    href="/register"
+                    href="/login"
                     className="
                         mr-2
                         font-semibold
@@ -106,11 +115,11 @@ const LoginForm = () => {
                         hover:text-primary-hover
                     "
                 >
-                    إنشاء حساب جديد
+                    تسجيل حساب
                 </Link>
             </p>
         </AuthCard>
     );
 };
 
-export default LoginForm;
+export default RegisterForm;

@@ -5,14 +5,13 @@ const AuthCard = ({
     return (
         <div
             className={`
-                rounded-[28px]
+                rounded-fullCard
                 border
                 border-border
                 bg-card/70
                 backdrop-blur-xl
                 shadow-xl
                 p-8
-                md:p-10
                 ${className}
             `}
         >

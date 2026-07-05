@@ -1,8 +1,8 @@
-import LoginBanner from "@/components/auth/login/LoginBanner";
-import LoginForm from "@/components/auth/login/LoginForm";
+import RegisterBanner from "@/components/auth/register/RegisterBanner";
+import RegisterForm from "@/components/auth/register/RegisterForm";
 import Section from "@/components/sections/Section";
 
-const LoginLayout = () => {
+const RegisterLayout = () => {
     return (
         <Section
             className="
@@ -13,36 +13,6 @@ const LoginLayout = () => {
                 lg:px-8
             "
         >
-            {/* Background Glow */}
-
-            <div
-                className="
-                    absolute
-                    left-0
-                    top-0
-                    h-96
-                    w-96
-                    rounded-full
-                    bg-primary/10
-                    blur-[180px]
-                    -z-10
-                "
-            />
-
-            <div
-                className="
-                    absolute
-                    bottom-0
-                    right-0
-                    h-[450px]
-                    w-[450px]
-                    rounded-full
-                    bg-secondary/10
-                    blur-[200px]
-                    -z-10
-                "
-            />
-
             {/* Main Card */}
 
             <div
@@ -69,7 +39,7 @@ const LoginLayout = () => {
                     "
                 >
                     <div className="w-full max-w-md">
-                        <LoginForm />
+                        <RegisterForm />
                     </div>
                 </div>
 
@@ -83,12 +53,12 @@ const LoginLayout = () => {
                         border-border
                     "
                 >
-                    <LoginBanner />
+                    <RegisterBanner />
                 </div>
-                
+
             </div>
         </Section>
     );
 };
 
-export default LoginLayout;
+export default RegisterLayout;
