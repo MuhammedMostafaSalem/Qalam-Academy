@@ -2,28 +2,39 @@ import Link from "next/link"
 import { animations } from "@/lib/animations"
 import { ctaAnimation } from "@/lib/animation/ctaAnimation"
 
+const baseClasses = `
+    rounded-full
+    p-3
+    w-full
+    text-center
+    font-semibold
+    shadow-xl
+    ${animations.transition}
+    ${animations.press}
+    hover:shadow-neon
+    hover:-translate-y-1
+`;
+
 const CTAButton = () => {
     return (
-        <Link
-            {...ctaAnimation.buttons}
-            href="/contact"
-            className={`
-                gradient-button
-                rounded-full
-                px-6 py-3
-                font-semibold text-white
-                shadow-neon
-                w-full
+        <div className="flex flex-col gap-3 lg:flex-row items-center w-full">
+            <Link
+                href="/login"
+                {...ctaAnimation.buttons}
+                className={`${baseClasses} btn-primary flex-1 whitespace-nowrap`}
+            >
+                تسجيل دخول
+            </Link>
 
-                ${animations.transition}
-                ${animations.press}
+            <Link
+                href="/register"
+                {...ctaAnimation.buttons}
+                className={`${baseClasses} btn-outline flex-1 whitespace-nowrap`}
+            >
+                إنشاء حساب
+            </Link>
+        </div>
 
-                hover:shadow-xl
-                hover:-translate-y-1
-            `}
-        >
-            تواصل معنا
-        </Link>
     )
 }
 
