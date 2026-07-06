@@ -1,5 +1,5 @@
 import Container from "@/components/ui/Container";
-import SearchInput from "./SearchInput";
+import SearchInput from "../../ui/SearchInput";
 import CategoryFilter from "./CategoryFilter";
 import TechnologyFilter from "./TechnologyFilter";
 import SortFilter from "./SortFilter";

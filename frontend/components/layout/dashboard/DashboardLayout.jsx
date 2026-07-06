@@ -9,7 +9,7 @@ const DashboardLayout = ({ children }) => {
     const [mobileOpen, setMobileOpen] = useState(false);
 
     return (
-        <div className="flex mih-screen bg-background">
+        <div className="flex min-screen bg-background">
             <Sidebar
                 collapsed={collapsed}
                 setCollapsed={setCollapsed}

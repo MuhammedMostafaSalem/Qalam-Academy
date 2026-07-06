@@ -3,7 +3,7 @@ import Container from "@/components/ui/Container";
 import { projects } from "@/constants/projects";
 import ProjectCard from "../ProjectCard";
 import { cardAnimation } from "@/lib/animation/cardAnimation";
-import LoadMore from "@/components/courses/coursesSection/coursesGrid/LoadMore";
+import LoadMore from "@/components/shared/LoadMore";
 
 const ProjectsGrid = () => {
     return (
@@ -29,7 +29,7 @@ const ProjectsGrid = () => {
                         </div>
                     ))}
                 </div>
-                
+
                 <LoadMore />
             </Container>
         </Section>
