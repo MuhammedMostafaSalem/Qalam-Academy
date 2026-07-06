@@ -1,7 +1,7 @@
 import { fadeUp } from "@/lib/animationHelpers";
 import CourseCard from "../../CourseCard";
 import { courses } from "./courses";
-import LoadMore from "./LoadMore";
+import LoadMore from "../../../shared/LoadMore";
 import { heroAnimation } from "@/lib/animation/heroAnimation";
 import { animations } from "@/lib/animations";
 import { cardAnimation } from "@/lib/animation/cardAnimation";
@@ -58,7 +58,9 @@ const CoursesGrid = ({ view }) => {
                 ))}
             </div>
 
-            <LoadMore />
+            <div {...fadeUp()} className={`${animations.transition}`}>
+                <LoadMore />
+            </div>
         </div>
     );
 };
