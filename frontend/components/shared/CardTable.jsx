@@ -24,11 +24,11 @@ const CardTable = ({ data }) => {
             </div>
 
             <div className="min-w-0 flex flex-col gap-2">
-                <h3 className="text-sm font-semibold text-white">
+                <h3 className="text-[12px] md:text-md font-semibold text-white">
                     {data.name}
                 </h3>
 
-                <p className="line-clamp-2 leading-4 text-xs text-muted-foreground">
+                <p className="text-[10px] md:text-md line-clamp-2 leading-4 text-muted-foreground">
                     {data.description}
                 </p>
             </div>
