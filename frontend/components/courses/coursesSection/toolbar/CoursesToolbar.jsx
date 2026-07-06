@@ -1,5 +1,3 @@
-import { fadeIn } from "@/lib/animationHelpers";
-import { animations } from "@/lib/animations";
 import CategorySelect from "./CategorySelect";
 import LevelSelect from "./LevelSelect";
 import SearchInput from "./SearchInput";
@@ -9,14 +7,12 @@ import ViewSwitcher from "./ViewSwitcher";
 const CoursesToolbar = ({ view, toggleSwitcher }) => {
     return (
         <div
-            {...fadeIn()}
-            className={`
+            className="
                 mb-10
                 rounded-fullCard
                 glass
                 p-5
-                ${animations.transition}
-            `}
+            "
         >
             <div
                 className="
