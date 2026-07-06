@@ -8,6 +8,7 @@ import {
 } from "react-icons/hi2";
 import { HiChevronDown } from "react-icons/hi";
 import { FaSignOutAlt } from "react-icons/fa";
+import Breadcrumb from "@/components/ui/Breadcrumb";
 
 const DashboardHeader = ({
     setMobileOpen,
@@ -87,51 +88,26 @@ const DashboardHeader = ({
                         <HiOutlineBars3 size={24} />
                     </button>
 
-                    {/* Search */}
+                    {/* title page */}
                     <div
                         className="
                             relative
-                            hidden
-                            md:block
                         "
                     >
-                        <HiOutlineMagnifyingGlass
-                            size={20}
-                            className="
-                                absolute
-                                right-4
-                                top-1/2
-                                -translate-y-1/2
-                                text-text-secondary
-                            "
-                        />
-
-                        <input
-                            type="text"
-                            placeholder="ابحث..."
-                            className="
-                                h-12
-                                w-[320px]
-
-                                rounded-2xl
-
-                                border
-                                border-border
-                                
-                                bg-transparent
-
-                                pr-12
-                                pl-5
-
-                                outline-none
-
-                                transition-all
-                                duration-300
-
-                                focus:border-primary
-                                focus:ring-2
-                                focus:ring-primary/20
-                            "
+                        <Breadcrumb
+                            items={[
+                                {
+                                    label: "الرئيسية",
+                                    href: "/",
+                                },
+                                {
+                                    label: "الكورسات",
+                                    href: "/courses",
+                                },
+                                {
+                                    label: "Frontend Development",
+                                },
+                            ]}
                         />
                     </div>
                 </div>
