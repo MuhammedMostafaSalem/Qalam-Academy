@@ -29,7 +29,7 @@ const Toolbar = ({
                         md:items-center
                     "
             >
-                <div className="w-[250px]">
+                <div className="w-full md:w-[250px]">
                     <SearchInput inputPlaceholder={inputPlaceholder} />
                 </div>
 
@@ -39,7 +39,8 @@ const Toolbar = ({
             {/* Actions */}
             <div
                 className="
-                    flex
+                    block
+                    md:flex
                     flex-wrap justify-between
                     items-center
                     gap-3

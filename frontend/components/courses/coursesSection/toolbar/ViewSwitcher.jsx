@@ -18,8 +18,10 @@ const ViewSwitcher = ({ view, toggleSwitcher }) => {
                 onClick={() => toggleSwitcher("grid")}
                 className={`
                     flex
-                    h-14
-                    w-14
+                    h-auto
+                    w-auto
+                    py-3
+                    px-5
                     items-center
                     justify-center
                     transition-all
@@ -39,8 +41,10 @@ const ViewSwitcher = ({ view, toggleSwitcher }) => {
                 onClick={() => toggleSwitcher("list")}
                 className={`
                     flex
-                    h-14
-                    w-14
+                    h-auto
+                    w-auto
+                    py-3
+                    px-5
                     items-center
                     justify-center
                     transition-all
