@@ -3,6 +3,7 @@ import Breadcrumb from "@/components/ui/Breadcrumb";
 import Container from "@/components/ui/Container";
 import HeroImage from "./HeroImage";
 import HeroContent from "./HeroContent";
+import { fadeDown } from "@/lib/animationHelpers";
 
 const CourseDetailsHero = () => {
     return (
@@ -15,22 +16,9 @@ const CourseDetailsHero = () => {
             "
         >
             <Container>
-
-                <Breadcrumb
-                    items={[
-                        {
-                            label: "الرئيسية",
-                            href: "/",
-                        },
-                        {
-                            label: "الكورسات",
-                            href: "/courses",
-                        },
-                        {
-                            label: "Frontend Development",
-                        },
-                    ]}
-                />
+                <div {...fadeDown()}>
+                    <Breadcrumb />
+                </div>
 
                 <div
                     className="
