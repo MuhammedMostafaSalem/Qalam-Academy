@@ -14,6 +14,7 @@ import {
     HiOutlineEnvelope,
     HiOutlineCog6Tooth,
 } from "react-icons/hi2";
+import { PiUsersThreeLight } from "react-icons/pi";
 import SidebarItem from "./SidebarItem";
 
 const menu = [
@@ -76,6 +77,11 @@ const menu = [
         title: "الكوبونات",
         href: "/dashboard/coupons",
         icon: HiOutlineTicket,
+    },
+    {
+        title: "المستخدمين",
+        href: "/dashboard/users",
+        icon: PiUsersThreeLight,
     },
     {
         title: "المقالات",
