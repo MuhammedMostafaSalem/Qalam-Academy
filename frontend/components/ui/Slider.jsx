@@ -5,55 +5,70 @@ import { Autoplay, Navigation } from "swiper/modules";
 
 import "swiper/css";
 import "swiper/css/navigation";
+import React from "react";
 
-const Slider = ({ children }) => {
+const Slider = ({
+    children,
+    ButtonPrev,
+    ButtonNext,
+    prevEl,
+    nextEl
+}) => {
     return (
-        <Swiper
-            modules={[Navigation, Autoplay]}
-            navigation={{
-                prevEl: ".prev",
-                nextEl: ".next",
-            }}
-            loop
-            speed={700}
-            spaceBetween={24}
-            autoplay={{
-                delay: 3500,
-                disableOnInteraction: false,
-                pauseOnMouseEnter: true,
-            }}
-            breakpoints={{
-                0: {
-                    slidesPerView: 1,
-                },
+        <div className="relative mt-16 px-16">
+            {/* Prev */}
+            {ButtonPrev}
 
-                640: {
-                    slidesPerView: 2,
-                },
+            <Swiper
+                modules={[Navigation, Autoplay]}
+                navigation={{
+                    prevEl: prevEl,
+                    nextEl: nextEl,
+                }}
+                loop={React.Children.count(children) > 4}
+                speed={700}
+                spaceBetween={24}
+                autoplay={{
+                    delay: 3500,
+                    disableOnInteraction: false,
+                    pauseOnMouseEnter: true,
+                }}
+                breakpoints={{
+                    0: {
+                        slidesPerView: 1,
+                    },
 
-                1024: {
-                    slidesPerView: 3,
-                },
+                    640: {
+                        slidesPerView: 2,
+                    },
 
-                1280: {
-                    slidesPerView: 4,
-                },
-            }}
-        >
-            {
-                Array.isArray(children)
-                    ? children.map((child, index) => (
-                        <SwiperSlide key={index}>
-                            {child}
-                        </SwiperSlide>
-                    ))
-                    : (
-                        <SwiperSlide>
-                            {children}
-                        </SwiperSlide>
-                    )
-            }
-        </Swiper>
+                    1024: {
+                        slidesPerView: 3,
+                    },
+
+                    1280: {
+                        slidesPerView: 4,
+                    },
+                }}
+            >
+                {
+                    Array.isArray(children)
+                        ? children.map((child, index) => (
+                            <SwiperSlide key={index}>
+                                {child}
+                            </SwiperSlide>
+                        ))
+                        : (
+                            <SwiperSlide>
+                                {children}
+                            </SwiperSlide>
+                        )
+                }
+            </Swiper>
+
+            {/* Next */}
+            {ButtonNext}
+        </div>
     )
 }
 
