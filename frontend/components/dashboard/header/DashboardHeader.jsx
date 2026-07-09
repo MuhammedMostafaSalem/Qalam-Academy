@@ -8,11 +8,14 @@ import {
 } from "react-icons/hi2";
 import { HiChevronDown } from "react-icons/hi";
 import { FaSignOutAlt } from "react-icons/fa";
+import { MdAccountCircle } from "react-icons/md";
 import Breadcrumb from "@/components/ui/Breadcrumb";
+import { useRouter } from "next/navigation";
 
 const DashboardHeader = ({
     setMobileOpen,
 }) => {
+    const router = useRouter();
     const [open, setOpen] = useState(false);
     const menuRef = useRef(null);
 
@@ -34,6 +37,8 @@ const DashboardHeader = ({
                 handleClickOutside
             );
     }, []);
+
+    const handleAccount = () => router.push("/dashboard/profile");
 
     const handleLogout = () => {
         console.log("logout");
@@ -188,6 +193,22 @@ const DashboardHeader = ({
                             }
                         `}
                     >
+                        <button
+                            onClick={handleAccount}
+                            className="
+                                    w-full
+                                    flex
+                                    items-center
+                                    gap-3
+                                    px-4
+                                    py-3
+                                    text-primary
+                                    transition
+                                "
+                        >
+                            <MdAccountCircle />
+                            <span>حسابك الشخصي</span>
+                        </button>
                         <button
                             onClick={handleLogout}
                             className="
