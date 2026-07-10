@@ -1,7 +1,6 @@
 import {
     HiOutlineAcademicCap,
     HiOutlineBriefcase,
-    HiOutlineChartBar,
     HiOutlineClipboardDocumentList,
     HiOutlineCog6Tooth,
     HiOutlineDocumentText,
@@ -127,11 +126,6 @@ const menu = [
     {
         section: "النظام",
         items: [
-            {
-                title: "التحليلات",
-                href: "/dashboard/analytics",
-                icon: HiOutlineChartBar,
-            },
             {
                 title: "الإعدادات",
                 href: "/dashboard/settings",

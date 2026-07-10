@@ -4,6 +4,7 @@ import courses from "./courses";
 import ActionsTable from "@/components/shared/ActionsTable";
 import LoadMore from "@/components/shared/LoadMore";
 import CardTable from "@/components/shared/CardTable";
+import Link from "next/link";
 
 const CoursesTable = () => {
     const titleHead = [
@@ -31,15 +32,17 @@ const CoursesTable = () => {
                     {courses.map(course => (
                         <Table.Row key={course.id}>
                             <Table.Td>
-                                <CardTable data={course} />
+                                <Link href={`/dashboard/courses/${course.id}`}>
+                                    <CardTable data={course} />
+                                </Link>
                             </Table.Td>
 
                             <Table.Td>{course.instractor}</Table.Td>
-                            
+
                             <Table.Td>{course.category}</Table.Td>
 
                             <Table.Td>{course.order}</Table.Td>
-                            
+
                             <Table.Td>{course.price}</Table.Td>
 
                             <Table.Td>{course.createdAt}</Table.Td>
