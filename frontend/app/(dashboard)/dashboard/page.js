@@ -1,6 +1,7 @@
 import ChartsSection from "@/components/dashboard/home/ChartsSection";
 import PageHeader from "@/components/dashboard/PageHeader";
 import StatsCards from "@/components/ui/StatsCards";
+import dashboardStats from "@/constants/dashboardStats";
 
 export default function Dashboard() {
     return (
@@ -18,7 +19,7 @@ export default function Dashboard() {
                 title="مرحبًا بعودتك، مروان سالم"
                 description="إليك ملخص اداء موقعك تايوم."
             />
-            <StatsCards />
+            <StatsCards stats={dashboardStats} />
             <ChartsSection />
         </div>
     )

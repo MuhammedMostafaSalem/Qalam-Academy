@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import Sidebar from "../../shared/Sidebar/Sidebar";
 import DashboardHeader from "@/components/dashboard/header/DashboardHeader";
-import menu from "./menu";
+import Sidebar from "@/components/shared/Sidebar/Sidebar";
+import { menu } from "./menu";
 
-const DashboardLayout = ({ children }) => {
+const UserDashboardLayout = ({ children }) => {
     const [collapsed, setCollapsed] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -42,4 +42,4 @@ const DashboardLayout = ({ children }) => {
     );
 };
 
-export default DashboardLayout;
+export default UserDashboardLayout;

@@ -8,6 +8,7 @@ const StatCard = ({
     value,
     change,
     positive,
+    description,
     icon: Icon,
 }) => {
     return (
@@ -45,6 +46,18 @@ const StatCard = ({
                     >
                         {value}
                     </h3>
+
+                    <span
+                        className="
+                            mb-1
+
+                            text-sm
+
+                            text-text-secondary
+                        "
+                    >
+                        {description}
+                    </span>
                 </div>
 
                 <div
@@ -69,33 +82,37 @@ const StatCard = ({
                 </div>
             </div>
 
-            <div className="flex items-center gap-2">
-                <span className="text-text-secondary text-sm">
-                    مقارنة بالشهر الماضي
-                </span>
+            {
+                change && (
+                    <div className="flex items-center gap-2">
+                        <span className="text-text-secondary text-sm">
+                            مقارنة بالشهر الماضي
+                        </span>
 
-                <span
-                    className={
-                        positive
-                            ? "text-green-500 font-medium"
-                            : "text-red-500 font-medium"
-                    }
-                >
-                    {change}
-                </span>
-                
-                {positive ? (
-                    <HiArrowTrendingUp
-                        className="text-green-500"
-                        size={20}
-                    />
-                ) : (
-                    <HiArrowTrendingDown
-                        className="text-red-500"
-                        size={20}
-                    />
-                )}
-            </div>
+                        <span
+                            className={
+                                positive
+                                    ? "text-green-500 font-medium"
+                                    : "text-red-500 font-medium"
+                            }
+                        >
+                            {change}
+                        </span>
+
+                        {positive ? (
+                            <HiArrowTrendingUp
+                                className="text-green-500"
+                                size={20}
+                            />
+                        ) : (
+                            <HiArrowTrendingDown
+                                className="text-red-500"
+                                size={20}
+                            />
+                        )}
+                    </div>
+                )
+            }
         </div>
     );
 };

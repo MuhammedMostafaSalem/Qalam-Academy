@@ -1,8 +1,7 @@
-import dashboardStats from "@/constants/dashboardStats";
 import Section from "../sections/Section";
 import StatCard from "./StatCard";
 
-const StatsCards = () => {
+const StatsCards = ({ stats }) => {
     return (
         <Section
             className="
@@ -15,7 +14,7 @@ const StatsCards = () => {
                 xl:grid-cols-4
             "
         >
-            {dashboardStats.map((stat,index ) => (
+            {stats.map((stat,index ) => (
                 <StatCard
                     key={stat.id}
                     {...stat}

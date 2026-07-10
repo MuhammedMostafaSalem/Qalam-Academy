@@ -109,6 +109,10 @@ const LoginForm = () => {
                     إنشاء حساب جديد
                 </Link>
             </p>
+            <div className="flex flex-col justify-center items-center gap-1 mt-3">
+                <Link href="/dashboard">Super Admin / Admin</Link>
+                <Link href="/user">user</Link>
+            </div>
         </AuthCard>
     );
 };

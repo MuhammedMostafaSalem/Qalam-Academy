@@ -1,7 +1,6 @@
 import SidebarItem from "./SidebarItem";
-import menu from "./menu";
 
-const SidebarMenu = ({ collapsed }) => {
+const SidebarMenu = ({ menu, collapsed }) => {
 
     return (
         <nav className="space-y-6">

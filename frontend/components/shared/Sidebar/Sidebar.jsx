@@ -9,6 +9,7 @@ import SidebarLogo from "./SidebarLogo";
 import SidebarMenu from "./SidebarMenu";
 
 const Sidebar = ({
+    menu,
     collapsed,
     setCollapsed,
     mobileOpen,
@@ -152,6 +153,7 @@ const Sidebar = ({
                         "
                     >
                         <SidebarMenu
+                            menu={menu}
                             collapsed={collapsed}
                         />
                     </div>
