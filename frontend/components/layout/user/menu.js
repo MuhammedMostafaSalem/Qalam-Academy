@@ -6,7 +6,7 @@ import {
     HiOutlineHeart,
     HiOutlineArrowDownTray,
     HiOutlineCreditCard,
-    HiOutlineUser,
+    HiOutlineCog6Tooth,
 } from "react-icons/hi2";
 
 export const menu = [
@@ -64,12 +64,12 @@ export const menu = [
     },
 
     {
-        section: "الحساب",
+        section: "النظام",
         items: [
             {
-                title: "الملف الشخصي",
-                href: "/user/profile",
-                icon: HiOutlineUser,
+                title: "الإعدادات",
+                href: "/dashboard/settings",
+                icon: HiOutlineCog6Tooth,
             },
         ],
     },
