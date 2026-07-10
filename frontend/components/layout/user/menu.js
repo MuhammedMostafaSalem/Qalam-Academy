@@ -1,7 +1,6 @@
 import {
     HiOutlineHome,
     HiOutlineAcademicCap,
-    HiOutlinePlayCircle,
     HiOutlineShoppingBag,
     HiOutlineDocumentCheck,
     HiOutlineHeart,
@@ -29,11 +28,6 @@ export const menu = [
                 title: "كورساتي",
                 href: "/user/my-courses",
                 icon: HiOutlineAcademicCap,
-            },
-            {
-                title: "مشغل الكورس",
-                href: "/user/course-player",
-                icon: HiOutlinePlayCircle,
             },
             {
                 title: "الشهادات",
