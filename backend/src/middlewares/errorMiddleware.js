@@ -11,7 +11,7 @@ const errorMiddleware = (err, req, res, next) => {
     if (err.code === 11000) {
         statusCode = StatusCodes.CONFLICT;
         const field = Object.keys(err.keyValue)[0];
-        message = `${field} "${err.keyValue[field]}" already exists.`;
+        message = `The ${field}: ${err.keyValue[field]} already exists.`;
 
         err = new ApiError(message, statusCode);
     }
@@ -52,29 +52,26 @@ const errorMiddleware = (err, req, res, next) => {
     // Multer Error
     if (err.name === "MulterError") {
         statusCode = StatusCodes.BAD_REQUEST;
+        message = err.message;
 
-        err = new ApiError(err.message, statusCode);
+        err = new ApiError(message, statusCode);
     }
 
     // Development
     if (env.nodeEnv === "development") {
         return sendResponse(res, {
             success: false,
-            statusCode: err.statusCode || statusCode,
-            message: err.message,
-            data: null,
-            meta: {
-                stack: err.stack,
-                error: err,
-            },
+            statusCode,
+            message,
+            errors: err.errors
         });
     }
 
     // Production
     return sendResponse(res, {
         success: false,
-        statusCode: err.statusCode || statusCode,
-        message: err.message,
+        statusCode,
+        message,
     });
 
 };
