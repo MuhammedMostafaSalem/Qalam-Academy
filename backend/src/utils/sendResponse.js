@@ -4,8 +4,9 @@ const sendResponse = (
         statusCode = 200,
         success = true,
         message = "",
-        data = null,
-        meta = null,
+        data,
+        meta,
+        errors
     }
 ) => {
     return res.status(statusCode).json({
@@ -13,6 +14,7 @@ const sendResponse = (
         message,
         data,
         meta,
+        errors
     });
 };
 
