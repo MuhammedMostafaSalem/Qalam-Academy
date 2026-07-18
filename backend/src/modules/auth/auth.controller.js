@@ -13,13 +13,12 @@ const env = require("../../config/env");
 // Registration logic will go here
 const signup = catchAsync(async (req, res, next) => {
     // Extract user details from request body
-    const { username, email, phone, password } = req.body;
+    const { username, email, password } = req.body;
 
     // add user to database
     const newUser = new User({
         username,
         email,
-        phone,
         password,
     });
 
@@ -48,10 +47,6 @@ const verifyAccountOtp = catchAsync(async (req, res, next) => {
     // Extract OTP from request body
     const { email, otp, purpose } = req.body;
 
-    // Validate email and OTP
-    if (!email) return next(new ApiError("Email  is required", StatusCodes.BAD_REQUEST));
-    if (!otp) return next(new ApiError("OTP is required", StatusCodes.BAD_REQUEST));
-
     // Verify OTP using service layer
     const user = await verifyOtp(email, otp, purpose);
 
@@ -76,11 +71,6 @@ const verifyAccountOtp = catchAsync(async (req, res, next) => {
 const resendAccountOtp = catchAsync(async (req, res, next) => {
     // Extract email from request body
     const { email, purpose } = req.body;
-
-    // Validate email input
-    if (!email) {
-        return next(new ApiError("email is required", StatusCodes.BAD_REQUEST));
-    }
 
     // Resend OTP using service layer
     await resendOtp(email, purpose);
@@ -160,14 +150,13 @@ const refreshToken = catchAsync(async (req, res, next) => {
 
 // Forgot password logic here
 const forgotPassword = catchAsync(async (req, res, next) => {
-    // Extract phoneNumber from request body
+    // Extract email from request body
     const { email } = req.body;
 
     // Resent OTP using service layer
     await resendOtp(email, "forgot_password");
 
     // Respond to the client
-    res.success('OTP sent to your email for reset password', 200);
     sendResponse(res, {
         statusCode: StatusCodes.OK,
         success: true,
@@ -177,10 +166,15 @@ const forgotPassword = catchAsync(async (req, res, next) => {
 
 // Reset password logic here
 const resetPassword = catchAsync(async (req, res, next) => {
-    // Extract phoneNumber, password and confirm password from request body
-    const { email, password } = req.body;
+    // Extract email, password and confirm password from request body
+    const { email, password, confirmPassword } = req.body;
 
-    // Find user by phoneNumber
+    // Confirm that the passwords match before anything else
+    if (password !== confirmPassword) {
+        return next(new ApiError("Passwords do not match", StatusCodes.BAD_REQUEST));
+    }
+
+    // Find user by email
     const user = await User.findOne({ email }).select("+password");
 
     // If user not found, return error
@@ -209,14 +203,14 @@ const resetPassword = catchAsync(async (req, res, next) => {
 const logout = catchAsync(async (req, res, next) => {
     // Cookie settings (Security Options)
     const cookieOptions = {
+        expires: new Date(Date.now()),
         httpOnly: true,
-        secure: env.nodeEnv === "production",
         sameSite: "strict",
-        expires: new Date(0),
+        secure: env.nodeEnv === "production",
     }
 
     // Clear refresh token cookie
-    res.clearCookie("refreshToken", cookieOptions);
+    res.cookie("refreshToken", null, cookieOptions);
 
     // Send success response
     sendResponse(res, {
