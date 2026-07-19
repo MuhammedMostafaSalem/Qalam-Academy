@@ -1,48 +1,49 @@
 const express = require("express");
+
 const {
     isAuthenticatedUser,
     authorizeRoles
 } = require("../../middlewares/auth");
 const uploadSingle = require("../../middlewares/uploadSingle");
 const validate = require("../../middlewares/validate");
-const { createTeam, getTeams, getTeam, updateTeam, deleteTeam } = require("./team.controller");
-const { createTeamSchema, updateTeamSchema } = require("./team.schema");
+const { deletePartner, updatePartner, getPartner, createPartner, getPartners } = require("./partner.controller");
+const { updatePartnerSchema, createPartnerSchema } = require("./partner.schema");
 
 const router = express.Router();
 
 router
     .route("/")
-    .get(getTeams)
+    .get(getPartners)
     .post(
         isAuthenticatedUser,
         authorizeRoles("admin"),
         uploadSingle({
             fieldName: "image",
-            folder: "team",
+            folder: "partner",
             fileType: "image",
         }),
-        validate(createTeamSchema),
-        createTeam
+        validate(createPartnerSchema),
+        createPartner
     );
 
 router
     .route("/:id")
-    .get(getTeam)
+    .get(getPartner)
     .patch(
         isAuthenticatedUser,
         authorizeRoles("admin"),
         uploadSingle({
             fieldName: "image",
-            folder: "team",
+            folder: "parner",
             fileType: "image",
         }),
-        validate(updateTeamSchema),
-        updateTeam
+        validate(updatePartnerSchema),
+        updatePartner
     )
     .delete(
         isAuthenticatedUser,
         authorizeRoles("admin"),
-        deleteTeam
+        deletePartner
     );
 
 module.exports = router;
