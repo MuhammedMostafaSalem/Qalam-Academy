@@ -21,9 +21,9 @@ const generateFileName = (originalName, folder = "general") => {
 
     return {
         folder,
-        fileName = uniqueName,
-        filePath = `${folder}/${uniqueName}`
-    }
+        fileName: uniqueName,
+        filePath: `${folder}/${uniqueName}`,
+    };
 }
 
 module.exports = generateFileName;
