@@ -17,7 +17,7 @@ const generateFileName = (originalName, folder = "general") => {
     });
 
     // Generate unique file name
-    const uniqueName = `${Date.now()}-${uuidv4()}-${slug}${extension}`;
+    const uniqueName = `${uuidv4()}-${slug}${extension}`;
 
     return {
         folder,
