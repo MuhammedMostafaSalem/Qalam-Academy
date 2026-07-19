@@ -6,7 +6,7 @@ const env = require("../config/env");
 const User = require("../modules/users/user.model");
 
 // Middleware for verifying that the user is logged in (authentication)
-const isAuthenticatedUser = catchAsync((req, res, next) => {
+const isAuthenticatedUser = catchAsync(async (req, res, next) => {
     let token;
     const authHeader = req.headers["Authorization"] || req.headers["authorization"];
 
