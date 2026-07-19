@@ -4,7 +4,7 @@ const express = require("express");
 const configureStaticFiles = (app) => {
     app.use(
         "/uploads",
-        express.static(path.join(__dirname, "uploads"))
+        express.static(path.join(__dirname, "..", "uploads"))
     );
 }
 
