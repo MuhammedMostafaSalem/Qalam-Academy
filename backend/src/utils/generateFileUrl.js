@@ -11,7 +11,7 @@ const generateFileUrl = (filePath = "") => {
         return filePath;
     }
 
-    const baseUrl = env.baseUrl || `http://localhost:${env.port}`;
+    const baseUrl = env.baseUrl;
 
     return `${baseUrl}/uploads/${filePath.replace(/^\/+/, "")}`;
 }
