@@ -1,19 +1,34 @@
 const catchAsync = require("../middlewares/catchAsync");
 const ApiError = require("./ApiError");
 const ApiFeatures = require("./ApiFeatures");
+const deleteFile = require("./deleteFile");
+const generateFileUrl = require("./generateFileUrl");
+const handleUploadedFiles = require("./handleUploadedFiles");
 const sendResponse = require("./sendResponse");
 const { StatusCodes } = require("http-status-codes");
 
 // Create One
-exports.createOne = (Model, modelName = "Document") =>
+exports.createOne = (
+    Model,
+    {
+        modelName = "Document",
+        fileFields = [],
+    } = {}
+) =>
     catchAsync(async (req, res) => {
+        // Handle uploaded files
+        handleUploadedFiles({ req, fileFields });
+
+        // createdBy
+        if (req.user?.id) req.body.createdBy = req.user.id;
+
         const document = await Model.create(req.body);
 
         return sendResponse(res, {
-            statusCode = StatusCodes.CREATED,
-            success = true,
-            message = `${modelName} created successfully.`,
-            data = document,
+            statusCode: StatusCodes.CREATED,
+            success: true,
+            message: `${modelName} created successfully.`,
+            data: document,
         });
     });
 
@@ -41,11 +56,11 @@ exports.getAll = (
     const documents = await features.query;
 
     return sendResponse(res, {
-        statusCode = StatusCodes.OK,
-        success = true,
-        message = `${modelName} fetched successfully.`,
-        data = documents,
-        meta = features.meta,
+        statusCode: StatusCodes.OK,
+        success: true,
+        message: `${modelName} fetched successfully.`,
+        data: documents,
+        meta: features.meta,
     });
 });
 
@@ -69,19 +84,35 @@ exports.getOne = (
         throw new ApiError(`${modelName} not found.`, StatusCodes.NOT_FOUND);
     }
 
-    return sendResponse(res,
-        {
-            statusCode = StatusCodes.OK,
-            success = true,
-            message = `${modelName} fetched successfully.`,
-            data = document,
-        });
+    return sendResponse(res, {
+        statusCode: StatusCodes.OK,
+        success: true,
+        message: `${modelName} fetched successfully.`,
+        data: document,
+    });
 });
 
 // Update One
-exports.updateOne = (Model, modelName = "Document") =>
+exports.updateOne = (
+    Model,
+    {
+        modelName = "Document",
+        fileFields = [],
+    } = {}
+) =>
     catchAsync(async (req, res) => {
-        const document = await Model.findByIdAndUpdate(
+        const document = await Model.findById(req.params.id);
+
+        if (!document) throw new ApiError(`${modelName} not found.`, StatusCodes.NOT_FOUND);
+
+        // Handle uploaded files
+        handleUploadedFiles({
+            req,
+            document,
+            fileFields,
+        });
+
+        const updatedDocument = await Model.findByIdAndUpdate(
             req.params.id,
             req.body,
             {
@@ -90,33 +121,45 @@ exports.updateOne = (Model, modelName = "Document") =>
             }
         );
 
-        if (!document) {
-            throw new ApiError(`${modelName} not found.`, StatusCodes.NOT_FOUND);
-        }
-
-        return sendResponse(res,
-            {
-                statusCode = StatusCodes.OK,
-                success = true,
-                message = `${modelName} updated successfully.`,
-                data = document,
-            });
+        return sendResponse(res, {
+            statusCode: StatusCodes.OK,
+            success: true,
+            message: `${modelName} updated successfully.`,
+            data: updatedDocument,
+        });
     });
 
 // Delete One
-exports.deleteOne = (Model, modelName = "Document") =>
+exports.deleteOne = (
+    Model,
+    {
+        modelName = "Document",
+        fileFields = [],
+    } = {}
+) =>
     catchAsync(async (req, res) => {
-        const document = await Model.findByIdAndDelete(req.params.id);
+        const document = await Model.findById(req.params.id);
 
-        if(!document) {
-            throw new ApiError(`${modelName} not found.`, StatusCodes.NOT_FOUND);
-        }
+        if (!document) throw new ApiError(`${modelName} not found.`, StatusCodes.NOT_FOUND);
 
-        return sendResponse(res,
-            {
-                statusCode = StatusCodes.OK,
-                success = true,
-                message = `${modelName} deleted successfully.`,
-                data = null,
-            });
+        fileFields.forEach(field => {
+            if (!document[field]) return;
+
+            if (Array.isArray(document[field])) {
+                document[field].forEach(file => {
+                    deleteFile(file);
+                });
+            } else {
+                deleteFile(document[field]);
+            }
+        });
+
+        await document.deleteOne();
+
+        return sendResponse(res, {
+            statusCode: StatusCodes.OK,
+            success: true,
+            message: `${modelName} deleted successfully.`,
+            data: null,
+        });
     });
