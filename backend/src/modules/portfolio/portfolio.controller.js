@@ -13,11 +13,20 @@ exports.getPortfolios = getAll(Portfolio, {
     searchFields: ["title", "description"],
     defaultLimit: 10,
     defaultSort: "-createdAt",
+
+    populate: {
+        path: "category",
+        select: "title slug",
+    },
 });
 
 // Get one Portfolio
 exports.getPortfolio = getOne(Portfolio, {
     modelName: "Portfolio",
+    populate: {
+        path: "category",
+        select: "title slug",
+    },
 });
 
 // Update one Portfolio
