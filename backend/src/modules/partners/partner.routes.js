@@ -19,7 +19,7 @@ router
         authorizeRoles("admin"),
         uploadSingle({
             fieldName: "image",
-            folder: "partner",
+            folder: "partners",
             fileType: "image",
         }),
         validate(createPartnerSchema),
@@ -34,7 +34,7 @@ router
         authorizeRoles("admin"),
         uploadSingle({
             fieldName: "image",
-            folder: "parner",
+            folder: "partners",
             fileType: "image",
         }),
         validate(updatePartnerSchema),

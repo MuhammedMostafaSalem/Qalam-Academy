@@ -2,9 +2,9 @@ const mongoose = require("mongoose");
 const generateSlug = require("../../utils/generateSlug");
 
 const partnerSchema = new mongoose.Schema({
-    title: {
+    name: {
         type: String,
-        required: [true, "Service title is required"],
+        required: true,
         trim: true,
     },
     slug: {
@@ -33,14 +33,14 @@ const partnerSchema = new mongoose.Schema({
 
 // Compound Index
 partnerSchema.index({
-    title: 1,
+    name: 1,
     slug: 1,
 });
 
 // Generate slug automatically
 partnerSchema.pre("validate", function () {
-    if (this.isModified("title")) {
-        this.slug = generateSlug(this.title);
+    if (this.isModified("name")) {
+        this.slug = generateSlug(this.name);
     }
 });
 

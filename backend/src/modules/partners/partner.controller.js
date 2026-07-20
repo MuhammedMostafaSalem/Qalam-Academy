@@ -1,32 +1,32 @@
 const { createOne, getAll, getOne, updateOne, deleteOne } = require("../../utils/crudFactory");
 const Partner = require("./partner.model");
 
-// Create Partner
+// Create partner
 exports.createPartner = createOne(Partner, {
     modelName: "Partner",
     fileFields: ["image"],
 });
 
-// Get all Partner
+// Get all partners
 exports.getPartners = getAll(Partner, {
-    modelName: "Partner",
-    searchFields: ["title"],
+    modelName: "Partners",
+    searchFields: ["name"],
     defaultLimit: 10,
     defaultSort: "-createdAt",
 });
 
-// Get one Partner
+// Get one partner
 exports.getPartner = getOne(Partner, {
     modelName: "Partner",
 });
 
-// Update one Portfolio
+// Update one partner
 exports.updatePartner = updateOne(Partner, {
     modelName: "Partner",
     fileFields: ["image"],
 });
 
-// Delete one Partner
+// Delete one partner
 exports.deletePartner = deleteOne(Partner, {
     modelName: "Partner",
     fileFields: ["image"],
