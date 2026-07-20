@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const env = require("../../config/env");
+const generateSlug = require("../../utils/generateSlug");
 
 // User Schema Definition
 const userSchema = new mongoose.Schema({
@@ -11,6 +12,12 @@ const userSchema = new mongoose.Schema({
         unique: true,
         trim: true,
         lowercase: true
+    },
+    slug: {
+        type: String,
+        unique: true,
+        lowercase: true,
+        index: true,
     },
     email: {
         type: String,
@@ -55,6 +62,12 @@ const userSchema = new mongoose.Schema({
     },
 }, {
     timestamps: true // Automatically manage createdAt and updatedAt fields
+});
+
+userSchema.pre("validate", function () {
+    if (this.isModified("username")) {
+        this.slug = generateSlug(this.username);
+    }
 });
 
 // Hash password before saving the user
