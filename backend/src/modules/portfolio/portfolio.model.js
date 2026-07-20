@@ -46,9 +46,9 @@ const portfolioSchema = new mongoose.Schema({
         default: [],
     },
     category: {
-        type: String,
-        trim: true,
-        required: [true, "Portfolio category is required"],
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Category",
+        required: true,
     },
     isActive: {
         type: Boolean,
