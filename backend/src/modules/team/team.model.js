@@ -2,30 +2,16 @@ const mongoose = require("mongoose");
 const generateSlug = require("../../utils/generateSlug");
 
 const teamSchema = new mongoose.Schema({
-    title: {
-        type: String,
-        required: [true, "Service title is required"],
-        trim: true,
-    },
-    slug: {
-        type: String,
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
         unique: true,
-        lowercase: true,
-        index: true,
     },
     position: {
         type: String,
         required: [true, "team position is required"],
         trim: true,
-    },
-    email: {
-        type: String,
-        required: [true, "team email is required"],
-        trim: true,
-    },
-    image: {
-        type: String,
-        default: null,
     },
     isActive: {
         type: Boolean,

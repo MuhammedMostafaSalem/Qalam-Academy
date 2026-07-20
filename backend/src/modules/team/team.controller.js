@@ -1,33 +1,36 @@
 const { createOne, getAll, getOne, updateOne, deleteOne } = require("../../utils/crudFactory");
 const Team = require("./team.model");
 
-// Create Team
+// Create team
 exports.createTeam = createOne(Team, {
     modelName: "Team",
-    fileFields: ["image"],
 });
 
-// Get all teams
+// Get all team members
 exports.getTeams = getAll(Team, {
     modelName: "Team",
-    searchFields: ["title", "position"],
-    defaultLimit: 10,
-    defaultSort: "-createdAt",
+    searchFields: ["position"],
+    populate: {
+        path: "user",
+        select: "username slug email avatar",
+    },
 });
 
-// Get one Team
+// Get one team member
 exports.getTeam = getOne(Team, {
     modelName: "Team",
+    populate: {
+        path: "user",
+        select: "username slug email avatar",
+    },
 });
 
-// Update one Team
+// Update team member
 exports.updateTeam = updateOne(Team, {
     modelName: "Team",
-    fileFields: ["image"],
 });
 
-// Delete one team
+// Delete team member
 exports.deleteTeam = deleteOne(Team, {
     modelName: "Team",
-    fileFields: ["image"],
 });

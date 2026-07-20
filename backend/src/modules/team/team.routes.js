@@ -16,11 +16,6 @@ router
     .post(
         isAuthenticatedUser,
         authorizeRoles("admin"),
-        uploadSingle({
-            fieldName: "image",
-            folder: "team",
-            fileType: "image",
-        }),
         validate(createTeamSchema),
         createTeam
     );
@@ -31,11 +26,6 @@ router
     .patch(
         isAuthenticatedUser,
         authorizeRoles("admin"),
-        uploadSingle({
-            fieldName: "image",
-            folder: "team",
-            fileType: "image",
-        }),
         validate(updateTeamSchema),
         updateTeam
     )

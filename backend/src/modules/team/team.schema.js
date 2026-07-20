@@ -2,19 +2,15 @@ const { z } = require("zod");
 
 // 1. Basic field rules (to avoid repeating min and max)
 const teamBaseObject = {
-    title: z.string()
-        .trim()
-        .min(2, "Service title must be at least 2 characters")
-        .max(100, "Service title must not exceed 100 characters"),
-
-    position: z.string()
-        .trim()
-        .min(10, "Service description must be at least 10 characters")
-        .max(3000, "Service description must not exceed 3000 characters"),
-
-    email: z.string()
-        .email("Please enter a valid email address")
+    user: z
+        .string({error: "User is required"})
         .trim(),
+
+    position: z
+        .string({error: "Position is required"})
+        .trim()
+        .min(2, "Position must be at least 2 characters")
+        .max(100, "Position must not exceed 100 characters"),
 
     isActive: z
         .boolean()
