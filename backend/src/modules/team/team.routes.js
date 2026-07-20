@@ -3,7 +3,6 @@ const {
     isAuthenticatedUser,
     authorizeRoles
 } = require("../../middlewares/auth");
-const uploadSingle = require("../../middlewares/uploadSingle");
 const validate = require("../../middlewares/validate");
 const { createTeam, getTeams, getTeam, updateTeam, deleteTeam } = require("./team.controller");
 const { createTeamSchema, updateTeamSchema } = require("./team.schema");
