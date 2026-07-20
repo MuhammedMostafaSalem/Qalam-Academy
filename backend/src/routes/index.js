@@ -5,6 +5,7 @@ const serviceRoutes = require("../modules/services/service.routes");
 const portfolioRoutes = require("../modules/portfolio/portfolio.routes");
 const teamRoutes = require("../modules/team/team.routes");
 const partnerRoutes = require("../modules/partners/partner.routes");
+const categoryRoutes = require("../modules/category/category.route");
 
 const router = express.Router();
 
@@ -13,5 +14,6 @@ router.use("/services", serviceRoutes);
 router.use("/portfolios", portfolioRoutes);
 router.use("/team", teamRoutes);
 router.use("/partners", partnerRoutes);
+router.use("/categories", categoryRoutes);
 
 module.exports = router;
