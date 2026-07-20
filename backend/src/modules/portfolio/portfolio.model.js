@@ -1,10 +1,11 @@
 const mongoose = require("mongoose");
 const generateSlug = require("../../utils/generateSlug");
+const validator = require("validator");
 
 const portfolioSchema = new mongoose.Schema({
     title: {
         type: String,
-        required: [true, "Service title is required"],
+        required: true,
         trim: true,
     },
     slug: {
@@ -15,7 +16,7 @@ const portfolioSchema = new mongoose.Schema({
     },
     description: {
         type: String,
-        required: [true, "Service description is required"],
+        required: true,
         trim: true,
     },
     image: {
@@ -26,11 +27,19 @@ const portfolioSchema = new mongoose.Schema({
         type: String,
         trim: true,
         default: null,
+        validate: {
+            validator: value => !value || validator.isURL(value),
+            message: "Please enter a valid project URL.",
+        },
     },
     githubUrl: {
         type: String,
         trim: true,
         default: null,
+        validate: {
+            validator: value => !value || validator.isURL(value),
+            message: "Please enter a valid GitHub URL.",
+        },
     },
     technologies: {
         type: [String],
@@ -56,7 +65,7 @@ const portfolioSchema = new mongoose.Schema({
 
 // Compound Index
 portfolioSchema.index({
-    title: 1,
+    category: 1,
     slug: 1,
 });
 

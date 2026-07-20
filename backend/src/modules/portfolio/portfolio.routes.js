@@ -28,7 +28,7 @@ router
         authorizeRoles("admin"),
         uploadSingle({
             fieldName: "image",
-            folder: "portfolio",
+            folder: "portfolios",
             fileType: "image",
         }),
         validate(createPortfolioSchema),
@@ -43,7 +43,7 @@ router
         authorizeRoles("admin"),
         uploadSingle({
             fieldName: "image",
-            folder: "portfolio",
+            folder: "portfolios",
             fileType: "image",
         }),
         validate(updatePortfolioSchema),

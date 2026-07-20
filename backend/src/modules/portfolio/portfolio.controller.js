@@ -9,7 +9,7 @@ exports.createPortfolio = createOne(Portfolio, {
 
 // Get all Portfolios
 exports.getPortfolios = getAll(Portfolio, {
-    modelName: "Portfolio",
+    modelName: "Portfolios",
     searchFields: ["title", "description"],
     defaultLimit: 10,
     defaultSort: "-createdAt",
