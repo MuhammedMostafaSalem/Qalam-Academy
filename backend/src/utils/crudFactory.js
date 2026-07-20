@@ -13,6 +13,7 @@ exports.createOne = (
     {
         modelName = "Document",
         fileFields = [],
+        beforeCreate = null,
     } = {}
 ) =>
     catchAsync(async (req, res) => {
@@ -21,6 +22,14 @@ exports.createOne = (
 
         // createdBy
         if (req.user?.id) req.body.createdBy = req.user.id;
+
+        // Execute custom logic before create
+        if (beforeCreate) {
+            await beforeCreate({
+                req,
+                Model,
+            });
+        }
 
         const document = await Model.create(req.body);
 
@@ -98,6 +107,7 @@ exports.updateOne = (
     {
         modelName = "Document",
         fileFields = [],
+        beforeUpdate = null,
     } = {}
 ) =>
     catchAsync(async (req, res) => {
@@ -112,20 +122,32 @@ exports.updateOne = (
             fileFields,
         });
 
-        const updatedDocument = await Model.findByIdAndUpdate(
-            req.params.id,
-            req.body,
-            {
-                new: true,
-                runValidators: true,
-            }
-        );
+        // Execute custom logic before update
+        if (beforeUpdate) {
+            await beforeUpdate({
+                req,
+                document,
+                Model,
+            });
+        }
+
+        Object.assign(document, req.body);
+        // const updatedDocument = await Model.findByIdAndUpdate(
+        //     req.params.id,
+        //     req.body,
+        //     {
+        //         new: true,
+        //         runValidators: true,
+        //     }
+        // );
+
+        await document.save();
 
         return sendResponse(res, {
             statusCode: StatusCodes.OK,
             success: true,
             message: `${modelName} updated successfully.`,
-            data: updatedDocument,
+            data: document,
         });
     });
 
