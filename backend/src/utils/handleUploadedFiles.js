@@ -26,13 +26,22 @@ const handleUploadedFiles = ({
             if (!req.files[field]?.length) return;
 
             // Delete old files (Update)
-            if (document && Array.isArray(document[field])) {
-                document[field].forEach(file => deleteFile(file));
+            if (document && document[field]) {
+                if (Array.isArray(document[field])) {
+                    document[field].forEach(file => deleteFile(file));
+                } else {
+                    deleteFile(document[field]);
+                }
             }
 
-            req.body[field] = req.files[field].map(file =>
+            const files = req.files[field].map(file =>
                 generateFileUrl(file.fileInfo.filePath)
             );
+
+            req.body[field] =
+                files.length === 1
+                    ? files[0]
+                    : files;
         });
     }
 
