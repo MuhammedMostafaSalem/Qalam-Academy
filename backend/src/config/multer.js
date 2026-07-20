@@ -58,8 +58,15 @@ const storage = multer.diskStorage({
 });
 
 const fileFilter = (fileType) => {
+    const allowedTypes = Array.isArray(fileType)
+        ? fileType
+        : [fileType];
+
     return (req, file, cb) => {
-        const mimeTypes = allowedMimeTypes[fileType];
+        // const mimeTypes = allowedMimeTypes[fileType];
+        const mimeTypes = allowedTypes.flatMap(
+            type => allowedMimeTypes[type] || []
+        );
 
         if (!mimeTypes) {
             return cb(new ApiError("Unsupported upload type.", 400));
