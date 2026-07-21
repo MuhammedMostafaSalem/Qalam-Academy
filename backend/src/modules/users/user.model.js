@@ -53,12 +53,22 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },
-    otp: String,
-    otpExpires: Date,
-    otpResendTimeout: Date,
+    otp: {
+        type: String,
+        select: false,
+    },
+    otpExpires: {
+        type: Date,
+        select: false,
+    },
+    otpResendTimeout: {
+        type: Date,
+        select: false,
+    },
     otpPurpose: {
         type: String,
         enum: ["email_verification", "forgot_password"],
+        select: false,
     },
 }, {
     timestamps: true // Automatically manage createdAt and updatedAt fields
