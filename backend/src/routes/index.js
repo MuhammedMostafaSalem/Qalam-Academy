@@ -8,6 +8,7 @@ const partnerRoutes = require("../modules/partners/partner.routes");
 const categoryRoutes = require("../modules/category/category.route");
 const courseRoutes = require("../modules/course/course.routes");
 const lessonRoutes = require("../modules/lesson/lesson.routes");
+const userRoutes = require("../modules/users/user.routes");
 
 const router = express.Router();
 
@@ -19,5 +20,6 @@ router.use("/partners", partnerRoutes);
 router.use("/categories", categoryRoutes);
 router.use("/courses", courseRoutes);
 router.use("/lessons", lessonRoutes);
+router.use("/users", userRoutes);
 
 module.exports = router;
