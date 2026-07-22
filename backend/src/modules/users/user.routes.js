@@ -7,11 +7,13 @@ const {
     getUsers,
     updateUser,
     deleteUser,
-    getUser
+    getUser,
+    changePassword
 } = require("./user.controller");
 const uploadSingle = require("../../middlewares/uploadSingle");
 const validate = require("../../middlewares/validate");
-const { updateUserSchema } = require("./user.schema");
+const { updateUserSchema } = require("./validators/user.schema");
+const { changePasswordSchema } = require("./validators/changePassword.schema");
 
 const router = express.Router();
 
@@ -48,5 +50,14 @@ router
         authorizeRoles("admin"),
         deleteUser
     );
+
+// Update user password
+router
+    .route("/:id/change-password")
+    .put(
+        isAuthenticatedUser,
+        validate(changePasswordSchema),
+        changePassword
+    )
 
 module.exports = router;
