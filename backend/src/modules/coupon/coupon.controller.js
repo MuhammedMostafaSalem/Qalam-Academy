@@ -20,24 +20,13 @@ exports.createCoupon = createOne(Coupon, {
 // Get all coupons
 exports.getCoupons = getAll(Coupon, {
     modelName: "Coupons",
-
-    searchFields: [
-        "title",
-        "code",
-        "description",
-    ],
-
+    searchFields: ["name"],
     populate: [
         {
-            path: "applicableCourses",
-            select: "title slug",
-        },
-        {
-            path: "applicableCategories",
-            select: "title slug type",
+            path: "createdBy",
+            select: "username email",
         },
     ],
-
     defaultLimit: 10,
     defaultSort: "-createdAt",
 });
@@ -45,16 +34,7 @@ exports.getCoupons = getAll(Coupon, {
 // Get one coupon
 exports.getCoupon = getOne(Coupon, {
     modelName: "Coupon",
-
     populate: [
-        {
-            path: "applicableCourses",
-            select: "title slug",
-        },
-        {
-            path: "applicableCategories",
-            select: "title slug type",
-        },
         {
             path: "createdBy",
             select: "username email",
@@ -65,6 +45,12 @@ exports.getCoupon = getOne(Coupon, {
 // Update coupon
 exports.updateCoupon = updateOne(Coupon, {
     modelName: "Coupon",
+    beforeUpdate: async ({ req }) => {
+        if (req.body.isActive !== undefined) {
+            req.body.isActive = req.body.isActive;
+        }
+    },
+
 });
 
 // Delete coupon
