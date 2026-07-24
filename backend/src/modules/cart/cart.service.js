@@ -139,6 +139,8 @@ exports.getLoggedUserCart = async (userId) => {
         throw new ApiError("Cart not found", StatusCodes.NOT_FOUND);
     }
 
+    cart.totalItems = cart.items.length;
+
     return cart;
 }
 
