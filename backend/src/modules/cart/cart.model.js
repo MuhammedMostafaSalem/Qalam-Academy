@@ -27,6 +27,11 @@ cartItemSchema.pre("validate", function () {
 
 const cartSchema = new mongoose.Schema({
     items: [cartItemSchema],
+    totalItems: {
+        type: Number,
+        default: 0,
+        min: 0,
+    },
     totalCartPrice: {
         type: Number,
         default: 0,
@@ -40,7 +45,15 @@ const cartSchema = new mongoose.Schema({
         ref: "User",
         required: true,
     },
-    coupon: String,
+    coupon: {
+        type: String,
+        default: null,
+    },
+    activeOrder: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Order",
+        default: null,
+    },
 },
     { timestamps: true }
 );
