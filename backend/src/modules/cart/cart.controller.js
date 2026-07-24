@@ -30,10 +30,7 @@ exports.getMyCart = catchAsync(async (req, res) => {
         success: true,
         statusCode: StatusCodes.OK,
         message: "Cart fetched successfully",
-        data: cart,
-        meta: {
-            total: cart.items.length,
-        },
+        data: cart
     });
 });
 
