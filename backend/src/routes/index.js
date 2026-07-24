@@ -12,6 +12,7 @@ const userRoutes = require("../modules/users/user.routes");
 const productsRoutes = require("../modules/products/product.routes");
 const couponRoutes = require("../modules/coupon/coupon.routes");
 const cartRoutes = require("../modules/cart/cart.routes");
+const orderRoutes = require("../modules/order/orders.routes");
 
 const router = express.Router();
 
@@ -27,5 +28,6 @@ router.use("/users", userRoutes);
 router.use("/products", productsRoutes);
 router.use("/coupons", couponRoutes);
 router.use("/cart", cartRoutes);
+router.use("/orders", orderRoutes);
 
 module.exports = router;
