@@ -1,6 +1,11 @@
 const mongoose = require("mongoose");
 const { StatusCodes } = require("http-status-codes");
 const ApiError = require("../../utils/ApiError");
+const {
+    PAYMENT_METHODS,
+    PAYMENT_STATUS,
+    ORDER_STATUS
+} = require("../payment/payment.constants");
 
 const orderItemSchema = new mongoose.Schema({
     // Reference
@@ -99,26 +104,14 @@ const orderSchema = new mongoose.Schema({
 
     paymentMethod: {
         type: String,
-        enum: [
-            "card",
-            "vodafone_cash",
-            "etisalat_cash",
-            "orange_cash",
-            "fawry",
-            "paypal",
-        ],
+        enum: Object.values(PAYMENT_METHODS),
         required: true,
     },
 
     paymentStatus: {
         type: String,
-        enum: [
-            "pending",
-            "paid",
-            "failed",
-            "refunded",
-        ],
-        default: "pending",
+        enum: Object.values(PAYMENT_STATUS),
+        default: PAYMENT_STATUS.PENDING,
     },
 
     transactionId: {
@@ -133,13 +126,8 @@ const orderSchema = new mongoose.Schema({
 
     orderStatus: {
         type: String,
-        enum: [
-            "pending",
-            "processing",
-            "completed",
-            "cancelled",
-        ],
-        default: "pending",
+        enum: Object.values(ORDER_STATUS),
+        default: ORDER_STATUS.PENDING,
     },
 
     // Admin
