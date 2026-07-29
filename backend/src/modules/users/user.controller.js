@@ -14,7 +14,8 @@ const sendResponse = require("../../utils/sendResponse");
 exports.getUsers = getAll(User, {
     modelName: "Users",
     searchFields: [
-        "username",
+        "firstName",
+        "lastName",
         "email",
         "role",
     ],
