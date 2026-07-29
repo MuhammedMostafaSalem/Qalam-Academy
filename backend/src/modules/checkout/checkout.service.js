@@ -2,6 +2,7 @@ const { StatusCodes } = require("http-status-codes");
 const Cart = require("../cart/cart.model");
 const ApiError = require("../../utils/ApiError");
 const { createOrder } = require("../order/orders.service");
+const { PAYMENT_METHODS } = require("../payment/payment.constants");
 
 // Review Checkout
 exports.reviewCheckout = async (userId) => {
@@ -32,14 +33,7 @@ exports.reviewCheckout = async (userId) => {
         totalAfterDiscount: cart.totalAfterDiscount,
         coupon: cart.coupon,
 
-        paymentMethods: [
-            "card",
-            "vodafone_cash",
-            "etisalat_cash",
-            "orange_cash",
-            "fawry",
-            "paypal",
-        ],
+        paymentMethods: Object.values(PAYMENT_METHODS),
     };
 }
 
