@@ -14,6 +14,7 @@ const couponRoutes = require("../modules/coupon/coupon.routes");
 const cartRoutes = require("../modules/cart/cart.routes");
 const orderRoutes = require("../modules/order/orders.routes");
 const checkoutRoutes = require("../modules/checkout/checkout.routes");
+const paymentRoutes = require("../modules/payment/payment.routes");
 
 const router = express.Router();
 
@@ -31,5 +32,6 @@ router.use("/coupons", couponRoutes);
 router.use("/cart", cartRoutes);
 router.use("/orders", orderRoutes);
 router.use("/checkout", checkoutRoutes);
+router.use("/payment", paymentRoutes);
 
 module.exports = router;
