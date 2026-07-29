@@ -12,7 +12,7 @@ exports.getTeams = getAll(Team, {
     searchFields: ["position"],
     populate: {
         path: "user",
-        select: "username slug email avatar",
+        select: "firstName lastName slug email avatar",
     },
 });
 
@@ -21,7 +21,7 @@ exports.getTeam = getOne(Team, {
     modelName: "Team",
     populate: {
         path: "user",
-        select: "username slug email avatar",
+        select: "firstName lastName slug email avatar",
     },
 });
 
