@@ -6,12 +6,15 @@ const generateSlug = require("../../utils/generateSlug");
 
 // User Schema Definition
 const userSchema = new mongoose.Schema({
-    username: {
+    firstName: {
         type: String,
         required: true,
-        unique: true,
         trim: true,
-        lowercase: true
+    },
+    lastName: {
+        type: String,
+        required: true,
+        trim: true,
     },
     slug: {
         type: String,
@@ -25,6 +28,28 @@ const userSchema = new mongoose.Schema({
         unique: true,
         trim: true,
         lowercase: true,
+    },
+    phone: {
+        type: String,
+        required: true,
+        unique: true,
+        trim: true,
+    },
+    country: {
+        type: String,
+        required: true,
+        trim: true,
+    },
+    city: {
+        type: String,
+        required: true,
+        trim: true,
+    },
+    address: {
+        type: String,
+        required: true,
+        trim: true,
+        maxlength: 300,
     },
     password: {
         type: String,
@@ -75,8 +100,11 @@ const userSchema = new mongoose.Schema({
 });
 
 userSchema.pre("validate", function () {
-    if (this.isModified("username")) {
-        this.slug = generateSlug(this.username);
+    if (
+        this.isModified("firstName") ||
+        this.isModified("lastName")
+    ) {
+        this.slug = generateSlug(`${this.firstName} ${this.lastName}`);
     }
 });
 
