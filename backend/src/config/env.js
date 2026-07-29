@@ -8,7 +8,7 @@ const env = {
     port: Number(process.env.PORT),
 
     baseUrl: process.env.BASE_URL,
-    
+
     clientUrl: process.env.CLIENT_URL,
 
     mongoUrl: process.env.MONGO_URL,
@@ -34,6 +34,40 @@ const env = {
     emailUser: process.env.EMAIL_USER,
 
     emailPass: process.env.EMAIL_PASS,
+
+    paymobBaseUrl: process.env.PAYMOB_BASE_URL,
+
+    paymobApiKey: process.env.PAYMOB_API_KEY,
+    
+    paymobCardIntegrationId: process.env.PAYMOB_CARD_INTEGRATION_ID,
+    
+    paymobWalletIntegrationId: process.env.PAYMOB_WALLET_INTEGRATION_ID,
+    
+    paymobHMAC: process.env.PAYMOB_HMAC,
+    
+    paymobSecretKey: process.env.PAYMOB_SECRET_KEY,
+    
+    paymobPublicKey: process.env.PAYMOB_PUBLIC_KEY,
+    
+    paymobCurrency: process.env.PAYMOB_CURRENCY,
+
+    paymobSuccessUrl: process.env.PAYMOB_SUCCESS_URL,
+    
+    paymobCancelUrl: process.env.PAYMOB_CANCEL_URL,
+
+    paymobFailureUrl: process.env.PAYMOB_FAILURE_URL,
+
+    paymobWebhookUrl: process.env.PAYMOB_WEBHOOK_URL,
+
+    paypalBaseUrl: process.env.PAYPAL_BASE_URL,
+
+    paypalClientId: process.env.PAYPAL_CLIENT_ID,
+
+    paypalClientsecret: process.env.PAYPAL_CLIENT_SECRET,
+
+    paypalSuccessUrl: process.env.PAYPAL_SUCCESS_URL,
+    
+    paypalCancelUrl: process.env.PAYPAL_CANCEL_URL,
 
     cloudinaryCloudName: process.env.CLOUDINARY_CLOUD_NAME,
 
