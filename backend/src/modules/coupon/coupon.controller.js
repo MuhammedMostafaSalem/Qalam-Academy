@@ -24,7 +24,7 @@ exports.getCoupons = getAll(Coupon, {
     populate: [
         {
             path: "createdBy",
-            select: "username email",
+            select: "firstName lastName email",
         },
     ],
     defaultLimit: 10,
@@ -37,7 +37,7 @@ exports.getCoupon = getOne(Coupon, {
     populate: [
         {
             path: "createdBy",
-            select: "username email",
+            select: "firstName lastName email",
         },
     ],
 });

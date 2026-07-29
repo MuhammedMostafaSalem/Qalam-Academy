@@ -32,7 +32,7 @@ exports.getCourses = getAll(Course, {
         },
         {
             path: "instructor",
-            select: "username email avatar",
+            select: "firstName lastName email avatar",
         },
     ],
     defaultLimit: 10,
@@ -49,7 +49,7 @@ exports.getCourse = getOne(Course, {
         },
         {
             path: "instructor",
-            select: "username email avatar bio",
+            select: "firstName lastName email avatar bio",
         },
     ],
 });
