@@ -2,6 +2,10 @@ const { StatusCodes } = require("http-status-codes");
 const Cart = require("../cart/cart.model");
 const Order = require("./orders.model");
 const ApiError = require("../../utils/ApiError");
+const {
+    PAYMENT_STATUS,
+    ORDER_STATUS
+} = require("../payment/payment.constants");
 
 // Create Order
 exports.createOrder = async (userId, paymentMethod) => {
@@ -28,8 +32,8 @@ exports.createOrder = async (userId, paymentMethod) => {
 
         if (
             activeOrder &&
-            activeOrder.paymentStatus === "pending" &&
-            activeOrder.orderStatus === "pending"
+            activeOrder.paymentStatus === PAYMENT_STATUS.PENDING &&
+            activeOrder.orderStatus === ORDER_STATUS.PENDING
         ) {
             throw new ApiError(
                 "You already have a pending order for this cart. Please complete or cancel it first.",
@@ -71,8 +75,8 @@ exports.createOrder = async (userId, paymentMethod) => {
         totalAfterDiscount: cart.totalAfterDiscount,
         coupon: cart.coupon,
         paymentMethod,
-        paymentStatus: "pending",
-        orderStatus: "pending",
+        paymentStatus: PAYMENT_STATUS.PENDING,
+        orderStatus: ORDER_STATUS.PENDING,
     });
 
     // Link cart with active order
@@ -119,15 +123,15 @@ exports.cancelOrder = async (orderId, userId) => {
         throw new ApiError("Order not found", StatusCodes.NOT_FOUND);
     }
 
-    if (order.paymentStatus !== "pending") {
+    if (order.paymentStatus !== PAYMENT_STATUS.PENDING) {
         throw new ApiError("Only pending orders can be cancelled", StatusCodes.BAD_REQUEST);
     }
 
-    if (order.orderStatus === "cancelled") {
+    if (order.orderStatus === ORDER_STATUS.CANCELLED) {
         throw new ApiError("Order already cancelled", StatusCodes.BAD_REQUEST);
     }
 
-    order.orderStatus = "cancelled";
+    order.orderStatus = ORDER_STATUS.CANCELLED;
 
     await order.save();
 
@@ -148,8 +152,8 @@ exports.cancelOrder = async (orderId, userId) => {
 */
 // Complete Order
 exports.completeOrder = async (order, transactionId) => {
-    order.paymentStatus = "paid";
-    order.orderStatus = "completed";
+    order.paymentStatus = PAYMENT_STATUS.PAID;
+    order.orderStatus = ORDER_STATUS.COMPLETED;
     order.transactionId = transactionId;
     order.paidAt = new Date();
 
@@ -168,8 +172,9 @@ exports.completeOrder = async (order, transactionId) => {
     return order;
 };
 // Fail Order
-exports.failOrder = async (order) => {
-    order.paymentStatus = "failed";
+exports.failOrder = async (order, transactionId) => {
+    order.paymentStatus = PAYMENT_STATUS.FAILED;
+    order.transactionId = transactionId;
 
     await order.save();
 
