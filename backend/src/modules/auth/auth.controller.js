@@ -13,13 +13,27 @@ const env = require("../../config/env");
 // Registration logic will go here
 const signup = catchAsync(async (req, res, next) => {
     // Extract user details from request body
-    const { username, email, password } = req.body;
+    const {
+        firstName,
+        lastName,
+        email,
+        phone,
+        password,
+        country,
+        city,
+        address,
+    } = req.body;
 
     // add user to database
     const newUser = new User({
-        username,
+        firstName,
+        lastName,
         email,
+        phone,
         password,
+        country,
+        city,
+        address,
     });
 
     // Generate OTP for email verification
@@ -31,7 +45,7 @@ const signup = catchAsync(async (req, res, next) => {
         email: newUser.email,
         subject: 'Verify your email - Qalam Academy',
         message: `Your OTP for email verification is: ${otp}. It is valid for 10 minutes.`,
-        html: verifyEmailTemplate(newUser.username, otp),
+        html: verifyEmailTemplate(`${newUser.firstName} ${newUser.lastName}`, otp),
     });
 
     // Send success response
