@@ -7,7 +7,8 @@ const Product = require('../products/product.model');
 const Course = require('../course/course.model');
 const Cart = require('../cart/cart.model');
 const Order = require('../order/orders.model');
-const { createPaymobIntention } = require('../payment/gateways/paymob.service');
+const { createPaymobIntention } = require('./gateways/paymob.service');
+const { createPayPalOrder, capturePayPalPayment } = require("./gateways/paypal.service");
 const {
     paymobCardIntegrationId,
     paymobWalletIntegrationId,
@@ -16,10 +17,6 @@ const {
     baseUrl,
     paymobPublicKey
 } = require("../../config/env");
-const {
-    createPayPalOrder,
-    capturePayPalPayment
-} = require("../payment/gateways/paypal.service");
 
 // دالة مساعدة لتحديث المخزون والطلاب وإنشاء الإيرادات (Enrollments) عند النجاح
 const handleOrderSuccess = async (orderId) => {
