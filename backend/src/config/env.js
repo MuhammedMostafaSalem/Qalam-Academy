@@ -42,6 +42,8 @@ const env = {
     paymobCardIntegrationId: process.env.PAYMOB_CARD_INTEGRATION_ID,
     
     paymobWalletIntegrationId: process.env.PAYMOB_WALLET_INTEGRATION_ID,
+
+    paymobFawryIntegrationId: process.env.PAYMOB_FAWRY_INTEGRATION_ID,
     
     paymobHMAC: process.env.PAYMOB_HMAC,
     
