@@ -1,60 +1,37 @@
-const express = require("express");
-
-const { isAuthenticatedUser } = require("../../middlewares/auth");
-const validate = require("../../middlewares/validate");
+const express = require('express');
+const {
+    addProductToCart,
+    getLoggedUserCart,
+    removeCartProduct,
+    clearLoggedUserCart,
+    updateCartProductCount,
+    applyCouponToCart,
+    removeCoupon,
+} = require('./cart.controller');
 
 const {
-    getMyCart,
-    addToCart,
-    applyCoupon,
-    removeCartItem,
-    clearCart,
-    removeCoupon
-} = require("./cart.controller");
-
-const {
-    addToCartSchema,
-    applyCouponSchema
-} = require("./cart.schema");
+    isAuthenticatedUser,
+    authorizeRoles
+} = require('../../middlewares/auth'); // أو الـ middleware بتاع الـ Auth حسب مسارك
 
 const router = express.Router();
 
-router.use(isAuthenticatedUser);
+// جميع مسارات الـ Cart تتطلب تسجيل الدخول وبصلاحية 'student'
+router.use(isAuthenticatedUser, authorizeRoles('student'));
 
-// Get Cart
 router
-    .route("/")
-    .get(getMyCart);
+    .route('/')
+    .post(addProductToCart)
+    .get(getLoggedUserCart)
+    .delete(clearLoggedUserCart);
 
-// Add To Cart
-router
-    .route("/add")
-    .post(
-        validate(addToCartSchema),
-        addToCart
-    );
+router.patch('/apply-coupon', applyCouponToCart);
 
-// Apply Coupon
-router
-    .route("/apply-coupon")
-    .patch(
-        validate(applyCouponSchema),
-        applyCoupon
-    );
+router.delete('/remove-coupon', removeCoupon);
 
-// Remove Coupon
 router
-    .route("/remove-coupon")
-    .delete(removeCoupon);
-
-// Remove Item
-router
-    .route("/item/:itemId")
-    .delete(removeCartItem);
-
-// Clear Cart
-router
-    .route("/clear")
-    .delete(clearCart);
+    .route('/:itemId')
+    .put(updateCartProductCount)
+    .delete(removeCartProduct)
 
 module.exports = router;

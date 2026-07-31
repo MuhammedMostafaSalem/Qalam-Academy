@@ -1,63 +1,66 @@
-const mongoose = require("mongoose");
-const ApiError = require("../../utils/ApiError");
-const { StatusCodes } = require("http-status-codes");
+const mongoose = require('mongoose');
 
-const cartItemSchema = new mongoose.Schema({
-    course: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Course",
-        default: null,
+const cartSchema = new mongoose.Schema(
+    {
+        products: [
+            {
+                item: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    required: true,
+                    refPath: 'products.itemType' // مرن جداً بيحدد الموديل بناءً على الـ itemType
+                },
+                itemType: {
+                    type: String,
+                    required: true,
+                    enum: ['Product', 'Course']
+                },
+                count: {
+                    type: Number,
+                    default: 1,
+                    min: [1, 'Quantity can not be less than 1']
+                },
+                price: {
+                    type: Number,
+                    required: true
+                },
+            },
+        ],
+        totalCartPrice: {
+            type: Number,
+            default: 0
+        },
+        totalAfterDiscount: {
+            type: Number,
+            default: null
+        },
+        cartOwner: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+            required: [true, 'Cart must belong to a user'],
+            index: true,
+        },
+        coupon: {
+            type: String,
+            default: null
+        },
     },
-    product: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Product",
-        default: null,
-    },
-    price: {
-        type: Number,
-        required: true,
-    },
-});
-
-cartItemSchema.pre("validate", function () {
-    if ((this.course && this.product) || (!this.course && !this.product)) {
-        throw new ApiError("Cart item must contain either course or product", StatusCodes.BAD_REQUEST);
+    {
+        timestamps: true
     }
-});
-
-const cartSchema = new mongoose.Schema({
-    items: [cartItemSchema],
-    totalItems: {
-        type: Number,
-        default: 0,
-        min: 0,
-    },
-    totalCartPrice: {
-        type: Number,
-        default: 0,
-    },
-    totalAfterDiscount: {
-        type: Number,
-        default: null,
-    },
-    cartOwner: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        required: true,
-    },
-    coupon: {
-        type: String,
-        default: null,
-    },
-    activeOrder: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Order",
-        default: null,
-    },
-},
-    { timestamps: true }
 );
 
-const Cart = mongoose.model("Cart", cartSchema);
+// Optional: لو حابب تعمل Populate أوتوماتيك لكل queries الـ Find ممكن تفعل الـ Middleware دي
+/*
+cartSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'products.product',
+    select: 'title image price discountPrice category',
+    populate: { path: 'category', select: 'name -_id', model: 'Category' },
+  });
+  next();
+});
+*/
+
+const Cart = mongoose.model('Cart', cartSchema);
 
 module.exports = Cart;
