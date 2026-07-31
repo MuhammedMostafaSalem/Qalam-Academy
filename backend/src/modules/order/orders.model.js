@@ -1,160 +1,82 @@
 const mongoose = require("mongoose");
-const { StatusCodes } = require("http-status-codes");
-const ApiError = require("../../utils/ApiError");
-const {
-    PAYMENT_METHODS,
-    PAYMENT_STATUS,
-    ORDER_STATUS
-} = require("../payment/payment.constants");
+// const AutoIncrement = require("mongoose-sequence")(mongoose);
 
-const orderItemSchema = new mongoose.Schema({
-    // Reference
-    course: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Course",
-        default: null,
-    },
-    product: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Product",
-        default: null,
-    },
-
-    // Snapshot
-    title: {
-        type: String,
-        required: true,
-        trim: true,
-    },
-    slug: {
-        type: String,
-        required: true,
-        trim: true,
-    },
-    image: {
-        type: String,
-        default: null,
-    },
-
-    price: {
-        type: Number,
-        required: true,
-        min: 0,
-    },
-}, {
-    _id: false,
-});
-
-orderItemSchema.pre("validate", function () {
-    if (
-        (this.course && this.product) ||
-        (!this.course && !this.product)
-    ) {
-        throw new ApiError("Order item must contain either course or product", StatusCodes.BAD_REQUEST);
-    }
-});
-
-// Main Order
 const orderSchema = new mongoose.Schema({
-    // Cart Reference
-    cart: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Cart",
-        required: true,
-        index: true,
-    },
-    // Owner
     user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        required: true,
+        type: mongoose.Schema.ObjectId,
+        ref: 'User',
+        required: [true, 'Order must belong to a user'],
     },
-
-    // Purchased Items
-    items: {
-        type: [orderItemSchema],
-        validate: {
-            validator: (value) => value.length > 0,
-            message: "Order must contain at least one item",
+    cartItems: [
+        {
+            item: {
+                type: mongoose.Schema.Types.ObjectId,
+                required: true,
+                refPath: 'cartItems.itemType'
+            },
+            itemType: {
+                type: String,
+                required: true,
+                enum: ['Product', 'Course']
+            },
+            count: {
+                type: Number,
+                default: 1
+            },
+            price: Number,
         },
+    ],
+    shippingAddress: {
+        details: String,
+        phone: String,
+        city: String,
+        postalCode: String,
     },
-
-    totalItems: {
+    taxPrice: {
         type: Number,
-        default: 0,
-        min: 0,
+        default: 0.0,
     },
-
-    totalPrice: {
+    shippingPrice: {
         type: Number,
-        required: true,
-        min: 0,
+        default: 0.0,
     },
-
-    totalAfterDiscount: {
+    totalOrderPrice: {
         type: Number,
-        default: null,
-        min: 0,
+        default: 0.0,
     },
-
-    coupon: {
+    paymentMethodType: {
         type: String,
-        default: null,
-    },
-
-    paymentMethod: {
-        type: String,
-        enum: Object.values(PAYMENT_METHODS),
+        enum: ['card', 'wallet', 'fawry', 'cash', 'paypal'],
         required: true,
     },
-
-    paymentStatus: {
+    paymentIntentId: {
+        type: String, // هنحفظ فيه الـ Paymob Intention ID أو Client Secret للتعقب
+    },
+    isPaid: {
+        type: Boolean,
+        default: false,
+    },
+    status: {
         type: String,
-        enum: Object.values(PAYMENT_STATUS),
-        default: PAYMENT_STATUS.PENDING,
+        enum: ['pending', 'paid', 'cancelled'],
+        default: 'pending',
     },
-
-    transactionId: {
-        type: String,
-        default: null,
-    },
-
-    paidAt: {
-        type: Date,
-        default: null,
-    },
-
-    orderStatus: {
-        type: String,
-        enum: Object.values(ORDER_STATUS),
-        default: ORDER_STATUS.PENDING,
-    },
-
-    // Admin
-    createdBy: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        default: null,
-    },
+    paidAt: Date,
 }, {
-    timestamps: true,
+    timestamps: true
 });
 
-orderSchema.index({
-    user: 1,
-    createdAt: -1,
+orderSchema.pre(/^find/, function () {
+    this.populate({
+        path: 'user',
+        select: 'firstName lastName avatar email phone',
+    }).populate({
+        path: 'cartItems.item',
+        select: 'title image averageRating',
+    });
 });
 
-orderSchema.index({
-    cart: 1,
-    paymentStatus: 1,
-    orderStatus: 1,
-});
+// orderSchema.plugin(AutoIncrement, { inc_field: 'id', start_seq: 1 });
 
-orderSchema.index({
-    transactionId: 1,
-});
-
-const Order = mongoose.model("Order", orderSchema);
-
+const Order = mongoose.model('Order', orderSchema);
 module.exports = Order;

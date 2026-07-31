@@ -1,40 +1,48 @@
-const express = require("express");
-
+const express = require('express');
+const {
+    createCashOrder,
+    createPaymobCheckoutSession,
+    paymobWebhook,
+    getAllOrders,
+    getSpecificOrder,
+    filterOrdersForLoggedUser,
+    updateOrderToPaid,
+    updateOrderToDelivered,
+    createPayPalCheckoutSession,
+    verifyPayPalPayment,
+    cancelOrder,
+} = require('./orders.controller');
 const {
     isAuthenticatedUser,
-} = require("../../middlewares/auth");
-const validate = require("../../middlewares/validate");
-const {
-    createOrderSchema
-} = require("./orders.schema");
-const {
-    createOrder,
-    getMyOrders,
-    getOrder,
-    cancelOrder
-} = require("./orders.controller");
+    authorizeRoles
+} = require('../../middlewares/auth');
 
 const router = express.Router();
 
+// Webhook الخاص بـ Paymob (يجب أن يكون عاماً بدون حماية لأن Paymob هي التي ستستدعيه)
+router.post('/webhook/paymob', paymobWebhook);
+
+// جميع المسارات التالية تتطلب تسجيل الدخول
 router.use(isAuthenticatedUser);
 
-// Create Order + Get My Orders
-router
-    .route("/")
-    .post(
-        validate(createOrderSchema),
-        createOrder
-    )
-    .get(getMyOrders);
+// 1) إنشاء طلب كاش
+router.route('/:cartId').post(authorizeRoles("student"), createCashOrder);
 
-// Get Order Details
-router
-    .route("/:id")
-    .get(getOrder);
+// 2) إنشاء جلسة دفع Paymob (card, wallet, fawry)
+router.route('/checkout-paymob/:cartId').post(authorizeRoles("student"), createPaymobCheckoutSession);
 
-// Cancel Order
-router
-    .route("/:id/cancel")
-    .patch(cancelOrder);
+// 3) جلب جميع الطلبات (لليوزر العادي عروض طلباته فقط، وللأدمن كل الطلبات)
+router.route('/').get(authorizeRoles("student", "instructor", "admin"), filterOrdersForLoggedUser, getAllOrders);
+
+// 4) جلب طلب معين بالـ ID
+router.route('/:id').get(authorizeRoles("student", "instructor", "admin"), getSpecificOrder);
+
+// مسار إنشاء جلسة دفع باي بال
+router.route('/checkout-paypal/:cartId').post(authorizeRoles("student"), createPayPalCheckoutSession);
+
+// مسار تأكيد الدفع بعد عودة المستخدم من باي بال
+router.route('/paypal/success').post(authorizeRoles("student"), verifyPayPalPayment);
+
+router.route('/:id/cancel').patch(authorizeRoles("student"), cancelOrder);
 
 module.exports = router;
