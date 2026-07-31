@@ -1,74 +1,33 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
-const couponSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        trim: true,
-        uppercase: true,
-        unique: true,
-        required: true,
-    },
-    expire: {
-        type: Date,
-        required: true,
-    },
-    discount: {
-        type: Number,
-        required: true,
-    },
-
-    // Maximum coupon usage limit
-    usageLimit: {
-        type: Number,
-        required: true,
-        default: 1,
-    },
-
-    // Current number of uses
-    usedCount: {
-        type: Number,
-        default: 0,
-    },
-
-    // Number of uses per user
-    perUserLimit: {
-        type: Number,
-        default: 1,
-    },
-
-    usersUsed: [
-        {
-            user: {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: "User",
-                required: true,
-            },
-
-            count: {
-                type: Number,
-                default: 1,
-            },
-
-            usedAt: {
-                type: Date,
-                default: Date.now,
-            },
+const couponSchema = new mongoose.Schema(
+    {
+        name: {
+            type: String,
+            trim: true,
+            required: [true, 'Coupon name required'],
+            unique: true,
+            uppercase: true, // بنخلي اسم الكوبون دايماً حروف كبيرة لتسهيل المقارنة
         },
-    ],
-
-    // Status
-    isActive: {
-        type: Boolean,
-        default: false,
+        expire: {
+            type: Date,
+            required: [true, 'Coupon expire time required'],
+        },
+        discount: {
+            type: Number,
+            required: [true, 'Coupon discount percentage required'],
+            min: [1, 'Discount must be at least 1%'],
+            max: [100, 'Discount cannot exceed 100%'],
+        },
+        createdBy: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+            default: null,
+        },
     },
+    { timestamps: true }
+);
 
-    createdBy: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        default: null,
-    },
-}, { timestamps: true });
-
-const Coupon = mongoose.model("Coupon", couponSchema);
+const Coupon = mongoose.model('Coupon', couponSchema);
 
 module.exports = Coupon;

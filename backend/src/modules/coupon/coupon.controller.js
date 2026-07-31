@@ -7,17 +7,9 @@ const {
 } = require("../../utils/crudFactory");
 const Coupon = require("./coupon.model");
 
-// Create coupon
-exports.createCoupon = createOne(Coupon, {
-    modelName: "Coupon",
-
-    beforeCreate: async ({ req }) => {
-        req.body.isActive = false;
-        req.body.usedCount = 0;
-    },
-});
-
-// Get all coupons
+// @desc    Get all coupons
+// @route   GET /api/coupons
+// @access  Private/Admin/Manager
 exports.getCoupons = getAll(Coupon, {
     modelName: "Coupons",
     searchFields: ["name"],
@@ -31,7 +23,9 @@ exports.getCoupons = getAll(Coupon, {
     defaultSort: "-createdAt",
 });
 
-// Get one coupon
+// @desc    Get specific coupon by id
+// @route   GET /api/coupons/:id
+// @access  Private/Admin/Manager
 exports.getCoupon = getOne(Coupon, {
     modelName: "Coupon",
     populate: [
@@ -42,18 +36,23 @@ exports.getCoupon = getOne(Coupon, {
     ],
 });
 
-// Update coupon
-exports.updateCoupon = updateOne(Coupon, {
+// @desc    Create coupon
+// @route   POST /api/coupons
+// @access  Private/Admin/Manager
+exports.createCoupon = createOne(Coupon, {
     modelName: "Coupon",
-    beforeUpdate: async ({ req }) => {
-        if (req.body.isActive !== undefined) {
-            req.body.isActive = req.body.isActive;
-        }
-    },
-
 });
 
-// Delete coupon
+// @desc    Update coupon
+// @route   PATCH /api/coupons/:id
+// @access  Private/Admin/Manager
+exports.updateCoupon = updateOne(Coupon, {
+    modelName: "Coupon",
+});
+
+// @desc    Delete coupon
+// @route   DELETE /api/coupons/:id
+// @access  Private/Admin/Manager
 exports.deleteCoupon = deleteOne(Coupon, {
     modelName: "Coupon",
 });

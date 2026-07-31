@@ -22,37 +22,18 @@ const {
 
 const router = express.Router();
 
+// حماية جميع مسارات الكوبونات وتحديد الصلاحيات للأدمن والمدير فقط
+router.use(isAuthenticatedUser, authorizeRoles('admin', 'instructor'));
+
 router
     .route("/")
-    .get(
-        isAuthenticatedUser,
-        authorizeRoles("admin"),
-        getCoupons
-    )
-    .post(
-        isAuthenticatedUser,
-        authorizeRoles("admin"),
-        validate(createCouponSchema),
-        createCoupon
-    );
+    .get(getCoupons)
+    .post(createCoupon);
 
 router
     .route("/:id")
-    .get(
-        isAuthenticatedUser,
-        authorizeRoles("admin"),
-        getCoupon
-    )
-    .patch(
-        isAuthenticatedUser,
-        authorizeRoles("admin"),
-        validate(updateCouponSchema),
-        updateCoupon
-    )
-    .delete(
-        isAuthenticatedUser,
-        authorizeRoles("admin"),
-        deleteCoupon
-    );
+    .get(getCoupon)
+    .patch(updateCoupon)
+    .delete(deleteCoupon);
 
 module.exports = router;
