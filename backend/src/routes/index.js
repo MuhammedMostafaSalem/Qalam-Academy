@@ -13,6 +13,7 @@ const productsRoutes = require("../modules/products/product.routes");
 const couponRoutes = require("../modules/coupon/coupon.routes");
 const cartRoutes = require("../modules/cart/cart.routes");
 const orderRoutes = require("../modules/order/orders.routes");
+const enrollmentRoutes = require("../modules/enrollment/enrollment.routes");
 const checkoutRoutes = require("../modules/checkout/checkout.routes");
 const paymentRoutes = require("../modules/payment/payment.routes");
 
@@ -31,6 +32,7 @@ router.use("/products", productsRoutes);
 router.use("/coupons", couponRoutes);
 router.use("/cart", cartRoutes);
 router.use("/orders", orderRoutes);
+router.use("/enrollments", enrollmentRoutes);
 router.use("/checkout", checkoutRoutes);
 router.use("/payment", paymentRoutes);
 
