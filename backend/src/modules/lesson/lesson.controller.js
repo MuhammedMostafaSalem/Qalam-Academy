@@ -6,6 +6,9 @@ const {
     deleteOne
 } = require("../../utils/crudFactory");
 const Lesson = require("./lesson.model");
+const Course = require("../course/course.model");
+const ApiError = require("../../utils/ApiError");
+const { StatusCodes } = require("http-status-codes");
 
 // Create lesson
 exports.createLesson = createOne(Lesson, {
@@ -16,6 +19,14 @@ exports.createLesson = createOne(Lesson, {
         "attachment",
     ],
     beforeCreate: async ({ req, Model }) => {
+        const course = await Course.findById(req.body.course);
+        if (!course) {
+            throw new ApiError(
+                "Course not found.",
+                StatusCodes.NOT_FOUND
+            );
+        }
+
         const lastLesson = await Model
             .findOne({
                 course: req.body.course,
@@ -26,8 +37,14 @@ exports.createLesson = createOne(Lesson, {
             ? lastLesson.sortOrder + 1
             : 1;
 
-        req.body.isPublished = false;
-        req.body.isPreview = false;
+        const lessonsCount = await Model.countDocuments({
+            course: req.body.course,
+        });
+
+        req.body.sortOrder = lessonsCount + 1;
+
+        // أول درس فقط Preview
+        req.body.isPreview = lessonsCount === 0;
     },
 });
 
