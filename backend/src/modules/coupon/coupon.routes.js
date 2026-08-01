@@ -15,11 +15,6 @@ const {
     deleteCoupon,
 } = require("./coupon.controller");
 
-const {
-    createCouponSchema,
-    updateCouponSchema,
-} = require("./coupon.schema");
-
 const router = express.Router();
 
 // حماية جميع مسارات الكوبونات وتحديد الصلاحيات للأدمن والمدير فقط
