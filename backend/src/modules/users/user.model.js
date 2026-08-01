@@ -65,6 +65,12 @@ const userSchema = new mongoose.Schema({
         default: "",
         maxlength: 500
     },
+    wishlist: [
+        {
+            type: mongoose.Schema.ObjectId,
+            ref: 'Course',
+        },
+    ],
     role: {
         type: String,
         enum: [
