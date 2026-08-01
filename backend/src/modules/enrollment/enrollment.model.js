@@ -1,4 +1,3 @@
-// models/enrollmentModel.js
 const mongoose = require('mongoose');
 
 const enrollmentSchema = new mongoose.Schema(
@@ -38,12 +37,11 @@ const enrollmentSchema = new mongoose.Schema(
 enrollmentSchema.index({ user: 1, course: 1 }, { unique: true });
 
 // Populate أوتوماتيك لبيانات الكورس عند الاستعلام
-enrollmentSchema.pre(/^find/, function (next) {
+enrollmentSchema.pre(/^find/, function () {
     this.populate({
         path: 'course',
         select: 'title description thumbnail slug category instructor',
     });
-    next();
 });
 
 const Enrollment = mongoose.model('Enrollment', enrollmentSchema);
