@@ -7,6 +7,7 @@ const Product = require('../products/product.model');
 const Course = require('../course/course.model');
 const Cart = require('../cart/cart.model');
 const Order = require('../order/orders.model');
+const Enrollment = require('../enrollment/enrollment.model');
 const { createPaymobIntention } = require('./gateways/paymob.service');
 const { createPayPalOrder, capturePayPalPayment } = require("./gateways/paypal.service");
 const {
@@ -14,7 +15,7 @@ const {
     paymobWalletIntegrationId,
     paymobFawryIntegrationId,
     clientUrl,
-    baseUrl,
+    baseUrl2,
     paymobPublicKey
 } = require("../../config/env");
 
@@ -155,14 +156,15 @@ exports.createPaymobCheckoutSession = catchAsync(async (req, res, next) => {
                 street: req.body.shippingAddress?.details || 'NA',
             },
             redirectionUrl: `${clientUrl}/user/allorders?orderId=${order._id}`,
-            notificationUrl: `${baseUrl}/api/orders/webhook/paymob`,
+            notificationUrl: `${baseUrl2}/api/orders/webhook/paymob`,
         });
 
         // بناء رابط التوجيه المباشر لصفحة بايموب الموحدة باستخدام الـ client_secret
         const paymobRedirectUrl = `https://accept.paymob.com/unifiedcheckout/?publicKey=${paymobPublicKey}&clientSecret=${intentionResponse.client_secret}`;
 
         // حفظ الـ Intention ID أو الـ Client Secret في الأوردر للربط لاحقاً
-        order.paymentIntentId = intentionResponse.intention_id;
+        // order.paymentIntentId = intentionResponse.intention_id;
+        order.paymentIntentId = intentionResponse.intention_order_id;
         await order.save();
 
         res.status(StatusCodes.OK).json({
@@ -280,9 +282,9 @@ exports.paymobWebhook = catchAsync(async (req, res, next) => {
     try {
         const eventData = req.body;
 
-        // التحقق من الحدث بناءً على هيكل بايموب الجديد للـ Intention Webhooks
         if (eventData && eventData.type === 'TRANSACTION' && eventData.obj.success === true) {
-            const intentionId = eventData.obj.intention_id;
+            // const intentionId = eventData.obj.intention_id;
+            const intentionId = eventData.obj.order.id;
 
             // ابحث عن الأوردر باستخدام الـ intentionId
             const order = await Order.findOne({ paymentIntentId: intentionId });

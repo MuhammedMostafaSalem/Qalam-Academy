@@ -8,6 +8,8 @@ const env = {
     port: Number(process.env.PORT),
 
     baseUrl: process.env.BASE_URL,
+    
+    baseUrl2: process.env.BASE_URL2,
 
     clientUrl: process.env.CLIENT_URL,
 
