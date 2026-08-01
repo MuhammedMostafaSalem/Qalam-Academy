@@ -14,6 +14,7 @@ exports.createOne = (
         modelName = "Document",
         fileFields = [],
         beforeCreate = null,
+        afterCreate = null,
     } = {}
 ) =>
     catchAsync(async (req, res) => {
@@ -32,6 +33,15 @@ exports.createOne = (
         }
 
         const document = await Model.create(req.body);
+
+        // Execute custom logic after create
+        if (afterCreate) {
+            await afterCreate({
+                req,
+                document,
+                Model,
+            });
+        }
 
         return sendResponse(res, {
             statusCode: StatusCodes.CREATED,
@@ -108,6 +118,7 @@ exports.updateOne = (
         modelName = "Document",
         fileFields = [],
         beforeUpdate = null,
+        afterUpdate = null,
     } = {}
 ) =>
     catchAsync(async (req, res) => {
@@ -143,6 +154,15 @@ exports.updateOne = (
 
         await document.save();
 
+        // Execute custom logic after update
+        if (afterUpdate) {
+            await afterUpdate({
+                req,
+                document,
+                Model,
+            });
+        }
+
         return sendResponse(res, {
             statusCode: StatusCodes.OK,
             success: true,
@@ -157,6 +177,7 @@ exports.deleteOne = (
     {
         modelName = "Document",
         fileFields = [],
+        afterDelete = null,
     } = {}
 ) =>
     catchAsync(async (req, res) => {
@@ -177,6 +198,15 @@ exports.deleteOne = (
         });
 
         await document.deleteOne();
+
+        // Execute custom logic after deleting response
+        if (afterDelete) {
+            await afterDelete({
+                req,
+                document,
+                Model,
+            });
+        }
 
         return sendResponse(res, {
             statusCode: StatusCodes.OK,
