@@ -59,21 +59,19 @@ router
 
         uploadMultiple({
             folder: "lessons",
+            fileType: ["image", "video", "pdf"],
             fields: [
                 {
                     name: "thumbnail",
                     maxCount: 1,
-                    fileType: "image",
                 },
                 {
                     name: "video",
                     maxCount: 1,
-                    fileType: "video",
                 },
                 {
                     name: "attachment",
                     maxCount: 1,
-                    fileType: "pdf",
                 },
             ],
         }),
