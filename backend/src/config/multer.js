@@ -9,11 +9,19 @@ const generateFileName = require("../utils/generateFileName");
 
 const allowedMimeTypes = {
     image: [
-        "image/jpg",
         "image/jpeg",
+        "image/jpg",
         "image/png",
-        "image/webp",
         "image/gif",
+        "image/webp",
+        "image/svg+xml",
+        "image/x-icon",
+        "image/vnd.microsoft.icon",
+        "image/bmp",
+        "image/tiff",
+        "image/heic",
+        "image/heif",
+        "image/avif",
     ],
 
     video: [
