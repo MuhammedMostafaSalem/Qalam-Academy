@@ -1,0 +1,126 @@
+const { z } = require("zod");
+
+const updateSettingsSchema = z.object({
+    // Site
+    siteName: z
+        .string()
+        .trim()
+        .min(2, "Site name must be at least 2 characters")
+        .max(100, "Site name cannot exceed 100 characters")
+        .optional(),
+
+    siteDescription: z
+        .string()
+        .trim()
+        .max(1000, "Site description cannot exceed 1000 characters")
+        .optional(),
+
+    // Contact
+    supportEmail: z
+        .email("Invalid support email")
+        .optional(),
+
+    supportPhone: z
+        .string()
+        .trim()
+        .max(30)
+        .optional(),
+
+    whatsapp: z
+        .string()
+        .trim()
+        .max(30)
+        .optional(),
+
+    address: z
+        .string()
+        .trim()
+        .max(300)
+        .optional(),
+
+    // Social
+    facebook: z
+        .url("Invalid Facebook URL")
+        .optional(),
+
+    instagram: z
+        .url("Invalid Instagram URL")
+        .optional(),
+
+    linkedin: z
+        .url("Invalid LinkedIn URL")
+        .optional(),
+
+    youtube: z
+        .url("Invalid YouTube URL")
+        .optional(),
+
+    twitter: z
+        .url("Invalid Twitter URL")
+        .optional(),
+
+    tiktok: z
+        .url("Invalid TikTok URL")
+        .optional(),
+
+    // Platform
+    allowRegistration: z.preprocess(
+        (value) => {
+            if (value === "true") return true;
+            if (value === "false") return false;
+            return value;
+        },
+        z.boolean()
+    ).optional(),
+
+    maintenanceMode: z.preprocess(
+        (value) => {
+            if (value === "true") return true;
+            if (value === "false") return false;
+            return value;
+        },
+        z.boolean()
+    ).optional(),
+
+    // SEO
+    seoTitle: z
+        .string()
+        .trim()
+        .max(100)
+        .optional(),
+
+    seoDescription: z
+        .string()
+        .trim()
+        .max(300)
+        .optional(),
+
+    seoKeywords: z
+        .array(
+            z.string().trim()
+        )
+        .optional(),
+
+    currency: z
+        .string()
+        .trim()
+        .min(2)
+        .max(10)
+        .optional(),
+
+    defaultLanguage: z
+        .enum(["ar", "en"])
+        .optional(),
+
+})
+    .strict()
+    .refine(
+        (data) => Object.keys(data).length > 0,
+        {
+            message: "Please provide at least one field to update",
+        }
+    );
+
+module.exports = {
+    updateSettingsSchema,
+};
