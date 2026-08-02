@@ -5,12 +5,26 @@ const Portfolio = require("./portfolio.model");
 exports.createPortfolio = createOne(Portfolio, {
     modelName: "Portfolio",
     fileFields: ["image"],
+    translatableFields: [
+        "title",
+        "description",
+    ],
 });
 
 // Get all Portfolios
 exports.getPortfolios = getAll(Portfolio, {
     modelName: "Portfolios",
-    searchFields: ["title", "description"],
+    searchFields: [
+        "title.en",
+        "title.ar",
+        "description.en",
+        "description.ar"
+    ],
+    translatableFields: [
+        "title",
+        "description",
+        "category.title",
+    ],
     defaultLimit: 10,
     defaultSort: "-createdAt",
 
@@ -23,6 +37,11 @@ exports.getPortfolios = getAll(Portfolio, {
 // Get one Portfolio
 exports.getPortfolio = getOne(Portfolio, {
     modelName: "Portfolio",
+    translatableFields: [
+        "title",
+        "description",
+        "category.title",
+    ],
     populate: {
         path: "category",
         select: "title slug",
@@ -33,6 +52,10 @@ exports.getPortfolio = getOne(Portfolio, {
 exports.updatePortfolio = updateOne(Portfolio, {
     modelName: "Portfolio",
     fileFields: ["image"],
+    translatableFields: [
+        "title",
+        "description",
+    ],
 });
 
 // Delete one Portfolio

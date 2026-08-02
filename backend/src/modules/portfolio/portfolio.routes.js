@@ -17,6 +17,7 @@ const {
     updatePortfolioSchema,
     createPortfolioSchema
 } = require("./portfolio.schema");
+const parseNestedFormData = require("../../middlewares/parseNestedFormData");
 
 const router = express.Router();
 
@@ -31,6 +32,7 @@ router
             folder: "portfolios",
             fileType: "image",
         }),
+        parseNestedFormData,
         validate(createPortfolioSchema),
         createPortfolio
     );
@@ -46,6 +48,7 @@ router
             folder: "portfolios",
             fileType: "image",
         }),
+        parseNestedFormData,
         validate(updatePortfolioSchema),
         updatePortfolio
     )

@@ -4,9 +4,16 @@ const validator = require("validator");
 
 const portfolioSchema = new mongoose.Schema({
     title: {
-        type: String,
-        required: true,
-        trim: true,
+        ar: {
+            type: String,
+            required: true,
+            trim: true,
+        },
+        en: {
+            type: String,
+            required: true,
+            trim: true,
+        },
     },
     slug: {
         type: String,
@@ -15,9 +22,16 @@ const portfolioSchema = new mongoose.Schema({
         index: true,
     },
     description: {
-        type: String,
-        required: true,
-        trim: true,
+        ar: {
+            type: String,
+            trim: true,
+            required: true,
+        },
+        en: {
+            type: String,
+            trim: true,
+            required: true,
+        },
     },
     image: {
         type: String,
@@ -71,8 +85,8 @@ portfolioSchema.index({
 
 // Generate slug automatically
 portfolioSchema.pre("validate", function () {
-    if (this.isModified("title")) {
-        this.slug = generateSlug(this.title);
+    if (this.isModified("title") && this.title?.en) {
+        this.slug = generateSlug(this.title.en);
     }
 });
 

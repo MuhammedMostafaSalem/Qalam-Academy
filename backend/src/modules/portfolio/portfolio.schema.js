@@ -2,15 +2,27 @@ const { z } = require("zod");
 
 // 1. Basic field rules (to avoid repeating min and max)
 const portfolioBaseObject = {
-    title: z.string({ error: "Portfolio title is required" })
-        .trim()
-        .min(2, "Portfolio title must be at least 2 characters")
-        .max(100, "Portfolio title must not exceed 100 characters"),
+    title: z.object({
+        ar: z.string({ error: "عنوان ملف الأعمال مطلوب" })
+            .trim()
+            .min(2, "يجب أن يتكون عنوان ملف الأعمال من حرفين على الأقل")
+            .max(100, "يجب ألا يتجاوز عنوان ملف الأعمال 100 حرف"),
+        en: z.string({ error: "Portfolio title is required" })
+            .trim()
+            .min(2, "Portfolio title must be at least 2 characters")
+            .max(100, "Portfolio title must not exceed 100 characters")
+    }),
 
-    description: z.string({ error: "Portfolio description is required" })
-        .trim()
-        .min(10, "Portfolio description must be at least 10 characters")
-        .max(3000, "Portfolio description must not exceed 3000 characters"),
+    description: z.object({
+        ar: z.string({ error: "وصف ملف الأعمال مطلوب" })
+            .trim()
+            .min(10, "يجب أن يتكون وصف ملف الأعمال من 10 أحرف على الأقل")
+            .max(3000, "يجب ألا يتجاوز وصف ملف الأعمال 3000 حرف"),
+        en: z.string({ error: "Portfolio description is required" })
+            .trim()
+            .min(10, "Portfolio description must be at least 10 characters")
+            .max(3000, "Portfolio description must not exceed 3000 characters")
+    }),
 
     category: z.string({ error: "Category is required" })
         .trim()
