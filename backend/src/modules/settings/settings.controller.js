@@ -38,3 +38,33 @@ exports.updateSettings = catchAsync(async (req, res) => {
         data: settings,
     });
 });
+
+// Get Theme
+exports.getTheme = catchAsync(async (req, res) => {
+    const settings = await getSettings();
+
+    return sendResponse(res, {
+        success: true,
+        statusCode: StatusCodes.OK,
+        message: "Theme fetched successfully.",
+        data: settings.theme,
+    });
+});
+
+
+// Update Theme
+exports.updateTheme = catchAsync(async (req, res) => {
+    const settings = await updateSettings(
+        {
+            theme: req.body.theme,
+        },
+        req.user._id
+    );
+
+    return sendResponse(res, {
+        success: true,
+        statusCode: StatusCodes.OK,
+        message: "Theme updated successfully.",
+        data: settings.theme,
+    });
+});

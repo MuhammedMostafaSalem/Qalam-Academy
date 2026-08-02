@@ -1,5 +1,37 @@
 const { z } = require("zod");
 
+const colorSchema = z
+    .string()
+    .regex(
+        /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/,
+        "Invalid HEX color"
+    );
+
+const paletteSchema = z.object({
+    primary: colorSchema,
+    secondary: colorSchema,
+    accent: colorSchema,
+
+    background: colorSchema,
+    surface: colorSchema,
+
+    text: colorSchema,
+    mutedText: colorSchema,
+
+    border: colorSchema,
+
+    success: colorSchema,
+    warning: colorSchema,
+    danger: colorSchema,
+});
+
+const updateThemeSchema = z.object({
+    theme: z.object({
+        light: paletteSchema,
+        dark: paletteSchema,
+    }),
+});
+
 const updateSettingsSchema = z.object({
     // Site
     siteName: z
@@ -123,4 +155,5 @@ const updateSettingsSchema = z.object({
 
 module.exports = {
     updateSettingsSchema,
+    updateThemeSchema
 };

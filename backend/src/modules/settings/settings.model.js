@@ -84,6 +84,45 @@ const settingsSchema = new mongoose.Schema({
         default: "ar",
     },
 
+    // Theme
+    theme: {
+        light: {
+            primary: String,
+            secondary: String,
+            accent: String,
+
+            background: String,
+            surface: String,
+
+            text: String,
+            mutedText: String,
+
+            border: String,
+
+            success: String,
+            warning: String,
+            danger: String,
+        },
+
+        dark: {
+            primary: String,
+            secondary: String,
+            accent: String,
+
+            background: String,
+            surface: String,
+
+            text: String,
+            mutedText: String,
+
+            border: String,
+
+            success: String,
+            warning: String,
+            danger: String,
+        },
+    },
+
     singleton: {
         type: Boolean,
         default: true,

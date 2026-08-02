@@ -2,9 +2,12 @@ const express = require("express");
 const {
     getSettings,
     updateSettings,
+    getTheme,
+    updateTheme,
 } = require("./settings.controller");
 const {
     updateSettingsSchema,
+    updateThemeSchema,
 } = require("./settings.schema");
 const validate = require("../../middlewares/validate");
 const uploadMultiple = require("../../middlewares/uploadMultiple");
@@ -53,5 +56,15 @@ router.patch(
 
     updateSettings
 );
+
+router
+    .route("/theme")
+    .get(getTheme)
+    .patch(
+        isAuthenticatedUser,
+        authorizeRoles("admin"),
+        validate(updateThemeSchema),
+        updateTheme
+    );
 
 module.exports = router;
