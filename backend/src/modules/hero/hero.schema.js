@@ -45,31 +45,59 @@ const createHeroSchema = z.object({
         invalid_type_error: "Invalid page",
     }),
 
-    title: z
-        .string({
+    title: z.object({
+        ar: z.string({
+            required_error: "العنوان مطلوب",
+        })
+            .trim()
+            .min(3, "يجب أن يتكون العنوان من 3 أحرف على الأقل")
+            .max(200, "لا يمكن أن يتجاوز العنوان 200 حرف."),
+
+        en: z.string({
             required_error: "Title is required",
         })
-        .trim()
-        .min(3, "Title must be at least 3 characters")
-        .max(200, "Title cannot exceed 200 characters"),
+            .trim()
+            .min(3, "Title must be at least 3 characters")
+            .max(200, "Title cannot exceed 200 characters"),
+    }),
 
-    subtitle: z
-        .string()
-        .trim()
-        .max(200)
-        .optional(),
+    subtitle: z.object({
+        ar: z
+            .string()
+            .trim()
+            .max(200)
+            .optional(),
 
-    description: z
-        .string()
-        .trim()
-        .max(2000)
-        .optional(),
+        en: z
+            .string()
+            .trim()
+            .max(200)
+            .optional(),
+    }),
 
-    buttonText: z
-        .string()
-        .trim()
-        .max(100)
-        .optional(),
+    description: z.object({
+        ar: z
+            .string()
+            .trim()
+            .max(2000),
+
+        en: z
+            .string()
+            .trim()
+            .max(2000),
+    }).optional(),
+
+    buttonText: z.object({
+        ar: z
+            .string()
+            .trim()
+            .max(100),
+
+        en: z
+            .string()
+            .trim()
+            .max(100),
+    }).optional(),
 
     buttonLink: z
         .string()
@@ -77,11 +105,17 @@ const createHeroSchema = z.object({
         .max(255)
         .optional(),
 
-    secondaryButtonText: z
-        .string()
-        .trim()
-        .max(100)
-        .optional(),
+    secondaryButtonText: z.object({
+        ar: z
+            .string()
+            .trim()
+            .max(100),
+
+        en: z
+            .string()
+            .trim()
+            .max(100),
+    }).optional(),
 
     secondaryButtonLink: z
         .string()
@@ -128,30 +162,55 @@ const updateHeroSchema = z.object({
         .enum(pages)
         .optional(),
 
-    title: z
-        .string()
-        .trim()
-        .min(3)
-        .max(200)
-        .optional(),
+    title: z.object({
+        ar: z.string()
+            .trim()
+            .min(3)
+            .max(200),
 
-    subtitle: z
-        .string()
-        .trim()
-        .max(200)
-        .optional(),
+        en: z.string()
+            .trim()
+            .min(3)
+            .max(200),
+    }).optional(),
 
-    description: z
-        .string()
-        .trim()
-        .max(2000)
-        .optional(),
+    subtitle: z.object({
+        ar: z
+            .string()
+            .trim()
+            .max(200)
+            .optional(),
 
-    buttonText: z
-        .string()
-        .trim()
-        .max(100)
-        .optional(),
+        en: z
+            .string()
+            .trim()
+            .max(200)
+            .optional(),
+    }).optional(),
+
+    description: z.object({
+        ar: z
+            .string()
+            .trim()
+            .max(2000),
+
+        en: z
+            .string()
+            .trim()
+            .max(2000),
+    }).optional(),
+
+    buttonText: z.object({
+        ar: z
+            .string()
+            .trim()
+            .max(100),
+
+        en: z
+            .string()
+            .trim()
+            .max(100),
+    }).optional(),
 
     buttonLink: z
         .string()
@@ -159,11 +218,17 @@ const updateHeroSchema = z.object({
         .max(255)
         .optional(),
 
-    secondaryButtonText: z
-        .string()
-        .trim()
-        .max(100)
-        .optional(),
+    secondaryButtonText: z.object({
+        ar: z
+            .string()
+            .trim()
+            .max(100),
+
+        en: z
+            .string()
+            .trim()
+            .max(100),
+    }).optional(),
 
     secondaryButtonLink: z
         .string()

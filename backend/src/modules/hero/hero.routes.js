@@ -17,6 +17,7 @@ const {
     isAuthenticatedUser,
     authorizeRoles,
 } = require("../../middlewares/auth");
+const parseNestedFormData = require("../../middlewares/parseNestedFormData");
 
 const router = express.Router();
 
@@ -61,6 +62,8 @@ router
             ],
         }),
 
+        parseNestedFormData,
+
         validate(createHeroSchema),
 
         createHero
@@ -89,6 +92,8 @@ router
                 },
             ],
         }),
+
+        parseNestedFormData,
 
         validate(updateHeroSchema),
 

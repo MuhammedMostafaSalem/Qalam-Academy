@@ -34,21 +34,42 @@ const heroSchema = new mongoose.Schema(
 
         // Content
         title: {
-            type: String,
-            required: true,
-            trim: true,
+            ar: {
+                type: String,
+                required: true,
+                trim: true,
+            },
+            en: {
+                type: String,
+                required: true,
+                trim: true,
+            }
         },
 
         subtitle: {
-            type: String,
-            default: "",
-            trim: true,
+            ar: {
+                type: String,
+                default: "",
+                trim: true,
+            },
+            en: {
+                type: String,
+                default: "",
+                trim: true,
+            }
         },
 
         description: {
-            type: String,
-            default: "",
-            trim: true,
+            ar: {
+                type: String,
+                default: "",
+                trim: true,
+            },
+            en: {
+                type: String,
+                default: "",
+                trim: true,
+            }
         },
 
         // Media
@@ -69,9 +90,16 @@ const heroSchema = new mongoose.Schema(
 
         // CTA
         buttonText: {
-            type: String,
-            default: "",
-            trim: true,
+            ar: {
+                type: String,
+                default: "",
+                trim: true,
+            },
+            en: {
+                type: String,
+                default: "",
+                trim: true,
+            }
         },
 
         buttonLink: {
@@ -81,9 +109,16 @@ const heroSchema = new mongoose.Schema(
         },
 
         secondaryButtonText: {
-            type: String,
-            default: "",
-            trim: true,
+            ar: {
+                type: String,
+                default: "",
+                trim: true,
+            },
+            en: {
+                type: String,
+                default: "",
+                trim: true,
+            }
         },
 
         secondaryButtonLink: {

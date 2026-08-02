@@ -10,6 +10,7 @@ const {
     deleteHero,
     getHeroByPage,
 } = require("./hero.service");
+const translateDocument = require("../../utils/translateDocument");
 
 
 // Admin CRUD
@@ -35,10 +36,22 @@ exports.getPublicHero = catchAsync(async (req, res) => {
         );
     }
 
+    const translatableFields = [
+        "title",
+        "subtitle",
+        "description",
+        "buttonText",
+        "secondaryButtonText"
+    ]
+
     return sendResponse(res, {
         statusCode: StatusCodes.OK,
         success: true,
-        message: "Hero fetched successfully.",
-        data: hero,
+        message: "Hero fetched successfully",
+        data: translateDocument(
+            hero,
+            req.language,
+            translatableFields
+        ),
     });
 });

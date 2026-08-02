@@ -11,11 +11,17 @@ const {
 // Create Hero
 exports.createHero = createOne(Hero, {
     modelName: "Hero",
-
     fileFields: [
         "image",
         "backgroundImage",
         "video",
+    ],
+    translatableFields: [
+        "title",
+        "subtitle",
+        "description",
+        "buttonText",
+        "secondaryButtonText"
     ],
 
     beforeCreate: async ({ req }) => {
@@ -29,10 +35,19 @@ exports.getHeroes = getAll(Hero, {
     modelName: "Heroes",
 
     searchFields: [
+        "title.ar",
+        "title.en",
+        "subtitle.ar",
+        "description.en",
+        "page",
+    ],
+
+    translatableFields: [
         "title",
         "subtitle",
         "description",
-        "page",
+        "buttonText",
+        "secondaryButtonText"
     ],
 
     defaultLimit: 20,
@@ -42,6 +57,13 @@ exports.getHeroes = getAll(Hero, {
 // Get Hero By ID
 exports.getHero = getOne(Hero, {
     modelName: "Hero",
+    translatableFields: [
+        "title",
+        "subtitle",
+        "description",
+        "buttonText",
+        "secondaryButtonText"
+    ],
 });
 
 // Update Hero
@@ -52,6 +74,14 @@ exports.updateHero = updateOne(Hero, {
         "image",
         "backgroundImage",
         "video",
+    ],
+
+    translatableFields: [
+        "title",
+        "subtitle",
+        "description",
+        "buttonText",
+        "secondaryButtonText"
     ],
 
     beforeUpdate: async ({ req }) => {
