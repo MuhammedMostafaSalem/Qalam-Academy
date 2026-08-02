@@ -21,6 +21,11 @@ const wishlistRoutes = require("../modules/wishlist/wishlist.route");
 const settingsRoutes = require("../modules/settings/settings.routes");
 const dashboardRoutes = require("../modules/dashboard/dashboard.routes");
 const heroRoutes = require("../modules/hero/hero.routes");
+const blogRoutes = require("../modules/blog/blog.routes");
+const contactRoutes = require("../modules/contact/contact.routes");
+const journeyRoutes = require("../modules/journey/journey.routes");
+const timelineRoutes = require("../modules/timeline/timeline.routes");
+const chooseRoutes = require("../modules/choose-us/choose.route");
 
 const router = express.Router();
 
@@ -45,5 +50,10 @@ router.use("/wishlist", wishlistRoutes);
 router.use("/settings", settingsRoutes);
 router.use("/dashboard", dashboardRoutes);
 router.use("/heroes", heroRoutes);
+router.use("/blogs", blogRoutes);
+router.use("/contact", contactRoutes);
+router.use("/journey", journeyRoutes);
+router.use("/timeline", timelineRoutes);
+router.use("/choose", chooseRoutes);
 
 module.exports = router;
