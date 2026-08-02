@@ -11,6 +11,10 @@ const Course = require("./course.model");
 exports.createCourse = createOne(Course, {
     modelName: "Course",
     fileFields: ["thumbnail", "trailerVideo"],
+    translatableFields: [
+        "title",
+        "description",
+    ],
     beforeCreate: async ({ req }) => {
         req.body.isPublished = false;
         req.body.isFeatured = false;
@@ -21,9 +25,15 @@ exports.createCourse = createOne(Course, {
 exports.getCourses = getAll(Course, {
     modelName: "Courses",
     searchFields: [
+        "title.en",
+        "title.ar",
+        "description.en",
+        "description.ar",
+        "tags",
+    ],
+    translatableFields: [
         "title",
         "description",
-        "tags",
     ],
     populate: [
         {
@@ -42,6 +52,10 @@ exports.getCourses = getAll(Course, {
 // Get one course
 exports.getCourse = getOne(Course, {
     modelName: "Course",
+    translatableFields: [
+        "title",
+        "description",
+    ],
     populate: [
         {
             path: "category",
@@ -58,6 +72,10 @@ exports.getCourse = getOne(Course, {
 exports.updateCourse = updateOne(Course, {
     modelName: "Course",
     fileFields: ["thumbnail", "trailerVideo"],
+    translatableFields: [
+        "title",
+        "description",
+    ],
     beforeUpdate: async ({ req }) => {
         if (req.body.isPublished !== undefined) {
             req.body.isPublished = req.body.isPublished;

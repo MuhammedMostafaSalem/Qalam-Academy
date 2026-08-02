@@ -16,6 +16,7 @@ const {
     isAuthenticatedUser
 } = require("../../middlewares/auth");
 const validate = require("../../middlewares/validate");
+const parseNestedFormData = require("../../middlewares/parseNestedFormData");
 
 const router = express.Router();
 
@@ -40,6 +41,8 @@ router
                 },
             ],
         }),
+
+        parseNestedFormData,
 
         validate(createCourseSchema),
 
@@ -68,6 +71,8 @@ router
             ],
         }),
 
+        parseNestedFormData,
+        
         validate(updateCourseSchema),
 
         updateCourse

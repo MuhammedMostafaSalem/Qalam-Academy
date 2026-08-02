@@ -6,9 +6,16 @@ const { StatusCodes } = require("http-status-codes");
 const courseSchema = new mongoose.Schema({
     // Basic Information
     title: {
-        type: String,
-        required: true,
-        trim: true,
+        ar: {
+            type: String,
+            required: true,
+            trim: true,
+        },
+        en: {
+            type: String,
+            required: true,
+            trim: true,
+        },
     },
     slug: {
         type: String,
@@ -16,9 +23,16 @@ const courseSchema = new mongoose.Schema({
         unique: true,
     },
     description: {
-        type: String,
-        required: true,
-        trim: true,
+        ar: {
+            type: String,
+            required: true,
+            trim: true,
+        },
+        en: {
+            type: String,
+            required: true,
+            trim: true,
+        },
     },
 
     // Media
@@ -148,8 +162,8 @@ courseSchema.index({
 
 // Generate slug automatically
 courseSchema.pre("validate", function () {
-    if (this.isModified("title")) {
-        this.slug = generateSlug(this.title);
+    if (this.isModified("title") && this.title?.en) {
+        this.slug = generateSlug(this.title.en);
     }
 });
 

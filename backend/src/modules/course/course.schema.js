@@ -2,15 +2,33 @@ const { z } = require("zod");
 
 // Base Object
 const courseBaseObject = {
-    title: z.string({ error: "Course title is required" })
-        .trim()
-        .min(2, "Course title must be at least 2 characters")
-        .max(150, "Course title must not exceed 150 characters"),
+    title: z.object({
+        ar: z
+            .string({ error: "عنوان الدورة مطلوب" })
+            .trim()
+            .min(2, "عنوان الدورة يجب أن يكون على الأقل 2 أحرف")
+            .max(150, "عنوان الدورة يجب ألا يتجاوز 150 حرف"),
 
-    description: z.string({ error: "Course description is required" })
-        .trim()
-        .min(20, "Description must be at least 20 characters")
-        .max(10000, "Description must not exceed 10000 characters"),
+        en: z
+            .string({ error: "Course title is required" })
+            .trim()
+            .min(2, "Course title must be at least 2 characters")
+            .max(150, "Course title must not exceed 150 characters"),
+    }),
+
+    description: z.object({
+        ar: z
+            .string({ error: "وصف الدورة مطلوب" })
+            .trim()
+            .min(20, "وصف الدورة يجب أن يكون على الأقل 20 حرف")
+            .max(10000, "وصف الدورة يجب ألا يتجاوز 10000 حرف"),
+
+        en: z
+            .string({ error: "Course description is required" })
+            .trim()
+            .min(20, "Description must be at least 20 characters")
+            .max(10000, "Description must not exceed 10000 characters"),
+    }),
 
     category: z.string()
         .trim()
