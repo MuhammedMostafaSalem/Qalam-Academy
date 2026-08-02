@@ -71,6 +71,14 @@ const userSchema = new mongoose.Schema({
             ref: 'Course',
         },
     ],
+    themeMode: {
+        type: String,
+        enum: [
+            "light",
+            "dark",
+        ],
+        default: "dark",
+    },
     role: {
         type: String,
         enum: [

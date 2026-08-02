@@ -8,7 +8,9 @@ const {
     updateUser,
     deleteUser,
     getUser,
-    changePassword
+    changePassword,
+    getThemeMode,
+    toggleThemeMode
 } = require("./user.controller");
 const uploadSingle = require("../../middlewares/uploadSingle");
 const validate = require("../../middlewares/validate");
@@ -16,6 +18,19 @@ const { updateUserSchema } = require("./validators/user.schema");
 const { changePasswordSchema } = require("./validators/changePassword.schema");
 
 const router = express.Router();
+
+// theme mode
+router.get(
+    "/theme",
+    isAuthenticatedUser,
+    getThemeMode
+);
+
+router.patch(
+    "/theme/toggle",
+    isAuthenticatedUser,
+    toggleThemeMode
+);
 
 // Get all users
 router

@@ -77,3 +77,41 @@ exports.deleteUser = deleteOne(User, {
     modelName: "User",
     fileFields: ["avatar"],
 });
+
+
+// Get Theme Mode
+exports.getThemeMode = catchAsync(async (req, res) => {
+    const user = await User.findById(req.user.id).select("themeMode");
+
+    return sendResponse(res, {
+        success: true,
+        statusCode: StatusCodes.OK,
+        message: "Theme mode fetched successfully",
+        data: {
+            themeMode: user.themeMode,
+        },
+    });
+});
+
+
+// Toggle Theme Mode
+exports.toggleThemeMode = catchAsync(async (req, res) => {
+    const user = await User.findById(req.user.id);
+
+    if (user.themeMode === "light") {
+        user.themeMode = "dark";
+    } else {
+        user.themeMode = "light";
+    }
+
+    await user.save();
+
+    return sendResponse(res, {
+        success: true,
+        statusCode: StatusCodes.OK,
+        message: "Theme mode updated successfully",
+        data: {
+            themeMode: user.themeMode,
+        },
+    });
+});
