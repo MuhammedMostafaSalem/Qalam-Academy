@@ -20,6 +20,7 @@ const {
     createProductSchema,
     updateProductSchema,
 } = require("./product.schema");
+const parseNestedFormData = require("../../middlewares/parseNestedFormData");
 
 const router = express.Router();
 
@@ -43,6 +44,7 @@ router
             folder: "products",
             fileType: ["image", "pdf"],
         }),
+        parseNestedFormData,
         validate(createProductSchema),
         createProduct
     );
@@ -67,6 +69,7 @@ router
             folder: "products",
             fileType: "image",
         }),
+        parseNestedFormData,
         validate(updateProductSchema),
         updateProduct
     )

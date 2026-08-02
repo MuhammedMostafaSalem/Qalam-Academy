@@ -2,17 +2,31 @@ const { z } = require("zod");
 
 // Base Object
 const productBaseObject = {
-    title: z
-        .string({ error: "Product title is required" })
-        .trim()
-        .min(2, "Product title must be at least 2 characters")
-        .max(150, "Product title must not exceed 150 characters"),
+    title: z.object({
+        en: z
+            .string({ error: "Product title is required" })
+            .trim()
+            .min(2, "Product title must be at least 2 characters")
+            .max(150, "Product title must not exceed 150 characters"),
+        ar: z
+            .string({ error: "عنوان المنتج مطلوب" })
+            .trim()
+            .min(2, "يجب أن يتكون عنوان المنتج من حرفين على الأقل")
+            .max(150, "عنوان المنتج يجب ألا يتجاوز 150 حرف"),
+    }),
 
-    description: z
-        .string({ error: "Product description is required" })
-        .trim()
-        .min(20, "Product description must be at least 20 characters")
-        .max(10000, "Product description must not exceed 10000 characters"),
+    description: z.object({
+        en: z
+            .string({ error: "Product description is required" })
+            .trim()
+            .min(20, "Product description must be at least 20 characters")
+            .max(10000, "Product description must not exceed 10000 characters"),
+        ar: z
+            .string({ error: "وصف المنتج مطلوب" })
+            .trim()
+            .min(20, "يجب أن يتكون وصف المنتج من 20 حرفًا على الأقل")
+            .max(10000, "يجب ألا يتجاوز وصف المنتج 10000 حرف"),
+    }),
 
     category: z
         .string({ error: "Category is required" })

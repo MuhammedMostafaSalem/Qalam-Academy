@@ -11,7 +11,10 @@ const Product = require("./product.model");
 exports.createProduct = createOne(Product, {
     modelName: "Product",
     fileFields: ["image", "pdf"],
-
+    translatableFields: [
+        "title",
+        "description",
+    ],
     beforeCreate: async ({ req }) => {
         delete req.body.isPublished;
         delete req.body.isFeatured;
@@ -22,8 +25,15 @@ exports.createProduct = createOne(Product, {
 exports.getProducts = getAll(Product, {
     modelName: "Products",
     searchFields: [
+        "title.en",
+        "title.ar",
+        "description.en",
+        "description.ar"
+    ],
+    translatableFields: [
         "title",
         "description",
+        "category.title",
     ],
     populate: [
         {
@@ -38,6 +48,11 @@ exports.getProducts = getAll(Product, {
 // Get one product
 exports.getProduct = getOne(Product, {
     modelName: "Product",
+    translatableFields: [
+        "title",
+        "description",
+        "category.title",
+    ],
     populate: [
         {
             path: "category",
@@ -50,6 +65,10 @@ exports.getProduct = getOne(Product, {
 exports.updateProduct = updateOne(Product, {
     modelName: "Product",
     fileFields: ["image", "pdf"],
+    translatableFields: [
+        "title",
+        "description",
+    ],
 });
 
 // Delete Product
