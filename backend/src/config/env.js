@@ -36,6 +36,8 @@ const env = {
     emailUser: process.env.EMAIL_USER,
 
     emailPass: process.env.EMAIL_PASS,
+    
+    supportEmail: process.env.SUPPORT_EMAIL,
 
     paymobBaseUrl: process.env.PAYMOB_BASE_URL,
 
