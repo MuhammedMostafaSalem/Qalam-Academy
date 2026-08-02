@@ -3,9 +3,16 @@ const generateSlug = require("../../utils/generateSlug");
 
 const serviceSchema = new mongoose.Schema({
     title: {
-        type: String,
-        required: [true, "Service title is required"],
-        trim: true,
+        ar: {
+            type: String,
+            required: [true, "عنوان الخدمة مطلوب"],
+            trim: true,
+        },
+        en: {
+            type: String,
+            required: [true, "Service title is required"],
+            trim: true,
+        },
     },
     slug: {
         type: String,
@@ -14,9 +21,18 @@ const serviceSchema = new mongoose.Schema({
         index: true,
     },
     description: {
-        type: String,
-        required: [true, "Service description is required"],
-        trim: true,
+        ar: {
+            type: String,
+            trim: true,
+            required: [true, "وصف الخدمة مطلوب"],
+            default: "",
+        },
+        en: {
+            type: String,
+            trim: true,
+            required: [true, "Service description is required"],
+            default: "",
+        }
     },
     image: {
         type: String,
@@ -43,8 +59,8 @@ serviceSchema.index({
 
 // Generate slug automatically
 serviceSchema.pre("validate", function () {
-    if (this.isModified("title")) {
-        this.slug = generateSlug(this.title);
+    if (this.isModified("title") && this.title?.en) {
+        this.slug = generateSlug(this.title.en);
     }
 });
 

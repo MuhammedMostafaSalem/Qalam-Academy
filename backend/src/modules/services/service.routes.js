@@ -15,6 +15,7 @@ const {
 const uploadSingle = require("../../middlewares/uploadSingle");
 const validate = require("../../middlewares/validate");
 const { createServiceSchema, updateServiceSchema } = require("./service.schema");
+const parseNestedFormData = require("../../middlewares/parseNestedFormData");
 
 const router = express.Router();
 
@@ -29,6 +30,7 @@ router
             folder: "services",
             fileType: "image",
         }),
+        parseNestedFormData,
         validate(createServiceSchema),
         createService
     );
@@ -44,6 +46,7 @@ router
             folder: "services",
             fileType: "image",
         }),
+        parseNestedFormData,
         validate(updateServiceSchema),
         updateService
     )
