@@ -4,6 +4,7 @@ const configureSecurity = require("./middlewares/configureSecurity");
 const configureParsers = require("./middlewares/configureParsers");
 const configureStaticFiles = require("./middlewares/configureStaticFiles");
 const configureLogger = require("./middlewares/configureLogger");
+const language = require("./middlewares/language");
 
 const routes = require("./routes");
 
@@ -23,6 +24,9 @@ configureStaticFiles(app);
 
 // Logger
 configureLogger(app);
+
+// Language Middleware
+app.use(language);
 
 // Routes
 app.use("/api", routes);
