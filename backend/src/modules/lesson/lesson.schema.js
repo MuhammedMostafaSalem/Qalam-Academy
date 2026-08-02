@@ -7,16 +7,29 @@ const lessonBaseObject = {
         .trim()
         .min(1, "Course is required"),
 
-    title: z
-        .string({ error: "Lesson title is required" })
-        .trim()
-        .min(2, "Lesson title must be at least 2 characters")
-        .max(150, "Lesson title must not exceed 150 characters"),
+    title: z.object({
+        ar: z
+            .string({ error: "عنوان الدرس مطلوب" })
+            .trim()
+            .min(2, "عنوان الدرس يجب أن يكون على الأقل 2 أحرف")
+            .max(150, "عنوان الدرس يجب ألا يتجاوز 150 حرف"),
+        en: z
+            .string({ error: "Lesson title is required" })
+            .trim()
+            .min(2, "Lesson title must be at least 2 characters")
+            .max(150, "Lesson title must not exceed 150 characters"),
+    }),
 
-    description: z
-        .string({ error: "Lesson description is required" })
-        .trim()
-        .max(5000, "Description must not exceed 5000 characters")
+    description: z.object({
+        ar: z
+            .string({ error: "وصف الدرس مطلوب" })
+            .trim()
+            .max(5000, "وصف الدرس يجب ألا يتجاوز 5000 حرف"),
+        en: z
+            .string({ error: "Lesson description is required" })
+            .trim()
+            .max(5000, "Description must not exceed 5000 characters")
+    })
         .optional(),
 
     duration: z.coerce

@@ -11,14 +11,28 @@ const lessonSchema = new mongoose.Schema({
 
     // Basic Information
     title: {
-        type: String,
-        required: true,
-        trim: true,
+        ar: {
+            type: String,
+            required: true,
+            trim: true,
+        },
+        en: {
+            type: String,
+            required: true,
+            trim: true,
+        },
     },
     description: {
-        type: String,
-        default: "",
-        trim: true,
+        ar: {
+            type: String,
+            trim: true,
+            default: "",
+        },
+        en: {
+            type: String,
+            trim: true,
+            default: "",
+        },
     },
 
     // Media

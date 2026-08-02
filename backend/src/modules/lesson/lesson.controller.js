@@ -18,6 +18,10 @@ exports.createLesson = createOne(Lesson, {
         "video",
         "attachment",
     ],
+    translatableFields: [
+        "title",
+        "description",
+    ],
     beforeCreate: async ({ req, Model }) => {
         const course = await Course.findById(req.body.course);
         if (!course) {
@@ -53,8 +57,16 @@ exports.getLessons = getAll(Lesson, {
     modelName: "Lessons",
 
     searchFields: [
+        "title.en",
+        "title.ar",
+        "description.en",
+        "description.ar"
+    ],
+
+    translatableFields: [
         "title",
         "description",
+        "course.title",
     ],
 
     populate: [
@@ -72,6 +84,11 @@ exports.getLessons = getAll(Lesson, {
 exports.getLesson = getOne(Lesson, {
     modelName: "Lesson",
 
+    translatableFields: [
+        "title",
+        "description",
+    ],
+
     populate: [
         {
             path: "course",
@@ -88,6 +105,11 @@ exports.updateLesson = updateOne(Lesson, {
         "thumbnail",
         "video",
         "attachment",
+    ],
+
+    translatableFields: [
+        "title",
+        "description",
     ],
 
     beforeUpdate: async ({ req, document, Model }) => {

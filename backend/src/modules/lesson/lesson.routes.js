@@ -16,6 +16,7 @@ const {
     createLessonSchema,
     updateLessonSchema
 } = require("./lesson.schema");
+const parseNestedFormData = require("../../middlewares/parseNestedFormData");
 
 const router = express.Router();
 
@@ -44,6 +45,8 @@ router
                 },
             ],
         }),
+
+        parseNestedFormData,
 
         validate(createLessonSchema),
 
@@ -76,6 +79,8 @@ router
             ],
         }),
 
+        parseNestedFormData,
+        
         validate(updateLessonSchema),
 
         updateLesson
