@@ -6,6 +6,8 @@ const generateFileUrl = require("./generateFileUrl");
 const handleUploadedFiles = require("./handleUploadedFiles");
 const sendResponse = require("./sendResponse");
 const { StatusCodes } = require("http-status-codes");
+const translateDocument = require("./translateDocument");
+const translateDocuments = require("./translateDocuments");
 
 // Create One
 exports.createOne = (
@@ -15,6 +17,7 @@ exports.createOne = (
         fileFields = [],
         beforeCreate = null,
         afterCreate = null,
+        translatableFields = [],
     } = {}
 ) =>
     catchAsync(async (req, res) => {
@@ -46,8 +49,12 @@ exports.createOne = (
         return sendResponse(res, {
             statusCode: StatusCodes.CREATED,
             success: true,
-            message: `${modelName} created successfully.`,
-            data: document,
+            message: `${modelName} created successfully`,
+            data: translateDocument(
+                document,
+                req.language,
+                translatableFields
+            ),
         });
     });
 
@@ -60,6 +67,7 @@ exports.getAll = (
         populate = null,
         defaultLimit = 10,
         defaultSort = "-createdAt",
+        translatableFields = [],
     } = {}
 ) => catchAsync(async (req, res) => {
     const features = new ApiFeatures(Model, req.query)
@@ -77,8 +85,12 @@ exports.getAll = (
     return sendResponse(res, {
         statusCode: StatusCodes.OK,
         success: true,
-        message: `${modelName} fetched successfully.`,
-        data: documents,
+        message: `${modelName} fetched successfully`,
+        data: translateDocuments(
+            documents,
+            req.language,
+            translatableFields
+        ),
         meta: features.meta,
     });
 });
@@ -89,6 +101,7 @@ exports.getOne = (
     {
         modelName = "Document",
         populate = null,
+        translatableFields = [],
     } = {}
 ) => catchAsync(async (req, res) => {
     let query = Model.findById(req.params.id);
@@ -106,8 +119,12 @@ exports.getOne = (
     return sendResponse(res, {
         statusCode: StatusCodes.OK,
         success: true,
-        message: `${modelName} fetched successfully.`,
-        data: document,
+        message: `${modelName} fetched successfully`,
+        data: translateDocument(
+            document,
+            req.language,
+            translatableFields
+        ),
     });
 });
 
@@ -119,6 +136,7 @@ exports.updateOne = (
         fileFields = [],
         beforeUpdate = null,
         afterUpdate = null,
+        translatableFields = [],
     } = {}
 ) =>
     catchAsync(async (req, res) => {
@@ -166,8 +184,12 @@ exports.updateOne = (
         return sendResponse(res, {
             statusCode: StatusCodes.OK,
             success: true,
-            message: `${modelName} updated successfully.`,
-            data: document,
+            message: `${modelName} updated successfully`,
+            data: translateDocument(
+                document,
+                req.language,
+                translatableFields
+            ),
         });
     });
 
@@ -211,7 +233,7 @@ exports.deleteOne = (
         return sendResponse(res, {
             statusCode: StatusCodes.OK,
             success: true,
-            message: `${modelName} deleted successfully.`,
+            message: `${modelName} deleted successfully`,
             data: null,
         });
     });
