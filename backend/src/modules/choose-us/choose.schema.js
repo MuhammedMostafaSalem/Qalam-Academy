@@ -1,0 +1,52 @@
+const { z } = require("zod");
+
+const translatedField = (arabicName, englishName) =>
+    z.object({
+        ar: z
+            .string({
+                required_error: `${arabicName} مطلوب`,
+            })
+            .trim()
+            .min(2, `${arabicName} يجب أن يكون على الأقل حرفين`)
+            .max(3000),
+
+        en: z
+            .string({
+                required_error: `${englishName} is required`,
+            })
+            .trim()
+            .min(2, `${englishName} must be at least 2 characters`)
+            .max(3000),
+    });
+
+const updateChooseSchema = z
+    .object({
+        title: translatedField(
+            "العنوان",
+            "Title"
+        ).optional(),
+        
+        subTitle: translatedField(
+            "العنوان الفرعي",
+            "Sub Title"
+        ).optional(),
+
+        description: translatedField(
+            "الوصف",
+            "Description"
+        ).optional(),
+
+        isActive: z.preprocess(
+            (value) => {
+                if (value === "true") return true;
+                if (value === "false") return false;
+                return value;
+            },
+            z.boolean().optional()
+        ),
+    })
+    .strict();
+
+module.exports = {
+    updateChooseSchema,
+};
