@@ -11,6 +11,10 @@ const Category = require("./category.model");
 exports.createCategory = createOne(Category, {
     modelName: "Category",
     fileFields: ["image"],
+    translatableFields: [
+        "title",
+        "description",
+    ],
     beforeCreate: async ({ req, Model }) => {
         const lastCategory = await Model
             .findOne()
@@ -25,7 +29,16 @@ exports.createCategory = createOne(Category, {
 // Get all categories
 exports.getCategories = getAll(Category, {
     modelName: "Categories",
-    searchFields: ["title", "description"],
+    searchFields: [
+        "title.en",
+        "title.ar",
+        "description.en",
+        "description.ar"
+    ],
+    translatableFields: [
+        "title",
+        "description",
+    ],
     defaultLimit: 10,
     defaultSort: "sortOrder",
 });
@@ -33,12 +46,20 @@ exports.getCategories = getAll(Category, {
 // Get one category
 exports.getCategory = getOne(Category, {
     modelName: "Category",
+    translatableFields: [
+        "title",
+        "description",
+    ],
 });
 
 // Update category
 exports.updateCategory = updateOne(Category, {
     modelName: "Category",
     fileFields: ["image"],
+    translatableFields: [
+        "title",
+        "description",
+    ],
     beforeUpdate: async ({ req, document, Model }) => {
         if (
             req.body.sortOrder &&

@@ -3,9 +3,16 @@ const generateSlug = require("../../utils/generateSlug");
 
 const categorySchema = new mongoose.Schema({
     title: {
-        type: String,
-        required: true,
-        trim: true,
+        ar: {
+            type: String,
+            required: true,
+            trim: true,
+        },
+        en: {
+            type: String,
+            required: true,
+            trim: true,
+        },
     },
     slug: {
         type: String,
@@ -13,8 +20,16 @@ const categorySchema = new mongoose.Schema({
         lowercase: true,
     },
     description: {
-        type: String,
-        trim: true,
+        ar: {
+            type: String,
+            trim: true,
+            default: "",
+        },
+        en: {
+            type: String,
+            trim: true,
+            default: "",
+        },
     },
     image: {
         type: String,
@@ -71,8 +86,8 @@ categorySchema.index(
 
 // Auto generate slug
 categorySchema.pre("validate", function () {
-    if (this.isModified("title")) {
-        this.slug = generateSlug(this.title);
+    if (this.isModified("title") && this.title?.en) {
+        this.slug = generateSlug(this.title.en);
     }
 });
 

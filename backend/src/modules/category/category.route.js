@@ -16,6 +16,7 @@ const {
     createCategorySchema,
     updateCategorySchema
 } = require("./category.schema");
+const parseNestedFormData = require("../../middlewares/parseNestedFormData");
 
 const router = express.Router();
 
@@ -30,6 +31,7 @@ router
             folder: "categories",
             fileType: "image",
         }),
+        parseNestedFormData,
         validate(createCategorySchema),
         createCategory
     );
@@ -45,6 +47,7 @@ router
             folder: "categories",
             fileType: "image",
         }),
+        parseNestedFormData,
         validate(updateCategorySchema),
         updateCategory
     )

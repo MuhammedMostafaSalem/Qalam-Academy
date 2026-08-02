@@ -2,18 +2,33 @@ const { z } = require("zod");
 
 // Shared fields
 const categoryBaseObject = {
-    title: z
-        .string({ error: "Category title is required" })
-        .trim()
-        .min(2, "Category title must be at least 2 characters")
-        .max(100, "Category title must not exceed 100 characters"),
+    title: z.object({
+        ar: z
+            .string({ error: "عنوان التصنيف مطلوب" })
+            .trim()
+            .min(2, "عنوان التصنيف يجب أن يكون على الأقل 2 أحرف")
+            .max(100, "عنوان التصنيف يجب ألا يتجاوز 100 حرف"),
 
-    description: z
-        .string({ error: "Category description is required" })
-        .trim()
-        .max(1000, "Description must not exceed 1000 characters")
-        .optional()
-        .or(z.literal("")),
+        en: z
+            .string({ error: "Category title is required" })
+            .trim()
+            .min(2, "Category title must be at least 2 characters")
+            .max(100, "Category title must not exceed 100 characters"),
+    }),
+
+    description: z.object({
+        ar: z
+            .string({ error: "وصف التصنيف مطلوب" })
+            .trim()
+            .max(1000, "وصف التصنيف يجب ألا يتجاوز 1000 حرف")
+            .optional(),
+
+        en: z
+            .string({ error: "Category description is required" })
+            .trim()
+            .max(1000, "Category description must not exceed 1000 characters")
+            .optional(),
+    }).optional(),
 
     type: z.enum(
         [
