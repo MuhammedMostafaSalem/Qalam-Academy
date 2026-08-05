@@ -9,6 +9,7 @@ const ApiError = require("../../utils/ApiError");
 const { verifyOtp, resendOtp } = require("./otp.service");
 const sendToken = require("../../utils/sendToken");
 const env = require("../../config/env");
+const crypto = require("crypto");
 
 // Registration logic will go here
 const signup = catchAsync(async (req, res, next) => {
@@ -52,7 +53,7 @@ const signup = catchAsync(async (req, res, next) => {
     sendResponse(res, {
         statusCode: StatusCodes.OK,
         success: true,
-        message: "otp sent to your email for verification",
+        message: req.t("auth.sentOtp"),
     });
 });
 
@@ -65,11 +66,29 @@ const verifyAccountOtp = catchAsync(async (req, res, next) => {
     const user = await verifyOtp(email, otp, purpose);
 
     let message;
+    let data;
+
     if (purpose === "email_verification") {
-        message = "User verified successfully";
+        message = req.t("auth.verifiedEmail");
+
+        data = {
+            name: `${user.firstName} ${user.lastName}`,
+        }
     }
     if (purpose === "forgot_password") {
-        message = "OTP verified, you can reset your password now";
+        message = req.t("auth.verifiedPassword");
+
+        const resetToken = crypto.randomBytes(32).toString("hex");
+
+        user.resetPasswordToken = crypto.createHash("sha256").update(resetToken).digest("hex");
+
+        user.resetPasswordExpires = Date.now() + 10 * 60 * 1000;
+
+        await user.save();
+
+        data = {
+            resetToken,
+        }
     }
 
     // Send success response
@@ -77,7 +96,7 @@ const verifyAccountOtp = catchAsync(async (req, res, next) => {
         statusCode: StatusCodes.OK,
         success: true,
         message,
-        data: user.username,
+        data,
     });
 });
 
@@ -91,10 +110,10 @@ const resendAccountOtp = catchAsync(async (req, res, next) => {
 
     let message;
     if (purpose === "email_verification") {
-        message = "Verification OTP resent successfully";
+        message = req.t("auth.resendEmail");
     }
     if (purpose === "forgot_password") {
-        message = "Password reset OTP resent successfully";
+        message = req.t("auth.resendPassword");
     }
 
     // Send success response
@@ -115,23 +134,23 @@ const login = catchAsync(async (req, res, next) => {
 
     // If user not found, return error
     if (!user) {
-        return next(new ApiError("User not found", StatusCodes.UNAUTHORIZED));
+        return next(new ApiError(req.t("auth.notFound"), StatusCodes.NOT_FOUND));
     }
 
     // Check if user is verified
     if (!user.isVerified) {
-        return next(new ApiError("Please verify your account first", StatusCodes.FORBIDDEN));
+        return next(new ApiError(req.t("auth.verifyFisrt"), StatusCodes.FORBIDDEN));
     }
 
     // Compare provided password with stored hashed password
     const isMatch = await user.comparePassword(password);
     // If password does not match, return error
     if (!isMatch) {
-        return next(new ApiError("Password is incorrect", StatusCodes.UNAUTHORIZED));
+        return next(new ApiError(req.t("auth.incorrectPass"), StatusCodes.UNAUTHORIZED));
     }
 
     // If login is successful, send tokens
-    sendToken(user, StatusCodes.OK, res)
+    sendToken(user, StatusCodes.OK, res, req)
 });
 
 // Refresh token logic here
@@ -158,7 +177,10 @@ const refreshToken = catchAsync(async (req, res, next) => {
     sendResponse(res, {
         statusCode: StatusCodes.OK,
         success: true,
-        data: { accessToken: newAccessToken },
+        data: {
+            user,
+            accessToken: newAccessToken
+        },
     });
 });
 
@@ -174,25 +196,37 @@ const forgotPassword = catchAsync(async (req, res, next) => {
     sendResponse(res, {
         statusCode: StatusCodes.OK,
         success: true,
-        message: "OTP sent to your email for reset password",
+        message: req.t("auth.sentOtp"),
     });
 });
 
 // Reset password logic here
 const resetPassword = catchAsync(async (req, res, next) => {
     // Extract email, password and confirm password from request body
-    const { email, password, confirmPassword } = req.body;
+    const { token, password, confirmPassword } = req.body;
 
     // Confirm that the passwords match before anything else
     if (password !== confirmPassword) {
-        return next(new ApiError("Passwords do not match", StatusCodes.BAD_REQUEST));
+        return next(new ApiError(req.t("auth.notmatchPassword"), StatusCodes.BAD_REQUEST));
     }
 
-    // Find user by email
-    const user = await User.findOne({ email }).select("+password");
+    // Hash received token
+    const hashedToken = crypto
+        .createHash("sha256")
+        .update(token)
+        .digest("hex");
 
+    // Find user by email
+    const user = await User.findOne({
+        resetPasswordToken: hashedToken,
+        resetPasswordExpires: {
+            $gt: Date.now()
+        }
+    }).select("+password");
+    console.log(token);
+    console.log(hashedToken);
     // If user not found, return error
-    if (!user) return next(new ApiError("User not found", StatusCodes.NOT_FOUND));
+    if (!user) return next(new ApiError(req.t("auth.invalidResetToken"), StatusCodes.BAD_REQUEST));
 
     // Update password
     user.password = password;
@@ -209,7 +243,7 @@ const resetPassword = catchAsync(async (req, res, next) => {
     sendResponse(res, {
         statusCode: StatusCodes.OK,
         success: true,
-        message: "Reset password successfully.",
+        message: req.t("auth.successMessage"),
     });
 });
 
