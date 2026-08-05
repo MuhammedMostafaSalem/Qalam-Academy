@@ -6,8 +6,12 @@ import CTAButton from "./CTAButton"
 import { HiOutlineMenuAlt3, HiX } from "react-icons/hi";
 import LanguageSwitcher from "./LanguageSwitcher";
 import { fadeDown } from "@/lib/animationHelpers";
+import useAuth from "@/hooks/auth/useAuth";
+import UserMenu from "@/components/shared/UserMenu";
 
 const Navbar = ({ isTop, openMenu, setOpenMenu }) => {
+    const { isAuthenticated } = useAuth();
+
     return (
         <nav
             {...fadeDown()}
@@ -37,14 +41,19 @@ const Navbar = ({ isTop, openMenu, setOpenMenu }) => {
                     isTop={isTop}
                     open={openMenu}
                     onClose={() => setOpenMenu(false)}
+                    isAuthenticated={isAuthenticated}
                 />
 
                 <div className="flex items-center gap-3">
                     <LanguageSwitcher />
                     
-                    <div className="hidden lg:block">
-                        <CTAButton />
-                    </div>
+                    {
+                        isAuthenticated
+                            ? <UserMenu />
+                            : <div className="hidden lg:block">
+                                <CTAButton />
+                            </div>
+                    }
 
                     <button
                         onClick={() => setOpenMenu(!openMenu)}
