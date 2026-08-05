@@ -14,10 +14,11 @@ const validate = (schema) => {
                     : "_root";
 
                 if (!errors[field]) {
-                    errors[field] = [];
+                    // errors[field] = [];
+                    errors[field] = issue.message;
                 }
 
-                errors[field].push(issue.message);
+                // errors[field].push(issue.message);
             });
 
             return next(new ApiError("Validation failed", StatusCodes.BAD_REQUEST, errors));
