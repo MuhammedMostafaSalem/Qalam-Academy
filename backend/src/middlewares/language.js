@@ -2,6 +2,7 @@ const {
     SUPPORTED_LANGUAGES,
     DEFAULT_LANGUAGE,
 } = require("../config/languages");
+const t = require("../utils/t")
 
 module.exports = (req, res, next) => {
     let lang =
@@ -21,6 +22,7 @@ module.exports = (req, res, next) => {
     }
 
     req.language = lang;
+    req.t = (key, params = {}) => t(lang, key, params);
 
     next();
 };
