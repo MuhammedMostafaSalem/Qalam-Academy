@@ -85,8 +85,8 @@ const resendOtp = async (email, purpose) => {
             ? "Reset Password OTP - Qalam Academy"
             : "Verify Email OTP - Chato App",
         html: purpose === "forgot_password"
-            ? forgotPasswordTemplate(user.username, otp)
-            : verifyEmailTemplate(user.username, otp)
+            ? forgotPasswordTemplate(`${user.firstName} ${user.lastName}`, otp)
+            : verifyEmailTemplate(`${user.firstName} ${user.lastName}`, otp)
     });
 
     return true;
