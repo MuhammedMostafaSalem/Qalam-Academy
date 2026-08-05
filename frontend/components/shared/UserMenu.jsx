@@ -1,0 +1,200 @@
+"use client";
+
+import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { HiChevronDown } from "react-icons/hi";
+import { MdAccountCircle } from "react-icons/md";
+import { FaSignOutAlt } from "react-icons/fa";
+import { MdDashboard } from "react-icons/md";
+import { CgProfile } from "react-icons/cg";
+import userIcon from '@/public/assets/user-icon.png';
+import useAuth from "@/hooks/auth/useAuth";
+
+const UserMenu = () => {
+    const router = useRouter();
+    const pathname = usePathname();
+
+    const {
+        user,
+        logout,
+    } = useAuth();
+
+    const [open, setOpen] = useState(false);
+
+    const menuRef = useRef(null);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (
+                menuRef.current &&
+                !menuRef.current.contains(event.target)
+            ) {
+                setOpen(false);
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
+
+    useEffect(() => {
+        setOpen(false);
+    }, [pathname]);
+
+    const handleLogout = async () => {
+        try {
+            await logout();
+
+            setOpen(false);
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    if (!user) return null;
+
+    const dashboardRoutes = {
+        admin: "/dashboard",
+        instructor: "/instructor",
+        student: "/user",
+    }
+
+    const isDashboardUser = ["admin", "instructor"].includes(user.role);
+
+    const firstMenuItem = {
+        label: isDashboardUser ? "لوحة التحكم" : "ملفك الشخصي",
+        href: dashboardRoutes[user.role] || "/profile",
+        icon: isDashboardUser ? MdDashboard : CgProfile,
+    }
+
+    const FirstIcon = firstMenuItem.icon;
+
+    const roleNames = {
+        admin: "مدير",
+        instructor: "مدرب",
+        student: "المستخدم",
+    };
+
+    return (
+        <div
+            className="relative"
+            ref={menuRef}
+        >
+            {/* User Button */}
+            <button
+                onClick={() => setOpen(!open)}
+                className="
+                    flex
+                    items-center
+                    gap-3
+                    rounded-full
+                    px-2
+                    py-1
+                    cursor-pointer
+                    transition
+                    hover:bg-white/5
+                "
+            >
+                <Image
+                    src={
+                        user.avatar ? user.avatar : userIcon
+                    }
+                    alt={user.firstName}
+                    width={44}
+                    height={44}
+                    className="
+                        h-11
+                        w-11
+                        rounded-full
+                        object-cover
+                    "
+                />
+
+                <HiChevronDown
+                    className={`
+                        text-xl
+                        transition-transform
+                        duration-300
+                        ${open ? "rotate-180" : ""}
+                    `}
+                />
+            </button>
+
+            {/* Dropdown */}
+            <div
+                className={`
+                    absolute
+                    left-0 rtl:left-0 rtl:right-auto
+                    mt-3
+                    w-56
+                    overflow-hidden
+                    rounded-2xl
+                    border
+                    border-border
+                    bg-card
+                    shadow-xl
+                    transition-all
+                    duration-200
+                    origin-top
+
+                    ${open
+                        ? "translate-y-0 scale-100 opacity-100"
+                        : "pointer-events-none -translate-y-2 scale-95 opacity-0"
+                    }
+                `}
+            >
+                <button
+                    onClick={() => {
+                        setOpen(false);
+                        router.push(firstMenuItem.href);
+                    }}
+                    className="
+                        flex
+                        w-full
+                        items-center
+                        gap-3
+                        px-5
+                        py-4
+                        transition
+                        hover:bg-primary/10
+                    "
+                >
+                    <FirstIcon className="text-lg" />
+
+                    <span>
+                        {firstMenuItem.label}
+                    </span>
+                </button>
+
+                <button
+                    onClick={handleLogout}
+                    className="
+                        flex
+                        w-full
+                        items-center
+                        gap-3
+                        px-5
+                        py-4
+                        text-red-500
+                        transition
+                        hover:bg-red-500/10
+                    "
+                >
+                    <FaSignOutAlt
+                        className="text-base"
+                    />
+
+                    <span>
+                        تسجيل الخروج
+                    </span>
+                </button>
+            </div>
+        </div>
+    );
+};
+
+export default UserMenu;
