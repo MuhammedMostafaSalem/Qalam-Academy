@@ -28,7 +28,6 @@ const CTAButton = () => {
 
             <Link
                 href="/register"
-                {...ctaAnimation.buttons}
                 className={`${baseClasses} btn-outline flex-1 whitespace-nowrap`}
             >
                 إنشاء حساب
