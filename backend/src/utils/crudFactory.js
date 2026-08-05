@@ -49,7 +49,7 @@ exports.createOne = (
         return sendResponse(res, {
             statusCode: StatusCodes.CREATED,
             success: true,
-            message: `${modelName} created successfully`,
+            message: req.t(`${modelName}.created`),
             data: translateDocument(
                 document,
                 req.language,
@@ -85,7 +85,7 @@ exports.getAll = (
     return sendResponse(res, {
         statusCode: StatusCodes.OK,
         success: true,
-        message: `${modelName} fetched successfully`,
+        message: req.t(`${modelName}.fetched`),
         data: translateDocuments(
             documents,
             req.language,
@@ -113,13 +113,13 @@ exports.getOne = (
     const document = await query;
 
     if (!document) {
-        throw new ApiError(`${modelName} not found.`, StatusCodes.NOT_FOUND);
+        throw new ApiError(req.t(`${modelName}.notFound`), StatusCodes.NOT_FOUND);
     }
 
     return sendResponse(res, {
         statusCode: StatusCodes.OK,
         success: true,
-        message: `${modelName} fetched successfully`,
+        message: req.t(`${modelName}.fetched`),
         data: translateDocument(
             document,
             req.language,
@@ -142,7 +142,7 @@ exports.updateOne = (
     catchAsync(async (req, res) => {
         const document = await Model.findById(req.params.id);
 
-        if (!document) throw new ApiError(`${modelName} not found.`, StatusCodes.NOT_FOUND);
+        if (!document) throw new ApiError(req.t(`${modelName}.notFound`), StatusCodes.NOT_FOUND);
 
         // Handle uploaded files
         handleUploadedFiles({
@@ -184,7 +184,7 @@ exports.updateOne = (
         return sendResponse(res, {
             statusCode: StatusCodes.OK,
             success: true,
-            message: `${modelName} updated successfully`,
+            message: req.t(`${modelName}.updated`),
             data: translateDocument(
                 document,
                 req.language,
@@ -205,7 +205,7 @@ exports.deleteOne = (
     catchAsync(async (req, res) => {
         const document = await Model.findById(req.params.id);
 
-        if (!document) throw new ApiError(`${modelName} not found.`, StatusCodes.NOT_FOUND);
+        if (!document) throw new ApiError(req.t(`${modelName}.notFound`), StatusCodes.NOT_FOUND);
 
         fileFields.forEach(field => {
             if (!document[field]) return;
@@ -233,7 +233,7 @@ exports.deleteOne = (
         return sendResponse(res, {
             statusCode: StatusCodes.OK,
             success: true,
-            message: `${modelName} deleted successfully`,
+            message: req.t(`${modelName}.updated`),
             data: null,
         });
     });
