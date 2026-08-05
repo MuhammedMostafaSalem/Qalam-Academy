@@ -6,7 +6,7 @@ import Link from "next/link";
 import MobileMenu from './MobileMenu';
 import { fadeDown } from '@/lib/animationHelpers';
 
-const NavLinks = ({ isTop, open, onClose, menuRef }) => {
+const NavLinks = ({ isTop, open, onClose, isAuthenticated }) => {
     const pathname = usePathname();
 
     return (
@@ -50,7 +50,7 @@ const NavLinks = ({ isTop, open, onClose, menuRef }) => {
             </ul>
 
             {/* Mobile */}
-            <MobileMenu open={open} onClose={onClose} />
+            <MobileMenu open={open} onClose={onClose} isAuthenticated={isAuthenticated} />
         </>
     )
 }
