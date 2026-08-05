@@ -11,7 +11,15 @@ const errorMiddleware = (err, req, res, next) => {
     if (err.code === 11000) {
         statusCode = StatusCodes.CONFLICT;
         const field = Object.keys(err.keyValue)[0];
-        message = `The ${field}: ${err.keyValue[field]} already exists.`;
+        const value = err.keyValue[field];
+
+        const translatedField = req.t(`fields.${field}`);
+
+        message = req.t("common.duplicate", {
+            field: translatedField,
+            value,
+        });
+        console.log(message);
 
         err = new ApiError(message, statusCode);
     }
