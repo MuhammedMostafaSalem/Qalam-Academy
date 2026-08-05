@@ -104,6 +104,14 @@ const userSchema = new mongoose.Schema({
         type: Date,
         select: false,
     },
+    resetPasswordToken: {
+        type: String,
+        select: false,
+    },
+    resetPasswordExpires: {
+        type: Date,
+        select: false,
+    },
     otpPurpose: {
         type: String,
         enum: ["email_verification", "forgot_password"],
@@ -118,7 +126,9 @@ userSchema.pre("validate", function () {
         this.isModified("firstName") ||
         this.isModified("lastName")
     ) {
-        this.slug = generateSlug(`${this.firstName} ${this.lastName}`);
+        this.slug = `${generateSlug(
+            `${this.firstName} ${this.lastName}`
+        )}-${this._id}`;
     }
 });
 
