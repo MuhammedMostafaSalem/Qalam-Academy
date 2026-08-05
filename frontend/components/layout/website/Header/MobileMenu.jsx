@@ -7,7 +7,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import CTAButton from "./CTAButton";
 
-const MobileMenu = ({ open, onClose }) => {
+const MobileMenu = ({ open, onClose, isAuthenticated }) => {
     const pathname = usePathname();
     const menuRef = useRef(null);
 
@@ -72,10 +72,21 @@ const MobileMenu = ({ open, onClose }) => {
                 ))}
             </ul>
 
-            <hr className="border-text-secondary" />
-            <div className="flex justify-center text-center mx-5 my-3">
-                <CTAButton />
-            </div>
+            {
+                isAuthenticated
+                    ? null
+                    : 
+                    <hr className="border-text-secondary" />
+            }
+            
+            {
+                isAuthenticated
+                    ? null
+                    : 
+                    <div className="flex justify-center text-center mx-5 my-3">
+                        <CTAButton />
+                    </div>
+            }
         </div>
     );
 }
