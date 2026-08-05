@@ -20,7 +20,7 @@ const Button = ({
 
     return (
         <button
-            {...heroAnimation.buttons}
+            // {...heroAnimation.buttons}
             className={`
                 rounded-button
                 px-6
