@@ -1,10 +1,11 @@
 const { z } = require("zod");
 
 const resetSchema = z.object({
-    email: z.string({ error: "Email is required" })
-        .email("Please enter a valid email address")
+    token: z.string({
+        error: "Reset token is required"
+    })
         .trim()
-        .toLowerCase(),
+        .min(1, "Reset token is required"),
 
     password: z.string({ error: "password is required" })
         .trim()
