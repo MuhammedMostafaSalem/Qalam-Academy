@@ -57,6 +57,8 @@ const RegisterBanner = () => {
                     z-10
                     flex
                     justify-center
+                    w-full
+                    h-full
                     ${animations.floating}
                 `}
             >
