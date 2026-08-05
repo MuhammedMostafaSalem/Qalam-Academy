@@ -10,16 +10,16 @@ import AuthCard from "../AuthCard";
 import RememberMe from "../RememberMe";
 import SectionTitle from "@/components/sections/SectionTitle"
 import SectionDescription from "@/components/sections/SectionDescription"
+import useLoginForm from "@/hooks/auth/useLoginForm";
 
 const LoginForm = () => {
-    const handleSubmit = (e) => {
-        e.preventDefault();
-
-        // TODO:
-        // React Hook Form
-        // Login API
-        // Validation
-    };
+    const {
+        formData,
+        loading,
+        fieldErrors,
+        handleChange,
+        handleSubmit,
+    } = useLoginForm();
 
     return (
         <AuthCard
@@ -57,6 +57,9 @@ const LoginForm = () => {
                     name="email"
                     label="البريد الإلكتروني"
                     placeholder="example@email.com"
+                    value={formData.email}
+                    onChange={handleChange}
+                    error={fieldErrors.email}
                 />
 
                 <AuthInput
@@ -64,12 +67,16 @@ const LoginForm = () => {
                     name="password"
                     label="كلمة المرور"
                     placeholder="••••••••••"
+                    value={formData.password}
+                    onChange={handleChange}
+                    error={fieldErrors.password}
                 />
 
                 <RememberMe />
 
                 <Button
                     type="submit"
+                    disabled={loading}
                     className="
                         gradient-button
                         flex
@@ -81,7 +88,13 @@ const LoginForm = () => {
                 >
                     <HiArrowRight size={20} />
 
-                    <span>تسجيل الدخول</span>
+                    <span>
+                        {
+                            loading
+                                ? "جاري تسجيل الدخول..."
+                                : "تسجيل الدخول"
+                        }
+                    </span>
                 </Button>
             </form>
 
