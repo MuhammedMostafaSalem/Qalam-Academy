@@ -3,7 +3,7 @@ const env = require("../config/env");
 const sendResponse = require("./sendResponse");
 
 // Function to send tokens to the user for login.
-const sendToken = async (user, statusCode, res) => {
+const sendToken = async (user, statusCode, res, req) => {
     // Generating an Access Token: Used to access protected resources (usually short lifespan)
     const accessToken = user.generateAccessToken();
     // Generating a Refresh Token: Used to obtain a new Access Token when the old token expires (it has a long lifespan).
@@ -24,9 +24,11 @@ const sendToken = async (user, statusCode, res) => {
     sendResponse(res, {
         statusCode,
         success: true,
-        message: "Logged in successfully",
-        data: user,
-        meta: accessToken,
+        message: req.t("auth.successLogin"),
+        data: {
+            user,
+            accessToken
+        },
     })
 }
 
