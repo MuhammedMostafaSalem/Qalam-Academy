@@ -4,58 +4,31 @@ import Section from "@/components/sections/Section";
 
 const RegisterLayout = () => {
     return (
-        <Section
-            className="
-                relative
-                overflow-hidden
-                px-4
-                py-6
-                lg:px-8
-            "
-        >
-            {/* Main Card */}
-
+        <Section className="relative flex min-h-screen items-start lg:items-center justify-center px-4 py-4">
             <div
                 className="
                     mx-auto
                     flex
-                    min-h-[calc(100vh-48px)]
+                    w-full
                     max-w-7xl
+                    max-h-[92vh]
                     overflow-hidden
-                    rounded-[24px]
+                    rounded-[32px]
                     border
                     border-border
-                    bg-card/80
+                    bg-card
+                    shadow-2xl
                 "
             >
-                {/* Left Side */}
-                <div
-                    className="
-                        flex
-                        flex-1
-                        items-center
-                        justify-center
-                        p-3
-                    "
-                >
-                    <div className="w-full max-w-md">
+                <div className="flex-1 overflow-y-auto custom-scrollbar p-3 sm:p-4">
+                    <div className="flex min-h-full items-center justify-center">
                         <RegisterForm />
                     </div>
                 </div>
 
-                {/* Right Side */}
-                <div
-                    className="
-                        hidden
-                        lg:flex
-                        lg:w-[38%]
-                        border-s
-                        border-border
-                    "
-                >
+                <div className="hidden lg:flex lg:w-[40%] border-s border-border">
                     <RegisterBanner />
                 </div>
-
             </div>
         </Section>
     );
