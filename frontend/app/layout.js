@@ -1,6 +1,9 @@
 import { Cairo, Inter } from "next/font/google";
 import AnimationProvider from "@/components/providers/AnimationProvider";
+import StoreProvider from "@/store/provider";
+import AuthProvider from "@/providers/AuthProvider";
 import "@/styles/globals.css";
+import Toast from "@/components/ui/Toast";
 
 const cairo = Cairo({
   subsets: ["arabic"],
@@ -26,9 +29,14 @@ export default function RootLayout({ children }) {
       data-scroll-behavior="smooth"
     >
       <body className={`${cairo.variable} ${inter.variable}`}>
-        <AnimationProvider>
-          {children}
-        </AnimationProvider>
+        <StoreProvider>
+          <AuthProvider>
+            <AnimationProvider>
+              {children}
+              <Toast />
+            </AnimationProvider>
+          </AuthProvider>
+        </StoreProvider>
       </body>
     </html>
   );
