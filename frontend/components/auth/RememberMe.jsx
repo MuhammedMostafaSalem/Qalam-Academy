@@ -15,7 +15,7 @@ const RememberMe = () => {
                 justify-between
             "
         >
-            <label className="flex cursor-pointer items-center gap-3">
+            {/* <label className="flex cursor-pointer items-center gap-3">
                 <input
                     type="checkbox"
                     checked={remember}
@@ -42,7 +42,7 @@ const RememberMe = () => {
                 </div>
 
                 <span>تذكرني</span>
-            </label>
+            </label> */}
 
             <Link
                 href="/forgot-password"
