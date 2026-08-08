@@ -2,62 +2,49 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/providers/AuthProvider";
+import FullPageLoader from "../ui/FullPageLoader";
 
-import useAuth from "@/hooks/auth/useAuth";
-
-const ProtectedRoute = ({
-    children,
-    allowedRoles,
-}) => {
+const ProtectedRoute = ({ children, allowedRoles = [] }) => {
+    const { user, isAuthenticated, loading } = useAuth();
     const router = useRouter();
 
-    const {
-        initialized,
-        isAuthenticated,
-        user,
-    } = useAuth();
-
     useEffect(() => {
-        if (!initialized) return;
-
-        if (!isAuthenticated) {
-            router.replace("/login");
-
-            return;
-        }
-
-        if (
-            !allowedRoles.includes(user.role)
-        ) {
-            if (window.history.length > 1) {
-                router.back();
-            } else {
+        if (!loading) {
+            // لو المستخدم مش مسجل دخول، حوله لصفحة تسجيل الدخول
+            if (!isAuthenticated) {
                 router.replace("/");
+                return;
+            }
+
+            // لو فيه أدوار محددة مطلوبة، افحص هل المستخدم يمتلك الدور المناسب أم لا
+            if (allowedRoles.length > 0 && !allowedRoles.includes(user?.role)) {
+                // توجيه المستخدم حسب دوره لو حاول يدخل مكان مش مخصص ليه
+                const dashboardRoutes = {
+                    admin: "/dashboard",
+                    instructor: "/instructor",
+                    student: "/user",
+                };
+
+                const redirectPath = dashboardRoutes[user?.role] || "/";
+                router.replace(redirectPath);
             }
         }
-    }, [
-        initialized,
-        isAuthenticated,
-        user,
-        allowedRoles,
-        router,
-    ]);
+    }, [isAuthenticated, loading, user, allowedRoles, router]);
 
-    if (!initialized) {
-        return null;
+    // عرض شاشة تحميل أثناء التحقق من الـ Token والـ User
+    if (loading) {
+        return (
+            <FullPageLoader />
+        );
     }
 
-    if (!isAuthenticated) {
-        return null;
+    // لو مسجل دخول وصاحب صلاحية، اعرض المحتوى
+    if (isAuthenticated && (allowedRoles.length === 0 || allowedRoles.includes(user?.role))) {
+        return <>{children}</>;
     }
 
-    if (
-        !allowedRoles.includes(user.role)
-    ) {
-        return null;
-    }
-
-    return children;
+    return null;
 };
 
 export default ProtectedRoute;
