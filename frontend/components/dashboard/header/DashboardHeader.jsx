@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import {
     HiOutlineBars3,
@@ -11,10 +12,13 @@ import { FaSignOutAlt } from "react-icons/fa";
 import { MdAccountCircle } from "react-icons/md";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import { useRouter } from "next/navigation";
+import userIcon from '@/public/assets/user-icon.png';
+import { useAuth } from "@/providers/AuthProvider";
 
 const DashboardHeader = ({
     setMobileOpen,
 }) => {
+    const { user, logout } = useAuth();
     const router = useRouter();
     const [open, setOpen] = useState(false);
     const menuRef = useRef(null);
@@ -40,9 +44,12 @@ const DashboardHeader = ({
 
     const handleAccount = () => router.push("/dashboard/profile");
 
-    const handleLogout = () => {
-        console.log("logout");
-        // logout logic
+    const handleLogout = async () => {
+        await logout();
+
+        setOpen(false);
+
+        router.replace("/");
     };
     return (
         <header
@@ -136,9 +143,13 @@ const DashboardHeader = ({
                             hover:border-primary
                         "
                     >
-                        <img
-                            src="https://i.pravatar.cc/150?img=12"
-                            alt="User"
+                        <Image
+                            src={
+                                user.avatar ? user.avatar : userIcon
+                            }
+                            alt={user.firstName || "User"}
+                            width={44}
+                            height={44}
                             className="
                                 h-11
                                 w-11
@@ -148,19 +159,9 @@ const DashboardHeader = ({
                         />
 
                         <div className="hidden md:block text-right">
-
                             <h3 className="font-semibold">
-                                Marwan Salem
+                                {user.firstName} {user.lastName}
                             </h3>
-
-                            <p
-                                className="
-                                    text-sm
-                                    text-text-secondary
-                                "
-                            >
-                                Administrator
-                            </p>
                         </div>
 
                         <HiChevronDown
@@ -174,7 +175,7 @@ const DashboardHeader = ({
                     </button>
 
                     <div
-                    className={`
+                        className={`
                             absolute
                             left-0
                             mt-2
