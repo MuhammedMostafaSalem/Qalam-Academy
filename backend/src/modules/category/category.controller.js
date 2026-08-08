@@ -9,7 +9,7 @@ const Category = require("./category.model");
 
 // Create category
 exports.createCategory = createOne(Category, {
-    modelName: "Category",
+    modelName: "category",
     fileFields: ["image"],
     translatableFields: [
         "title",
@@ -28,7 +28,7 @@ exports.createCategory = createOne(Category, {
 
 // Get all categories
 exports.getCategories = getAll(Category, {
-    modelName: "Categories",
+    modelName: "category",
     searchFields: [
         "title.en",
         "title.ar",
@@ -45,7 +45,7 @@ exports.getCategories = getAll(Category, {
 
 // Get one category
 exports.getCategory = getOne(Category, {
-    modelName: "Category",
+    modelName: "category",
     translatableFields: [
         "title",
         "description",
@@ -54,7 +54,7 @@ exports.getCategory = getOne(Category, {
 
 // Update category
 exports.updateCategory = updateOne(Category, {
-    modelName: "Category",
+    modelName: "category",
     fileFields: ["image"],
     translatableFields: [
         "title",
@@ -100,6 +100,6 @@ exports.updateCategory = updateOne(Category, {
 
 // Delete category
 exports.deleteCategory = deleteOne(Category, {
-    modelName: "Category",
+    modelName: "category",
     fileFields: ["image"],
 });
