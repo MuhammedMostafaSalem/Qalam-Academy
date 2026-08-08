@@ -13,6 +13,14 @@ module.exports = {
         deleted: "Course deleted successfully",
         notFound: "Course not found",
     },
+    
+    category: {
+        fetched: "category fetched successfully",
+        created: "category created successfully",
+        updated: "category updated successfully",
+        deleted: "category deleted successfully",
+        notFound: "category not found",
+    },
 
     hero: {
         created: "Hero created successfully",
