@@ -115,3 +115,22 @@ exports.toggleThemeMode = catchAsync(async (req, res) => {
         },
     });
 });
+
+// Get Current User
+exports.getCurrentUser = catchAsync(async (req, res, next) => {
+    // المفروض الـ protect middleware هو اللي بيحط الـ userId في req.user
+    const user = await User.findById(req.user.id).select("-password");
+
+    if (!user) {
+        return next(new ApiError(req.t(`auth.notFound`), StatusCodes.NOT_FOUND));
+    }
+
+    // Send success response
+    sendResponse(res, {
+        statusCode: StatusCodes.OK,
+        success: true,
+        data: {
+            user,
+        },
+    });
+});

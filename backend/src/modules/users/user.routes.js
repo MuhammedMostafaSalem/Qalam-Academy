@@ -10,7 +10,8 @@ const {
     getUser,
     changePassword,
     getThemeMode,
-    toggleThemeMode
+    toggleThemeMode,
+    getCurrentUser
 } = require("./user.controller");
 const uploadSingle = require("../../middlewares/uploadSingle");
 const validate = require("../../middlewares/validate");
@@ -31,6 +32,14 @@ router.patch(
     isAuthenticatedUser,
     toggleThemeMode
 );
+
+// get current user
+router
+    .route("/me")
+    .get(
+        isAuthenticatedUser,
+        getCurrentUser
+    )
 
 // Get all users
 router
