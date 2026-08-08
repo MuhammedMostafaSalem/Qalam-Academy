@@ -14,7 +14,7 @@ const UserDashboardLayout = ({ children }) => {
         <ProtectedRoute
             allowedRoles={["student"]}
         >
-            <div className="flex min-screen bg-background">
+            <div className="flex min-h-screen bg-background">
                 <Sidebar
                     menu={menu}
                     collapsed={collapsed}
