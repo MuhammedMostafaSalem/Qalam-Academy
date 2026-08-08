@@ -1,72 +1,72 @@
 "use client";
 
-import { useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-
-import useAuth from "@/hooks/useAuth";
-import useToast from "@/hooks/useToast";
+import { useDispatch } from "react-redux";
+import { showToast } from "@/store/slices/toastSlice";
+import { forgotPasswordAction } from "@/actions/authActions";
 
 const initialState = {
-    email: "",
+    success: false,
+    message: "",
+    fieldErrors: {},
 };
 
 const useForgotPasswordForm = () => {
     const router = useRouter();
+    const dispatch = useDispatch();
 
-    const {
-        forgotPassword,
-        loading,
-        fieldErrors,
-    } = useAuth();
+    const [state, formAction, isPending] = useActionState(forgotPasswordAction, initialState);
+    const [errors, setErrors] = useState(null);
+    const [fieldErrors, setFieldErrors] = useState({});
 
-    const {
-        successMessage,
-        errorMessage,
-    } = useToast();
+    useEffect(() => {
+        if (!state.message) return;
 
-    const [formData, setFormData] = useState(initialState);
+        if (state.success) {
+            dispatch(
+                showToast({
+                    message: state.message || "تم إرسال رمز التحقق بنجاح",
+                    type: "success",
+                })
+            );
 
+            // جلب البريد المدخل والتوجيه لصفحة التحقق بغرض إعادة تعيين كلمة المرور
+            // const emailInput = document.querySelector("input[name='email']");
+            // const email = emailInput ? emailInput.value : "";
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-
-        setFormData((prev) => ({
-            ...prev,
-            [name]: value,
-        }));
-    };
-
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        try {
-            const res = await forgotPassword(formData);
-
-            successMessage(res.message);
-
-            setTimeout(() => {
-                router.push(
-                    `/verify-otp?email=${formData.email}&type=reset-password`
-                );
-            }, 3000);
-
-        } catch (err) {
-            if (err.message !== "Validation failed") {
-                errorMessage(err.message);
+            setTimeout(()=> {
+                router.push(`/verify-otp?email=${state.email}&purpose=forgot_password`);
+            }, 3000)
+        } else {
+            if (state.message !== "Validation failed") {
+                setErrors(state.message);
             }
+            if (state.fieldErrors) {
+                setFieldErrors(state.fieldErrors);
+            }
+        }
+    }, [state, router]);
+
+    const handleInputChange = (e) => {
+        const { name } = e.target;
+
+        if (errors) {
+            setErrors(null);
+        }
+
+        if (fieldErrors[name]) {
+            setFieldErrors((prev) => ({ ...prev, [name]: null }));
         }
     };
 
-
     return {
-        formData,
-        loading,
+        formAction,
+        loading: isPending,
+        errors,
         fieldErrors,
-        handleChange,
-        handleSubmit,
+        handleInputChange,
     };
 };
-
 
 export default useForgotPasswordForm;

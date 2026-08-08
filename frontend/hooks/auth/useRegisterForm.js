@@ -1,79 +1,69 @@
 "use client";
 
-import { useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-
-import useAuth from "@/hooks/useAuth";
-import useToast from "@/hooks/useToast";
+import { useDispatch } from "react-redux";
+import { showToast } from "@/store/slices/toastSlice";
+import { signupAction } from "@/actions/authActions";
 
 const initialState = {
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone: "",
-    country: "",
-    city: "",
-    address: "",
-    password: "",
+    success: false,
+    message: "",
+    fieldErrors: {},
 };
 
 const useRegisterForm = () => {
     const router = useRouter();
-    const { signup, loading, error, message, fieldErrors, clearFieldError } = useAuth();
-    const { successMessage, errorMessage } = useToast();
-    const [formData, setFormData] = useState(initialState);
+    // const dispatch = useDispatch();
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
+    const [state, formAction, isPending] = useActionState(signupAction, initialState);
+    const [fieldErrors, setFieldErrors] = useState({});
+    const [email, setEmail] = useState("");
 
-        setFormData((prev) => ({
-            ...prev,
-            [name]: value,
-        }));
+    useEffect(() => {
+        if (!state.message) return;
 
-        if (fieldErrors[name]) {
-            clearFieldError(name);
-        }
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        const { password, ...signupData } = formData;
-
-        // if (error) {
-        //     errorMessage(error);
-        //     console.log(error);
-        //     return;
-        // }
-        
-        try {
-            const res = await signup({
-                ...signupData,
-                password,
-            });
-            
-            successMessage(res.message);
+        if (state.success) {
+            showToast({
+                message: state.message,
+                type: "success",
+            })
+            // dispatch(
+            // );
+            // const emailInput = document.querySelector("input[name='email']");
+            // email = emailInput ? emailInput.value : "";
 
             setTimeout(() => {
-                router.push(`/verify-otp?email=${formData.email}&type=register`);
+                router.push(`/verify-otp?email=${state.email}&purpose=email_verification`);
             }, 3000);
-        } catch (err) {
-            if (err.message !== "Validation failed") {
-                errorMessage(err.message);
+        } else {
+            // تحديث الأخطاء الخاصة بالحقول لو موجودة
+            if (state.fieldErrors) {
+                setFieldErrors(state.fieldErrors);
             }
+            // dispatch(
+            //     showToast({
+            //         message: state.message,
+            //         type: "error",
+            //     })
+            // );
+        }
+    }, [state, router]);
+
+    // دالة لمسح خطأ الحقل بمجرد أن يبدأ المستخدم في الكتابة بداخله
+    const handleInputChange = (e) => {
+        const { name } = e.target;
+        if (fieldErrors[name]) {
+            setFieldErrors((prev) => ({ ...prev, [name]: null }));
         }
     };
 
     return {
-        formData,
-        loading,
-        error,
-        message,
+        formAction,
+        loading: isPending,
         fieldErrors,
-        handleChange,
-        handleSubmit,
-    }
+        handleInputChange,
+    };
 };
 
 export default useRegisterForm;

@@ -1,149 +1,118 @@
-"use client";
-
-import { useEffect, useState } from "react";
+import { resendOtpAction, verifyOtpAction } from "@/actions/authActions";
+import { showToast } from "@/store/slices/toastSlice";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useActionState, useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 
-import useAuth from "@/hooks/useAuth";
-import useToast from "@/hooks/useToast";
-
+const initialState = {
+    success: false,
+    message: "",
+    fieldErrors: {},
+};
 
 const useVerifyOtpForm = () => {
+    const dispatch = useDispatch();
     const router = useRouter();
     const searchParams = useSearchParams();
 
-    const email = searchParams.get("email");
-    const type = searchParams.get("type") || "signup";
-
-
-    const {
-        verifyOtp,
-        resendOtp,
-        loading,
-        error,
-        fieldErrors,
-        message,
-    } = useAuth();
-
-
-    const {
-        successMessage,
-        errorMessage,
-    } = useToast();
-
-
-    const [otp, setOtp] = useState("");
+    const [state, formAction, isPending] = useActionState(verifyOtpAction, initialState);
     const [seconds, setSeconds] = useState(60);
+    const [errors, setErrors] = useState(null);
+    const [fieldErrors, setFieldErrors] = useState({});
 
+    const email = searchParams.get("email") || "";
+    const purpose = searchParams.get("purpose") || "email_verification";
+    const type = purpose === "forgot_password" ? "reset-password" : "email_verification";
 
-
-    useEffect(() => {
-        if (!email) {
-            router.replace("/register");
-        }
-    }, [email, router]);
-
-
-
+    // عداد الوقت لإعادة إرسال الكود
     useEffect(() => {
         if (seconds <= 0) return;
-
         const timer = setInterval(() => {
             setSeconds((prev) => prev - 1);
         }, 1000);
-
         return () => clearInterval(timer);
     }, [seconds]);
 
+    useEffect(() => {
+        if (!state.message) return;
 
+        if (state.success) {
+            showToast({
+                message: state.message,
+                type: "success",
+            })
 
-    const handleOtpChange = (e) => {
-        const value = e.target.value.replace(/\D/g, "");
-
-        if (value.length <= 6) {
-            setOtp(value);
-        }
-    };
-
-
-
-    const getPurpose = () => {
-        return type === "reset-password"
-            ? "forgot_password"
-            : "email_verification";
-    };
-
-
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        if (otp.length !== 6) return;
-
-        try {
-            const res = await verifyOtp({
-                email,
-                otp,
-                purpose: getPurpose(),
-            });
-
-            successMessage("تم التحقق بنجاح");
-
-            if (type === "reset-password") {
-                const resetToken = res.data.resetToken;
-
-                router.push(`/reset-password?token=${resetToken}`);
+            if (purpose === "forgot_password") {
+                const token = state.data?.resetToken;
+                router.push(`/reset-password?token=${token}`);
             } else {
                 router.push("/login");
             }
-        } catch (err) {
-            console.log(error)
-            console.log(err.message)
-            if (err.message !== "Invalid OTP") {
-                errorMessage(err.message);
+        } else {
+            // تحديث الأخطاء الخاصة بالحقول لو موجودة
+            if (state.fieldErrors) {
+                setFieldErrors(state.fieldErrors);
+            }
+            if (state.message !== "Validation failed") {
+                setErrors(state.message);
             }
         }
-    };
+    }, [state, router]);
 
+    const handleInputChange = (e) => {
+        const { name } = e.target;
+        if (errors) {
+            setErrors(null);
+        }
 
+        if (fieldErrors[name]) {
+            setFieldErrors((prev) => ({ ...prev, [name]: null }));
+        }
+    }
 
     const handleResend = async () => {
-        if (seconds > 0) return;
-
+        const formData = new FormData();
+        formData.append("email", email);
+        formData.append("purpose", purpose);
 
         try {
-            await resendOtp({
-                email,
-                purpose: getPurpose(),
-            });
+            const response = await resendOtpAction(null, formData);
+            if (response.success) {
+                setSeconds(60);
 
-
-            successMessage(
-                "تم إعادة إرسال الرمز"
-            );
-
-            setSeconds(60);
-
-
-        } catch (err) {
-            errorMessage(err.message);
+                dispatch(
+                    showToast({
+                        message: response.message,
+                        type: "success",
+                    })
+                )
+            } else {
+                dispatch(
+                    showToast({
+                        message: response.message,
+                        type: "error",
+                    })
+                )
+            }
+        } catch (error) {
+            showToast({
+                message: "فشل إرسال الكود",
+                type: "error",
+            })
         }
-    };
-
-
+    }
 
     return {
         email,
         type,
-        otp,
         seconds,
-        loading,
-        error,
-        message,
-        handleOtpChange,
-        handleSubmit,
-        handleResend,
+        formAction,
+        loading: isPending,
+        errors,
+        fieldErrors,
+        handleInputChange,
+        handleResend
     };
-};
-
+}
 
 export default useVerifyOtpForm;

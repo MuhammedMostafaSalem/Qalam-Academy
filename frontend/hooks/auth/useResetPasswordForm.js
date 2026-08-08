@@ -1,89 +1,69 @@
 "use client";
 
-import { useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-
-import useAuth from "@/hooks/useAuth";
-import useToast from "@/hooks/useToast";
-
+import { useDispatch } from "react-redux";
+import { showToast } from "@/store/slices/toastSlice";
+import { resetPasswordAction } from "@/actions/authActions";
 
 const initialState = {
-    password: "",
-    confirmPassword: "",
+    success: false,
+    message: "",
+    fieldErrors: {},
 };
-
 
 const useResetPasswordForm = () => {
     const router = useRouter();
     const searchParams = useSearchParams();
+    const dispatch = useDispatch();
 
-    const token = searchParams.get("token");
+    const token = searchParams.get("token") || "";
 
-    const {
-        resetPassword,
-        loading,
-        fieldErrors,
-    } = useAuth();
+    const [state, formAction, isPending] = useActionState(resetPasswordAction, initialState);
+    const [errors, setErrors] = useState(null);
+    const [fieldErrors, setFieldErrors] = useState({});
 
+    useEffect(() => {
+        if (!state.message) return;
 
-    const {
-        successMessage,
-        errorMessage,
-    } = useToast();
+        if (state.success) {
+            dispatch(
+                showToast({
+                    message: state.message || "تم تغيير كلمة المرور بنجاح",
+                    type: "success",
+                })
+            );
+            router.push("/login");
+        } else {
+            if (state.message !== "Validation failed") {
+                setErrors(state.message);
+            }
 
-
-    const [formData, setFormData] = useState(initialState);
-
-
-    const handleChange = (e) => {
-        const {
-            name,
-            value,
-        } = e.target;
-
-        setFormData((prev) => ({
-            ...prev,
-            [name]: value,
-        }));
-    };
-
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        if (!token) {
-            errorMessage("رمز إعادة التعيين غير موجود");
-            return;
-        }
-
-        try {
-            const res = await resetPassword({
-                token,
-                password: formData.password,
-                confirmPassword: formData.confirmPassword,
-            });
-
-            successMessage(res.message);
-
-            setTimeout(() => {
-                router.push("/login");
-            }, 2000);
-
-        } catch (err) {
-            console.log(err.message);
-            if (err.message !== "Validation failed" && err.message !== "كلمتا المرور غير متطابقتين") {
-                errorMessage(err.message);
+            if (state.fieldErrors) {
+                setFieldErrors(state.fieldErrors);
             }
         }
+    }, [state, router]);
+
+    const handleInputChange = (e) => {
+        const { name } = e.target;
+
+        if (errors) {
+            setErrors(null);
+        }
+
+        if (fieldErrors[name]) {
+            setFieldErrors((prev) => ({ ...prev, [name]: null }));
+        }
     };
 
-
     return {
-        formData,
-        loading,
+        token,
+        formAction,
+        loading: isPending,
+        errors,
         fieldErrors,
-        handleChange,
-        handleSubmit,
+        handleInputChange,
     };
 };
 

@@ -1,64 +1,70 @@
 "use client";
 
-import { useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-
-import useAuth from "@/hooks/useAuth";
-import useToast from "@/hooks/useToast";
+import { useDispatch } from "react-redux";
+import { showToast } from "@/store/slices/toastSlice";
+import { loginAction } from "@/actions/authActions";
+import { useAuth } from "@/providers/AuthProvider";
 
 const initialState = {
-    email: "",
-    password: "",
+    success: false,
+    message: "",
+    fieldErrors: {},
 };
 
 const useLoginForm = () => {
+    const {setUser} = useAuth();
     const router = useRouter();
+    const dispatch = useDispatch();
 
-    const {
-        login,
-        loading,
-        fieldErrors,
-    } = useAuth();
+    const [state, formAction, isPending] = useActionState(loginAction, initialState);
+    const [fieldErrors, setFieldErrors] = useState({});
 
-    const {
-        successMessage,
-        errorMessage,
-    } = useToast();
+    useEffect(() => {
+        if (!state.message) return;
 
-    const [formData, setFormData] = useState(initialState);
+        if (state.success) {
+            setUser(state.data.user);
 
-    const handleChange = (e) => {
-        const {
-            name,
-            value,
-        } = e.target;
+            dispatch(
+                showToast({
+                    message: state.message,
+                    type: "success",
+                })
+            );
+            // التوجيه للوحة التحكم أو الصفحة الرئيسية بعد تسجيل الدخول بنجاح
+            // router.push("/");
+            router.replace("/");
+        } else {
+            console.log(state)
+            if (state.fieldErrors) {
+                setFieldErrors(state.fieldErrors);
+            }
 
-        setFormData((prev) => ({
-            ...prev,
-            [name]: value,
-        }));
-    };
+            if (state.message !== "Validation failed") {
+                dispatch(
+                    showToast({
+                        message: state.message,
+                        type: "error",
+                    })
+                );
+            }
+        }
+    }, [state, router]);
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        try {
-            const res = await login(formData);
-
-            successMessage(res.message);
-
-            router.push("/");
-        } catch (err) {
-            errorMessage(err.message);
+    const handleInputChange = (e) => {
+        const { name } = e.target;
+        if (fieldErrors[name]) {
+            setFieldErrors((prev) => ({ ...prev, [name]: null }));
         }
     };
 
     return {
-        formData,
-        loading,
+        formAction,
+        loading: isPending,
         fieldErrors,
-        handleChange,
-        handleSubmit,
+        handleInputChange,
     };
 };
 
