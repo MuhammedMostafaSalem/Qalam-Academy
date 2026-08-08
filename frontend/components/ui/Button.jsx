@@ -26,6 +26,7 @@ const Button = ({
                 px-6
                 py-3
                 font-semibold
+                cursor-pointer
                 duration-300
                 ${variants[variant]}
                 ${animations.transition}
