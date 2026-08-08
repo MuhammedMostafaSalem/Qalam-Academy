@@ -251,10 +251,12 @@ const resetPassword = catchAsync(async (req, res, next) => {
 const logout = catchAsync(async (req, res, next) => {
     // Cookie settings (Security Options)
     const cookieOptions = {
-        expires: new Date(Date.now()),
+        // expires: new Date(Date.now()),
+        maxAge: 0,
         httpOnly: true,
         sameSite: "strict",
         secure: env.nodeEnv === "production",
+        path: "/",
     }
 
     // Clear refresh token cookie
