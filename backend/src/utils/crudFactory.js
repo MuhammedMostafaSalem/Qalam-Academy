@@ -233,7 +233,7 @@ exports.deleteOne = (
         return sendResponse(res, {
             statusCode: StatusCodes.OK,
             success: true,
-            message: req.t(`${modelName}.updated`),
+            message: req.t(`${modelName}.deleted`),
             data: null,
         });
     });
