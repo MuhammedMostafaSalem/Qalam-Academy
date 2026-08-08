@@ -9,16 +9,12 @@ import { FaSignOutAlt } from "react-icons/fa";
 import { MdDashboard } from "react-icons/md";
 import { CgProfile } from "react-icons/cg";
 import userIcon from '@/public/assets/user-icon.png';
-import useAuth from "@/hooks/auth/useAuth";
+import { useAuth } from "@/providers/AuthProvider";
 
 const UserMenu = () => {
+    const { user, logout } = useAuth();
     const router = useRouter();
     const pathname = usePathname();
-
-    const {
-        user,
-        logout,
-    } = useAuth();
 
     const [open, setOpen] = useState(false);
 
@@ -46,13 +42,11 @@ const UserMenu = () => {
     }, [pathname]);
 
     const handleLogout = async () => {
-        try {
-            await logout();
+        await logout();
 
-            setOpen(false);
-        } catch (err) {
-            console.error(err);
-        }
+        setOpen(false);
+
+        router.replace("/");
     }
 
     if (!user) return null;
@@ -72,12 +66,6 @@ const UserMenu = () => {
     }
 
     const FirstIcon = firstMenuItem.icon;
-
-    const roleNames = {
-        admin: "مدير",
-        instructor: "مدرب",
-        student: "المستخدم",
-    };
 
     return (
         <div
@@ -103,7 +91,7 @@ const UserMenu = () => {
                     src={
                         user.avatar ? user.avatar : userIcon
                     }
-                    alt={user.firstName}
+                    alt={user.firstName || "User"}
                     width={44}
                     height={44}
                     className="
