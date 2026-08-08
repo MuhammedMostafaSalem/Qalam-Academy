@@ -1,7 +1,7 @@
 import { Cairo, Inter } from "next/font/google";
 import AnimationProvider from "@/components/providers/AnimationProvider";
 import StoreProvider from "@/store/provider";
-import AuthProvider from "@/providers/AuthProvider";
+import { AuthProvider } from "@/providers/AuthProvider";
 import "@/styles/globals.css";
 import Toast from "@/components/ui/Toast";
 
