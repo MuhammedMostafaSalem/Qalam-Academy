@@ -14,11 +14,12 @@ import useResetPasswordForm from "@/hooks/auth/useResetPasswordForm";
 
 const ResetPasswordForm = () => {
     const {
-        formData,
+        token,
+        formAction,
         loading,
+        errors,
         fieldErrors,
-        handleChange,
-        handleSubmit,
+        handleInputChange,
     } = useResetPasswordForm();
 
     return (
@@ -62,19 +63,26 @@ const ResetPasswordForm = () => {
 
 
             <form
-                onSubmit={handleSubmit}
+                action={formAction}
                 className="
                     space-y-5
                 "
             >
+                {/* حقول مخفية لتمرير الـ Token للـ Server Action */}
+                <input
+                    type="hidden"
+                    name="token"
+                    value={token}
+                />
+
                 <AuthInput
                     type="password"
                     name="password"
                     label="كلمة المرور الجديدة"
                     placeholder="********"
-                    value={formData.password}
-                    onChange={handleChange}
+                    onChange={handleInputChange}
                     error={fieldErrors.password}
+                    required
                 />
 
                 <AuthInput
@@ -82,10 +90,16 @@ const ResetPasswordForm = () => {
                     name="confirmPassword"
                     label="تأكيد كلمة المرور"
                     placeholder="********"
-                    value={formData.confirmPassword}
-                    onChange={handleChange}
+                    onChange={handleInputChange}
                     error={fieldErrors.confirmPassword}
+                    required
                 />
+
+                {errors && (
+                    <p className="text-sm text-red-500 text-center">
+                        {errors}
+                    </p>
+                )}
 
                 <Button
                     type="submit"
@@ -108,10 +122,8 @@ const ResetPasswordForm = () => {
 
                     {
                         loading
-                            ?
-                            "جارٍ التحديث..."
-                            :
-                            "تغيير كلمة المرور"
+                            ? "جارٍ التحديث..."
+                            : "تغيير كلمة المرور"
                     }
                 </Button>
             </form>

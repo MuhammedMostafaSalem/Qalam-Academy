@@ -10,16 +10,16 @@ const VerifyOtpForm = () => {
     const {
         email,
         type,
-        otp,
         seconds,
+        formAction,
         loading,
-        error,
-        message,
-        handleOtpChange,
-        handleSubmit,
-        handleResend,
+        errors,
+        fieldErrors,
+        handleInputChange,
+        handleResend
     } = useVerifyOtpForm();
 
+    const errorMessage = errors || fieldErrors?.otp;
 
     return (
         <AuthCard
@@ -42,20 +42,16 @@ const VerifyOtpForm = () => {
                 <SectionTitle>
                     {
                         type === "reset-password"
-                            ?
-                            "إعادة تعيين كلمة المرور"
-                            :
-                            "تأكيد البريد الإلكتروني"
+                            ? "إعادة تعيين كلمة المرور"
+                            : "تأكيد البريد الإلكتروني"
                     }
                 </SectionTitle>
 
                 <SectionDescription>
                     {
                         type === "reset-password"
-                            ?
-                            "ادخل الكود المرسل إلى بريدك لإعادة تعيين كلمة المرور"
-                            :
-                            "ادخل الكود المرسل إلى بريدك"
+                            ? "ادخل الكود المرسل إلى بريدك لإعادة تعيين كلمة المرور"
+                            : "ادخل الكود المرسل إلى بريدك"
                     }
                 </SectionDescription>
 
@@ -66,12 +62,26 @@ const VerifyOtpForm = () => {
 
 
             <form
-                onSubmit={handleSubmit}
+                action={formAction}
                 className="space-y-6"
             >
+                {/* بيانات مخفية ترسل مع الـ FormData */}
                 <input
-                    value={otp}
-                    onChange={handleOtpChange}
+                    type="hidden"
+                    name="email"
+                    value={email}
+                />
+                <input
+                    type="hidden"
+                    name="purpose"
+                    value={type === "reset-password" ? "forgot_password" : "email_verification"}
+                />
+
+
+                <input
+                    name="otp"
+                    // value={otp}
+                    onChange={handleInputChange}
                     maxLength={6}
                     inputMode="numeric"
                     placeholder="000000"
@@ -93,19 +103,28 @@ const VerifyOtpForm = () => {
                     "
                 />
 
-                {
-                    error &&
-                    <p className="text-sm text-red-500">
-                        {error}
+                {/* {
+                    errors &&
+                    <p className="text-sm text-red-500 text-center">
+                        {errors}
                     </p>
-                }
+                } */}
+
+                {errorMessage && (
+                    <p className="text-sm text-red-500 text-center">
+                        {errorMessage}
+                    </p>
+                )}
+
+                {/* {fieldErrors?.otp && (
+                    <p className="text-sm text-red-500 text-center">
+                        {fieldErrors.otp}
+                    </p>
+                )} */}
 
                 <Button
                     type="submit"
-                    disabled={
-                        loading ||
-                        otp.length !== 6
-                    }
+                    disabled={loading}
 
                     className="
                         gradient-button
@@ -114,14 +133,10 @@ const VerifyOtpForm = () => {
                 >
                     {
                         loading
-                            ?
-                            "جاري التأكيد..."
-                            :
-                            type === "reset-password"
-                                ?
-                                "تأكيد الكود"
-                                :
-                                "تأكيد الحساب"
+                            ? "جاري التأكيد..."
+                            : type === "reset-password"
+                                ? "تأكيد الكود"
+                                : "تأكيد الحساب"
                     }
                 </Button>
             </form>
@@ -136,19 +151,15 @@ const VerifyOtpForm = () => {
                     text-sm
                     transition
                     ${seconds > 0
-                        ?
-                        "text-text-secondary cursor-not-allowed"
-                        :
-                        "text-primary hover:text-primary-hover"
+                        ? "text-text-secondary cursor-not-allowed"
+                        : "text-primary hover:text-primary-hover"
                     }
                 `}
             >
                 {
                     seconds > 0
-                        ?
-                        `إعادة إرسال الكود بعد ${seconds} ثانية`
-                        :
-                        "إعادة إرسال الكود"
+                        ? `إعادة إرسال الكود بعد ${seconds} ثانية`
+                        : "إعادة إرسال الكود"
                 }
             </button>
         </AuthCard>

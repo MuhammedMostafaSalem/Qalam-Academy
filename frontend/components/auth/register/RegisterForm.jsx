@@ -13,13 +13,10 @@ import useRegisterForm from "@/hooks/auth/useRegisterForm";
 
 const RegisterForm = () => {
     const {
-        formData,
+        formAction,
         loading,
-        error,
-        message,
         fieldErrors,
-        handleChange,
-        handleSubmit,
+        handleInputChange
     } = useRegisterForm();
 
     return (
@@ -37,24 +34,24 @@ const RegisterForm = () => {
             </div>
 
             {/* Form */}
-            <form onSubmit={handleSubmit} className="space-y-5">
+            <form action={formAction} className="space-y-5">
                 {/* الاسم الأول والأخير بجانب بعضهما في الشاشات المتوسطة */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <AuthInput
                         name="firstName"
                         label="الأسم الأول"
                         placeholder="اكتب الاسم الأول"
-                        value={formData.firstName}
-                        onChange={handleChange}
                         error={fieldErrors.firstName}
+                        onChange={handleInputChange}
+                        required
                     />
                     <AuthInput
                         name="lastName"
                         label="الأسم الأخير"
                         placeholder="اكتب الاسم الأخير"
-                        value={formData.lastName}
-                        onChange={handleChange}
                         error={fieldErrors.lastName}
+                        onChange={handleInputChange}
+                        required
                     />
                 </div>
 
@@ -65,17 +62,17 @@ const RegisterForm = () => {
                         name="email"
                         label="البريد الإلكتروني"
                         placeholder="example@email.com"
-                        value={formData.email}
-                        onChange={handleChange}
                         error={fieldErrors.email}
+                        onChange={handleInputChange}
+                        required
                     />
                     <AuthInput
                         name="phone"
                         label="رقم الهاتف"
                         placeholder="+201000000000"
-                        value={formData.phone}
-                        onChange={handleChange}
                         error={fieldErrors.phone}
+                        onChange={handleInputChange}
+                        required
                     />
                 </div>
 
@@ -85,17 +82,17 @@ const RegisterForm = () => {
                         name="country"
                         label="الدولة"
                         placeholder="Egypt"
-                        value={formData.country}
-                        onChange={handleChange}
                         error={fieldErrors.country}
+                        onChange={handleInputChange}
+                        required
                     />
                     <AuthInput
                         name="city"
                         label="المدينة"
                         placeholder="Cairo"
-                        value={formData.city}
-                        onChange={handleChange}
                         error={fieldErrors.city}
+                        onChange={handleInputChange}
+                        required
                     />
                 </div>
 
@@ -104,9 +101,9 @@ const RegisterForm = () => {
                     name="address"
                     label="العنوان"
                     placeholder="شارع الجمهورية، عمارة 5..."
-                    value={formData.address}
-                    onChange={handleChange}
                     error={fieldErrors.address}
+                    onChange={handleInputChange}
+                    required
                 />
 
                 {/* كلمة المرور وتأكيدها */}
@@ -115,9 +112,9 @@ const RegisterForm = () => {
                     name="password"
                     label="كلمة المرور"
                     placeholder="••••••••"
-                    value={formData.password}
-                    onChange={handleChange}
                     error={fieldErrors.password}
+                    onChange={handleInputChange}
+                    required
                 />
 
                 <Button

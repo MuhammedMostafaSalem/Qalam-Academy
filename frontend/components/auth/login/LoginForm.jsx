@@ -14,11 +14,10 @@ import useLoginForm from "@/hooks/auth/useLoginForm";
 
 const LoginForm = () => {
     const {
-        formData,
+        formAction,
         loading,
         fieldErrors,
-        handleChange,
-        handleSubmit,
+        handleInputChange,
     } = useLoginForm();
 
     return (
@@ -46,7 +45,7 @@ const LoginForm = () => {
             {/* Form */}
 
             <form
-                onSubmit={handleSubmit}
+                action={formAction}
                 className="
                 mt-5
                     space-y-6
@@ -57,9 +56,9 @@ const LoginForm = () => {
                     name="email"
                     label="البريد الإلكتروني"
                     placeholder="example@email.com"
-                    value={formData.email}
-                    onChange={handleChange}
+                    onChange={handleInputChange}
                     error={fieldErrors.email}
+                    required
                 />
 
                 <AuthInput
@@ -67,9 +66,9 @@ const LoginForm = () => {
                     name="password"
                     label="كلمة المرور"
                     placeholder="••••••••••"
-                    value={formData.password}
-                    onChange={handleChange}
+                    onChange={handleInputChange}
                     error={fieldErrors.password}
+                    required
                 />
 
                 <RememberMe />

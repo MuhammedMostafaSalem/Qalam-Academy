@@ -13,12 +13,14 @@ import useForgotPasswordForm from "@/hooks/auth/useForgotPasswordForm";
 
 const ForgetPasswordForm = () => {
     const {
-        formData,
+        formAction,
         loading,
+        errors,
         fieldErrors,
-        handleChange,
-        handleSubmit,
+        handleInputChange,
     } = useForgotPasswordForm();
+
+    const errorMessage = errors || fieldErrors.email;
 
     return (
         <AuthCard className="w-full max-w-lg rounded-[28px] border border-border bg-card p-5 sm:p-6 shadow-xl">
@@ -35,7 +37,7 @@ const ForgetPasswordForm = () => {
 
             {/* Form */}
             <form
-                onSubmit={handleSubmit}
+                action={formAction}
                 className="space-y-5"
             >
                 <AuthInput
@@ -43,9 +45,9 @@ const ForgetPasswordForm = () => {
                     name="email"
                     label="البريد الإلكتروني"
                     placeholder="example@email.com"
-                    value={formData.email}
-                    onChange={handleChange}
-                    error={fieldErrors.email}
+                    onChange={handleInputChange}
+                    error={errorMessage}
+                    required
                 />
 
                 <Button
