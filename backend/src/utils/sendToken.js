@@ -10,12 +10,19 @@ const sendToken = async (user, statusCode, res, req) => {
     const refreshToken = user.generateRefreshToken();
 
     // Cookie settings (Security Options)
+    // const cookieOptions = {
+    //     expires: new Date(Date.now() + ms(env.jwtRefreshExpiresIn)),
+    //     httpOnly: true,
+    //     sameSite: "strict",
+    //     secure: env.nodeEnv === "production",
+    // }
     const cookieOptions = {
-        expires: new Date(Date.now() + ms(env.jwtRefreshExpiresIn)),
+        maxAge: ms(env.jwtRefreshExpiresIn),
         httpOnly: true,
         sameSite: "strict",
         secure: env.nodeEnv === "production",
-    }
+        path: "/",
+    };
 
     // Store the Refresh Token securely in your browser's cookies.
     res.cookie("refreshToken", refreshToken, cookieOptions);
