@@ -14,7 +14,7 @@ const initialState = {
 };
 
 const useLoginForm = () => {
-    const {setUser} = useAuth();
+    const { setUser, setSessionExpiresAt } = useAuth();
     const router = useRouter();
     const dispatch = useDispatch();
 
@@ -26,6 +26,7 @@ const useLoginForm = () => {
 
         if (state.success) {
             setUser(state.data.user);
+            setSessionExpiresAt(state.sessionExpiresAt);
 
             dispatch(
                 showToast({
@@ -37,7 +38,7 @@ const useLoginForm = () => {
             // router.push("/");
             router.replace("/");
         } else {
-            console.log(state)
+            // console.log(state)
             if (state.fieldErrors) {
                 setFieldErrors(state.fieldErrors);
             }
@@ -51,7 +52,7 @@ const useLoginForm = () => {
                 );
             }
         }
-    }, [state, router]);
+    }, [state, router, setUser, dispatch]);
 
     const handleInputChange = (e) => {
         const { name } = e.target;

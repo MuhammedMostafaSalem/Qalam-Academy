@@ -1,6 +1,6 @@
 const FullPageLoader = () => {
     return (
-        <div className="flex min-h-screen items-center justify-center bg-background/80 z-50">
+        <div className="flex h-[100vh] items-center justify-center bg-background/80 z-50">
             <div className="flex flex-col items-center gap-4">
                 {/* <p className="text-text-secondary font-medium">جاري المعالجة...</p> */}
                 <span

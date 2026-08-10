@@ -2,6 +2,8 @@ import ExportButton from "../shared/ExportButton";
 import SearchInput from "./SearchInput";
 
 const Toolbar = ({
+    searchQuery,
+    setSearchQuery,
     inputPlaceholder,
     filters,
     actions,
@@ -21,16 +23,20 @@ const Toolbar = ({
             {/* Search & Filters */}
             <div
                 className="
-                        flex
-                        flex-1
-                        flex-col
-                        gap-3
-                        md:flex-row
-                        md:items-center
-                    "
+                    flex
+                    flex-1
+                    flex-col
+                    gap-3
+                    md:flex-row
+                    md:items-center
+                "
             >
                 <div className="w-full md:w-[250px]">
-                    <SearchInput inputPlaceholder={inputPlaceholder} />
+                    <SearchInput
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        inputPlaceholder={inputPlaceholder}
+                    />
                 </div>
 
                 {filters}

@@ -1,6 +1,6 @@
 import { HiOutlineMagnifyingGlass } from "react-icons/hi2";
 
-const SearchInput = ({ inputPlaceholder }) => {
+const SearchInput = ({ inputPlaceholder, value, onChange }) => {
     return (
         <div className="relative w-full">
 
@@ -17,6 +17,8 @@ const SearchInput = ({ inputPlaceholder }) => {
 
             <input
                 type="text"
+                value={value}
+                onChange={onChange}
                 placeholder={inputPlaceholder}
                 className="
                     h-12

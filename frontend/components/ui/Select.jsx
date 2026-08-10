@@ -1,9 +1,11 @@
 import { HiChevronDown } from "react-icons/hi"
 
-const Select = () => {
+const Select = ({ value, onChange, values }) => {
     return (
         <div className="relative">
             <select
+                value={value}
+                onChange={onChange}
                 className="
                     h-12
                     w-full
@@ -24,11 +26,11 @@ const Select = () => {
                     focus:ring-primary/20
                 "
             >
-                <option>التصنيف</option>
-                <option>Frontend</option>
-                <option>Backend</option>
-                <option>Mobile</option>
-                <option>UI / UX</option>
+                {
+                    values.map((item, index) => (
+                        <option key={index} value={item.value}>{item.name}</option>
+                    ))
+                }
             </select>
 
             <HiChevronDown

@@ -6,7 +6,7 @@ import {
     useContext,
     useEffect,
     useMemo,
-    useState
+    useState,
 } from "react";
 import { getCurrentUserAction, logoutAction } from "@/actions/authActions";
 import { useRouter } from "next/navigation";
@@ -17,148 +17,91 @@ export function AuthProvider({ children }) {
     const router = useRouter();
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [sessionExpiresAt, setSessionExpiresAt] = useState(null);
 
-    // Get Current User
+    // Get current logged -in user
     const refreshUser = useCallback(async () => {
         setLoading(true);
 
         try {
             const result = await getCurrentUserAction();
 
-            console.log("getCurrentUserAction:", result);
-
+            // if (result.success) {
+            //     setUser(result.data);
+            // } else {
+            //     setUser(null);
+            // }
             if (result.success) {
+                console.log("CURRENT USER:", result.data);
                 setUser(result.data.user);
-            } else {
-                setUser(null);
+                return;
             }
-        } catch (error) {
-            console.error("refreshUser error:", error);
+
+            // Session expired or invalid token
+            if (result.authExpired) {
+                setUser(null);
+                setSessionExpiresAt(null);
+
+                return result;
+            }
 
             setUser(null);
+            setSessionExpiresAt(null);
+
+            return result;
+        } catch (error) {
+            setUser(null);
+            setSessionExpiresAt(null);
         } finally {
             setLoading(false);
         }
     }, []);
 
-    // Initial Auth Check
+    // Automatically check session expiration
+    useEffect(() => {
+        if (!sessionExpiresAt) {
+            return;
+        }
+
+        const remainingTime = sessionExpiresAt - Date.now();
+
+        if (remainingTime <= 0) {
+            refreshUser();
+            return;
+        }
+
+        const timer = setTimeout(() => {
+            refreshUser();
+        }, remainingTime + 1000);
+
+        return () => {
+            clearTimeout(timer);
+        }
+    }, [sessionExpiresAt, refreshUser])
+
+    // Check authentication when app starts
     useEffect(() => {
         refreshUser();
     }, [refreshUser]);
 
     // Logout
     const logout = useCallback(async () => {
+        setLoading(true);
+
         try {
             await logoutAction();
-        } catch (error) {
-            console.error("Logout error:", error);
-        } finally {
-            // IMPORTANT
-            // Update React state immediately
 
+            // Update Navbar immediately
             setUser(null);
+            setSessionExpiresAt(null);
 
             router.replace("/");
-
-            router.refresh();
+            // router.refresh();
+        } finally {
+            setLoading(false);
         }
     }, [router]);
 
-    // Session Timer
-    useEffect(() => {
-        if (!user) {
-            return;
-        }
-
-        const checkSessionExpiration = () => {
-            // sessionExpiresAt is NOT HttpOnly
-            // so the browser can read it
-            const cookieMatch =
-                document.cookie.match(
-                    /(?:^|;\s*)sessionExpiresAt=([^;]+)/
-                );
-
-            if (!cookieMatch) {
-                console.log("No sessionExpiresAt cookie found");
-
-                return;
-            }
-
-            const expiresAt = Number(cookieMatch[1]);
-
-
-            if (!expiresAt) {
-                return;
-            }
-
-            const remainingTime = expiresAt - Date.now();
-
-            console.log(
-                "Session remaining:",
-                Math.max(
-                    0,
-                    Math.round(
-                        remainingTime / 1000
-                    )
-                ),
-                "seconds"
-            );
-
-            // Already Expired
-            if (remainingTime <= 0) {
-                console.log("⏰ Session expired - logging out");
-
-                logout();
-
-                return;
-            }
-
-            // Schedule Logout
-            const timer =
-                setTimeout(() => {
-                    console.log("⏰ Session expired - logging out");
-
-                    logout();
-                }, remainingTime);
-
-            return timer;
-        }
-
-        const timer = checkSessionExpiration();
-
-        // Re-check when tab becomes visible
-        const handleVisibilityChange = () => {
-
-            if (
-                document.visibilityState ===
-                "visible"
-            ) {
-
-                checkSessionExpiration();
-            }
-        };
-
-
-        document.addEventListener(
-            "visibilitychange",
-            handleVisibilityChange
-        );
-
-
-        return () => {
-
-            if (timer) {
-                clearTimeout(timer);
-            }
-
-
-            document.removeEventListener(
-                "visibilitychange",
-                handleVisibilityChange
-            );
-        };
-
-    }, [user, logout]);
 
     // Context Value
     const value = useMemo(() => ({
@@ -168,7 +111,9 @@ export function AuthProvider({ children }) {
         setUser,
         refreshUser,
         logout,
-    }), [user, loading, logout, refreshUser]);
+        sessionExpiresAt,
+        setSessionExpiresAt,
+    }), [user, loading, logout, refreshUser, sessionExpiresAt]);
 
     return (
         <AuthContext.Provider

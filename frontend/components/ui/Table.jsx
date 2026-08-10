@@ -1,10 +1,13 @@
 const Table = ({ children }) => {
     return (
-        <div className="overflow-x-auto rounded-xl border border-border">
-            <table className="w-full">
-                {children}
-            </table>
-        </div>
+        // <div className="overflow-x-auto rounded-xl border border-border">
+        //     <table className="w-full">
+        //         {children}
+        //     </table>
+        // </div>
+        <table className="w-full border-collapse border border-border overflow-x-auto">
+            {children}
+        </table>
     );
 };
 

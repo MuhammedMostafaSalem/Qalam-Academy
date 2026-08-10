@@ -33,7 +33,6 @@ const DashboardLayout = ({ children }) => {
                     <main
                         className="
                             flex-1
-                            overflow-y-auto
                             p-3
                             transition-all
                             duration-300
