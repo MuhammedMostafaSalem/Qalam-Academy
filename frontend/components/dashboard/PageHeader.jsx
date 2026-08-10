@@ -6,7 +6,8 @@ import Section from "../sections/Section";
 const PageHeader = ({
     title,
     description,
-    button
+    button,
+    onButtonClick
 }) => {
     return (
         <Section>
@@ -45,18 +46,17 @@ const PageHeader = ({
                 {
                     button && (
                         <button
+                            type="button"
+                            onClick={onButtonClick}
                             className="
-                            gradient-button
-
-                            flex
-                            items-center
-                            gap-2
-
-                            rounded-2xl
-
-                            px-6
-                            py-3
-                        "
+                                gradient-button
+                                flex
+                                items-center
+                                gap-2
+                                rounded-2xl
+                                px-6
+                                py-3
+                            "
                         >
                             <HiOutlinePlus size={20} />
 
