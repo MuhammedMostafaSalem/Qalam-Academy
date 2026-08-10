@@ -251,8 +251,8 @@ const resetPassword = catchAsync(async (req, res, next) => {
 const logout = catchAsync(async (req, res, next) => {
     // Cookie settings (Security Options)
     const cookieOptions = {
-        // expires: new Date(Date.now()),
-        maxAge: 0,
+        expires: new Date(Date.now()),
+        // maxAge: 0,
         httpOnly: true,
         sameSite: "strict",
         secure: env.nodeEnv === "production",
@@ -260,7 +260,8 @@ const logout = catchAsync(async (req, res, next) => {
     }
 
     // Clear refresh token cookie
-    res.cookie("refreshToken", null, cookieOptions);
+    // res.cookie("Qalam_Token", null, cookieOptions);
+    res.clearCookie("Qalam_Token", cookieOptions);
 
     // Send success response
     sendResponse(res, {
