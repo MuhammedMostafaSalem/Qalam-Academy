@@ -105,12 +105,11 @@ class ApiFeatures {
     // Load More
     loadMore(defaultLimit = 10) {
         const limit = Number(this.queryString.limit) || defaultLimit;
+        const skip = Number(this.queryString.skip) || 0;
 
         // const page = Number(this.queryString.page) || 1;
 
         // const skip = (page - 1) * limit;
-        const skip = 0;
-
         this.limitValue = limit;
 
         this.skipValue = skip;
