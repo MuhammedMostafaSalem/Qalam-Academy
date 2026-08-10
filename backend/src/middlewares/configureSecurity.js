@@ -6,21 +6,25 @@ const compression = require("compression");
 const env = require("../config/env");
 
 const configureSecurity = (app) => {
-    app.use(helmet());
+    // app.use(helmet({
+    //     crossOriginResourcePolicy: {
+    //         policy: "cross-origin",
+    //     },
+    // }));
     app.use(
         cors({
             origin: env.clientUrl,
             credentials: true,
         })
     );
-    app.use(
-        rateLimit({
-            windowMs: 15 * 60 * 1000,
-            max: 100,
-        })
-    );
-    app.use(hpp());
-    app.use(compression());
+    // app.use(
+    //     rateLimit({
+    //         windowMs: 15 * 60 * 1000,
+    //         max: 100,
+    //     })
+    // );
+    // app.use(hpp());
+    // app.use(compression());
 }
 
 module.exports = configureSecurity;
