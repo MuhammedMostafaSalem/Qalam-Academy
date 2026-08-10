@@ -13,7 +13,7 @@ module.exports = {
         deleted: "Course deleted successfully",
         notFound: "Course not found",
     },
-    
+
     category: {
         fetched: "category fetched successfully",
         created: "category created successfully",
@@ -46,6 +46,27 @@ module.exports = {
         invalidResetToken: "Invalid or expired reset token please send your email again",
         verifyFisrt: "Please verify your account first",
         incorrectPass: "Password is incorrect",
-        successLogin: "Logged in successfully"
+        successLogin: "Logged in successfully",
+        PleaseLoginToAccess: "Unauthorized. Please login to access this resource",
+        sessionExpired: "Session expired, please login again",
+        invalidToken: "Invalid token. Please login again",
+        roleNotAllowed: "Role ({{role}}) is not allowed to access this resource"
+    },
+
+    user: {
+        fetched: "User fetched successfully",
+        updated: "User updated successfully",
+        deleted: "User deleted successfully",
+        notFound: "User not found",
+        notAllowed: "You are not allowed to change another user's password",
+        incorrectCurrentPassword: "Current password is incorrect",
+        notMatchComfirmPassword: "Password confirmation does not match",
+        newPasswordDifferent: "New password must be different from current password",
+        successMessagePassword: "Password changed successfully",
+        fetchedThemeMode: "Theme mode fetched successfully",
+        updatedThemeMode: "Theme mode updated successfully",
+        cannotDeactivate: "You cannot deactivate your own account",
+        cannotChangeOwnRole: "You cannot change your own admin role",
+        administratorDeactivatedAccount: "Your account has been deactivated by the administrator",
     }
 };

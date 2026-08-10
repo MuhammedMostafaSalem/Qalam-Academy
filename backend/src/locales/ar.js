@@ -46,6 +46,28 @@ module.exports = {
         invalidResetToken: "رمز إعادة التعيين غير صالح أو منتهي الصلاحية؛ يرجى إرسال بريدك الإلكتروني مرة أخرى",
         verifyFisrt: "يرجى التحقق من حسابك أولاً",
         incorrectPass: "كلمة المرور غير صحيحة",
-        successLogin: "تم تسجيل الدخول بنجاح"
+        successLogin: "تم تسجيل الدخول بنجاح",
+        PleaseLoginToAccess: "غير مصرح لك بالوصول. يرجى تسجيل الدخول للوصول إلى هذا المورد",
+        sessionExpired: "انتهت صلاحية الجلسة، يرجى تسجيل الدخول مرة أخرى",
+        invalidToken: "الرمز الصلاحية غير صالح. يرجى تسجيل الدخول مرة أخرى",
+        roleNotAllowed: "الدور ({{role}}) غير مسموح له بالوصول إلى هذا المورد",
+    },
+
+    user: {
+        fetched: "تم الحصول على بيانات المستخدم بنجاح",
+        updated: "تم تعديل المستخدم بنجاح",
+        deleted: "تم حذف المستخدم بنجاح",
+        notFound: "المستخدم غير موجود",
+        notAllowed: "غير مسموح لك بتغيير كلمة مرور مستخدم آخر",
+        incorrectCurrentPassword: "كلمة المرور الحالية غير صحيحة",
+        notMatchComfirmPassword: "تأكيد كلمة المرور غير متطابق",
+        newPasswordDifferent: "يجب أن تكون كلمة المرور الجديدة مختلفة عن كلمة المرور الحالية",
+        successMessagePassword: "تم تغيير كلمة المرور بنجاح",
+        fetchedThemeMode: "تم الحصول على وضع السمة بنجاح",
+        updatedThemeMode: "تم تحديث وضع السمة بنجاح",
+        cannotDeactivate: "لا يمكنك إلغاء تنشيط حسابك الخاص",
+        cannotChangeOwnRole: "لا يمكنك تغيير دورك كمسؤول",
+        administratorDeactivatedAccount: "تم إلغاء تنشيط حسابك من قِبَل المسؤول",
+        // administratorDeactivatedAccount
     }
 };
