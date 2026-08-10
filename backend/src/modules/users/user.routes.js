@@ -11,12 +11,15 @@ const {
     changePassword,
     getThemeMode,
     toggleThemeMode,
-    getCurrentUser
+    getCurrentUser,
+    updateUserByAdmin,
+    getAllUsersByAdmin
 } = require("./user.controller");
 const uploadSingle = require("../../middlewares/uploadSingle");
 const validate = require("../../middlewares/validate");
 const { updateUserSchema } = require("./validators/user.schema");
 const { changePasswordSchema } = require("./validators/changePassword.schema");
+const { updateUserAdminSchema } = require("./validators/adminUser.schema");
 
 const router = express.Router();
 
@@ -46,8 +49,16 @@ router
     .route("/")
     .get(
         isAuthenticatedUser,
-        authorizeRoles("admin"),
         getUsers
+    )
+
+
+router
+    .route("/admin")
+    .get(
+        isAuthenticatedUser,
+        authorizeRoles("admin"),
+        getAllUsersByAdmin
     );
 
 // Get one user
@@ -83,5 +94,14 @@ router
         validate(changePasswordSchema),
         changePassword
     )
+
+// Update user by admin
+router.patch(
+    "/:id/admin",
+    isAuthenticatedUser,
+    authorizeRoles("admin"),
+    // validate(updateUserAdminSchema),
+    updateUserByAdmin
+);
 
 module.exports = router;
