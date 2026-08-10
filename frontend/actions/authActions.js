@@ -1,6 +1,11 @@
 "use server";
 
-import { authApi, clearAuthCookies, setAccessTokenCookie, setSessionExpirationCookie } from "@/services/authService";
+import {
+    authApi,
+    clearAuthCookies,
+    setAccessTokenCookie,
+    setSessionExpirationCookie
+} from "@/services/authService";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -9,17 +14,50 @@ const BASE_URL = `${process.env.NEXT_PUBLIC_BASE_URL}/api` || "http://localhost:
 // 1. Signup Action
 export async function signupAction(prevState, formData) {
     try {
-        const rawData = Object.fromEntries(formData.entries());
+        // const rawData = Object.fromEntries(formData.entries());
+        const firstName = formData.get("firstName");
+        const lastName = formData.get("lastName");
+        const email = formData.get("email");
+        const phone = formData.get("phone");
+        const password = formData.get("password");
+        const country = formData.get("country");
+        const city = formData.get("city");
+        const address = formData.get("address");
 
-        const response = await authApi("/auth/signup", {
+        // const response = await authApi("/auth/signup", {
+        //     method: "POST",
+        //     body: JSON.stringify({
+        //         firstName,
+        //         lastName,
+        //         email,
+        //         phone,
+        //         password,
+        //         country,
+        //         city,
+        //         address,
+        //     }),
+        // });
+        const response = await fetch(`${BASE_URL}/auth/signup`, {
             method: "POST",
-            body: JSON.stringify(rawData),
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                firstName,
+                lastName,
+                email,
+                phone,
+                password,
+                country,
+                city,
+                address,
+            }),
         });
 
         return {
             success: true,
             message: response.message,
-            email: rawData.email,
+            email,
             fieldErrors: {}
         };
     } catch (error) {
@@ -40,8 +78,19 @@ export async function verifyOtpAction(prevState, formData) {
         const otp = formData.get("otp");
         const purpose = formData.get("purpose");
 
-        const response = await authApi("/auth/verify-otp", {
+        // const response = await authApi("/auth/verify-otp", {
+        //     method: "POST",
+        // body: JSON.stringify({
+        //     email,
+        //     otp,
+        //     purpose,
+        // }),
+        // });
+        const response = await fetch(`${BASE_URL}/auth/verify-otp`, {
             method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
             body: JSON.stringify({
                 email,
                 otp,
@@ -107,54 +156,45 @@ export async function loginAction(prevState, formData) {
 
         const response = await res.json();
 
-        // Login Failed
         if (!res.ok) {
-            const error = new Error(
-                response.message || "بيانات الدخول غير صحيحة"
-            );
+            const error = new Error(response.message || "بيانات الدخول غير صحيحة");
 
+            error.statusCode = res.status;
             error.errors = response.errors || {};
 
             throw error;
         }
 
-        // Save Refresh Token
-        // التقاط الـ refreshToken الذي يتم تعيينه عبر headers الباك إند (Set-Cookie) وحفظه في Next.js cookies
-        const setCookieHeader = res.headers.get("set-cookie");
+        // Get Qalam_Token from backend Set - Cookie
+        const setCookie = res.headers.get("set-cookie");
+
+        const match = setCookie?.match(/Qalam_Token=([^;]+)/);
+
+        const token = match?.[1];
+
+        if (!token) {
+            throw new Error("لم يتم استلام authentication cookie من السيرفر");
+        }
+
+        const sessionExpiresAt = response.data.sessionExpiresAt;
+
+        const maxAge = Math.max(0, Math.floor((sessionExpiresAt - Date.now()) / 1000));
+        
+        // Store token in Next.js HttpOnly Cookie
         const cookieStore = await cookies();
-
-        if (setCookieHeader) {
-            const refreshTokenMatch = setCookieHeader.match(
-                /refreshToken=([^;]+)/
-            );
-
-            if (refreshTokenMatch) {
-                const refreshToken = refreshTokenMatch[1];
-
-                cookieStore.set("refreshToken", refreshToken, {
-                    httpOnly: true,
-                    secure: process.env.NODE_ENV === "production",
-                    sameSite: "strict",
-                    path: "/",
-                    maxAge: 90 * 24 * 60 * 60, // 90 days
-                });
-            }
-        }
-
-        // Save Access Token
-        // التقاط الـ accessToken القادم في الـ Response Body وحفظه في كوكيز المتصفح
-        if (response.data?.accessToken) {
-            await setAccessTokenCookie(response.data.accessToken);
-        }
-
-        // Set Client Session Timer
-        const sessionExpiresAt = await setSessionExpirationCookie();
+        cookieStore.set("Qalam_Token", token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "strict",
+            path: "/",
+            maxAge,
+        });
 
         return {
             success: true,
             message: response.message || "تم تسجيل الدخول بنجاح",
             data: response.data,
-            sessionExpiresAt,
+            sessionExpiresAt: response.data.sessionExpiresAt,
             fieldErrors: {},
         };
     } catch (error) {
@@ -171,8 +211,18 @@ export async function forgotPasswordAction(prevState, formData) {
     try {
         const email = formData.get("email");
 
-        const response = await authApi("/auth/forgot-password", {
+        // const response = await authApi("/auth/forgot-password", {
+        //     method: "POST",
+        //     body: JSON.stringify({
+        //         email
+        //     }),
+        // });
+
+        const response = await fetch(`${BASE_URL}/auth/forgot-password`, {
             method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
             body: JSON.stringify({
                 email
             }),
@@ -199,8 +249,20 @@ export async function resetPasswordAction(prevState, formData) {
         const password = formData.get("password");
         const confirmPassword = formData.get("confirmPassword");
 
-        const response = await authApi("/auth/reset-password", {
+        // const response = await authApi("/auth/reset-password", {
+        //     method: "PATCH",
+        //     body: JSON.stringify({
+        //         token,
+        //         password,
+        //         confirmPassword
+        //     }),
+        // });
+
+        const response = await fetch(`${BASE_URL}/auth/reset-password`, {
             method: "PATCH",
+            headers: {
+                "Content-Type": "application/json"
+            },
             body: JSON.stringify({
                 token,
                 password,
@@ -231,11 +293,14 @@ export async function getCurrentUserAction() {
         return {
             success: true,
             data: response.data,
+            authExpired: false,
         };
     } catch (error) {
         return {
             success: false,
+            statusCode: error.statusCode,
             message: error.message,
+            authExpired: error.authExpired || false,
         };
     }
 }
@@ -243,23 +308,32 @@ export async function getCurrentUserAction() {
 // 8. Logout Action
 export async function logoutAction() {
     try {
-        await authApi("/auth/logout", {
+        // await authApi("/auth/logout", {
+        //     method: "POST",
+        // });
+        const cookieStore = await cookies();
+
+        const token = cookieStore.get("Qalam_Token")?.value;
+
+        await fetch(`${BASE_URL}/auth/logout`, {
             method: "POST",
+            headers: token ?
+                {
+                    Cookie: `Qalam_Token=${token}`,
+                }
+                : {},
+            cache: "no-store"
         });
     } catch (error) {
-        console.error(
-            "Backend logout failed:",
-            error
-        );
+        console.error("Backend logout failed:", error);
     }
 
-    // Always clear cookies locally
-    await clearAuthCookies();
+    // Always remove Next.js authentication cookie
+    const cookieStore = await cookies();
+    cookieStore.delete("Qalam_Token");
 
     return {
         success: true,
-
-        message:
-            "تم تسجيل الخروج بنجاح",
+        message: "تم تسجيل الخروج بنجاح",
     };
 }
