@@ -15,13 +15,17 @@ const env = {
 
     mongoUrl: process.env.MONGO_URL,
 
-    jwtAccessSecret: process.env.JWT_ACCESS_SECRET,
+    // jwtAccessSecret: process.env.JWT_ACCESS_SECRET,
 
-    jwtRefreshSecret: process.env.JWT_REFRESH_SECRET,
+    // jwtRefreshSecret: process.env.JWT_REFRESH_SECRET,
+    
+    // jwtAccessExpiresIn: process.env.JWT_ACCESS_EXPIRE,
+    
+    // jwtRefreshExpiresIn: process.env.JWT_REFRESH_EXPIRE,
+    
+    jwtSecretToken: process.env.JWT_SECRET_TOKEN,
 
-    jwtAccessExpiresIn: process.env.JWT_ACCESS_EXPIRE,
-
-    jwtRefreshExpiresIn: process.env.JWT_REFRESH_EXPIRE,
+    jwtExpiresInToken: process.env.JWT_EXPIRE_TOKEN,
 
     uploadPath: process.env.UPLOAD_PATH,
 
