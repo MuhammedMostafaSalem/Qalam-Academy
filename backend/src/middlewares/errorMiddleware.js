@@ -44,7 +44,13 @@ const errorMiddleware = (err, req, res, next) => {
     // JWT Error
     if (err.name === "JsonWebTokenError") {
         statusCode = StatusCodes.UNAUTHORIZED;
-        message = "Invalid token. Please login again.";
+        message = req.t("auth.invalidToken");
+
+        res.clearCookie("Qalam_Token", {
+            httpOnly: true,
+            sameSite: "strict",
+            secure: env.nodeEnv === "production",
+        });
 
         err = new ApiError(message, statusCode);
     }
@@ -52,7 +58,13 @@ const errorMiddleware = (err, req, res, next) => {
     // JWT Expired
     if (err.name === "TokenExpiredError") {
         statusCode = StatusCodes.UNAUTHORIZED;
-        message = "Token expired. Please login again.";
+        message = req.t("auth.sessionExpired");
+
+        res.clearCookie("Qalam_Token", {
+            httpOnly: true,
+            sameSite: "strict",
+            secure: env.nodeEnv === "production",
+        });
 
         err = new ApiError(message, statusCode);
     }
