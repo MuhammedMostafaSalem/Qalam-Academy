@@ -92,6 +92,11 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },
+    isActive: {
+        type: Boolean,
+        default: true,
+        index: true,
+    },
     otp: {
         type: String,
         select: false,
@@ -166,22 +171,29 @@ userSchema.methods.generateOtp = async function (purpose) {
 }
 
 // Method to generate JWT token
-userSchema.methods.generateAccessToken = function () {
+// userSchema.methods.generateAccessToken = function () {
+//     return jwt.sign(
+//         { id: this._id },
+//         env.jwtAccessSecret,
+//         { expiresIn: env.jwtAccessExpiresIn }
+//     );
+// }
+userSchema.methods.generateJWTToken = function () {
     return jwt.sign(
         { id: this._id },
-        env.jwtAccessSecret,
-        { expiresIn: env.jwtAccessExpiresIn }
+        env.jwtSecretToken,
+        { expiresIn: env.jwtExpiresInToken }
     );
 }
 
 // method to generate Refresh JWT token
-userSchema.methods.generateRefreshToken = function () {
-    return jwt.sign(
-        { id: this._id },
-        env.jwtRefreshSecret,
-        { expiresIn: env.jwtRefreshExpiresIn }
-    )
-}
+// userSchema.methods.generateRefreshToken = function () {
+//     return jwt.sign(
+//         { id: this._id },
+//         env.jwtRefreshSecret,
+//         { expiresIn: env.jwtRefreshExpiresIn }
+//     )
+// }
 
 const User = mongoose.model("User", userSchema);
 
