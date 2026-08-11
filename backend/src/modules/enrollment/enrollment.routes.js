@@ -12,14 +12,32 @@ const {
 
 const router = express.Router();
 
-router.use(isAuthenticatedUser, authorizeRoles('student'));
-
 // مسارات خاصة بالمستخدم العادي
-router.get('/my-courses', getMyEnrollments);
-router.get('/my-products', getMyPurchasedProducts);
+router.get(
+    '/my-courses',
+    isAuthenticatedUser,
+    authorizeRoles('student'),
+    getMyEnrollments
+);
+router.get(
+    '/my-products',
+    isAuthenticatedUser,
+    authorizeRoles('student'),
+    getMyPurchasedProducts
+);
 
-// مسارات متاحة للأدمن، الـ Manager، والـ Instructor (مع فلترة تلقائية داخل الكنترولر)
-router.get('/', authorizeRoles('instructor', "admin"), getAllEnrollments);
-router.get('/:id', authorizeRoles('instructor', "admin"), getEnrollmentById);
+// مسارات متاحة للأدمن والـ Instructor (مع فلترة تلقائية داخل الكنترولر)
+router.get(
+    '/',
+    isAuthenticatedUser,
+    authorizeRoles('instructor', 'admin'),
+    getAllEnrollments
+);
+router.get(
+    '/:id',
+    isAuthenticatedUser,
+    authorizeRoles('instructor', 'admin'),
+    getEnrollmentById
+);
 
 module.exports = router;

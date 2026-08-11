@@ -9,7 +9,7 @@ const Course = require("./course.model");
 
 // Create course
 exports.createCourse = createOne(Course, {
-    modelName: "Course",
+    modelName: "course",
     fileFields: ["thumbnail", "trailerVideo"],
     translatableFields: [
         "title",
@@ -23,7 +23,7 @@ exports.createCourse = createOne(Course, {
 
 // Get all courses
 exports.getCourses = getAll(Course, {
-    modelName: "Courses",
+    modelName: "course",
     searchFields: [
         "title.en",
         "title.ar",
@@ -51,7 +51,7 @@ exports.getCourses = getAll(Course, {
 
 // Get one course
 exports.getCourse = getOne(Course, {
-    modelName: "Course",
+    modelName: "course",
     translatableFields: [
         "title",
         "description",
@@ -70,7 +70,7 @@ exports.getCourse = getOne(Course, {
 
 // Update course
 exports.updateCourse = updateOne(Course, {
-    modelName: "Course",
+    modelName: "course",
     fileFields: ["thumbnail", "trailerVideo"],
     translatableFields: [
         "title",
@@ -89,6 +89,6 @@ exports.updateCourse = updateOne(Course, {
 
 // Delete course
 exports.deleteCourse = deleteOne(Course, {
-    modelName: "Course",
+    modelName: "course",
     fileFields: ["thumbnail", "trailerVideo"],
 });

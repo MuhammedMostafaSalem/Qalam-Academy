@@ -31,12 +31,16 @@ const translateDocument = (
             const lastKey = keys[keys.length - 1];
 
             if (current[lastKey]) {
+                if (!obj._translations) obj._translations = {};
+                obj._translations[lastKey] = { ...current[lastKey] };
                 current[lastKey] = translate(
                     current[lastKey],
                     language
                 );
             }
-        } if (obj[field]) {
+        } else if (obj[field]) {
+            if (!obj._translations) obj._translations = {};
+            obj._translations[field] = { ...obj[field] };
             obj[field] = translate(
                 obj[field],
                 language
