@@ -28,6 +28,10 @@ configureLogger(app);
 // Language Middleware
 app.use(language);
 
+app.get("/health", (req, res) => {
+    res.status(200).json({ status: "healthy" });
+});
+
 // Routes
 app.use("/api", routes);
 

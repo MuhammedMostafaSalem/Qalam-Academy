@@ -6,7 +6,9 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "prod": "NODE_ENV=production node index.js"
+    "prod": "NODE_ENV=production node index.js",
+    "seed:admin": "node src/database/seedAdmin.js",
+    "seed": "node src/database/seed.js"
   },
   "keywords": [
     "education",

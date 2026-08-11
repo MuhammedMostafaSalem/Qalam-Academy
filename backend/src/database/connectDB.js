@@ -1,7 +1,9 @@
 const mongoose = require('mongoose');
 const env = require('../config/env');
+const dns = require("dns")
 
 const connectDB = async () => {
+    dns.setServers(["1.1.1.1", "8.8.8.8"])
     try {
         const database = await mongoose.connect(env.mongoUrl);
 

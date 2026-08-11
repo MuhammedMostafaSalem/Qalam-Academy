@@ -180,7 +180,7 @@ blogSchema.pre("validate", function () {
 
 
 // Auto Reading Time
-blogSchema.pre("save", function (next) {
+blogSchema.pre("save", function () {
     if (this.isModified("content") && this.content?.en) {
         const words = this.content.en.split(/\s+/).length;
 
@@ -189,9 +189,8 @@ blogSchema.pre("save", function (next) {
             Math.ceil(words / 200)
         );
     }
-
-    next();
 });
+
 
 const Blog = mongoose.model("Blog", blogSchema);
 
