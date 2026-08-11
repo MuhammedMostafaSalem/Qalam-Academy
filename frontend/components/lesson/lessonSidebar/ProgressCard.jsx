@@ -1,6 +1,8 @@
-import lessonData from "../lessonData";
+const ProgressCard = ({ courseProgress }) => {
+    const completedLessons = courseProgress?.completedLessons || 0;
+    const totalLessons = courseProgress?.totalLessons || 0;
+    const progressPercent = courseProgress?.progressPercent || 0;
 
-const ProgressCard = () => {
     return (
         <div
             className="
@@ -23,7 +25,7 @@ const ProgressCard = () => {
                 </h3>
 
                 <span className="text-primary font-bold">
-                    {lessonData.progress}%
+                    {Math.round(progressPercent)}%
                 </span>
             </div>
 
@@ -37,9 +39,9 @@ const ProgressCard = () => {
                 "
             >
                 <div
-                    className="h-full rounded-full bg-primary"
+                    className="h-full rounded-full bg-primary transition-all duration-300"
                     style={{
-                        width: `${lessonData.progress}%`,
+                        width: `${progressPercent}%`,
                     }}
                 />
             </div>
@@ -54,7 +56,7 @@ const ProgressCard = () => {
                 "
             >
                 <span>
-                    {lessonData.completedLessons} / {lessonData.totalLessons}
+                    {completedLessons} / {totalLessons}
                 </span>
 
                 <span>

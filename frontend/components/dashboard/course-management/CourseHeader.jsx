@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Section from "@/components/sections/Section";
 import Image from "next/image";
 import {
@@ -9,9 +10,91 @@ import {
     HiOutlineUsers,
     HiOutlineVideoCamera,
 } from "react-icons/hi2";
+import { getCourseByIdAction } from "@/actions/courseActions";
 
 
-const CourseHeader = () => {
+const FALLBACK_IMAGE = "https://images.unsplash.com/photo-1516321318423-f06f85e504b3";
+
+const CourseHeader = ({ courseId }) => {
+    const [course, setCourse] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        if (!courseId) return;
+        setLoading(true);
+        getCourseByIdAction(courseId).then((result) => {
+            if (result.success) {
+                setCourse(result.data);
+            }
+            setLoading(false);
+        });
+    }, [courseId]);
+
+    if (loading) {
+        return (
+            <Section
+                className="
+                    glass
+                    rounded-3xl
+                    border
+                    border-border
+                    p-6
+                "
+            >
+                <div
+                    className="
+                        flex
+                        flex-col
+                        gap-6
+
+                        xl:flex-row
+                        xl:items-center
+                        xl:justify-between
+                    "
+                >
+                    {/* Skeleton - Course Info */}
+                    <div
+                        className="
+                            flex
+                            flex-col
+                            gap-5
+
+                            md:flex-row
+                            md:items-center
+                        "
+                    >
+                        {/* Skeleton Image */}
+                        <div
+                            className="
+                                h-36
+                                w-36
+
+                                animate-pulse
+
+                                rounded-3xl
+
+                                bg-border
+                            "
+                        />
+
+                        {/* Skeleton Details */}
+                        <div className="space-y-3">
+                            <div className="h-8 w-64 animate-pulse rounded-xl bg-border" />
+                            <div className="h-4 w-96 animate-pulse rounded-lg bg-border" />
+                            <div className="mt-6 flex gap-4">
+                                <div className="h-10 w-24 animate-pulse rounded-xl bg-border" />
+                                <div className="h-10 w-24 animate-pulse rounded-xl bg-border" />
+                                <div className="h-10 w-24 animate-pulse rounded-xl bg-border" />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Skeleton Button */}
+                    <div className="h-12 w-36 animate-pulse rounded-2xl bg-border" />
+                </div>
+            </Section>
+        );
+    }
 
     return (
         <Section
@@ -47,7 +130,7 @@ const CourseHeader = () => {
                 >
                     {/* Image */}
                     <img
-                        src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3"
+                        src={course?.thumbnail || FALLBACK_IMAGE}
                         alt="Course"
                         width={160}
                         height={160}
@@ -80,14 +163,12 @@ const CourseHeader = () => {
                                     font-bold
                                 "
                             >
-                                Frontend Development
+                                {course?.title?.ar || course?.title}
                             </h1>
 
                             <span
-                                className="
+                                className={`
                                     rounded-full
-
-                                    bg-green-500/10
 
                                     px-4
                                     py-1.5
@@ -96,10 +177,13 @@ const CourseHeader = () => {
 
                                     font-medium
 
-                                    text-green-500
-                                "
+                                    ${course?.isPublished
+                                        ? "bg-green-500/10 text-green-500"
+                                        : "bg-yellow-500/10 text-yellow-500"
+                                    }
+                                `}
                             >
-                                Published
+                                {course?.isPublished ? "Published" : "Draft"}
                             </span>
                         </div>
 
@@ -111,8 +195,7 @@ const CourseHeader = () => {
                                 text-text-secondary
                             "
                         >
-                            تعلم تطوير واجهات المستخدم باستخدام
-                            HTML و CSS و JavaScript و React و Next.js.
+                            {course?.description?.ar || course?.description}
                         </p>
 
                         {/* Stats */}
@@ -131,17 +214,17 @@ const CourseHeader = () => {
                             <StatCard
                                 icon={HiOutlineVideoCamera}
                                 label="الدروس"
-                                value="24"
+                                value={course?.lessonsCount || 0}
                             />
                             <StatCard
                                 icon={HiOutlineUsers}
                                 label="الطلاب"
-                                value="340"
+                                value={course?.studentsCount || 0}
                             />
                             <StatCard
                                 icon={HiOutlineCurrencyDollar}
                                 label="السعر"
-                                value="$99"
+                                value={`$${course?.price || 0}`}
                             />
                         </div>
                     </div>

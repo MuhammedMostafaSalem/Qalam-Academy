@@ -1,61 +1,94 @@
+"use client";
+
 import Table from "@/components/ui/Table"
 import CardTable from "@/components/shared/CardTable"
 import ActionsTable from "@/components/shared/ActionsTable"
-import { MdOutlineDelete, MdOutlineEdit } from "react-icons/md";
+import StatusDropdown from "@/components/shared/StatusDropdown"
+import { MdOutlineDelete } from "react-icons/md";
 import LoadMore from "@/components/shared/LoadMore";
-import students from "./students";
+import userIcon from '@/public/assets/user-icon.png';
+import useUserActions from "@/hooks/users/useUserActions";
 
-const StudentsTable = () => {
+const StudentsTable = ({ students = [], refetch }) => {
+    const {
+        handleUpdateField,
+        handleDelete,
+        handleDeleteRequest
+    } = useUserActions(refetch);
+
     const titleHead = [
         "الطالب",
-        "الكورسات المسجلة",
-        "المستوى",
+        "الحالة",
         "تاريخ التسجيل",
         "الإجراءات",
     ];
 
     return (
         <div className="mt-[20px]">
-            <Table>
-                <Table.Head>
-                    <Table.Row>
-                        {titleHead.map((title, index) => (
-                            <Table.Th key={index}>{title}</Table.Th>
-                        ))}
-                    </Table.Row>
-                </Table.Head>
+            {students.length === 0 ? (
+                <div className="text-center py-6 text-text-muted">
+                    لا يوجد طلاب متاحين
+                </div>
+            ) : (
+                <div className="overflow-x-auto overflow-y-hidden">
+                    <Table>
+                        <Table.Head>
+                            <Table.Row>
+                                {titleHead.map((title, index) => (
+                                    <Table.Th key={index}>{title}</Table.Th>
+                                ))}
+                            </Table.Row>
+                        </Table.Head>
 
-                <Table.Body>
-                    {students.map(student => (
-                        <Table.Row key={student.id}>
-                            <Table.Td>
-                                <CardTable data={student} />
-                            </Table.Td>
+                        <Table.Body>
+                            {students.map(student => (
+                                <Table.Row key={student._id}>
+                                    <Table.Td>
+                                        <CardTable
+                                            data={{
+                                                image: student.avatar || userIcon,
+                                                name: `${student.firstName} ${student.lastName}`,
+                                                description: student.email,
+                                            }}
+                                        />
+                                    </Table.Td>
 
-                            <Table.Td>{student.coursesRecored} كورس</Table.Td>
+                                    <Table.Td>
+                                        <StatusDropdown
+                                            isActive={student.isActive}
+                                            onSelect={(newStatus) => handleUpdateField(student._id, "isActive", newStatus)}
+                                        />
+                                    </Table.Td>
 
-                            <Table.Td>{student.order}</Table.Td>
+                                    <Table.Td>
+                                        {student.createdAt
+                                            ? new Date(student.createdAt).toLocaleDateString("ar-EG")
+                                            : "—"}
+                                    </Table.Td>
 
-                            <Table.Td>{student.createdAt}</Table.Td>
+                                    <Table.Td>
+                                        <ActionsTable
+                                            actions={
+                                                <div className="flex gap-3 justify-center items-center text-[20px]">
+                                                    <div
+                                                        onClick={() => handleDeleteRequest(student)}
+                                                        className="text-error cursor-pointer hover:opacity-80 transition"
+                                                        title="حذف الطالب"
+                                                    >
+                                                        <MdOutlineDelete />
+                                                    </div>
+                                                </div>
+                                            }
+                                        />
+                                    </Table.Td>
+                                </Table.Row>
+                            ))}
+                        </Table.Body>
+                    </Table>
 
-                            <Table.Td>
-                                <ActionsTable
-                                    actions={
-                                        <div className="flex gap-3 justify-center items-center text-[20px]">
-                                            <MdOutlineEdit className="text-primary cursor-pointer" />
-                                            <div className="text-error cursor-pointer">
-                                                <MdOutlineDelete />
-                                            </div>
-                                        </div>
-                                    }
-                                />
-                            </Table.Td>
-                        </Table.Row>
-                    ))}
-                </Table.Body>
-            </Table>
-
-            <LoadMore />
+                    {students.length >= 4 ? <LoadMore /> : null}
+                </div>
+            )}
         </div>
     )
 }

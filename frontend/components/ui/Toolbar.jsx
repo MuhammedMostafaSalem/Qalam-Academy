@@ -1,3 +1,5 @@
+"use client";
+
 import ExportButton from "../shared/ExportButton";
 import SearchInput from "./SearchInput";
 
@@ -33,8 +35,8 @@ const Toolbar = ({
             >
                 <div className="w-full md:w-[250px]">
                     <SearchInput
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
+                        value={searchQuery || ""}
+                        onChange={setSearchQuery ? (e) => setSearchQuery(e.target.value) : undefined}
                         inputPlaceholder={inputPlaceholder}
                     />
                 </div>

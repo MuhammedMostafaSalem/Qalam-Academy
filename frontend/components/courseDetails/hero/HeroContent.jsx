@@ -2,13 +2,18 @@ import SectionBadge from "@/components/sections/SectionBadge";
 import HeroMeta from "./HeroMeta";
 import { heroAnimation } from "@/lib/animation/heroAnimation";
 
-const HeroContent = () => {
+const HeroContent = ({ course }) => {
+    const title = course?.title?.ar || course?.title?.en || course?.title || "دورة تعليمية";
+    const description = course?.description?.ar || course?.description?.en || course?.description || "";
+    const categoryName = course?.category?.name?.ar || course?.category?.name?.en || course?.category?.name || "";
+
     return (
         <div className="flex flex-col">
-
-            <SectionBadge>
-                Frontend Development
-            </SectionBadge>
+            {categoryName && (
+                <SectionBadge>
+                    {categoryName}
+                </SectionBadge>
+            )}
 
             <h1
                 {...heroAnimation.title}
@@ -21,7 +26,7 @@ const HeroContent = () => {
                     lg:text-5xl
                 "
             >
-                Frontend Development Bootcamp
+                {title}
             </h1>
 
             <p
@@ -34,13 +39,10 @@ const HeroContent = () => {
                     text-text-secondary
                 "
             >
-                تعلم Frontend Development من الصفر وحتى الاحتراف باستخدام
-                HTML وCSS وJavaScript وReact مع تنفيذ مشاريع عملية تحاكي سوق
-                العمل الحقيقي.
+                {description}
             </p>
 
-            <HeroMeta />
-
+            <HeroMeta course={course} />
         </div>
     );
 };

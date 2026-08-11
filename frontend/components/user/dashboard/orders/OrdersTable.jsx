@@ -1,45 +1,13 @@
+"use client";
+
 import Table from "@/components/ui/Table";
+import useOrders from "@/hooks/orders/useOrders";
 import {
     HiOutlineAcademicCap,
     HiOutlineShoppingBag,
     HiOutlineSquares2X2,
     HiOutlineEye,
 } from "react-icons/hi2";
-
-const orders = [
-    {
-        id: "#ORD-1001",
-        type: "course",
-        items: 2,
-        total: "999 ج.م",
-        status: "مكتمل",
-        date: "10 يوليو 2026",
-    },
-    {
-        id: "#ORD-1002",
-        type: "product",
-        items: 1,
-        total: "350 ج.م",
-        status: "قيد المعالجة",
-        date: "8 يوليو 2026",
-    },
-    {
-        id: "#ORD-1003",
-        type: "mixed",
-        items: 4,
-        total: "1650 ج.م",
-        status: "مكتمل",
-        date: "5 يوليو 2026",
-    },
-    {
-        id: "#ORD-1004",
-        type: "product",
-        items: 1,
-        total: "220 ج.م",
-        status: "ملغي",
-        date: "1 يوليو 2026",
-    },
-];
 
 const typeConfig = {
     course: {
@@ -62,11 +30,72 @@ const typeConfig = {
 const statusColors = {
     "مكتمل": "bg-green-500/10 text-green-600",
     "قيد المعالجة": "bg-yellow-500/10 text-yellow-600",
-    "ملغي": "bg-red-500/10 text-red-600",
+    "ملغى": "bg-red-500/10 text-red-600",
     "مسترد": "bg-gray-500/10 text-gray-600",
 };
 
+const mapPaymentMethod = (method) => {
+    switch (method) {
+        case "cash":
+            return "نقدي";
+        case "paymob":
+            return "Paymob";
+        case "paypal":
+            return "PayPal";
+        default:
+            return method || "—";
+    }
+};
+
+const mapPaymentStatus = (status) => {
+    switch (status) {
+        case "pending":
+            return "قيد المعالجة";
+        case "paid":
+            return "مكتمل";
+        case "cancelled":
+            return "ملغى";
+        default:
+            return status || "—";
+    }
+};
+
+const getOrderType = (cartItems = []) => {
+    const hasCourse = cartItems.some((item) => item.itemType === "course");
+    const hasProduct = cartItems.some((item) => item.itemType === "product");
+    if (hasCourse && hasProduct) return "mixed";
+    if (hasCourse) return "course";
+    if (hasProduct) return "product";
+    return "product";
+};
+
 const OrdersTable = () => {
+    const { orders, loading, error } = useOrders();
+
+    if (loading) {
+        return (
+            <div className="py-10 text-center text-gray-500">
+                جاري تحميل الطلبات...
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="py-10 text-center text-red-500">
+                {error}
+            </div>
+        );
+    }
+
+    if (!orders || orders.length === 0) {
+        return (
+            <div className="py-10 text-center text-gray-500">
+                لا يوجد طلبات متاحة
+            </div>
+        );
+    }
+
     return (
         <Table>
             <Table.Head>
@@ -83,14 +112,16 @@ const OrdersTable = () => {
 
             <Table.Body>
                 {orders.map((order) => {
-                    const Type = typeConfig[order.type];
+                    const typeKey = getOrderType(order.cartItems);
+                    const Type = typeConfig[typeKey];
+                    const statusLabel = mapPaymentStatus(order.paymentStatus);
 
                     return (
                         <Table.Row
-                            key={order.id}
+                            key={order._id}
                         >
                             <Table.Td>
-                                {order.id}
+                                #{order._id?.slice(-6).toUpperCase()}
                             </Table.Td>
 
                             <Table.Td>
@@ -124,15 +155,15 @@ const OrdersTable = () => {
                             </Table.Td>
 
                             <Table.Td>
-                                {order.items}
+                                {order.cartItems?.length ?? 0}
                             </Table.Td>
 
                             <Table.Td>
-                                {order.total}
+                                {order.totalOrderPrice} ج.م
                             </Table.Td>
 
                             <Table.Td>
-                                {order.date}
+                                {new Date(order.createdAt).toLocaleDateString("ar-EG")}
                             </Table.Td>
 
                             <Table.Td>
@@ -147,10 +178,10 @@ const OrdersTable = () => {
 
                                             font-medium
 
-                                            ${statusColors[order.status]}
+                                            ${statusColors[statusLabel]}
                                         `}
                                 >
-                                    {order.status}
+                                    {statusLabel}
                                 </span>
                             </Table.Td>
 

@@ -1,27 +1,35 @@
-import sidebarCourse from "./sidebarCourse";
+const CoursePrice = ({ course }) => {
+    const price = course?.discountPrice || course?.price || 0;
+    const oldPrice = course?.discountPrice ? course?.price : null;
+    const discountPercent = oldPrice && price 
+        ? Math.round(((oldPrice - price) / oldPrice) * 100)
+        : null;
 
-const CoursePrice = () => {
     return (
         <div>
             <div className="flex items-end gap-3">
                 <h2 className="text-4xl font-bold text-primary">
-                    {sidebarCourse.price} ج.م
+                    {price} ج.م
                 </h2>
 
-                <span
-                    className="
-                        text-xl
-                        line-through
-                        text-text-secondary
-                    "
-                >
-                    {sidebarCourse.oldPrice} ج.م
-                </span>
+                {oldPrice && (
+                    <span
+                        className="
+                            text-xl
+                            line-through
+                            text-text-secondary
+                        "
+                    >
+                        {oldPrice} ج.م
+                    </span>
+                )}
             </div>
 
-            <p className="mt-3 text-sm text-green-500">
-                وفر 40%
-            </p>
+            {discountPercent && (
+                <p className="mt-3 text-sm text-green-500">
+                    وفر {discountPercent}%
+                </p>
+            )}
         </div>
     );
 };

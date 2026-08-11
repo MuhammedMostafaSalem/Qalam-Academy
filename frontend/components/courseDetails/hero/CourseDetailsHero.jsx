@@ -5,7 +5,7 @@ import HeroImage from "./HeroImage";
 import HeroContent from "./HeroContent";
 import { fadeDown } from "@/lib/animationHelpers";
 
-const CourseDetailsHero = () => {
+const CourseDetailsHero = ({ course }) => {
     return (
         <Section
             className="
@@ -29,9 +29,9 @@ const CourseDetailsHero = () => {
                         lg:grid-cols-2
                     "
                 >
-                    <HeroImage />
+                    <HeroImage course={course} />
 
-                    <HeroContent />
+                    <HeroContent course={course} />
                 </div>
 
             </Container>

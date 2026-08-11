@@ -12,17 +12,16 @@ import {
     XAxis,
     YAxis,
 } from "recharts";
-import studentsDistributionData from "./studentsDistributionData";
 import CustomTooltip from "./CustomTooltip";
 
-const StudentsDistributionChart = () => {
+const StudentsDistributionChart = ({ data = [] }) => {
     return (
         <DashboardCard className="h-full">
             <CardHeader
-                title="Students Distribution"
-                subtitle="Students enrolled by course"
+                title="توزيع الطلاب"
+                subtitle="عدد الطلاب المسجلين في كل كورس"
                 filter
-                filterLabel="All Courses"
+                filterLabel="جميع الكورسات"
             />
 
             <div className="h-[340px]">
@@ -32,7 +31,7 @@ const StudentsDistributionChart = () => {
                 >
                     <BarChart
                         layout="vertical"
-                        data={studentsDistributionData}
+                        data={data}
                         margin={{
                             top: 10
                         }}
@@ -66,7 +65,7 @@ const StudentsDistributionChart = () => {
                             content={
                                 <CustomTooltip
                                     prefix=""
-                                    suffix=" Students"
+                                    suffix=" طالب"
                                 />
                             }
                         />
@@ -76,7 +75,7 @@ const StudentsDistributionChart = () => {
                             radius={[0, 10, 10, 0]}
                             barSize={18}
                         >
-                            {studentsDistributionData.map(
+                            {data.map(
                                 (_, index) => (
                                     <Cell
                                         key={index}

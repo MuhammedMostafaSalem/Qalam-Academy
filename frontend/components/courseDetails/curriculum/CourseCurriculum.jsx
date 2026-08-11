@@ -2,7 +2,10 @@ import Section from "@/components/sections/Section";
 import Container from "@/components/ui/Container";
 import CurriculumAccordion from "./CurriculumAccordion";
 
-const CourseCurriculum = () => {
+const CourseCurriculum = ({ course }) => {
+    const lessonsCount = course?.lessonsCount || 0;
+    const duration = course?.duration || "—";
+
     return (
         <Section>
             <Container>
@@ -19,13 +22,13 @@ const CourseCurriculum = () => {
                             leading-8
                         "
                     >
-                        يتكون هذا الكورس من عدة وحدات تعليمية تغطي جميع
+                        يتكون هذا الكورس من {lessonsCount} درس بمدة {duration}، يغطي جميع
                         المفاهيم الأساسية والمتقدمة، مع تطبيقات عملية ومشاريع
                         حقيقية تساعدك على اكتساب الخبرة.
                     </p>
                 </div>
 
-                <CurriculumAccordion />
+                <CurriculumAccordion course={course} />
             </Container>
         </Section>
     );

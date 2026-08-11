@@ -1,3 +1,5 @@
+"use client";
+
 import { resendOtpAction, verifyOtpAction } from "@/actions/authActions";
 import { showToast } from "@/store/slices/toastSlice";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -37,10 +39,12 @@ const useVerifyOtpForm = () => {
         if (!state.message) return;
 
         if (state.success) {
-            showToast({
-                message: state.message,
-                type: "success",
-            })
+            dispatch(
+                showToast({
+                    message: state.message,
+                    type: "success",
+                })
+            );
 
             if (purpose === "forgot_password") {
                 const token = state.data?.resetToken;
@@ -57,7 +61,7 @@ const useVerifyOtpForm = () => {
                 setErrors(state.message);
             }
         }
-    }, [state, router]);
+    }, [state, router, dispatch]);
 
     const handleInputChange = (e) => {
         const { name } = e.target;
@@ -95,10 +99,12 @@ const useVerifyOtpForm = () => {
                 )
             }
         } catch (error) {
-            showToast({
-                message: "فشل إرسال الكود",
-                type: "error",
-            })
+            dispatch(
+                showToast({
+                    message: "فشل إرسال الكود",
+                    type: "error",
+                })
+            )
         }
     }
 

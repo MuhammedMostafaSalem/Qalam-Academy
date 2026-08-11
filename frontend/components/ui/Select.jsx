@@ -1,6 +1,8 @@
+"use client";
+
 import { HiChevronDown } from "react-icons/hi"
 
-const Select = ({ value, onChange, values }) => {
+const Select = ({ value, onChange, values = [] }) => {
     return (
         <div className="relative">
             <select

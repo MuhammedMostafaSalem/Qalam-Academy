@@ -1,9 +1,17 @@
 import Image from "next/image";
-import courseImage from "@/public/assets/images/course-details-hero.png";
 import { heroAnimation } from "@/lib/animation/heroAnimation";
 import { animations } from "@/lib/animations";
 
-const HeroImage = () => {
+const HeroImage = ({ course }) => {
+    const imageUrl = course?.thumbnail?.startsWith('http') 
+        ? course.thumbnail 
+        : course?.thumbnail 
+            ? `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:5000'}${course.thumbnail}`
+            : '/assets/images/course-details-hero.png';
+
+    const title = course?.title?.ar || course?.title?.en || course?.title || "دورة تعليمية";
+    const duration = course?.duration || "—";
+
     return (
         <div {...heroAnimation.image} className="relative">
             {/* Glow */}
@@ -27,8 +35,10 @@ const HeroImage = () => {
                 "
             >
                 <Image
-                    src={courseImage}
-                    alt="Frontend Development Bootcamp"
+                    src={imageUrl}
+                    alt={title}
+                    width={600}
+                    height={600}
                     priority
                     className={`
                         h-full
@@ -40,7 +50,6 @@ const HeroImage = () => {
             </div>
 
             {/* Floating Badge */}
-
             <div
                 className={`
                     absolute
@@ -57,7 +66,7 @@ const HeroImage = () => {
                 `}
             >
                 <h3 className="text-2xl font-bold text-primary">
-                    +40 ساعة
+                    {duration}
                 </h3>
 
                 <p className="text-sm text-text-secondary">

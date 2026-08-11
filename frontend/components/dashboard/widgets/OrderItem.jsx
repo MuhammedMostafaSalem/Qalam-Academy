@@ -1,11 +1,11 @@
 const statusStyles = {
-    Completed:
+    "مكتمل":
         "bg-emerald-500/10 text-emerald-500",
 
-    Pending:
+    "قيد الانتظار":
         "bg-amber-500/10 text-amber-500",
 
-    Cancelled:
+    "ملغى":
         "bg-red-500/10 text-red-500",
 };
 
@@ -65,7 +65,7 @@ const OrderItem = ({
                         text-xs
                         font-medium
 
-                        ${statusStyles[status]}
+                        ${statusStyles[status] || "bg-gray-500/10 text-gray-500"}
                     `}
                 >
                     {status}

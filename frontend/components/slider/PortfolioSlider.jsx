@@ -1,10 +1,38 @@
-import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+"use client";
 
-import { projects } from "@/constants/projects";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import ProjectCard from "../portfolio/ProjectCard";
-import Slider from '@/components/ui/Slider';
+import Slider from "@/components/ui/Slider";
+import { useEffect, useState } from "react";
+import { getPortfoliosAction } from "@/actions/portfolioActions";
 
 const PortfolioSlider = () => {
+    const [projects, setProjects] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        getPortfoliosAction("limit=10").then((result) => {
+            if (result.success) setProjects(result.data);
+            setLoading(false);
+        });
+    }, []);
+
+    if (loading) {
+        return (
+            <div className="py-10 text-center text-text-secondary">
+                جاري تحميل المشاريع...
+            </div>
+        );
+    }
+
+    if (projects.length === 0) {
+        return (
+            <div className="py-10 text-center text-text-muted">
+                لا توجد مشاريع متاحة حالياً
+            </div>
+        );
+    }
+
     return (
         <Slider
             ButtonPrev={
@@ -20,11 +48,22 @@ const PortfolioSlider = () => {
             prevEl=".projects-prev"
             nextEl=".projects-next"
         >
-            {projects.map((project, index) => (
-                <ProjectCard key={index} project={project} />
+            {projects.map((portfolio) => (
+                <ProjectCard
+                    key={portfolio._id}
+                    project={{
+                        image: portfolio.image,
+                        title: portfolio.title?.ar || portfolio.title,
+                        description: portfolio.description?.ar || portfolio.description,
+                        category: portfolio.category?.title?.ar || portfolio.category?.title || "",
+                        tags: portfolio.tags || [],
+                        projectUrl: portfolio.projectUrl || "#",
+                        githubUrl: portfolio.githubUrl,
+                    }}
+                />
             ))}
         </Slider>
-    )
-}
+    );
+};
 
-export default PortfolioSlider
+export default PortfolioSlider;

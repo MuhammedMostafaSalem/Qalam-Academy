@@ -1,4 +1,4 @@
-import CategoryLayout from "@/components/layout/dashboard/categoryLayout";
+import CategoryLayout from "@/components/layout/dashboard/CategoryLayout";
 
 export default function AdminCategories() {
     return (

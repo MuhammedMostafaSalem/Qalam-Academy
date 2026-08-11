@@ -4,12 +4,26 @@ import Section from "@/components/sections/Section";
 import Container from "@/components/ui/Container";
 import Button from "@/components/ui/Button";
 import CourseCard from "@/components/courses/CourseCard";
-import { courses } from "@/constants/courses";
+import { getCoursesAction } from "@/actions/courseActions";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
-const RelatedCourses = () => {
+const RelatedCourses = ({ excludeSlug }) => {
     const router = useRouter();
-    const relatedCourses = courses.slice(0, 3);
+    const [relatedCourses, setRelatedCourses] = useState([]);
+
+    useEffect(() => {
+        getCoursesAction("isPublished=true&limit=4").then((result) => {
+            if (result.success) {
+                const filtered = excludeSlug
+                    ? result.data.filter(c => c.slug !== excludeSlug).slice(0, 3)
+                    : result.data.slice(0, 3);
+                setRelatedCourses(filtered);
+            }
+        });
+    }, [excludeSlug]);
+
+    if (relatedCourses.length === 0) return null;
 
     return (
         <Section>
@@ -61,12 +75,24 @@ const RelatedCourses = () => {
                     "
                 >
                     {relatedCourses.map((course) => (
-
                         <CourseCard
-                            key={course.id}
-                            course={course}
+                            key={course._id}
+                            course={{
+                                image: course.thumbnail,
+                                title: course.title?.ar || course.title,
+                                slug: course.slug,
+                                duration: course.duration || "—",
+                                lessons: course.lessonsCount || 0,
+                                price: course.discountPrice || course.price || 0,
+                                originalPrice: course.discountPrice ? course.price : null,
+                                badge: course.discountPrice ? "خصم" : null,
+                                instructor: course.instructor
+                                    ? `${course.instructor.firstName} ${course.instructor.lastName}`
+                                    : "—",
+                                rating: course.averageRating || 0,
+                                reviewsCount: course.reviewsCount || 0,
+                            }}
                         />
-
                     ))}
                 </div>
             </Container>

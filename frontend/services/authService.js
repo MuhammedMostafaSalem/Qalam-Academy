@@ -22,6 +22,11 @@ export async function authApi(endpoint, options = {}) {
         headers.set("Content-Type", "application/json");
     }
 
+    // Set default language to Arabic
+    if (!headers.has("Accept-Language")) {
+        headers.set("Accept-Language", "ar");
+    }
+
     // Forward authentication cookie to backend
     if (token) {
         headers.set("Cookie", `Qalam_Token=${token}`);
@@ -35,7 +40,7 @@ export async function authApi(endpoint, options = {}) {
 
     const data = await response.json();
 
-    // thentication failed / session expired
+    // Authentication failed / session expired
     if (response.status === 401) {
         // Remove authentication cookie from Next.js
         cookieStore.delete("Qalam_Token");

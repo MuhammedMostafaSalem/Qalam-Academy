@@ -1,13 +1,15 @@
 import CurriculumAccordion from "./CurriculumAccordion";
 import ProgressCard from "./ProgressCard";
 
-const LessonSidebar = () => {
+const LessonSidebar = ({ lesson, courseSlug, courseProgress }) => {
+    const courseTitle = lesson?.course?.title?.ar || lesson?.course?.title?.en || lesson?.course?.title || "الكورس";
+
     return (
         <div className="flex h-screen flex-col">
             {/* Header */}
             <div className="border-b border-border p-6">
                 <h2 className="text-xl font-bold">
-                    محتوى الكورس
+                    {courseTitle}
                 </h2>
 
                 <p className="mt-2 text-sm text-text-secondary">
@@ -17,12 +19,16 @@ const LessonSidebar = () => {
 
             {/* Progress */}
             <div className="border-b border-border p-6">
-                <ProgressCard />
+                <ProgressCard courseProgress={courseProgress} />
             </div>
 
             {/* Curriculum */}
-            <div className="flex-1">
-                <CurriculumAccordion />
+            <div className="flex-1 overflow-y-auto">
+                <CurriculumAccordion 
+                    courseProgress={courseProgress}
+                    currentLessonId={lesson._id}
+                    courseSlug={courseSlug}
+                />
             </div>
         </div>
     );

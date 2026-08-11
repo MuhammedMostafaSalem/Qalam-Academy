@@ -3,21 +3,20 @@ import {
     HiLockClosed,
     HiPlayCircle,
 } from "react-icons/hi2";
+import Link from "next/link";
 
-const LessonItem = ({
-    lesson,
-}) => {
-    const {
-        completed,
-        locked,
-        active,
-        duration,
-        title,
-    } = lesson;
+const LessonItem = ({ lesson, currentLessonId, courseSlug }) => {
+    const isCompleted = lesson.isCompleted || false;
+    const isActive = lesson._id === currentLessonId;
+    const isLocked = !lesson.isPublished;
+    const title = lesson.title?.ar || lesson.title?.en || lesson.title;
+    const duration = lesson.duration || "—";
 
     return (
-        <button
+        <Link
+            href={`/courses/${courseSlug}/lesson/${lesson._id}`}
             className={`
+                block
                 w-full
                 border-r-4
                 px-6
@@ -25,11 +24,18 @@ const LessonItem = ({
                 text-right
                 transition
 
-                ${active
+                ${isActive
                     ? "border-primary bg-primary/5"
                     : "border-transparent hover:bg-background-alt"
                 }
+                
+                ${isLocked ? "opacity-50 cursor-not-allowed" : ""}
             `}
+            onClick={(e) => {
+                if (isLocked) {
+                    e.preventDefault();
+                }
+            }}
         >
             <div
                 className="
@@ -38,12 +44,12 @@ const LessonItem = ({
                     gap-3
                 "
             >
-                {completed ? (
+                {isCompleted ? (
                     <HiCheckCircle
                         className="text-green-500"
                         size={22}
                     />
-                ) : locked ? (
+                ) : isLocked ? (
                     <HiLockClosed
                         className="text-text-secondary"
                         size={20}
@@ -56,7 +62,6 @@ const LessonItem = ({
                 )}
 
                 <div className="flex-1">
-
                     <h4 className="font-medium">
                         {title}
                     </h4>
@@ -64,10 +69,9 @@ const LessonItem = ({
                     <p className="mt-1 text-xs text-text-secondary">
                         {duration}
                     </p>
-
                 </div>
             </div>
-        </button>
+        </Link>
     );
 };
 

@@ -2,19 +2,14 @@
 
 import {
     authApi,
-    clearAuthCookies,
-    setAccessTokenCookie,
-    setSessionExpirationCookie
 } from "@/services/authService";
 import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
 
 const BASE_URL = `${process.env.NEXT_PUBLIC_BASE_URL}/api` || "http://localhost:5000/api";
 
 // 1. Signup Action
 export async function signupAction(prevState, formData) {
     try {
-        // const rawData = Object.fromEntries(formData.entries());
         const firstName = formData.get("firstName");
         const lastName = formData.get("lastName");
         const email = formData.get("email");
@@ -24,24 +19,8 @@ export async function signupAction(prevState, formData) {
         const city = formData.get("city");
         const address = formData.get("address");
 
-        // const response = await authApi("/auth/signup", {
-        //     method: "POST",
-        //     body: JSON.stringify({
-        //         firstName,
-        //         lastName,
-        //         email,
-        //         phone,
-        //         password,
-        //         country,
-        //         city,
-        //         address,
-        //     }),
-        // });
-        const response = await fetch(`${BASE_URL}/auth/signup`, {
+        const response = await authApi("/auth/signup", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
             body: JSON.stringify({
                 firstName,
                 lastName,
@@ -61,12 +40,10 @@ export async function signupAction(prevState, formData) {
             fieldErrors: {}
         };
     } catch (error) {
-        // لو الـ Backend بيرجع الأخطاء في شكل معين، تقدر تظبطها هنا
-        // كمثال، لو الـ error جاي ومعاه تفاصيل للحقول:
         return {
             success: false,
             message: error.message || "حدث خطأ ما أثناء إنشاء الحساب",
-            fieldErrors: error.errors || {} // لو الـ backend بيبعت الأخطاء كـ object
+            fieldErrors: error.errors || {}
         };
     }
 }
@@ -78,19 +55,8 @@ export async function verifyOtpAction(prevState, formData) {
         const otp = formData.get("otp");
         const purpose = formData.get("purpose");
 
-        // const response = await authApi("/auth/verify-otp", {
-        //     method: "POST",
-        // body: JSON.stringify({
-        //     email,
-        //     otp,
-        //     purpose,
-        // }),
-        // });
-        const response = await fetch(`${BASE_URL}/auth/verify-otp`, {
+        const response = await authApi("/auth/verify-otp", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
             body: JSON.stringify({
                 email,
                 otp,
@@ -211,18 +177,8 @@ export async function forgotPasswordAction(prevState, formData) {
     try {
         const email = formData.get("email");
 
-        // const response = await authApi("/auth/forgot-password", {
-        //     method: "POST",
-        //     body: JSON.stringify({
-        //         email
-        //     }),
-        // });
-
-        const response = await fetch(`${BASE_URL}/auth/forgot-password`, {
+        const response = await authApi("/auth/forgot-password", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
             body: JSON.stringify({
                 email
             }),
@@ -249,20 +205,8 @@ export async function resetPasswordAction(prevState, formData) {
         const password = formData.get("password");
         const confirmPassword = formData.get("confirmPassword");
 
-        // const response = await authApi("/auth/reset-password", {
-        //     method: "PATCH",
-        //     body: JSON.stringify({
-        //         token,
-        //         password,
-        //         confirmPassword
-        //     }),
-        // });
-
-        const response = await fetch(`${BASE_URL}/auth/reset-password`, {
+        const response = await authApi("/auth/reset-password", {
             method: "PATCH",
-            headers: {
-                "Content-Type": "application/json"
-            },
             body: JSON.stringify({
                 token,
                 password,

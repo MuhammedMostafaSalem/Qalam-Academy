@@ -5,9 +5,18 @@ import {
     HiClock,
     HiBookOpen,
     HiShoppingCart,
+    HiStar,
+    HiUser,
 } from "react-icons/hi";
 
 const CourseCard = ({ course }) => {
+    // Handle image URL - use full URL or placeholder
+    const imageUrl = course.image?.startsWith('http') 
+        ? course.image 
+        : course.image 
+            ? `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:5000'}${course.image}`
+            : '/assets/img-card.jpg';
+
     return (
         <article
             className="
@@ -26,11 +35,9 @@ const CourseCard = ({ course }) => {
             "
         >
             {/* Image */}
-
             <div className="relative overflow-hidden">
-
                 <Image
-                    src={course.image}
+                    src={imageUrl}
                     alt={course.title}
                     width={500}
                     height={320}
@@ -55,22 +62,18 @@ const CourseCard = ({ course }) => {
                             py-1
                             text-xs
                             font-semibold
-                            bg-error
-                            ${course.badgeColor}
+                            text-white
+                            ${course.badgeColor || 'bg-error'}
                         `}
                     >
                         {course.badge}
                     </span>
                 )}
-
             </div>
 
             {/* Content */}
-
             <div className="p-6">
-
                 {/* Meta */}
-
                 <div
                     className="
                         mb-4
@@ -83,17 +86,16 @@ const CourseCard = ({ course }) => {
                 >
                     <div className="flex items-center gap-2">
                         <HiClock className="text-primary" />
-                        <span>{course.duration}</span>
+                        <span>{course.duration || '—'}</span>
                     </div>
 
                     <div className="flex items-center gap-2">
                         <HiBookOpen className="text-primary" />
-                        <span>{course.lessons} درس</span>
+                        <span>{course.lessons || 0} درس</span>
                     </div>
                 </div>
 
                 {/* Title */}
-
                 <Link href={`/courses/${course.slug}`}>
                     <h3
                         className="
@@ -110,21 +112,46 @@ const CourseCard = ({ course }) => {
                     </h3>
                 </Link>
 
-                {/* Description */}
+                {/* Instructor */}
+                {course.instructor && (
+                    <div className="mt-2 flex items-center gap-2 text-sm text-text-secondary">
+                        <HiUser className="text-primary" />
+                        <span>{course.instructor}</span>
+                    </div>
+                )}
 
-                <p
-                    className="
-                        mt-3
-                        line-clamp-2
-                        leading-7
-                        text-text-secondary
-                    "
-                >
-                    {course.description}
-                </p>
+                {/* Description */}
+                {course.description && (
+                    <p
+                        className="
+                            mt-3
+                            line-clamp-2
+                            leading-7
+                            text-text-secondary
+                        "
+                    >
+                        {course.description}
+                    </p>
+                )}
+
+                {/* Rating */}
+                {course.rating > 0 && (
+                    <div className="mt-3 flex items-center gap-2">
+                        <div className="flex items-center gap-1">
+                            <HiStar className="text-yellow-500" />
+                            <span className="font-semibold text-text-primary">
+                                {course.rating.toFixed(1)}
+                            </span>
+                        </div>
+                        {course.reviewsCount > 0 && (
+                            <span className="text-sm text-text-secondary">
+                                ({course.reviewsCount} تقييم)
+                            </span>
+                        )}
+                    </div>
+                )}
 
                 {/* Footer */}
-
                 <div
                     className="
                         mt-6
@@ -134,8 +161,7 @@ const CourseCard = ({ course }) => {
                     "
                 >
                     <div>
-
-                        {course.oldPrice && (
+                        {course.originalPrice && course.originalPrice > course.price && (
                             <p
                                 className="
                                     text-sm
@@ -143,7 +169,7 @@ const CourseCard = ({ course }) => {
                                     line-through
                                 "
                             >
-                                {course.oldPrice} جنيه
+                                {course.originalPrice} جنيه
                             </p>
                         )}
 
@@ -154,9 +180,8 @@ const CourseCard = ({ course }) => {
                                 text-primary
                             "
                         >
-                            {course.price} جنيه
+                            {course.price || 0} جنيه
                         </p>
-
                     </div>
 
                     <button
@@ -173,14 +198,12 @@ const CourseCard = ({ course }) => {
                             duration-300
                             hover:scale-110
                         "
+                        aria-label="أضف إلى السلة"
                     >
                         <HiShoppingCart size={20} />
                     </button>
-
                 </div>
-
             </div>
-
         </article>
     );
 }

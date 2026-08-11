@@ -7,15 +7,27 @@ import ReviewsSection from "@/components/courseDetails/reviews/ReviewsSection";
 import CourseSidebar from "@/components/courseDetails/sidebar/CourseSidebar";
 import Section from "@/components/sections/Section";
 import Container from "@/components/ui/Container";
+import { getCourseDetailsAction } from "@/actions/lessonActions";
+import { notFound } from "next/navigation";
 
-export default function CourseDetailsPage() {
+export default async function CourseDetailsPage({ params }) {
+    const { slug } = params;
+    
+    // Fetch course details from API
+    const result = await getCourseDetailsAction(slug);
+    
+    if (!result.success || !result.data) {
+        notFound();
+    }
+
+    const courseData = result.data;
+
     return (
         <>
-            <CourseDetailsHero />
+            <CourseDetailsHero course={courseData} />
 
             <Section className="pb-24">
                 <Container>
-
                     <div
                         className="
                             grid
@@ -24,15 +36,14 @@ export default function CourseDetailsPage() {
                         "
                     >
                         <div className="space-y-20">
-                            <CourseOverview />
-                            <CourseCurriculum />
-                            <InstructorSection />
-                            <ReviewsSection />
-                            <RelatedCourses />
-
+                            <CourseOverview course={courseData} />
+                            <CourseCurriculum course={courseData} />
+                            <InstructorSection course={courseData} />
+                            <ReviewsSection course={courseData} />
+                            <RelatedCourses courseId={courseData._id} categoryId={courseData.category?._id} />
                         </div>
 
-                        <CourseSidebar />
+                        <CourseSidebar course={courseData} />
                     </div>
                 </Container>
             </Section>

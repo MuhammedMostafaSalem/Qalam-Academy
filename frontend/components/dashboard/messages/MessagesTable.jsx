@@ -1,162 +1,122 @@
+"use client";
+
 import Section from "@/components/sections/Section";
 import ActionsTable from "@/components/shared/ActionsTable";
 import Table from "@/components/ui/Table";
-import {
-    HiOutlineEye,
-    HiOutlineTrash,
-} from "react-icons/hi2";
-
-
-const messages = [
-    {
-        id: 1,
-        name: "Ahmed Mohamed",
-        email: "ahmed@gmail.com",
-        subject: "استفسار عن كورس React",
-        status: "غير مقروء",
-        date: "10 Feb 2025",
-    },
-    {
-        id: 2,
-        name: "Sara Ali",
-        email: "sara@gmail.com",
-        subject: "طلب تعاون",
-        status: "مقروء",
-        date: "12 Feb 2025",
-    },
-    {
-        id: 3,
-        name: "Omar Hassan",
-        email: "omar@gmail.com",
-        subject: "مشكلة في الدفع",
-        status: "غير مقروء",
-        date: "15 Feb 2025",
-    },
-];
-
+import { HiOutlineTrash } from "react-icons/hi2";
+import { useState } from "react";
+import useMessages from "@/hooks/messages/useMessages";
+import { deleteMessageAction } from "@/actions/contactActions";
+import useToast from "@/hooks/useToast";
 
 const MessagesTable = () => {
-    return (
-        <Section
-            className="
-                overflow-x-auto
-            "
-        >
-            <Table
-                className="
-                    w-full
-                    min-w-[1000px]
-                "
-            >
-                <Table.Head>
-                    <Table.Row>
-                        <Table.Th>
-                            #
-                        </Table.Th>
-                        <Table.Th>
-                            الاسم
-                        </Table.Th>
-                        <Table.Th>
-                            البريد
-                        </Table.Th>
-                        <Table.Th>
-                            الموضوع
-                        </Table.Th>
-                        <Table.Th>
-                            الحالة
-                        </Table.Th>
-                        <Table.Th>
-                            التاريخ
-                        </Table.Th>
-                        <Table.Th>
-                            الإجراءات
-                        </Table.Th>
-                    </Table.Row>
-                </Table.Head>
+    const { messages, loading, error, refetch } = useMessages();
+    const { successMessage, errorMessage } = useToast();
+    const [deletingId, setDeletingId] = useState(null);
 
-                <Table.Body>
-                    {
-                        messages.map((message) => (
-                            <Table.Row
-                                key={message.id}
-                            >
+    const handleDelete = async (messageId) => {
+        if (!confirm("هل أنت متأكد من حذف هذه الرسالة؟")) return;
+
+        setDeletingId(messageId);
+        const result = await deleteMessageAction(messageId);
+
+        if (result.success) {
+            successMessage(result.message || "تم حذف الرسالة بنجاح");
+            refetch();
+        } else {
+            errorMessage(result.message || "فشل حذف الرسالة");
+        }
+
+        setDeletingId(null);
+    };
+
+    if (loading) {
+        return (
+            <div className="mt-[20px] text-center py-10">
+                <p className="text-text-secondary">جاري التحميل...</p>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="mt-[20px] text-center py-10">
+                <p className="text-error">{error}</p>
+            </div>
+        );
+    }
+
+    if (!messages || messages.length === 0) {
+        return (
+            <div className="mt-[20px] text-center py-10">
+                <div className="text-center py-6 text-text-muted">لا يوجد بيانات متاحة</div>
+            </div>
+        );
+    }
+
+    return (
+        <Section className="overflow-x-auto">
+            <div className="overflow-x-auto overflow-y-hidden">
+                <Table className="w-full min-w-[1000px]">
+                    <Table.Head>
+                        <Table.Row>
+                            <Table.Th>الاسم</Table.Th>
+                            <Table.Th>البريد</Table.Th>
+                            <Table.Th>الموضوع</Table.Th>
+                            <Table.Th>الرسالة</Table.Th>
+                            <Table.Th>التاريخ</Table.Th>
+                            <Table.Th>الإجراءات</Table.Th>
+                        </Table.Row>
+                    </Table.Head>
+
+                    <Table.Body>
+                        {messages.map((message) => (
+                            <Table.Row key={message._id}>
+                                <Table.Td>{message.name || "—"}</Table.Td>
+
+                                <Table.Td>{message.email || "—"}</Table.Td>
+
                                 <Table.Td>
-                                    {message.id}
+                                    <p className="max-w-xs truncate">{message.subject || "—"}</p>
                                 </Table.Td>
+
                                 <Table.Td>
-                                    {message.name}
-                                </Table.Td>
-                                <Table.Td>
-                                    {message.email}
-                                </Table.Td>
-                                <Table.Td>
-                                    <p
-                                        className="
-                                            max-w-xs
-                                            truncate
-                                        "
-                                    >
-                                        {message.subject}
+                                    <p className="max-w-xs truncate">
+                                        {message.message
+                                            ? message.message.slice(0, 50) + (message.message.length > 50 ? "..." : "")
+                                            : "—"}
                                     </p>
                                 </Table.Td>
-                                <Table.Td>
-                                    <span
-                                        className={`
-                                            rounded-full
-                                            px-3
-                                            py-1
-                                            text-sm
 
-                                            ${message.status === "غير مقروء"
-                                                ?
-                                                "bg-red-500/10 text-red-500"
-                                                :
-                                                "bg-green-500/10 text-green-500"
-                                            }
-                                        `}
-                                    >
-                                        {message.status}
-                                    </span>
-                                </Table.Td>
                                 <Table.Td>
-                                    {message.date}
+                                    {message.createdAt
+                                        ? new Date(message.createdAt).toLocaleDateString("ar-EG")
+                                        : "—"}
                                 </Table.Td>
+
                                 <Table.Td>
                                     <ActionsTable
                                         actions={
-                                            <div
-                                                className="
-                                                    flex
-                                                    justify-center
-                                                    items-center
-                                                    gap-4
-                                                    text-[20px]
-                                                "
-                                            >
-                                                <HiOutlineEye
-                                                    className="
-                                                        cursor-pointer
-                                                        text-primary
-                                                    "
-                                                />
-                                                <HiOutlineTrash
-                                                    className="
-                                                        cursor-pointer
-                                                        text-error
-                                                    "
-                                                />
+                                            <div className="flex justify-center items-center gap-4 text-[20px]">
+                                                <button
+                                                    onClick={() => handleDelete(message._id)}
+                                                    disabled={deletingId === message._id}
+                                                    className="cursor-pointer text-error disabled:opacity-50"
+                                                    type="button"
+                                                >
+                                                    <HiOutlineTrash />
+                                                </button>
                                             </div>
                                         }
                                     />
                                 </Table.Td>
                             </Table.Row>
-                        ))
-                    }
-                </Table.Body>
-            </Table>
+                        ))}
+                    </Table.Body>
+                </Table>
+            </div>
         </Section>
     );
 };
-
 
 export default MessagesTable;

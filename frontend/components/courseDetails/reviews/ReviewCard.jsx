@@ -3,9 +3,19 @@ import {
     HiUserCircle,
 } from "react-icons/hi2";
 
-const ReviewCard = ({
-    review,
-}) => {
+const ReviewCard = ({ review }) => {
+    const userName = review.user 
+        ? `${review.user.firstName || ''} ${review.user.lastName || ''}`.trim()
+        : "مستخدم";
+    
+    const createdAt = review.createdAt 
+        ? new Date(review.createdAt).toLocaleDateString('ar-EG', { 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+        })
+        : "";
+
     return (
         <div
             className="
@@ -26,7 +36,6 @@ const ReviewCard = ({
                 "
             >
                 <div className="flex items-center gap-4">
-
                     <HiUserCircle
                         size={50}
                         className="text-primary"
@@ -34,32 +43,37 @@ const ReviewCard = ({
 
                     <div>
                         <h3 className="font-semibold">
-                            {review.name}
+                            {userName}
                         </h3>
 
                         <p className="text-sm text-text-secondary">
-                            {review.date}
+                            {createdAt}
                         </p>
                     </div>
-
                 </div>
 
                 <div className="flex gap-1 text-yellow-400">
-                    {Array.from({ length: review.rating }).map((_, index) => (
-                        <HiStar key={index} size={18} />
+                    {Array.from({ length: 5 }).map((_, index) => (
+                        <HiStar 
+                            key={index} 
+                            size={18}
+                            className={index < review.rating ? "" : "opacity-30"}
+                        />
                     ))}
                 </div>
             </div>
 
-            <p
-                className="
-                    mt-6
-                    leading-8
-                    text-text-secondary
-                "
-            >
-                {review.comment}
-            </p>
+            {review.comment && (
+                <p
+                    className="
+                        mt-6
+                        leading-8
+                        text-text-secondary
+                    "
+                >
+                    {review.comment}
+                </p>
+            )}
         </div>
     );
 };

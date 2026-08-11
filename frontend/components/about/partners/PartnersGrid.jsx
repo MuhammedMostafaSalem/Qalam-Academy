@@ -1,8 +1,37 @@
-import { fadeUp } from "@/lib/animationHelpers"
-import PartnerCard from "./PartnerCard"
-import partners from "./partners"
+"use client";
+
+import { fadeUp } from "@/lib/animationHelpers";
+import PartnerCard from "./PartnerCard";
+import { getPartnersAction } from "@/actions/partnerActions";
+import { useEffect, useState } from "react";
 
 const PartnersGrid = () => {
+    const [partners, setPartners] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        getPartnersAction("limit=20").then((result) => {
+            if (result.success) setPartners(result.data);
+            setLoading(false);
+        });
+    }, []);
+
+    if (loading) {
+        return (
+            <div className="py-10 text-center text-text-secondary">
+                جاري تحميل الشركاء...
+            </div>
+        );
+    }
+
+    if (partners.length === 0) {
+        return (
+            <div className="py-6 text-center text-text-muted">
+                لا يوجد شركاء حالياً
+            </div>
+        );
+    }
+
     return (
         <div
             {...fadeUp()}
@@ -16,13 +45,17 @@ const PartnersGrid = () => {
         >
             {partners.map((partner, index) => (
                 <PartnerCard
-                    key={index}
+                    key={partner._id}
                     index={index}
-                    partner={partner}
+                    partner={{
+                        name: partner.name,
+                        website: partner.website || "#",
+                        image: partner.image,
+                    }}
                 />
             ))}
         </div>
-    )
-}
+    );
+};
 
-export default PartnersGrid
+export default PartnersGrid;

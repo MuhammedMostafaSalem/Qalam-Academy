@@ -7,29 +7,30 @@ import {
 import MetaItem from "./MetaItem";
 import { fadeUp } from "@/lib/animationHelpers";
 
-const metas = [
-    {
-        icon: HiOutlineStar,
-        title: "4.9",
-        subtitle: "التقييم"
-    },
-    {
-        icon: HiOutlineUserGroup,
-        title: "1,250+",
-        subtitle: "طالب"
-    },
-    {
-        icon: HiOutlineClock,
-        title: "12 أسبوع",
-        subtitle: "مدة الكورس"
-    },
-    {
-        icon: HiOutlineAcademicCap,
-        title: "48",
-        subtitle: "درس"
-    },
-]
-const HeroMeta = () => {
+const HeroMeta = ({ course }) => {
+    const metas = [
+        {
+            icon: HiOutlineStar,
+            title: course?.averageRating ? course.averageRating.toFixed(1) : "0.0",
+            subtitle: "التقييم"
+        },
+        {
+            icon: HiOutlineUserGroup,
+            title: course?.studentsCount ? `${course.studentsCount}+` : "0",
+            subtitle: "طالب"
+        },
+        {
+            icon: HiOutlineClock,
+            title: course?.duration || "—",
+            subtitle: "مدة الكورس"
+        },
+        {
+            icon: HiOutlineAcademicCap,
+            title: course?.lessonsCount || "0",
+            subtitle: "درس"
+        },
+    ];
+
     return (
         <div
             {...fadeUp()}
@@ -41,21 +42,15 @@ const HeroMeta = () => {
                 sm:grid-cols-2
             "
         >
-
-            {
-                metas.map((item, index) => {
-                    return (
-                        <MetaItem
-                            key={index}
-                            index={index}
-                            item={item}
-                        />
-                    )
-                })
-            }
+            {metas.map((item, index) => (
+                <MetaItem
+                    key={index}
+                    index={index}
+                    item={item}
+                />
+            ))}
         </div>
     );
 };
-
 
 export default HeroMeta;

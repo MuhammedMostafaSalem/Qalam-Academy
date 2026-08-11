@@ -5,8 +5,21 @@ import {
     HiOutlineInformationCircle,
 } from "react-icons/hi2";
 import Section from "../sections/Section";
+import useProfile from "@/hooks/profile/useProfile";
 
 const PasswordCard = () => {
+    const { loadingPassword, handleChangePassword } = useProfile();
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const result = await handleChangePassword(formData);
+
+        if (result?.success) {
+            e.target.reset();
+        }
+    };
+
     return (
         <Section
             className="
@@ -18,7 +31,6 @@ const PasswordCard = () => {
             "
         >
 
-            {/* Header */}
             <div className="mb-8">
 
                 <h2
@@ -48,10 +60,8 @@ const PasswordCard = () => {
             </div>
 
 
-            <form className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-6">
 
-
-                {/* Current Password */}
 
                 <div>
 
@@ -68,6 +78,8 @@ const PasswordCard = () => {
 
                     <input
                         type="password"
+                        name="currentPassword"
+                        required
                         placeholder="••••••••••"
                         className="
                             w-full
@@ -93,8 +105,6 @@ const PasswordCard = () => {
                 </div>
 
 
-
-                {/* New Password */}
 
                 <div>
 
@@ -111,6 +121,8 @@ const PasswordCard = () => {
 
                     <input
                         type="password"
+                        name="newPassword"
+                        required
                         placeholder="••••••••••"
                         className="
                             w-full
@@ -136,8 +148,6 @@ const PasswordCard = () => {
                 </div>
 
 
-
-                {/* Confirm Password */}
 
                 <div>
 
@@ -154,6 +164,8 @@ const PasswordCard = () => {
 
                     <input
                         type="password"
+                        name="confirmPassword"
+                        required
                         placeholder="••••••••••"
                         className="
                             w-full
@@ -179,8 +191,6 @@ const PasswordCard = () => {
                 </div>
 
 
-
-                {/* Hint */}
 
                 <div
                     className="
@@ -212,8 +222,6 @@ const PasswordCard = () => {
 
 
 
-                {/* Button */}
-
                 <div
                     className="
                         flex
@@ -223,6 +231,7 @@ const PasswordCard = () => {
 
                     <button
                         type="submit"
+                        disabled={loadingPassword}
                         className="
                             rounded-2xl
 
@@ -238,9 +247,11 @@ const PasswordCard = () => {
                             transition
 
                             hover:opacity-90
+                            disabled:opacity-50
+                            disabled:cursor-not-allowed
                         "
                     >
-                        تغيير كلمة المرور
+                        {loadingPassword ? "جاري التحديث..." : "تغيير كلمة المرور"}
                     </button>
 
                 </div>

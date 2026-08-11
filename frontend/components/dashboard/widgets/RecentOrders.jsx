@@ -1,20 +1,19 @@
 import CardHeader from "@/components/ui/CardHeader";
 import DashboardCard from "@/components/ui/DashboardCard";
-import ordersData from "./ordersData";
 import OrderItem from "./OrderItem";
 
-const RecentOrders = () => {
+const RecentOrders = ({ orders = [] }) => {
     return (
         <DashboardCard className="h-full">
 
             <CardHeader
-                title="Recent Orders"
-                subtitle="Latest customer purchases"
+                title="أحدث الطلبات"
+                subtitle="أحدث عمليات الشراء من العملاء"
             />
 
             <div className="space-y-4">
 
-                {ordersData.map((order) => (
+                {orders.map((order) => (
                     <OrderItem
                         key={order.id}
                         {...order}

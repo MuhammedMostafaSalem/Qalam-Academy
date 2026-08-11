@@ -1,6 +1,22 @@
 import { HiStar } from "react-icons/hi2";
 
-const ReviewSummary = () => {
+const ReviewSummary = ({ course }) => {
+    const averageRating = course?.averageRating || 0;
+    const reviewsCount = course?.reviewsCount || 0;
+    const ratingDistribution = course?.ratingDistribution || {
+        5: 0,
+        4: 0,
+        3: 0,
+        2: 0,
+        1: 0
+    };
+
+    // Calculate percentages for each star rating
+    const getPercentage = (count) => {
+        if (reviewsCount === 0) return 0;
+        return Math.round((count / reviewsCount) * 100);
+    };
+
     return (
         <div
             className="
@@ -24,17 +40,21 @@ const ReviewSummary = () => {
             >
                 <div>
                     <h3 className="text-6xl font-bold">
-                        4.9
+                        {averageRating.toFixed(1)}
                     </h3>
 
                     <div className="mt-3 flex gap-1 text-yellow-400">
                         {Array.from({ length: 5 }).map((_, index) => (
-                            <HiStar key={index} size={22} />
+                            <HiStar 
+                                key={index} 
+                                size={22}
+                                className={index < Math.round(averageRating) ? "" : "opacity-30"}
+                            />
                         ))}
                     </div>
 
                     <p className="mt-3 text-text-secondary">
-                        بناءً على 1,248 تقييم
+                        بناءً على {reviewsCount} تقييم
                     </p>
                 </div>
 
@@ -48,19 +68,16 @@ const ReviewSummary = () => {
 
                             <div className="h-2 flex-1 rounded-full bg-background-alt">
                                 <div
-                                    className="h-full rounded-full bg-primary"
+                                    className="h-full rounded-full bg-primary transition-all"
                                     style={{
-                                        width:
-                                            star === 5
-                                                ? "82%"
-                                                : star === 4
-                                                    ? "12%"
-                                                    : star === 3
-                                                        ? "4%"
-                                                        : "1%",
+                                        width: `${getPercentage(ratingDistribution[star] || 0)}%`,
                                     }}
                                 />
                             </div>
+                            
+                            <span className="w-12 text-sm text-text-secondary">
+                                {getPercentage(ratingDistribution[star] || 0)}%
+                            </span>
                         </div>
                     ))}
                 </div>

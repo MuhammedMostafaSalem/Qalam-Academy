@@ -2,7 +2,7 @@ import CourseActions from "./CourseActions";
 import CourseFeatures from "./CourseFeatures";
 import CoursePrice from "./CoursePrice";
 
-const CourseSidebar = () => {
+const CourseSidebar = ({ course }) => {
     return (
         <aside
             className="
@@ -15,15 +15,15 @@ const CourseSidebar = () => {
                 p-7
             "
         >
-            <CoursePrice />
+            <CoursePrice course={course} />
 
             <div className="my-8">
-                <CourseActions />
+                <CourseActions course={course} />
             </div>
 
             <hr className="border-border my-8" />
 
-            <CourseFeatures />
+            <CourseFeatures course={course} />
 
             <p
                 className="

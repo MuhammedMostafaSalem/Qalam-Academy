@@ -12,17 +12,16 @@ import {
     XAxis,
     YAxis,
 } from "recharts";
-import salesData from "./salesData";
 import CustomTooltip from "./CustomTooltip";
 
-const SalesChart = () => {
+const SalesChart = ({ data = [] }) => {
     return (
         <DashboardCard className="h-full">
             <CardHeader
-                title="Sales"
-                subtitle="Monthly Sales"
+                title="المبيعات"
+                subtitle="عدد الطلبات الشهرية"
                 filter
-                filterLabel="This Year"
+                filterLabel="هذا العام"
             />
 
             <div className="h-[340px]">
@@ -31,7 +30,7 @@ const SalesChart = () => {
                     height="100%"
                 >
                     <BarChart
-                        data={salesData}
+                        data={data}
                         margin={{
                             top: 10,
                             right: 5,
@@ -64,7 +63,7 @@ const SalesChart = () => {
 
                         <Tooltip
                             cursor={false}
-                            content={<CustomTooltip suffix="%" prefix="" />}
+                            content={<CustomTooltip suffix=" طلب" prefix="" />}
                         />
 
                         <Bar

@@ -5,11 +5,13 @@ import PortfolioSection from "@/components/home/portfolio/PortfolioSection";
 import Services from "@/components/home/services/Services";
 import TestimonialsSection from "@/components/home/testimonials/TestimonialsSection";
 import WhyChooseSection from "@/components/home/whyChoose/WhyChooseSection";
+import ContinueWatching from "@/components/home/continueWatching/ContinueWatching";
 
 export default function Home() {
   return (
     <>
       <Hero />
+      <ContinueWatching />
       <Services />
       <FeaturedCourses />
       <PortfolioSection />

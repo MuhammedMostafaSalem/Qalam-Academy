@@ -1,33 +1,36 @@
+"use client";
+
 import LoadMore from "@/components/shared/LoadMore";
 import WishlistCard from "@/components/ui/WishlistCard";
+import FullPageLoader from "@/components/ui/FullPageLoader";
+import useWishlist from "@/hooks/wishlist/useWishlist";
 import imgCourse from '@/public/assets/img-card.jpg';
 
-const courses = [
-    {
-        id: 1,
-        title: "تعلم Next.js من الصفر للاحتراف",
-        instructor: "Qalam Academy",
-        price: "499",
-        image: imgCourse,
-    },
-    {
-        id: 2,
-        title: "React Advanced",
-        instructor: "Ahmed Academy",
-        price: "399",
-        image: imgCourse,
-    },
-    {
-        id: 3,
-        title: "UI/UX Design",
-        instructor: "Sara Ahmed",
-        price: "299",
-        image: imgCourse,
-    },
-];
-
-
 const WishlistGrid = () => {
+    const { wishlist, loading, removeFromWishlist } = useWishlist();
+
+    if (loading) {
+        return <FullPageLoader />;
+    }
+
+    if (wishlist.length === 0) {
+        return (
+            <div className="text-center py-12 text-text-muted">
+                <p className="text-lg">لا توجد كورسات في المفضلة</p>
+            </div>
+        );
+    }
+
+    const mappedCourses = wishlist.map((course) => ({
+        _id: course._id,
+        title: typeof course.title === "object" ? (course.title.ar || course.title.en) : course.title,
+        instructor: course.instructor
+            ? `${course.instructor.firstName || ""} ${course.instructor.lastName || ""}`.trim()
+            : "أكاديمية قلم",
+        price: course.discountPrice > 0 ? course.discountPrice : course.price,
+        image: course.thumbnail || imgCourse,
+    }));
+
     return (
         <div className="flex-1">
             <div
@@ -39,15 +42,16 @@ const WishlistGrid = () => {
                 gap-6
             "
             >
-                {courses.map((course) => (
+                {mappedCourses.map((course) => (
                     <WishlistCard
-                        key={course.id}
+                        key={course._id}
                         course={course}
+                        onRemove={() => removeFromWishlist(course._id)}
                     />
                 ))}
             </div>
 
-            <LoadMore />
+            {wishlist.length >= 6 && <LoadMore />}
         </div>
     );
 };

@@ -3,7 +3,10 @@ import Container from "@/components/ui/Container"
 import ReviewSummary from "./ReviewSummary";
 import ReviewsList from "./ReviewsList";
 
-const ReviewsSection = () => {
+const ReviewsSection = ({ course }) => {
+    const reviewsCount = course?.reviewsCount || 0;
+    const averageRating = course?.averageRating || 0;
+
     return (
         <Section>
             <Container>
@@ -14,13 +17,13 @@ const ReviewsSection = () => {
 
                     <p className="mt-3 max-w-2xl leading-8 text-text-secondary">
                         اكتشف تجارب طلابنا الذين أكملوا هذا الكورس وشاركوا
-                        تقييماتهم وانطباعاتهم.
+                        تقييماتهم وانطباعاتهم. ({reviewsCount} تقييم)
                     </p>
                 </div>
 
-                <ReviewSummary />
+                <ReviewSummary course={course} />
 
-                <ReviewsList />
+                <ReviewsList courseId={course?._id} />
             </Container>
         </Section>
     );

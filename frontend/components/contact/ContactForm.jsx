@@ -7,9 +7,18 @@ import {
     HiOutlineUser,
     HiOutlineChatBubbleLeftRight,
     HiOutlinePaperAirplane,
+    HiOutlinePhone,
 } from "react-icons/hi2";
+import { useActionState, useState } from "react";
+import { submitContactAction } from "@/actions/contactActions";
 
 const ContactForm = () => {
+    const [state, formAction, isPending] = useActionState(submitContactAction, {
+        success: false,
+        message: "",
+        fieldErrors: {},
+    });
+
     return (
         <div {...fadeUp(300)}>
 
@@ -38,7 +47,22 @@ const ContactForm = () => {
 
             </div>
 
+            {/* Success message */}
+            {state.success && (
+                <div className="mb-6 p-4 rounded-xl bg-success/10 border border-success/20 text-success">
+                    {state.message}
+                </div>
+            )}
+
+            {/* Error message */}
+            {!state.success && state.message && (
+                <div className="mb-6 p-4 rounded-xl bg-error/10 border border-error/20 text-error">
+                    {state.message}
+                </div>
+            )}
+
             <form
+                action={formAction}
                 className="
                     space-y-6
                 "
@@ -84,8 +108,10 @@ const ContactForm = () => {
 
                             <input
                                 id="name"
+                                name="name"
                                 type="text"
                                 placeholder="أدخل اسمك"
+                                required
                                 className="
                                     h-14
                                     w-full
@@ -105,6 +131,9 @@ const ContactForm = () => {
                             />
 
                         </div>
+                        {state.fieldErrors?.name && (
+                            <p className="mt-1 text-sm text-error">{state.fieldErrors.name}</p>
+                        )}
 
                     </div>
 
@@ -140,8 +169,10 @@ const ContactForm = () => {
 
                             <input
                                 id="email"
+                                name="email"
                                 type="email"
                                 placeholder="example@email.com"
+                                required
                                 className="
                                     h-14
                                     w-full
@@ -161,6 +192,66 @@ const ContactForm = () => {
                             />
 
                         </div>
+                        {state.fieldErrors?.email && (
+                            <p className="mt-1 text-sm text-error">{state.fieldErrors.email}</p>
+                        )}
+
+                    </div>
+
+                </div>
+
+                {/* Phone */}
+
+                <div>
+
+                    <label
+                        htmlFor="phone"
+                        className="
+                            mb-2
+                            block
+                            font-medium
+                            text-text-primary
+                        "
+                    >
+                        رقم الهاتف (اختياري)
+                    </label>
+
+                    <div className="relative">
+
+                        <HiOutlinePhone
+                            className="
+                                absolute
+                                right-4
+                                top-1/2
+                                h-5
+                                w-5
+                                -translate-y-1/2
+                                text-text-muted
+                            "
+                        />
+
+                        <input
+                            id="phone"
+                            name="phone"
+                            type="tel"
+                            placeholder="+20 1XX XXXX XXX"
+                            className="
+                                h-14
+                                w-full
+                                rounded-xl
+                                border
+                                border-border
+                                bg-background-alt
+                                pr-12
+                                pl-4
+                                outline-none
+                                transition-all
+                                duration-300
+                                focus:border-primary
+                                focus:ring-4
+                                focus:ring-primary/10
+                            "
+                        />
 
                     </div>
 
@@ -198,8 +289,10 @@ const ContactForm = () => {
 
                         <input
                             id="subject"
+                            name="subject"
                             type="text"
                             placeholder="عنوان مختصر للرسالة"
+                            required
                             className="
                                 h-14
                                 w-full
@@ -219,6 +312,9 @@ const ContactForm = () => {
                         />
 
                     </div>
+                    {state.fieldErrors?.subject && (
+                        <p className="mt-1 text-sm text-error">{state.fieldErrors.subject}</p>
+                    )}
 
                 </div>
 
@@ -240,8 +336,10 @@ const ContactForm = () => {
 
                     <textarea
                         id="message"
+                        name="message"
                         rows={6}
                         placeholder="اكتب رسالتك هنا..."
+                        required
                         className="
                             w-full
                             rounded-xl
@@ -259,6 +357,9 @@ const ContactForm = () => {
                             focus:ring-primary/10
                         "
                     />
+                    {state.fieldErrors?.message && (
+                        <p className="mt-1 text-sm text-error">{state.fieldErrors.message}</p>
+                    )}
 
                 </div>
 
@@ -268,8 +369,9 @@ const ContactForm = () => {
                     type="submit"
                     size="lg"
                     className="w-full md:w-auto"
+                    disabled={isPending}
                 >
-                    إرسال الرسالة
+                    {isPending ? "جاري الإرسال..." : "إرسال الرسالة"}
 
                     <HiOutlinePaperAirplane className="h-5 w-5" />
                 </Button>

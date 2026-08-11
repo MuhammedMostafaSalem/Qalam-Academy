@@ -1,11 +1,11 @@
 import CourseInfoForm from "./CourseInfoForm"
 import CourseInfoToolbar from "./CourseInfoToolbar"
 
-const Info = () => {
+const Info = ({ courseId }) => {
     return (
         <>
             <CourseInfoToolbar />
-            <CourseInfoForm />
+            <CourseInfoForm courseId={courseId} />
         </>
     )
 }

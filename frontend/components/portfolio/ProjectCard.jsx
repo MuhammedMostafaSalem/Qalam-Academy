@@ -4,6 +4,17 @@ import Link from "next/link";
 import { HiArrowLeft, HiTag, HiCode } from "react-icons/hi";
 
 const ProjectCard = ({ project }) => {
+    // Handle image URL properly
+    const imageUrl = project?.image?.startsWith('http') 
+        ? project.image 
+        : project?.image 
+            ? `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:5000'}${project.image}`
+            : '/assets/img-card.jpg'; // Fallback image
+
+    const title = project?.title?.ar || project?.title?.en || project?.title || "مشروع";
+    const description = project?.description?.ar || project?.description?.en || project?.description || "";
+    const category = project?.category?.name?.ar || project?.category?.name?.en || project?.category?.name || project?.category || "عام";
+
     return (
         <article
             className="
@@ -22,12 +33,10 @@ const ProjectCard = ({ project }) => {
             "
         >
             {/* Image */}
-
             <div className="relative overflow-hidden">
-
                 <Image
-                    src={project.image}
-                    alt={project.title}
+                    src={imageUrl}
+                    alt={title}
                     width={500}
                     height={320}
                     className="
@@ -39,32 +48,11 @@ const ProjectCard = ({ project }) => {
                         group-hover:scale-105
                     "
                 />
-
-                {/* <span
-                    className="
-                        absolute
-                        left-4
-                        top-4
-                        rounded-full
-                        bg-primary
-                        px-3
-                        py-1
-                        text-xs
-                        font-semibold
-                        text-white
-                    "
-                >
-                    {project.category}
-                </span> */}
-
             </div>
 
             {/* Content */}
-
             <div className="p-6 flex flex-col gap-3">
-
                 {/* Meta */}
-
                 <div
                     className="
                         flex
@@ -76,7 +64,7 @@ const ProjectCard = ({ project }) => {
                 >
                     <div className="flex items-center gap-2">
                         <HiTag className="text-primary" />
-                        <span>{project.category}</span>
+                        <span>{category}</span>
                     </div>
                 </div>
 
@@ -89,11 +77,10 @@ const ProjectCard = ({ project }) => {
                             text-text-primary
                         "
                 >
-                    {project.title}
+                    {title}
                 </h3>
 
                 {/* Description */}
-
                 <p
                     className="
                         line-clamp-2
@@ -101,12 +88,12 @@ const ProjectCard = ({ project }) => {
                         text-text-secondary
                     "
                 >
-                    {project.description}
+                    {description}
                 </p>
 
                 {/* Footer */}
                 <Link
-                    href={`/portfolio/${project.slug}`}
+                    href={`/portfolio/${project?.slug || '#'}`}
                     className="
                         flex
                         gap-3
@@ -117,9 +104,7 @@ const ProjectCard = ({ project }) => {
                     <div>عرض المشروع</div>
                     <HiArrowLeft size={22} className="" />
                 </Link>
-
             </div>
-
         </article>
     )
 }

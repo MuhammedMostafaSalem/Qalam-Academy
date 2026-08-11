@@ -3,7 +3,13 @@ import Container from "@/components/ui/Container"
 import InstructorInfo from "./InstructorInfo";
 import InstructorStats from "./InstructorStats";
 
-const InstructorSection = () => {
+const InstructorSection = ({ course }) => {
+    const instructor = course?.instructor;
+
+    if (!instructor) {
+        return null;
+    }
+
     return (
         <Section>
             <Container>
@@ -27,9 +33,9 @@ const InstructorSection = () => {
                         items-start
                     "
                 >
-                    <InstructorInfo />
+                    <InstructorInfo instructor={instructor} />
 
-                    <InstructorStats />
+                    <InstructorStats instructor={instructor} />
                 </div>
             </Container>
         </Section>

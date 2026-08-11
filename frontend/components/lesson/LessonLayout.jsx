@@ -1,7 +1,7 @@
 import LessonPlayer from "./lessonPlayer/LessonPlayer";
 import LessonSidebar from "./lessonSidebar/LessonSidebar";
 
-const LessonLayout = () => {
+const LessonLayout = ({ lesson, courseSlug, courseProgress }) => {
     return (
         <div
             className="
@@ -12,7 +12,11 @@ const LessonLayout = () => {
             "
         >
             {/* Main Content */}
-            <LessonPlayer />
+            <LessonPlayer 
+                lesson={lesson} 
+                courseSlug={courseSlug}
+                courseProgress={courseProgress}
+            />
 
             {/* Sidebar */}
             <aside
@@ -21,7 +25,11 @@ const LessonLayout = () => {
                     border-border
                 "
             >
-                <LessonSidebar />
+                <LessonSidebar 
+                    lesson={lesson}
+                    courseSlug={courseSlug}
+                    courseProgress={courseProgress}
+                />
             </aside>
         </div>
     );

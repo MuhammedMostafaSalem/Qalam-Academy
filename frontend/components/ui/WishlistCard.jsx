@@ -7,7 +7,7 @@ import {
 } from "react-icons/hi2";
 
 
-const WishlistCard = ({ course }) => {
+const WishlistCard = ({ course, onRemove }) => {
     return (
         <div
             className="
@@ -27,7 +27,6 @@ const WishlistCard = ({ course }) => {
                 hover:-translate-y-1
             "
         >
-            {/* Image */}
             <div
                 className="
                     relative
@@ -46,8 +45,8 @@ const WishlistCard = ({ course }) => {
                     "
                 />
 
-                {/* Remove */}
                 <button
+                    onClick={onRemove}
                     className="
                         absolute
 
@@ -83,7 +82,6 @@ const WishlistCard = ({ course }) => {
                 </button>
             </div>
 
-            {/* Content */}
             <div
                 className="
                     p-5
@@ -137,7 +135,6 @@ const WishlistCard = ({ course }) => {
                     </span>
                 </div>
 
-                {/* Actions */}
                 <div
                     className="
                         mt-5
@@ -148,7 +145,7 @@ const WishlistCard = ({ course }) => {
                     "
                 >
                     <Link
-                        href={`/courses/${course.id}`}
+                        href={`/courses/${course.slug || course._id}`}
                         className="
                             flex-1
 

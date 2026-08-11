@@ -14,7 +14,7 @@ const initialState = {
 
 const useRegisterForm = () => {
     const router = useRouter();
-    // const dispatch = useDispatch();
+    const dispatch = useDispatch();
 
     const [state, formAction, isPending] = useActionState(signupAction, initialState);
     const [fieldErrors, setFieldErrors] = useState({});
@@ -24,31 +24,22 @@ const useRegisterForm = () => {
         if (!state.message) return;
 
         if (state.success) {
-            showToast({
-                message: state.message,
-                type: "success",
-            })
-            // dispatch(
-            // );
-            // const emailInput = document.querySelector("input[name='email']");
-            // email = emailInput ? emailInput.value : "";
+            dispatch(
+                showToast({
+                    message: state.message,
+                    type: "success",
+                })
+            );
 
             setTimeout(() => {
                 router.push(`/verify-otp?email=${state.email}&purpose=email_verification`);
             }, 3000);
         } else {
-            // تحديث الأخطاء الخاصة بالحقول لو موجودة
             if (state.fieldErrors) {
                 setFieldErrors(state.fieldErrors);
             }
-            // dispatch(
-            //     showToast({
-            //         message: state.message,
-            //         type: "error",
-            //     })
-            // );
         }
-    }, [state, router]);
+    }, [state, router, dispatch]);
 
     // دالة لمسح خطأ الحقل بمجرد أن يبدأ المستخدم في الكتابة بداخله
     const handleInputChange = (e) => {

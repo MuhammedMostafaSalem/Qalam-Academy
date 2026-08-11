@@ -1,18 +1,30 @@
 "use client";
 
-import Image from "next/image";
 import {
     HiOutlineEnvelope,
     HiOutlinePhone,
-    HiOutlinePencilSquare,
-    HiOutlineKey,
     HiOutlineCalendarDays,
     HiOutlineClock,
 } from "react-icons/hi2";
 import { LuShieldCheck } from "react-icons/lu";
 import Section from "../sections/Section";
+import { useAuth } from "@/providers/AuthProvider";
+import userIcon from '@/public/assets/user-icon.png';
+
+const roleLabels = {
+    admin: "مدير النظام",
+    instructor: "مدرس",
+    student: "طالب",
+};
 
 const ProfileHeroCard = () => {
+    const { user } = useAuth();
+
+    if (!user) return null;
+
+    const roleLabel = roleLabels[user.role] || user.role;
+    const isActive = user.isActive !== false;
+
     return (
         <Section
             className="
@@ -25,12 +37,11 @@ const ProfileHeroCard = () => {
         >
             <div className="flex flex-col gap-8 xl:flex-row xl:items-center xl:justify-between">
 
-                {/* Left */}
                 <div className="flex flex-col gap-6 md:flex-row md:items-center">
 
                     <img
-                        src="https://i.pravatar.cc/300?img=12"
-                        alt="Profile"
+                        src={user.avatar || userIcon}
+                        alt={`${user.firstName} ${user.lastName}`}
                         width={120}
                         height={120}
                         className="
@@ -46,21 +57,23 @@ const ProfileHeroCard = () => {
                         <div className="flex items-center gap-3 flex-wrap">
 
                             <h1 className="text-3xl font-bold">
-                                Marwan Salem
+                                {user.firstName} {user.lastName}
                             </h1>
 
                             <span
-                                className="
+                                className={`
                                     rounded-full
-                                    bg-green-500/10
                                     px-3
                                     py-1
                                     text-sm
                                     font-medium
-                                    text-green-500
-                                "
+                                    ${isActive
+                                        ? "bg-green-500/10 text-green-500"
+                                        : "bg-red-500/10 text-red-500"
+                                    }
+                                `}
                             >
-                                Active
+                                {isActive ? "نشط" : "معطل"}
                             </span>
 
                         </div>
@@ -77,76 +90,26 @@ const ProfileHeroCard = () => {
                         >
                             <LuShieldCheck />
 
-                            Super Administrator
+                            {roleLabel}
                         </div>
 
                         <div className="mt-6 grid gap-3 text-text-secondary">
 
                             <div className="flex items-center gap-3">
                                 <HiOutlineEnvelope size={20} />
-                                marwan@company.com
+                                {user.email}
                             </div>
 
-                            <div className="flex items-center gap-3">
-                                <HiOutlinePhone size={20} />
-                                +20 100 123 4567
-                            </div>
+                            {user.phone && (
+                                <div className="flex items-center gap-3">
+                                    <HiOutlinePhone size={20} />
+                                    {user.phone}
+                                </div>
+                            )}
 
                         </div>
 
                     </div>
-                </div>
-
-                {/* Right */}
-                <div className="flex flex-col gap-3">
-
-                    <button
-                        className="
-                            flex
-                            items-center
-                            justify-center
-                            gap-2
-
-                            rounded-xl
-
-                            bg-primary
-
-                            px-5
-                            py-3
-
-                            text-white
-
-                            transition
-                            hover:opacity-90
-                        "
-                    >
-                        <HiOutlinePencilSquare size={20} />
-                        تعديل البيانات
-                    </button>
-
-                    <button
-                        className="
-                            flex
-                            items-center
-                            justify-center
-                            gap-2
-
-                            rounded-xl
-
-                            border
-                            border-border
-
-                            px-5
-                            py-3
-
-                            transition
-                            hover:bg-background-alt
-                        "
-                    >
-                        <HiOutlineKey size={20} />
-                        تغيير كلمة المرور
-                    </button>
-
                 </div>
 
             </div>
@@ -167,11 +130,11 @@ const ProfileHeroCard = () => {
                 <div>
 
                     <p className="text-sm text-text-secondary">
-                        Role
+                        الدور
                     </p>
 
                     <h3 className="mt-1 font-semibold">
-                        Super Admin
+                        {roleLabel}
                     </h3>
 
                 </div>
@@ -180,11 +143,17 @@ const ProfileHeroCard = () => {
 
                     <p className="flex items-center gap-2 text-sm text-text-secondary">
                         <HiOutlineCalendarDays />
-                        Member Since
+                        تاريخ الانضمام
                     </p>
 
                     <h3 className="mt-1 font-semibold">
-                        15 Jan 2025
+                        {user.createdAt
+                            ? new Date(user.createdAt).toLocaleDateString("ar-EG", {
+                                  day: "numeric",
+                                  month: "short",
+                                  year: "numeric",
+                              })
+                            : "—"}
                     </h3>
 
                 </div>
@@ -193,11 +162,17 @@ const ProfileHeroCard = () => {
 
                     <p className="flex items-center gap-2 text-sm text-text-secondary">
                         <HiOutlineClock />
-                        Last Login
+                        آخر دخول
                     </p>
 
                     <h3 className="mt-1 font-semibold">
-                        Today • 10:45 AM
+                        {user.updatedAt
+                            ? new Date(user.updatedAt).toLocaleDateString("ar-EG", {
+                                  day: "numeric",
+                                  month: "short",
+                                  year: "numeric",
+                              })
+                            : "—"}
                     </h3>
 
                 </div>

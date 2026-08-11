@@ -1,6 +1,8 @@
+"use client";
+
 import { HiOutlineMagnifyingGlass } from "react-icons/hi2";
 
-const SearchInput = ({ inputPlaceholder, value, onChange }) => {
+const SearchInput = ({ inputPlaceholder, value, onChange = () => {} }) => {
     return (
         <div className="relative w-full">
 

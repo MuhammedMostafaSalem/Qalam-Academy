@@ -5,24 +5,44 @@ import {
     HiChevronDown,
     HiChevronUp,
 } from "react-icons/hi2";
-import lessonData from "../lessonData";
 import LessonItem from "./LessonItem";
 
-const CurriculumAccordion = () => {
+const CurriculumAccordion = ({ courseProgress, currentLessonId, courseSlug }) => {
     const [openModule, setOpenModule] = useState(0);
+
+    const lessons = courseProgress?.lessons || [];
+    
+    if (lessons.length === 0) {
+        return (
+            <div className="p-6 text-center text-text-secondary">
+                لا توجد دروس متاحة
+            </div>
+        );
+    }
+
+    // For now, display all lessons in one module
+    // You can enhance this later to group by sections
+    const modules = [
+        {
+            id: 1,
+            title: "دروس الكورس",
+            lessons: lessons,
+        }
+    ];
 
     return (
         <div>
-            {lessonData.modules.map((module, index) => {
+            {modules.map((module, index) => {
                 const opened = openModule === index;
 
                 return (
                     <div
                         key={module.id}
-                        className={`${index !== lessonData.modules.length - 1
+                        className={`${
+                            index !== modules.length - 1
                                 ? "border-b border-border"
                                 : ""
-                            }`}
+                        }`}
                     >
                         <button
                             onClick={() =>
@@ -62,8 +82,10 @@ const CurriculumAccordion = () => {
                             <div>
                                 {module.lessons.map((lesson) => (
                                     <LessonItem
-                                        key={lesson.id}
+                                        key={lesson._id}
                                         lesson={lesson}
+                                        currentLessonId={currentLessonId}
+                                        courseSlug={courseSlug}
                                     />
                                 ))}
                             </div>

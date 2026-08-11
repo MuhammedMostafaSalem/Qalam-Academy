@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Section from "@/components/sections/Section";
 import ActionsTable from "@/components/shared/ActionsTable";
 import Table from "@/components/ui/Table";
@@ -11,38 +12,60 @@ import {
     HiOutlineBars3,
 } from "react-icons/hi2";
 import { MdOutlineDelete, MdOutlineEdit } from "react-icons/md";
-
-const lessons = [
-    {
-        id: 1,
-        title: "Introduction to Frontend",
-        type: "Video",
-        duration: "10:30",
-        status: "Published",
-        date: "15 Jan 2025",
-    },
-    {
-        id: 2,
-        title: "HTML & CSS Basics",
-        type: "Video",
-        duration: "25:00",
-        status: "Published",
-        date: "18 Jan 2025",
-    },
-    {
-        id: 3,
-        title: "JavaScript Fundamentals",
-        type: "Video",
-        duration: "45:20",
-        status: "Draft",
-        date: "20 Jan 2025",
-    },
-];
+import { getLessonsAction, deleteLessonAction } from "@/actions/lessonActions";
 
 
-const LessonsTable = () => {
-    const { courseId } = useParams();
-    const router = useRouter()
+const LessonsTable = ({ courseId }) => {
+    const router = useRouter();
+    const [lessons, setLessons] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    const fetchLessons = async () => {
+        if (!courseId) return;
+        setLoading(true);
+        const result = await getLessonsAction(`course=${courseId}`);
+        if (result.success) {
+            setLessons(result.data || []);
+        }
+        setLoading(false);
+    };
+
+    useEffect(() => {
+        fetchLessons();
+    }, [courseId]);
+
+    const handleDelete = async (id) => {
+        const result = await deleteLessonAction(id);
+        if (result.success) {
+            fetchLessons();
+        }
+    };
+
+    if (loading) {
+        return (
+            <Section className="overflow-x-auto">
+                <div className="space-y-3 p-4">
+                    {[1, 2, 3].map((i) => (
+                        <div
+                            key={i}
+                            className="h-12 w-full animate-pulse rounded-xl bg-border"
+                        />
+                    ))}
+                </div>
+            </Section>
+        );
+    }
+
+    if (lessons.length === 0) {
+        return (
+            <Section className="overflow-x-auto">
+                <div className="p-8 text-center text-text-secondary">
+                    لا توجد دروس لهذا الكورس بعد.
+                </div>
+            </Section>
+        );
+    }
+
     return (
         <Section
             className="
@@ -73,7 +96,7 @@ const LessonsTable = () => {
                             الحالة
                         </Table.Th>
                         <Table.Th className="px-4 py-4">
-                            التاريخ
+                            الترتيب
                         </Table.Th>
                         <Table.Th className="px-4 py-4">
                             الإجراءات
@@ -85,7 +108,7 @@ const LessonsTable = () => {
                     {
                         lessons.map((lesson) => (
                             <Table.Row
-                                key={lesson.id}
+                                key={lesson._id}
                             >
                                 {/* Number */}
                                 <Table.Td>
@@ -105,14 +128,14 @@ const LessonsTable = () => {
                                             size={20}
                                         />
 
-                                        {lesson.id}
+                                        {lesson.sortOrder}
 
                                     </div>
                                 </Table.Td>
 
                                 {/* Title */}
                                 <Table.Td>
-                                    {lesson.title}
+                                    {lesson.title?.ar || lesson.title}
                                 </Table.Td>
 
                                 {/* Type */}
@@ -131,7 +154,7 @@ const LessonsTable = () => {
                                             text-primary
                                         "
                                     >
-                                        {lesson.type}
+                                        {lesson.type || "Video"}
                                     </span>
                                 </Table.Td>
 
@@ -149,7 +172,7 @@ const LessonsTable = () => {
                                             py-1
                                             text-sm
 
-                                            ${lesson.status === "Published"
+                                            ${lesson.isPublished
                                                 ?
                                                 "bg-green-500/10 text-green-500"
                                                 :
@@ -157,13 +180,13 @@ const LessonsTable = () => {
                                             }
                                         `}
                                     >
-                                        {lesson.status}
+                                        {lesson.isPublished ? "Published" : "Draft"}
                                     </span>
                                 </Table.Td>
 
-                                {/* Date */}
+                                {/* Sort Order */}
                                 <Table.Td>
-                                    {lesson.date}
+                                    {lesson.sortOrder}
                                 </Table.Td>
 
                                 {/* Actions */}
@@ -172,14 +195,15 @@ const LessonsTable = () => {
                                         actions={
                                             <div className="flex gap-3 justify-center items-center text-[20px]">
                                                 <HiOutlineEye
-                                                    onClick={() => router.push(`/dashboard/courses/${courseId}/lessons/${lesson.id}`)}
+                                                    onClick={() => router.push(`/dashboard/courses/${courseId}/lessons/${lesson._id}`)}
                                                     className="text-primary cursor-pointer"
                                                 />
                                                 <MdOutlineEdit
-                                                    onClick={() => router.push(`/dashboard/courses/${courseId}/lessons/${lesson.id}/edit`)}
+                                                    onClick={() => router.push(`/dashboard/courses/${courseId}/lessons/${lesson._id}/edit`)}
                                                     className="text-primary cursor-pointer"
                                                 />
                                                 <MdOutlineDelete
+                                                    onClick={() => handleDelete(lesson._id)}
                                                     className="text-error cursor-pointer"
                                                 />
                                             </div>

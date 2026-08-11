@@ -11,17 +11,22 @@ import {
     XAxis,
     YAxis,
 } from "recharts";
-import revenueData from "./revenueData";
 import CustomTooltip from "./CustomTooltip";
 
-const RevenueChart = () => {
+const RevenueChart = ({ data = [] }) => {
+    // Format revenue values for tooltip
+    const formattedData = data.map(item => ({
+        ...item,
+        revenue: item.revenue || 0
+    }));
+
     return (
         <DashboardCard className="h-full">
             <CardHeader
-                title="Revenue"
-                subtitle="Revenue Analytics"
+                title="الإيرادات"
+                subtitle="تحليل الإيرادات الشهرية"
                 filter
-                filterLabel="This Year"
+                filterLabel="هذا العام"
             />
 
             <div className="h-[340px]">
@@ -30,7 +35,7 @@ const RevenueChart = () => {
                     height="100%"
                 >
                     <AreaChart
-                        data={revenueData}
+                        data={formattedData}
                         margin={{
                             top: 10,
                             right: 10,
@@ -76,14 +81,14 @@ const RevenueChart = () => {
                         <YAxis
                             width={60}
                             tickMargin={25}
-                            tickFormatter={(value) => `$${value / 1000}k`}
+                            tickFormatter={(value) => `${value / 1000} ألف`}
                             tickLine={false}
                             axisLine={false}
                             tick={{ fontSize: 12 }}
                         />
 
                         <Tooltip
-                            content={<CustomTooltip prefix="$" />}
+                            content={<CustomTooltip prefix="" suffix=" جنيه" />}
                         />
 
                         <Area

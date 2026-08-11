@@ -4,7 +4,7 @@ import CourseIncludes from "./CourseIncludes";
 import InstructorCard from "./InstructorCard";
 import OverviewContent from "./OverviewContent";
 
-const CourseOverview = () => {
+const CourseOverview = ({ course }) => {
     return (
         <Section>
             <Container>
@@ -17,11 +17,9 @@ const CourseOverview = () => {
                     "
                 >
                     {/* Left Content */}
-
-                    <OverviewContent />
+                    <OverviewContent course={course} />
 
                     {/* Sidebar */}
-
                     <aside
                         className="
                             flex
@@ -32,9 +30,9 @@ const CourseOverview = () => {
                             self-start
                         "
                     >
-                        <CourseIncludes />
+                        <CourseIncludes course={course} />
 
-                        <InstructorCard />
+                        <InstructorCard course={course} />
                     </aside>
                 </div>
             </Container>
