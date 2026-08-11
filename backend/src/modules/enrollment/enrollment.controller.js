@@ -32,6 +32,7 @@ exports.getAllEnrollments = catchAsync(async (req, res, next) => {
 
     sendResponse(res, {
         success: true,
+        message: req.t("enrollment.fetched"),
         statusCode: StatusCodes.OK,
         results: enrollments.length,
         data: enrollments,
@@ -49,6 +50,7 @@ exports.getMyEnrollments = catchAsync(async (req, res, next) => {
 
     sendResponse(res, {
         success: true,
+        message: req.t("enrollment.fetched"),
         statusCode: StatusCodes.OK,
         data: enrollments,
         meta: {
@@ -86,6 +88,7 @@ exports.getMyPurchasedProducts = catchAsync(async (req, res, next) => {
     
     sendResponse(res, {
         success: true,
+        message: req.t("enrollment.fetched"),
         statusCode: StatusCodes.OK,
         data: purchasedProducts,
         meta: {
@@ -95,4 +98,6 @@ exports.getMyPurchasedProducts = catchAsync(async (req, res, next) => {
 });
 
 // 4- عرض تفاصيل تسجيل معين بالـ ID بتاعه (خاص بالأدمن)
-exports.getEnrollmentById = factory.getOne(Enrollment, { modelName: 'Enrollment' });
+exports.getEnrollmentById = factory.getOne(Enrollment, {
+    modelName: 'enrollment'
+});
