@@ -68,5 +68,12 @@ module.exports = {
         cannotDeactivate: "You cannot deactivate your own account",
         cannotChangeOwnRole: "You cannot change your own admin role",
         administratorDeactivatedAccount: "Your account has been deactivated by the administrator",
+    },
+
+    enrollment: {
+        fetched: "enrollment fetched successfully",
+        updated: "enrollment updated successfully",
+        deleted: "enrollment deleted successfully",
+        notFound: "enrollment not found",
     }
 };

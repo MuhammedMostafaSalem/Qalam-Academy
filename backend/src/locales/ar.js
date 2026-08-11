@@ -69,5 +69,12 @@ module.exports = {
         cannotChangeOwnRole: "لا يمكنك تغيير دورك كمسؤول",
         administratorDeactivatedAccount: "تم إلغاء تنشيط حسابك من قِبَل المسؤول",
         // administratorDeactivatedAccount
+    },
+
+    enrollment: {
+        fetched: "تم الحصول على بيانات الاشتراك بنجاح",
+        updated: "تم تعديل الاشتراك بنجاح",
+        deleted: "تم حذف الاشتراك بنجاح",
+        notFound: "الاشتراك غير موجود",
     }
 };
