@@ -39,8 +39,26 @@ enrollmentSchema.index({ user: 1, course: 1 }, { unique: true });
 // Populate أوتوماتيك لبيانات الكورس عند الاستعلام
 enrollmentSchema.pre(/^find/, function () {
     this.populate({
+        path: 'user',
+        select: 'firstName lastName email phone avatar slug role',
+    })
+    .populate({
         path: 'course',
         select: 'title description thumbnail slug category instructor',
+        populate: [
+            {
+                path: 'category',
+                select: 'title description image slug type',
+            },
+            {
+                path: 'instructor',
+                select: 'firstName lastName email avatar slug',
+            },
+        ],
+    })
+    .populate({
+        path: 'order',
+        select: 'user cartItems shippingAddress taxPrice shippingPrice totalOrderPrice paymentMethodType paymentIntentId isPaid status paidAt createdAt updatedAt',
     });
 });
 
