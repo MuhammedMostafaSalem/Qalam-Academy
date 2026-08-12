@@ -9,11 +9,14 @@ import { useState } from "react";
 import usePortfolios from "@/hooks/portfolio/usePortfolios";
 import { deletePortfolioAction } from "@/actions/portfolioActions";
 import useToast from "@/hooks/useToast";
+import UpdatePortfolioModal from "@/components/ui/modal/portfolio/UpdatePortfolioModal";
 
 const PortfolioTable = () => {
     const { portfolios, loading, error, meta, refetch } = usePortfolios();
     const { successMessage, errorMessage } = useToast();
     const [deletingId, setDeletingId] = useState(null);
+    const [editingPortfolio, setEditingPortfolio] = useState(null);
+    const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
 
     const titleHead = [
         "المشروع",
@@ -37,6 +40,11 @@ const PortfolioTable = () => {
         }
 
         setDeletingId(null);
+    };
+
+    const handleEditClick = (portfolio) => {
+        setEditingPortfolio(portfolio);
+        setIsUpdateModalOpen(true);
     };
 
     if (loading) {
@@ -118,7 +126,10 @@ const PortfolioTable = () => {
                                     <ActionsTable
                                         actions={
                                             <div className="flex gap-3 justify-center items-center text-[20px]">
-                                                <MdOutlineEdit className="text-primary cursor-pointer" />
+                                                <MdOutlineEdit 
+                                                    className="text-primary cursor-pointer"
+                                                    onClick={() => handleEditClick(portfolio)}
+                                                />
                                                 <button
                                                     onClick={() => handleDelete(portfolio._id)}
                                                     disabled={deletingId === portfolio._id}
@@ -138,6 +149,20 @@ const PortfolioTable = () => {
             </div>
 
             {meta && meta.hasMore && <LoadMore />}
+
+            <UpdatePortfolioModal
+                isOpen={isUpdateModalOpen}
+                onClose={() => {
+                    setIsUpdateModalOpen(false);
+                    setEditingPortfolio(null);
+                }}
+                portfolio={editingPortfolio}
+                onSuccess={() => {
+                    setIsUpdateModalOpen(false);
+                    setEditingPortfolio(null);
+                    refetch();
+                }}
+            />
         </div>
     );
 };

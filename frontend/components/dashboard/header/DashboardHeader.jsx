@@ -143,7 +143,7 @@ const DashboardHeader = ({
                             hover:border-primary
                         "
                     >
-                        <Image
+                        <img
                             src={
                                 user.avatar ? user.avatar : userIcon
                             }

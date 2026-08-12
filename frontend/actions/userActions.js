@@ -39,6 +39,25 @@ export async function getStudentsAction(queryString = "") {
     }
 }
 
+export async function getInstructorsAction(queryString = "") {
+    try {
+        const response = await authApi(`/users?role=instructor&${queryString}`, {
+            method: "GET",
+        });
+        return {
+            success: true,
+            data: response.data,
+            meta: response.meta,
+        };
+    } catch (error) {
+        return {
+            success: false,
+            message: error.message || "فشل جلب المدربين",
+            data: [],
+        };
+    }
+}
+
 export async function getUserByIdAction(userId) {
     try {
         const response = await authApi(`/users/${userId}`, {

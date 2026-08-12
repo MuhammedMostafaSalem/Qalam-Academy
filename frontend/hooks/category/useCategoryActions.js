@@ -1,4 +1,4 @@
-import { deleteCategoryAction, updateCategoryAction } from "@/actions/categoryActions";
+import { deleteCategoryAction, updateCategoryFieldAction } from "@/actions/categoryActions";
 import { openModalDelete } from "@/store/slices/modalDeleteSlice";
 import { showToast } from "@/store/slices/toastSlice";
 import { useDispatch } from "react-redux";
@@ -7,7 +7,7 @@ const useCategoryActions = (refetch) => {
     const dispatch = useDispatch();
 
     const handleUpdateField = async (userId, field, value) => {
-        const res = await updateCategoryAction(userId, { [field]: value });
+        const res = await updateCategoryFieldAction(userId, { [field]: value });
 
         if (res.success) {
             dispatch(showToast({

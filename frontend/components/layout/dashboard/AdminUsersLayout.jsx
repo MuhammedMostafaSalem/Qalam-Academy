@@ -36,19 +36,15 @@ const AdminUsersLayout = () => {
                 description="ادارة جميع المستخدمين الذين لديهم صلاحية الوصول الى لوحة التحكم"
             />
 
-            {
-                users.length >= 1 ? 
-                    <UsersToolbar
-                        searchQuery={searchQuery}
-                        setSearchQuery={setSearchQuery}
-                        roleFilter={roleFilter}
-                        setRoleFilter={setRoleFilter}
-                        statusFilter={statusFilter}
-                        setStatusFilter={setStatusFilter}
-                        onClear={handleClearFilters}
-                    />
-                : null
-            }
+            <UsersToolbar
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
+                roleFilter={roleFilter}
+                setRoleFilter={setRoleFilter}
+                statusFilter={statusFilter}
+                setStatusFilter={setStatusFilter}
+                onClear={handleClearFilters}
+            />
 
             {
                 loading ? (

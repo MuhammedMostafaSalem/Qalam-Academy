@@ -34,14 +34,6 @@ export async function createTeamMemberAction(prevState, formData) {
 
         const body = { user };
         if (position) body.position = position;
-        if (bio) body.bio = bio;
-        if (socialLinks) {
-            try {
-                body.socialLinks = JSON.parse(socialLinks);
-            } catch {
-                body.socialLinks = {};
-            }
-        }
 
         const response = await authApi("/team", {
             method: "POST",

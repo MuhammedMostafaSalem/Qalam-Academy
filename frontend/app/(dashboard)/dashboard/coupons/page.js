@@ -1,6 +1,7 @@
+import { Suspense } from "react";
 import CouponsTable from "@/components/dashboard/coupons/CouponsTable";
 import CouponsToolbar from "@/components/dashboard/coupons/CouponsToolbar";
-import PageHeader from "@/components/dashboard/PageHeader";
+import CouponsHeader from "@/components/dashboard/coupons/CouponsHeader";
 
 export default function AdminCoupons () {
     return (
@@ -14,13 +15,13 @@ export default function AdminCoupons () {
                 shadow-sm
             "
         >
-            <PageHeader
-                title="كوبونات الخصم"
-                description="ادارة جميع كوبونات الخصم"
-                button="اضافة كوبون جديدة"
-            />
-            <CouponsToolbar />
-            <CouponsTable />
+            <CouponsHeader />
+            <Suspense fallback={<div className="mt-[20px] text-center">جاري تحميل شريط الأدوات...</div>}>
+                <CouponsToolbar />
+            </Suspense>
+            <Suspense fallback={<div className="mt-[20px] text-center py-10">جاري تحميل الكوبونات...</div>}>
+                <CouponsTable />
+            </Suspense>
         </div>
     )
 }

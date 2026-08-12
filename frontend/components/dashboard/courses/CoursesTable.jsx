@@ -10,9 +10,12 @@ import useCourses from "@/hooks/courses/useCourses";
 import { useState } from "react";
 import { deleteCourseAction } from "@/actions/courseActions";
 import useToast from "@/hooks/useToast";
+import { useSearchParams } from "next/navigation";
 
 const CoursesTable = () => {
-    const { courses, loading, error, meta, refetch } = useCourses();
+    const searchParams = useSearchParams();
+    const queryString = searchParams.toString();
+    const { courses, loading, error, meta, refetch } = useCourses(queryString);
     const { successMessage, errorMessage } = useToast();
     const [deletingId, setDeletingId] = useState(null);
 
@@ -131,7 +134,7 @@ const CoursesTable = () => {
                                     actions={
                                         <div className="flex gap-3 justify-center items-center text-[20px]">
                                             <Link
-                                                href={`/dashboard/courses/${course._id}/edit`}
+                                                href={`/dashboard/courses/edit/${course._id}`}
                                                 className="text-primary cursor-pointer"
                                             >
                                                 <MdOutlineEdit />

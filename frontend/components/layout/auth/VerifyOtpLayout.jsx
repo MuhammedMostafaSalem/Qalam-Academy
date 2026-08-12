@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Section from "@/components/sections/Section";
 import VerifyOtpForm from "@/components/auth/verifyOtp/VerifyOtpForm";
 
@@ -19,7 +20,9 @@ const VerifyOtpLayout = () => {
                     max-w-md
                 "
             >
-                <VerifyOtpForm />
+                <Suspense fallback={null}>
+                    <VerifyOtpForm />
+                </Suspense>
             </div>
         </Section>
     );

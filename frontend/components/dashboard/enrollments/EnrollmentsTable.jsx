@@ -32,17 +32,9 @@ const EnrollmentsTable = () => {
         );
     }
 
-    if (!enrollments || enrollments.length === 0) {
-        return (
-            <div className="mt-[20px] text-center py-10">
-                <div className="text-center py-6 text-text-muted">لا يوجد بيانات متاحة</div>
-            </div>
-        );
-    }
-
     return (
         <div className="mt-[20px]">
-            <div className="overflow-x-auto overflow-y-hidden">
+            <div className="overflow-x-auto min-h-[250px] pb-10">
                 <Table>
                     <Table.Head>
                         <Table.Row>
@@ -53,42 +45,50 @@ const EnrollmentsTable = () => {
                     </Table.Head>
 
                     <Table.Body>
-                        {enrollments.map((enrollment) => (
-                            <Table.Row key={enrollment._id}>
-                                <Table.Td>
-                                    <CardTable
-                                        data={{
-                                            id: enrollment._id,
-                                            image: enrollment.user?.avatar,
-                                            name: enrollment.user?.firstName
-                                                ? `${enrollment.user.firstName} ${enrollment.user.lastName || ""}`.trim()
-                                                : enrollment.user?.email || "غير محدد",
-                                            description: enrollment.user?.email,
-                                        }}
-                                    />
-                                </Table.Td>
-
-                                <Table.Td>
-                                    {enrollment.course?.title?.ar || enrollment.course?.title || "غير محدد"}
-                                </Table.Td>
-
-                                <Table.Td>
-                                    {enrollment.createdAt
-                                        ? new Date(enrollment.createdAt).toLocaleDateString("ar-EG")
-                                        : "—"}
-                                </Table.Td>
-
-                                <Table.Td>
-                                    <ActionsTable
-                                        actions={
-                                            <div className="flex gap-3 justify-center items-center text-[20px]">
-                                                {/* No delete action for enrollments */}
-                                            </div>
-                                        }
-                                    />
+                        {!enrollments || enrollments.length === 0 ? (
+                            <Table.Row>
+                                <Table.Td colSpan={4}>
+                                    <div className="text-center py-6 text-text-muted">لا يوجد بيانات متاحة</div>
                                 </Table.Td>
                             </Table.Row>
-                        ))}
+                        ) : (
+                            enrollments.map((enrollment) => (
+                                <Table.Row key={enrollment._id}>
+                                    <Table.Td>
+                                        <CardTable
+                                            data={{
+                                                id: enrollment._id,
+                                                image: enrollment.user?.avatar,
+                                                name: enrollment.user?.firstName
+                                                    ? `${enrollment.user.firstName} ${enrollment.user.lastName || ""}`.trim()
+                                                    : enrollment.user?.email || "غير محدد",
+                                                description: enrollment.user?.email,
+                                            }}
+                                        />
+                                    </Table.Td>
+
+                                    <Table.Td>
+                                        {enrollment.course?.title?.ar || enrollment.course?.title || "غير محدد"}
+                                    </Table.Td>
+
+                                    <Table.Td>
+                                        {enrollment.createdAt
+                                            ? new Date(enrollment.createdAt).toLocaleDateString("ar-EG")
+                                            : "—"}
+                                    </Table.Td>
+
+                                    <Table.Td>
+                                        <ActionsTable
+                                            actions={
+                                                <div className="flex gap-3 justify-center items-center text-[20px]">
+                                                    {/* No delete action for enrollments */}
+                                                </div>
+                                            }
+                                        />
+                                    </Table.Td>
+                                </Table.Row>
+                            ))
+                        )}
                     </Table.Body>
                 </Table>
             </div>

@@ -9,11 +9,17 @@ import useProducts from "@/hooks/products/useProducts";
 import useToast from "@/hooks/useToast";
 import { deleteProductAction } from "@/actions/productActions";
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
+import UpdateProductModal from "@/components/ui/modal/product/UpdateProductModal";
 
 const ProductsTable = () => {
-    const { products, loading, error, refetch } = useProducts();
+    const searchParams = useSearchParams();
+    const queryString = searchParams.toString();
+    const { products, loading, error, refetch } = useProducts(queryString);
     const { successMessage, errorMessage } = useToast();
     const [deletingId, setDeletingId] = useState(null);
+    const [editingProduct, setEditingProduct] = useState(null);
+    const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
 
     const titleHead = [
         "المنتج",
@@ -39,6 +45,11 @@ const ProductsTable = () => {
         }
 
         setDeletingId(null);
+    };
+
+    const handleEditClick = (product) => {
+        setEditingProduct(product);
+        setIsUpdateModalOpen(true);
     };
 
     if (loading) {
@@ -109,7 +120,10 @@ const ProductsTable = () => {
                                         <ActionsTable
                                             actions={
                                                 <div className="flex gap-3 justify-center items-center text-[20px]">
-                                                    <MdOutlineEdit className="text-primary cursor-pointer" />
+                                                    <MdOutlineEdit 
+                                                        className="text-primary cursor-pointer"
+                                                        onClick={() => handleEditClick(product)}
+                                                    />
                                                     <div
                                                         className="text-error cursor-pointer"
                                                         onClick={() => handleDelete(product._id)}
@@ -132,6 +146,20 @@ const ProductsTable = () => {
                     <LoadMore />
                 </div>
             )}
+
+            <UpdateProductModal
+                isOpen={isUpdateModalOpen}
+                onClose={() => {
+                    setIsUpdateModalOpen(false);
+                    setEditingProduct(null);
+                }}
+                product={editingProduct}
+                onSuccess={() => {
+                    setIsUpdateModalOpen(false);
+                    setEditingProduct(null);
+                    refetch();
+                }}
+            />
         </div>
     );
 };

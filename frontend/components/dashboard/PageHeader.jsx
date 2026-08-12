@@ -2,11 +2,13 @@ import {
     HiOutlinePlus,
 } from "react-icons/hi2";
 import Section from "../sections/Section";
+import Link from "next/link";
 
 const PageHeader = ({
     title,
     description,
     button,
+    buttonHref,
     onButtonClick
 }) => {
     return (
@@ -44,7 +46,23 @@ const PageHeader = ({
 
                 {/* Right */}
                 {
-                    button && (
+                    button && buttonHref ? (
+                        <Link
+                            href={buttonHref}
+                            className="
+                                gradient-button
+                                flex
+                                items-center
+                                gap-2
+                                rounded-2xl
+                                px-6
+                                py-3
+                            "
+                        >
+                            <HiOutlinePlus size={20} />
+                            {button}
+                        </Link>
+                    ) : button ? (
                         <button
                             type="button"
                             onClick={onButtonClick}
@@ -59,10 +77,9 @@ const PageHeader = ({
                             "
                         >
                             <HiOutlinePlus size={20} />
-
                             {button}
                         </button>
-                    )
+                    ) : null
                 }
             </div>
         </Section>

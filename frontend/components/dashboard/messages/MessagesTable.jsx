@@ -4,15 +4,23 @@ import Section from "@/components/sections/Section";
 import ActionsTable from "@/components/shared/ActionsTable";
 import Table from "@/components/ui/Table";
 import { HiOutlineTrash } from "react-icons/hi2";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import useMessages from "@/hooks/messages/useMessages";
 import { deleteMessageAction } from "@/actions/contactActions";
 import useToast from "@/hooks/useToast";
 
-const MessagesTable = () => {
+const MessagesTable = ({ setMessagesLength }) => {
     const { messages, loading, error, refetch } = useMessages();
     const { successMessage, errorMessage } = useToast();
     const [deletingId, setDeletingId] = useState(null);
+
+    useEffect(() => {
+        if (messages) {
+            setMessagesLength(messages.length);
+        } else {
+            setMessagesLength(0);
+        }
+    }, [messages, setMessagesLength]);
 
     const handleDelete = async (messageId) => {
         if (!confirm("هل أنت متأكد من حذف هذه الرسالة؟")) return;
@@ -53,7 +61,7 @@ const MessagesTable = () => {
             </div>
         );
     }
-
+    
     return (
         <Section className="overflow-x-auto">
             <div className="overflow-x-auto overflow-y-hidden">

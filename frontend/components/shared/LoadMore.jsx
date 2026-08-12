@@ -1,12 +1,13 @@
 "use client";
 
-import Button from "@/components/ui/Button";
 import { HiOutlineArrowPath } from "react-icons/hi2";
 
-const LoadMore = () => {
+const LoadMore = ({ onClick, loading = false }) => {
     return (
         <div className="mt-5 flex justify-center">
             <button
+                onClick={onClick}
+                disabled={loading}
                 className="
                     gradient-button
                     rounded-button
@@ -17,11 +18,12 @@ const LoadMore = () => {
                     py-1 sm:py-2
                     font-semibold
                     text-[12px] sm:text-[16px]
+                    disabled:opacity-60
                 "
             >
-                <HiOutlineArrowPath size={22} />
+                <HiOutlineArrowPath size={22} className={loading ? "animate-spin" : ""} />
 
-                عرض المزيد
+                {loading ? "جاري التحميل..." : "عرض المزيد"}
             </button>
         </div>
     );

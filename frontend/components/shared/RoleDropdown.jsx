@@ -7,6 +7,7 @@ import { BsCheckCircleFill, BsXCircleFill } from "react-icons/bs";
 
 const RoleDropdown = ({ currentRole, onSelect }) => {
     const [open, setOpen] = useState(false);
+    const [openUp, setOpenUp] = useState(false);
     const menuRef = useRef(null);
 
     useEffect(() => {
@@ -18,6 +19,22 @@ const RoleDropdown = ({ currentRole, onSelect }) => {
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
+
+    const toggleMenu = () => {
+        if (!open) {
+            const triggerEl = menuRef.current?.firstElementChild;
+            const rect = triggerEl?.getBoundingClientRect();
+
+            // إذا كانت القائمة لن تكتمل أسفل الزر، نفتحها لأعلى
+            setOpenUp(
+                rect
+                    ? rect.bottom + 160 > window.innerHeight
+                    : false
+            );
+        }
+
+        setOpen((prev) => !prev);
+    };
 
     const roles = [
         { value: "student", label: "Student", icon: MdPerson },
@@ -31,7 +48,7 @@ const RoleDropdown = ({ currentRole, onSelect }) => {
     return (
         <div className="relative inline-block text-right" ref={menuRef}>
             <button
-                onClick={() => setOpen(!open)}
+                onClick={toggleMenu}
                 className="flex items-center justify-between gap-2 rounded-xl border border-border bg-card px-3 py-1.5 text-sm text-text-primary transition hover:border-primary cursor-pointer w-[130px]"
             >
                 <div className="flex items-center gap-2">
@@ -55,7 +72,6 @@ const RoleDropdown = ({ currentRole, onSelect }) => {
                     right-0
                     rtl:right-0
                     rtl:left-auto
-                    mt-2
                     w-40
                     overflow-hidden
                     rounded-2xl
@@ -67,6 +83,11 @@ const RoleDropdown = ({ currentRole, onSelect }) => {
                     duration-200
                     origin-top
                     z-20
+                    ${
+                        openUp
+                            ? "bottom-full mb-2 origin-bottom"
+                            : "top-full mt-2"
+                    }
                     ${
                         open ? "translate-y-0 scale-100 opacity-100" : "pointer-events-none -translate-y-2 scale-95 opacity-0"
                     }

@@ -48,10 +48,10 @@ export async function createServiceAction(prevState, formData) {
     try {
         const body = new FormData();
 
-        body.append("title[ar]", formData.get("titleAr") || "");
-        body.append("title[en]", formData.get("titleEn") || "");
-        body.append("description[ar]", formData.get("descriptionAr") || "");
-        body.append("description[en]", formData.get("descriptionEn") || "");
+        body.append("title.ar", formData.get("titleAr") || "");
+        body.append("title.en", formData.get("titleEn") || "");
+        body.append("description.ar", formData.get("descriptionAr") || "");
+        body.append("description.en", formData.get("descriptionEn") || "");
 
         const image = formData.get("image");
         if (image instanceof File && image.size > 0) {
@@ -89,13 +89,13 @@ export async function updateServiceAction(id, prevState, formData) {
 
         const titleAr = formData.get("titleAr");
         const titleEn = formData.get("titleEn");
-        if (titleAr) body.append("title[ar]", titleAr);
-        if (titleEn) body.append("title[en]", titleEn);
+        if (titleAr) body.append("title.ar", titleAr);
+        if (titleEn) body.append("title.en", titleEn);
 
         const descriptionAr = formData.get("descriptionAr");
         const descriptionEn = formData.get("descriptionEn");
-        if (descriptionAr) body.append("description[ar]", descriptionAr);
-        if (descriptionEn) body.append("description[en]", descriptionEn);
+        if (descriptionAr) body.append("description.ar", descriptionAr);
+        if (descriptionEn) body.append("description.en", descriptionEn);
 
         const image = formData.get("image");
         if (image instanceof File && image.size > 0) {

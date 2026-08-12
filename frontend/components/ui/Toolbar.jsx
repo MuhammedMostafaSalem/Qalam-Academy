@@ -1,6 +1,5 @@
 "use client";
 
-import ExportButton from "../shared/ExportButton";
 import SearchInput from "./SearchInput";
 
 const Toolbar = ({

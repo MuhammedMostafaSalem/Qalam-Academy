@@ -1,4 +1,5 @@
-import PageHeader from "@/components/dashboard/PageHeader";
+import { Suspense } from "react";
+import ServicesHeader from "@/components/dashboard/services/ServicesHeader";
 import ServicesTable from "@/components/dashboard/services/ServicesTable";
 import ServicesToolbar from "@/components/dashboard/services/ServicesToolbar";
 
@@ -14,13 +15,13 @@ export default function AdminServices() {
                 shadow-sm
             "
         >
-            <PageHeader
-                title="جميع الخدمات"
-                description="ادارة وعرض جميع الخدمات المضافة"
-                button="اضافة خدمة جديدة"
-            />
-            <ServicesToolbar />
-            <ServicesTable />
+            <ServicesHeader />
+            <Suspense fallback={<div className="mt-[20px] text-center">جاري تحميل شريط الأدوات...</div>}>
+                <ServicesToolbar />
+            </Suspense>
+            <Suspense fallback={<div className="mt-[20px] text-center py-10">جاري تحميل الخدمات...</div>}>
+                <ServicesTable />
+            </Suspense>
         </div>
     )
 }

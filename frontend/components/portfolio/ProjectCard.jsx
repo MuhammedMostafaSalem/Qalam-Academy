@@ -4,12 +4,13 @@ import Link from "next/link";
 import { HiArrowLeft, HiTag, HiCode } from "react-icons/hi";
 
 const ProjectCard = ({ project }) => {
-    // Handle image URL properly
-    const imageUrl = project?.image?.startsWith('http') 
-        ? project.image 
-        : project?.image 
-            ? `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:5000'}${project.image}`
-            : '/assets/img-card.jpg'; // Fallback image
+    // Handle image URL properly (string URLs or imported static assets)
+    const rawImage = project?.image;
+    const imageUrl = typeof rawImage === "string"
+        ? rawImage.startsWith("http")
+            ? rawImage
+            : `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:5000'}${rawImage}`
+        : rawImage || '/assets/img-card.jpg'; // Fallback image
 
     const title = project?.title?.ar || project?.title?.en || project?.title || "مشروع";
     const description = project?.description?.ar || project?.description?.en || project?.description || "";

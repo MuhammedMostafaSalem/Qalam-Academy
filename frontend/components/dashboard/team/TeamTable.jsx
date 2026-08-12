@@ -1,20 +1,24 @@
 "use client";
 
+import { useState } from "react";
+import { MdOutlineDelete, MdOutlineEdit } from "react-icons/md";
+
 import Table from "@/components/ui/Table";
 import CardTable from "@/components/shared/CardTable";
 import LoadMore from "@/components/shared/LoadMore";
 import ActionsTable from "@/components/shared/ActionsTable";
-import { MdOutlineDelete, MdOutlineEdit } from "react-icons/md";
 import useTeam from "@/hooks/team/useTeam";
 import useToast from "@/hooks/useToast";
 import { deleteTeamMemberAction } from "@/actions/teamActions";
-import { useState } from "react";
 import userIcon from "@/public/assets/user-icon.png";
+import UpdateTeamModal from "@/components/ui/modal/team/UpdateTeamModal";
 
 const TeamTable = () => {
     const { team, loading, error, refetch } = useTeam();
     const { successMessage, errorMessage } = useToast();
     const [deletingId, setDeletingId] = useState(null);
+    const [editingTeamMember, setEditingTeamMember] = useState(null);
+    const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
 
     const titleHead = [
         "العضو",
@@ -37,6 +41,11 @@ const TeamTable = () => {
         }
 
         setDeletingId(null);
+    };
+
+    const handleEditClick = (member) => {
+        setEditingTeamMember(member);
+        setIsUpdateModalOpen(true);
     };
 
     if (loading) {
@@ -97,7 +106,10 @@ const TeamTable = () => {
                                             <ActionsTable
                                                 actions={
                                                     <div className="flex gap-3 justify-center items-center text-[20px]">
-                                                        <MdOutlineEdit className="text-primary cursor-pointer" />
+                                                        <MdOutlineEdit 
+                                                            className="text-primary cursor-pointer" 
+                                                            onClick={() => handleEditClick(member)}
+                                                        />
                                                         <div
                                                             className="text-error cursor-pointer"
                                                             onClick={() => handleDelete(member._id)}
@@ -119,6 +131,20 @@ const TeamTable = () => {
                     </Table>
 
                     <LoadMore />
+
+                    <UpdateTeamModal
+                        isOpen={isUpdateModalOpen}
+                        onClose={() => {
+                            setIsUpdateModalOpen(false);
+                            setEditingTeamMember(null);
+                        }}
+                        teamMember={editingTeamMember}
+                        onSuccess={() => {
+                            setIsUpdateModalOpen(false);
+                            setEditingTeamMember(null);
+                            refetch();
+                        }}
+                    />
                 </div>
             )}
         </div>

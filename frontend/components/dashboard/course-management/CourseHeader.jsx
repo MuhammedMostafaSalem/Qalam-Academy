@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Section from "@/components/sections/Section";
 import Image from "next/image";
+import Link from "next/link";
 import {
     HiOutlineAcademicCap,
     HiOutlineCurrencyDollar,
@@ -234,7 +235,8 @@ const CourseHeader = ({ courseId }) => {
 
                 {/* Actions */}
                 <div>
-                    <button
+                    <Link
+                        href={`/dashboard/courses/edit/${courseId}`}
                         className="
                             flex
                             items-center
@@ -257,7 +259,7 @@ const CourseHeader = ({ courseId }) => {
                     >
                         <HiOutlinePencilSquare size={20} />
                         تعديل الكورس
-                    </button>
+                    </Link>
                 </div>
             </div>
         </Section>

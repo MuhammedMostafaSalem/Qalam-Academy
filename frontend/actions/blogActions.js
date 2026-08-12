@@ -48,12 +48,12 @@ export async function createBlogAction(prevState, formData) {
     try {
         const body = new FormData();
 
-        body.append("title[ar]", formData.get("titleAr") || "");
-        body.append("title[en]", formData.get("titleEn") || "");
-        body.append("excerpt[ar]", formData.get("excerptAr") || "");
-        body.append("excerpt[en]", formData.get("excerptEn") || "");
-        body.append("content[ar]", formData.get("contentAr") || "");
-        body.append("content[en]", formData.get("contentEn") || "");
+        body.append("title.ar", formData.get("titleAr") || "");
+        body.append("title.en", formData.get("titleEn") || "");
+        body.append("excerpt.ar", formData.get("excerptAr") || "");
+        body.append("excerpt.en", formData.get("excerptEn") || "");
+        body.append("content.ar", formData.get("contentAr") || "");
+        body.append("content.en", formData.get("contentEn") || "");
 
         const category = formData.get("category");
         if (category) body.append("category", category);
@@ -102,18 +102,18 @@ export async function updateBlogAction(id, prevState, formData) {
 
         const titleAr = formData.get("titleAr");
         const titleEn = formData.get("titleEn");
-        if (titleAr) body.append("title[ar]", titleAr);
-        if (titleEn) body.append("title[en]", titleEn);
+        if (titleAr) body.append("title.ar", titleAr);
+        if (titleEn) body.append("title.en", titleEn);
 
         const excerptAr = formData.get("excerptAr");
         const excerptEn = formData.get("excerptEn");
-        if (excerptAr) body.append("excerpt[ar]", excerptAr);
-        if (excerptEn) body.append("excerpt[en]", excerptEn);
+        if (excerptAr) body.append("excerpt.ar", excerptAr);
+        if (excerptEn) body.append("excerpt.en", excerptEn);
 
         const contentAr = formData.get("contentAr");
         const contentEn = formData.get("contentEn");
-        if (contentAr) body.append("content[ar]", contentAr);
-        if (contentEn) body.append("content[en]", contentEn);
+        if (contentAr) body.append("content.ar", contentAr);
+        if (contentEn) body.append("content.en", contentEn);
 
         const category = formData.get("category");
         if (category) body.append("category", category);

@@ -1,6 +1,5 @@
 import Toolbar from '../../ui/Toolbar'
 import Select from '../../ui/Select'
-import ExportButton from '../../shared/ExportButton'
 
 const PortfolioToolbar = () => {
     return (
@@ -10,11 +9,6 @@ const PortfolioToolbar = () => {
                 filters={
                     <>
                         <Select />
-                    </>
-                }
-                actions={
-                    <>
-                        <ExportButton />
                     </>
                 }
             />

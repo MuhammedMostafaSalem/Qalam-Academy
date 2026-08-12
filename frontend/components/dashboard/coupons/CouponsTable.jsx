@@ -8,11 +8,40 @@ import useCoupons from "@/hooks/coupons/useCoupons";
 import useToast from "@/hooks/useToast";
 import { deleteCouponAction } from "@/actions/couponActions";
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
+import UpdateCouponModal from "@/components/ui/modal/coupon/UpdateCouponModal";
 
 const CouponsTable = () => {
-    const { coupons, loading, error, refetch } = useCoupons();
+    const searchParams = useSearchParams();
+    
+    // Create a new URLSearchParams instance to manipulate the query
+    const backendParams = new URLSearchParams(searchParams);
+    // Remove local filters so they don't trigger API refetches
+    backendParams.delete("status");
+    const queryString = backendParams.toString();
+
+    const { coupons, loading, error, refetch } = useCoupons(queryString);
     const { successMessage, errorMessage } = useToast();
     const [deletingId, setDeletingId] = useState(null);
+    const [editingCoupon, setEditingCoupon] = useState(null);
+    const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+
+    const isExpired = (expireDate) => {
+        const expiration = new Date(expireDate);
+        const now = new Date();
+        return expiration.getTime() < now.getTime();
+    };
+
+    const statusFilter = searchParams.get("status");
+
+    // Local filtering in case the backend doesn't support the status parameter natively
+    const filteredCoupons = coupons.filter(coupon => {
+        if (!statusFilter) return true;
+        const expired = isExpired(coupon.expire);
+        if (statusFilter === "active") return !expired;
+        if (statusFilter === "expired") return expired;
+        return true;
+    });
 
     const titleHead = [
         "الكوبون",
@@ -38,9 +67,11 @@ const CouponsTable = () => {
         setDeletingId(null);
     };
 
-    const isExpired = (expireDate) => {
-        return new Date(expireDate) < new Date();
+    const handleEditClick = (coupon) => {
+        setEditingCoupon(coupon);
+        setIsUpdateModalOpen(true);
     };
+
 
     if (loading) {
         return (
@@ -60,7 +91,7 @@ const CouponsTable = () => {
 
     return (
         <div className="mt-[20px]">
-            {coupons.length === 0 ? (
+            {filteredCoupons.length === 0 ? (
                 <div className="text-center py-6 text-text-muted">
                     لا يوجد كوبونات متاحة
                 </div>
@@ -76,7 +107,7 @@ const CouponsTable = () => {
                         </Table.Head>
 
                         <Table.Body>
-                            {coupons.map(coupon => (
+                            {filteredCoupons.map(coupon => (
                                 <Table.Row key={coupon._id}>
                                     <Table.Td>
                                         <span className="font-mono font-bold text-primary">
@@ -106,7 +137,10 @@ const CouponsTable = () => {
                                         <ActionsTable
                                             actions={
                                                 <div className="flex gap-3 justify-center items-center text-[20px]">
-                                                    <MdOutlineEdit className="text-primary cursor-pointer" />
+                                                    <MdOutlineEdit 
+                                                        className="text-primary cursor-pointer" 
+                                                        onClick={() => handleEditClick(coupon)}
+                                                    />
                                                     <div
                                                         className="text-error cursor-pointer"
                                                         onClick={() => handleDelete(coupon._id)}
@@ -129,6 +163,20 @@ const CouponsTable = () => {
                     <LoadMore />
                 </div>
             )}
+
+            <UpdateCouponModal
+                isOpen={isUpdateModalOpen}
+                onClose={() => {
+                    setIsUpdateModalOpen(false);
+                    setEditingCoupon(null);
+                }}
+                coupon={editingCoupon}
+                onSuccess={() => {
+                    setIsUpdateModalOpen(false);
+                    setEditingCoupon(null);
+                    refetch();
+                }}
+            />
         </div>
     );
 };

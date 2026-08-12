@@ -1,4 +1,4 @@
-import PageHeader from "@/components/dashboard/PageHeader";
+import TeamHeader from "@/components/dashboard/team/TeamHeader";
 import TeamTable from "@/components/dashboard/team/TeamTable";
 import TeamToolbar from "@/components/dashboard/team/TeamToolbar";
 
@@ -14,11 +14,7 @@ export default function AdminTeam() {
                 shadow-sm
             "
         >
-            <PageHeader
-                title="أعضاء الفريق"
-                description="ادارة جميع أعضاء الفريق"
-                button="اضافة عضو جديدة"
-            />
+            <TeamHeader />
             <TeamToolbar />
             <TeamTable />
         </div>

@@ -4,6 +4,7 @@ import { HiChevronDown } from "react-icons/hi";
 
 const StatusDropdown = ({ isActive, onSelect }) => {
     const [open, setOpen] = useState(false);
+    const [openUp, setOpenUp] = useState(false);
     const menuRef = useRef(null);
 
     useEffect(() => {
@@ -34,10 +35,25 @@ const StatusDropdown = ({ isActive, onSelect }) => {
     const currentItem = statuses.find((s) => s.value === isActive) || statuses[0];
     const CurrentIcon = currentItem.icon;
 
+    const toggleMenu = () => {
+        if (!open) {
+            const triggerEl = menuRef.current?.firstElementChild;
+            const rect = triggerEl?.getBoundingClientRect();
+
+            setOpenUp(
+                rect
+                    ? rect.bottom + 160 > window.innerHeight
+                    : false
+            );
+        }
+
+        setOpen((prev) => !prev);
+    };
+
     return (
         <div className="relative inline-block text-right" ref={menuRef}>
             <button
-                onClick={() => setOpen(!open)}
+                onClick={toggleMenu}
                 className={`
                     flex
                     items-center
@@ -66,7 +82,6 @@ const StatusDropdown = ({ isActive, onSelect }) => {
                 right-0
                 rtl:right-0
                 rtl:left-auto
-                mt-2
                 w-36
                 overflow-hidden
                 rounded-2xl
@@ -78,6 +93,11 @@ const StatusDropdown = ({ isActive, onSelect }) => {
                 duration-200
                 origin-top
                 z-20
+                ${
+                    openUp
+                        ? "bottom-full mb-2 origin-bottom"
+                        : "top-full mt-2"
+                }
                 ${
                     open ? "translate-y-0 scale-100 opacity-100" : "pointer-events-none -translate-y-2 scale-95 opacity-0"
                 }

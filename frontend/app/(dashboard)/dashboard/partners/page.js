@@ -1,4 +1,4 @@
-import PageHeader from "@/components/dashboard/PageHeader";
+import PartnersHeader from "@/components/dashboard/partners/PartnersHeader";
 import PartnersTable from "@/components/dashboard/partners/PartnersTable";
 import PartnersToolbar from "@/components/dashboard/partners/PartnersToolbar";
 
@@ -14,11 +14,7 @@ export default function AdminPartners() {
                 shadow-sm
             "
         >
-            <PageHeader
-                title="الشركاء"
-                description="ادارة جميع الشركاء"
-                button="اضافة شريك جديد"
-            />
+            <PartnersHeader />
             <PartnersToolbar />
             <PartnersTable />
         </div>

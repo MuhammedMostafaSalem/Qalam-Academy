@@ -2,7 +2,9 @@
 
 import { HiChevronDown } from "react-icons/hi"
 
-const Select = ({ value, onChange, values = [] }) => {
+const Select = ({ value, onChange, values = [], options }) => {
+    const items = options || values;
+
     return (
         <div className="relative">
             <select
@@ -29,8 +31,8 @@ const Select = ({ value, onChange, values = [] }) => {
                 "
             >
                 {
-                    values.map((item, index) => (
-                        <option key={index} value={item.value}>{item.name}</option>
+                    items.map((item, index) => (
+                        <option key={index} value={item.value}>{item.label ?? item.name}</option>
                     ))
                 }
             </select>

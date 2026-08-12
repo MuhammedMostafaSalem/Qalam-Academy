@@ -47,15 +47,18 @@ const UpdateCategoryModal = ({ isOpen, onClose, category, onSuccess }) => {
                     {/* Type Selection */}
                     <div>
                         <label className="block text-sm text-text-secondary mb-1">نوع التصنيف</label>
-                        <input type="hidden" name="type" value={values.type} />
-                        <div className="grid grid-cols-2 gap-3 h-12">
-                            <button type="button" onClick={() => values.setType("course")} className={`rounded-xl border font-medium text-sm flex items-center justify-center gap-2 ${values.type === "course" ? "border-primary bg-primary/10 text-primary" : "border-border bg-background text-text-secondary"}`}>
-                                كورس (Course)
-                            </button>
-                            <button type="button" onClick={() => values.setType("product")} className={`rounded-xl border font-medium text-sm flex items-center justify-center gap-2 ${values.type === "product" ? "border-primary bg-primary/10 text-primary" : "border-border bg-background text-text-secondary"}`}>
-                                منتج (Product)
-                            </button>
-                        </div>
+                        <select
+                            name="type"
+                            value={values.type}
+                            onChange={(e) => values.setType(e.target.value)}
+                            className="w-full h-12 rounded-xl border bg-background px-4 text-text-primary outline-none border-border focus:border-primary transition"
+                        >
+                            <option value="course">كورس (Course)</option>
+                            <option value="product">منتج (Product)</option>
+                            <option value="portfolio">معرض أعمال (Portfolio)</option>
+                            <option value="service">خدمة (Service)</option>
+                            <option value="blog">مدونة (Blog)</option>
+                        </select>
                     </div>
 
                     {/* Active Status & Remove Image Flags */}
@@ -73,7 +76,7 @@ const UpdateCategoryModal = ({ isOpen, onClose, category, onSuccess }) => {
                             <div className="flex items-center gap-4">
                                 <span className="text-sm text-text-secondary font-medium">معاينة الصورة:</span>
                                 <div className="relative w-16 h-16 rounded-xl overflow-hidden border border-border shadow-sm">
-                                    <img src={values.imagePreview} alt="Preview" fill className="object-cover" />
+                                    <img src={values.imagePreview} alt="Preview" className="w-full h-full object-cover" />
                                 </div>
                             </div>
                             <button type="button" onClick={handlers.handleRemoveCurrentImage} className="text-error hover:bg-error/10 p-2 rounded-xl transition flex items-center gap-1 text-sm">

@@ -9,12 +9,12 @@ export const createCourseAction = async (prevState, formData) => {
         const body = new FormData();
 
         // title (ar/en)
-        body.append("title[ar]", formData.get("titleAr"));
-        body.append("title[en]", formData.get("titleEn"));
+        body.append("title.ar", formData.get("titleAr"));
+        body.append("title.en", formData.get("titleEn"));
 
         // description (ar/en)
-        body.append("description[ar]", formData.get("descriptionAr"));
-        body.append("description[en]", formData.get("descriptionEn"));
+        body.append("description.ar", formData.get("descriptionAr"));
+        body.append("description.en", formData.get("descriptionEn"));
 
         // category
         body.append("category", formData.get("category"));
@@ -81,8 +81,8 @@ export const createCourseAction = async (prevState, formData) => {
         return {
             success: false,
             course: null,
-            message: error?.response?.data?.message || error?.message || "فشل إنشاء الكورس",
-            errors: error?.response?.data?.errors || null,
+            message: error?.message || "فشل إنشاء الكورس",
+            errors: error?.errors || null,
         };
     }
 };
@@ -95,18 +95,22 @@ export const updateCourseAction = async (id, prevState, formData) => {
         // title (ar/en)
         const titleAr = formData.get("titleAr");
         const titleEn = formData.get("titleEn");
-        if (titleAr) body.append("title[ar]", titleAr);
-        if (titleEn) body.append("title[en]", titleEn);
+        if (titleAr) body.append("title.ar", titleAr);
+        if (titleEn) body.append("title.en", titleEn);
 
         // description (ar/en)
         const descriptionAr = formData.get("descriptionAr");
         const descriptionEn = formData.get("descriptionEn");
-        if (descriptionAr) body.append("description[ar]", descriptionAr);
-        if (descriptionEn) body.append("description[en]", descriptionEn);
+        if (descriptionAr) body.append("description.ar", descriptionAr);
+        if (descriptionEn) body.append("description.en", descriptionEn);
 
         // category
         const category = formData.get("category");
         if (category) body.append("category", category);
+
+        // instructor
+        const instructor = formData.get("instructor");
+        if (instructor) body.append("instructor", instructor);
 
         // level
         const level = formData.get("level");
@@ -191,8 +195,8 @@ export const updateCourseAction = async (id, prevState, formData) => {
         return {
             success: false,
             course: null,
-            message: error?.response?.data?.message || error?.message || "فشل تحديث الكورس",
-            errors: error?.response?.data?.errors || null,
+            message: error?.message || "فشل تحديث الكورس",
+            errors: error?.errors || null,
         };
     }
 };
@@ -227,9 +231,6 @@ export async function getCoursesAction(queryString = "") {
         const response = await authApi(`/courses?${queryString}`, {
             method: "GET",
         });
-        console.log(response, "response from getCoursesAction");
-        console.log(response.data, "response.data from getCoursesAction");
-        console.log(response.meta, "response.meta from getCoursesAction");
         return {
             success: true,
             data: response.data,

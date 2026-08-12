@@ -9,11 +9,18 @@ import { useState } from "react";
 import useBlogs from "@/hooks/blog/useBlogs";
 import { deleteBlogAction } from "@/actions/blogActions";
 import useToast from "@/hooks/useToast";
+import UpdateBlogModal from "@/components/ui/modal/blog/UpdateBlogModal";
+import { useSearchParams } from "next/navigation";
 
 const BlogTable = () => {
-    const { blogs, loading, error, meta, refetch } = useBlogs();
+    const searchParams = useSearchParams();
+    const queryString = searchParams.toString();
+
+    const { blogs, loading, error, meta, refetch } = useBlogs(queryString);
     const { successMessage, errorMessage } = useToast();
     const [deletingId, setDeletingId] = useState(null);
+    const [editingBlog, setEditingBlog] = useState(null);
+    const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
 
     const titleHead = [
         "المقالة",
@@ -37,6 +44,11 @@ const BlogTable = () => {
         }
 
         setDeletingId(null);
+    };
+
+    const handleEditClick = (blog) => {
+        setEditingBlog(blog);
+        setIsUpdateModalOpen(true);
     };
 
     if (loading) {
@@ -115,7 +127,10 @@ const BlogTable = () => {
                                     <ActionsTable
                                         actions={
                                             <div className="flex gap-3 justify-center items-center text-[20px]">
-                                                <MdOutlineEdit className="text-primary cursor-pointer" />
+                                                <MdOutlineEdit 
+                                                    className="text-primary cursor-pointer"
+                                                    onClick={() => handleEditClick(blog)}
+                                                />
                                                 <button
                                                     onClick={() => handleDelete(blog._id)}
                                                     disabled={deletingId === blog._id}
@@ -135,6 +150,20 @@ const BlogTable = () => {
             </div>
 
             {meta && meta.hasMore && <LoadMore />}
+
+            <UpdateBlogModal
+                isOpen={isUpdateModalOpen}
+                onClose={() => {
+                    setIsUpdateModalOpen(false);
+                    setEditingBlog(null);
+                }}
+                blog={editingBlog}
+                onSuccess={() => {
+                    setIsUpdateModalOpen(false);
+                    setEditingBlog(null);
+                    refetch();
+                }}
+            />
         </div>
     );
 };

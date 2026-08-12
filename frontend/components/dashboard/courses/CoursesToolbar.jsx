@@ -1,19 +1,20 @@
 "use client";
 
-import ExportButton from "@/components/shared/ExportButton";
 import Select from "@/components/ui/Select";
 import Toolbar from "@/components/ui/Toolbar";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import useCourses from "@/hooks/courses/useCourses";
 
 const CoursesToolbar = () => {
     const router = useRouter();
     const pathname = usePathname();
+    const searchParams = useSearchParams();
     const { courses } = useCourses();
-    const [searchQuery, setSearchQuery] = useState("");
-    const [categoryFilter, setCategoryFilter] = useState("");
-    const [levelFilter, setLevelFilter] = useState("");
+    
+    const [searchQuery, setSearchQuery] = useState(searchParams.get("search") || "");
+    const [categoryFilter, setCategoryFilter] = useState(searchParams.get("category") || "");
+    const [levelFilter, setLevelFilter] = useState(searchParams.get("level") || "");
 
     const categoryOptions = [
         { value: "", label: "كل التصنيفات" },
@@ -63,11 +64,6 @@ const CoursesToolbar = () => {
                             value={levelFilter}
                             onChange={(e) => setLevelFilter(e.target.value)}
                         />
-                    </>
-                }
-                actions={
-                    <>
-                        <ExportButton />
                     </>
                 }
             />

@@ -3,7 +3,7 @@ import {
     HiOutlineMagnifyingGlass,
 } from "react-icons/hi2";
 
-const MessagesToolbar = () => {
+const MessagesToolbar = ({ messagesLength }) => {
     return (
         <Section
             className="
@@ -47,7 +47,7 @@ const MessagesToolbar = () => {
                             text-primary
                         "
                     >
-                        25 رسالة
+                        {messagesLength} رسالة
                     </span>
                 </div>
                 <p

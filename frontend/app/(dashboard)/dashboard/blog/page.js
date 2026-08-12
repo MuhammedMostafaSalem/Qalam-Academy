@@ -1,6 +1,7 @@
 import BlogTable from "@/components/dashboard/blog/BlogTable";
 import BlogToolbar from "@/components/dashboard/blog/BlogToolbar";
-import PageHeader from "@/components/dashboard/PageHeader";
+import BlogHeader from "@/components/dashboard/blog/BlogHeader";
+import { Suspense } from "react";
 
 export default function AdminBlog () {
     return (
@@ -14,12 +15,11 @@ export default function AdminBlog () {
                 shadow-sm
             "
         >
-            <PageHeader
-                title="المقالات"
-                description="ادارة جميع مقالات المدونة"
-            />
-            <BlogToolbar />
-            <BlogTable />
+            <BlogHeader />
+            <Suspense fallback={<div className="text-center py-4">جاري التحميل...</div>}>
+                <BlogToolbar />
+                <BlogTable />
+            </Suspense>
         </div>
     )
 }

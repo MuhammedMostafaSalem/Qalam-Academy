@@ -6,18 +6,25 @@ import ActionsTable from "@/components/shared/ActionsTable";
 import { MdOutlineDelete, MdOutlineEdit } from "react-icons/md";
 import LoadMore from "@/components/shared/LoadMore";
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import useServices from "@/hooks/services/useServices";
 import { deleteServiceAction } from "@/actions/serviceActions";
 import useToast from "@/hooks/useToast";
+import UpdateServiceModal from "@/components/ui/modal/service/UpdateServiceModal";
 
 const ServicesTable = () => {
-    const { services, loading, error, meta, refetch } = useServices();
+    const searchParams = useSearchParams();
+    const queryString = searchParams.toString();
+    const { services, loading, error, meta, refetch } = useServices(queryString);
     const { successMessage, errorMessage } = useToast();
     const [deletingId, setDeletingId] = useState(null);
+    const [editingService, setEditingService] = useState(null);
+    const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
 
     const titleHead = [
         "الخدمة",
         "الوصف",
+        "الحالة",
         "تاريخ الإنشاء",
         "الإجراءات",
     ];
@@ -36,6 +43,11 @@ const ServicesTable = () => {
         }
 
         setDeletingId(null);
+    };
+
+    const handleEditClick = (service) => {
+        setEditingService(service);
+        setIsUpdateModalOpen(true);
     };
 
     if (loading) {
@@ -97,6 +109,18 @@ const ServicesTable = () => {
                                 </Table.Td>
 
                                 <Table.Td>
+                                    <span
+                                        className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                                            service.isActive
+                                                ? "bg-success/20 text-success"
+                                                : "bg-error/20 text-error"
+                                        }`}
+                                    >
+                                        {service.isActive ? "نشط" : "غير نشط"}
+                                    </span>
+                                </Table.Td>
+
+                                <Table.Td>
                                     {service.createdAt
                                         ? new Date(service.createdAt).toLocaleDateString("ar-EG")
                                         : "—"}
@@ -106,7 +130,10 @@ const ServicesTable = () => {
                                     <ActionsTable
                                         actions={
                                             <div className="flex gap-3 justify-center items-center text-[20px]">
-                                                <MdOutlineEdit className="text-primary cursor-pointer" />
+                                                <MdOutlineEdit 
+                                                    className="text-primary cursor-pointer"
+                                                    onClick={() => handleEditClick(service)}
+                                                />
                                                 <button
                                                     onClick={() => handleDelete(service._id)}
                                                     disabled={deletingId === service._id}
@@ -126,6 +153,20 @@ const ServicesTable = () => {
             </div>
 
             {meta && meta.hasMore && <LoadMore />}
+
+            <UpdateServiceModal
+                isOpen={isUpdateModalOpen}
+                onClose={() => {
+                    setIsUpdateModalOpen(false);
+                    setEditingService(null);
+                }}
+                service={editingService}
+                onSuccess={() => {
+                    setIsUpdateModalOpen(false);
+                    setEditingService(null);
+                    refetch();
+                }}
+            />
         </div>
     );
 };

@@ -10,6 +10,7 @@ import useToast from "@/hooks/useToast";
 import { cancelOrderAction } from "@/actions/orderActions";
 import { useState } from "react";
 import userIcon from "@/public/assets/user-icon.png";
+import { useSearchParams } from "next/navigation";
 
 const STATUS_MAP = {
     pending: { label: "قيد الانتظار", class: "bg-warning/20 text-warning" },
@@ -22,10 +23,15 @@ const PAYMENT_MAP = {
     cash: "نقدي",
     paymob: "Paymob",
     paypal: "PayPal",
+    card: "بطاقة ائتمان",
+    wallet: "محفظة إلكترونية",
+    fawry: "فوري",
 };
 
 const OrdersTable = () => {
-    const { orders, loading, error, refetch } = useOrders();
+    const searchParams = useSearchParams();
+    const queryString = searchParams.toString();
+    const { orders, loading, error, refetch } = useOrders(queryString);
     const { successMessage, errorMessage } = useToast();
     const [cancellingId, setCancellingId] = useState(null);
 
@@ -90,7 +96,7 @@ const OrdersTable = () => {
 
                         <Table.Body>
                             {orders.map(order => {
-                                const status = STATUS_MAP[order.paymentStatus] || { label: order.paymentStatus, class: "" };
+                                const status = STATUS_MAP[order.status] || { label: order.status, class: "" };
                                 const user = order.user;
 
                                 return (
@@ -133,7 +139,7 @@ const OrdersTable = () => {
                                             <ActionsTable
                                                 actions={
                                                     <div className="flex gap-3 justify-center items-center text-[20px]">
-                                                        {order.paymentStatus !== "paid" && (
+                                                        {order.status !== "paid" && (
                                                             <div
                                                                 className="text-error cursor-pointer"
                                                                 onClick={() => handleCancel(order._id)}

@@ -1,6 +1,6 @@
 import { updateCategoryAction } from "@/actions/categoryActions";
 import { showToast } from "@/store/slices/toastSlice";
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 
 const useUpdateCategory = (category, onSuccess, onClose) => {
@@ -28,12 +28,18 @@ const useUpdateCategory = (category, onSuccess, onClose) => {
         category: null,
     });
 
+    // Keep latest callbacks in refs so the success effect only depends on `state`.
+    const onSuccessRef = useRef(onSuccess);
+    const onCloseRef = useRef(onClose);
+    onSuccessRef.current = onSuccess;
+    onCloseRef.current = onClose;
+
     useEffect(() => {
         if (category) {
-            setTitleAr(category.title?.ar || "");
-            setTitleEn(category.title?.en || "");
-            setDescAr(category.description?.ar || "");
-            setDescEn(category.description?.en || "");
+            setTitleAr(category._translations?.title?.ar || category.title?.ar || category.title || "");
+            setTitleEn(category._translations?.title?.en || category.title?.en || "");
+            setDescAr(category._translations?.description?.ar || category.description?.ar || category.description || "");
+            setDescEn(category._translations?.description?.en || category.description?.en || "");
             setType(category.type || "course");
             setIsActive(category.isActive ?? true);
             setImagePreview(category.image || null);
@@ -50,16 +56,16 @@ const useUpdateCategory = (category, onSuccess, onClose) => {
                 type: "success"
             }));
 
-            if (onSuccess) onSuccess(state.category);
-            
-            onClose();
+            if (onSuccessRef.current) onSuccessRef.current(state.category);
+
+            onCloseRef.current();
         } else if (state.error) {
             dispatch(showToast({
                 message: state.error,
                 type: "error"
             }));
         }
-    }, [state, dispatch, onSuccess, onClose]);
+    }, [state, dispatch]);
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];

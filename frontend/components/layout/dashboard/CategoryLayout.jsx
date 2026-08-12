@@ -15,6 +15,8 @@ const CategoryLayout = () => {
     const {
         categories,
         loading,
+        loadingMore,
+        hasMore,
         searchQuery,
         setSearchQuery,
         typeFilter,
@@ -22,11 +24,12 @@ const CategoryLayout = () => {
         statusFilter,
         setStatusFilter,
         fetchCategories,
+        loadMore,
         handleClearFilters,
     } = useGetCategories();
 
     const dispatch = useDispatch();
-console.log(categories)
+
     // Category modal state
     const {
         isOpen: isCategoryModalOpen,
@@ -78,22 +81,21 @@ console.log(categories)
                 onButtonClick={handleOpenCreateModal}
             />
 
-            {
-                categories.length >= 1 ?
-                    <CategoriesToolbar
-                        searchQuery={searchQuery}
-                        setSearchQuery={setSearchQuery}
-                        typeFilter={typeFilter}
-                        setTypeFilter={setTypeFilter}
-                        statusFilter={statusFilter}
-                        setStatusFilter={setStatusFilter}
-                        onClear={handleClearFilters}
-                    />
-                    : null
-            }
+            <CategoriesToolbar
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
+                typeFilter={typeFilter}
+                setTypeFilter={setTypeFilter}
+                statusFilter={statusFilter}
+                setStatusFilter={setStatusFilter}
+                onClear={handleClearFilters}
+            />
 
             <CategoriesTable
                 categories={categories}
+                hasMore={hasMore}
+                onLoadMore={loadMore}
+                loadingMore={loadingMore}
                 categoryModalMode={categoryModalMode}
                 isOpen={isCategoryModalOpen}
                 onClose={handleCloseModal}

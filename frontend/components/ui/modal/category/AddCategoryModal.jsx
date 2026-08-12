@@ -219,62 +219,33 @@ const AddCategoryModal = ({
                             نوع التصنيف
                         </label>
 
-                        <input
-                            type="hidden"
+                        <select
                             name="type"
                             value={type}
-                        />
-
-                        <div className="grid grid-cols-2 gap-3 h-12">
-                            <button
-                                type="button"
-                                onClick={() => setType("course")}
-                                disabled={isPending}
-                                className={`
-                                    rounded-xl
-                                    border
-                                    font-medium
-                                    text-sm
-                                    transition
-                                    flex
-                                    items-center
-                                    justify-center
-                                    gap-2
-                                    
-                                    ${type === "course"
-                                        ? "border-primary bg-primary/10 text-primary shadow-sm"
-                                        : "border-border bg-background text-text-secondary hover:border-text-secondary"
-                                    }
-                                `}
-                            >
-                                <span>كورس (Course)</span>
-                            </button>
-
-                            <button
-                                type="button"
-                                name="type"
-                                onClick={() => setType("product")}
-                                disabled={isPending}
-                                className={`
-                                    rounded-xl
-                                    border
-                                    font-medium
-                                    text-sm
-                                    transition
-                                    flex
-                                    items-center
-                                    justify-center
-                                    gap-2
-                                    
-                                    ${type === "product"
-                                        ? "border-primary bg-primary/10 text-primary shadow-sm"
-                                        : "border-border bg-background text-text-secondary hover:border-text-secondary"
-                                    }
-                                `}
-                            >
-                                <span>منتج (Product)</span>
-                            </button>
-                        </div>
+                            onChange={(e) => setType(e.target.value)}
+                            disabled={isPending}
+                            className={`
+                                w-full h-12
+                                rounded-xl border
+                                bg-background
+                                px-4
+                                text-text-primary
+                                outline-none
+                                transition
+                                
+                                ${state?.errors?.type
+                                    ? "border-error"
+                                    : "border-border focus:border-primary"
+                                }
+                            `}
+                        >
+                            <option value="" disabled>اختر نوع التصنيف</option>
+                            <option value="course">كورس (Course)</option>
+                            <option value="product">منتج (Product)</option>
+                            <option value="portfolio">معرض أعمال (Portfolio)</option>
+                            <option value="service">خدمة (Service)</option>
+                            <option value="blog">مدونة (Blog)</option>
+                        </select>
 
                         {state?.errors?.type && (
                             <p className="mt-1 text-xs text-error">

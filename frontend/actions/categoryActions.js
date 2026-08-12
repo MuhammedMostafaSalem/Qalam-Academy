@@ -108,6 +108,30 @@ export const updateCategoryAction = async (id, prevState, formData) => {
     }
 }
 
+export async function updateCategoryFieldAction(id, updateData) {
+    try {
+        const response = await authApi(`/categories/${id}`, {
+            method: "PATCH",
+            body: JSON.stringify(updateData),
+        });
+
+        revalidatePath("/dashboard/categories");
+        revalidatePath("/services");
+        revalidatePath("/");
+
+        return {
+            success: true,
+            message: response.message || "تم التعديل بنجاح",
+            category: response.data,
+        };
+    } catch (err) {
+        return {
+            success: false,
+            message: err?.response?.data?.message || err?.message || "حدث خطأ أثناء التعديل",
+        };
+    }
+}
+
 export async function getCategoriesAction(queryString = "") {
     try {
         const response = await authApi(`/categories?${queryString}`, {
@@ -117,6 +141,7 @@ export async function getCategoriesAction(queryString = "") {
         return {
             success: true,
             data: response.data, // حسب شكل الرد في الـ Backend (documents / categories)
+            meta: response.meta || null,
         };
     } catch (error) {
         return {

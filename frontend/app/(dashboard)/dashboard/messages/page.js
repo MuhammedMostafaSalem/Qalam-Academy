@@ -1,7 +1,10 @@
+'use client'
+import { useState } from "react";   
 import MessagesTable from "@/components/dashboard/messages/MessagesTable";
 import MessagesToolbar from "@/components/dashboard/messages/MessagesToolbar";
 
 export default function MessagesPage() {
+    const [messagesLength, setMessagesLength] = useState(0);
     return (
         <div
             className="
@@ -13,9 +16,9 @@ export default function MessagesPage() {
                 shadow-sm
             "
         >
-            <MessagesToolbar />
+            <MessagesToolbar messagesLength={messagesLength} />
 
-            <MessagesTable />
+            <MessagesTable setMessagesLength={setMessagesLength} />
         </div>
     );
 }

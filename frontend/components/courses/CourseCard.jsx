@@ -10,12 +10,13 @@ import {
 } from "react-icons/hi";
 
 const CourseCard = ({ course }) => {
-    // Handle image URL - use full URL or placeholder
-    const imageUrl = course.image?.startsWith('http') 
-        ? course.image 
-        : course.image 
-            ? `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:5000'}${course.image}`
-            : '/assets/img-card.jpg';
+    // Handle image URL - string URLs or imported static assets
+    const rawImage = course.image;
+    const imageUrl = typeof rawImage === "string"
+        ? rawImage.startsWith('http')
+            ? rawImage
+            : `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:5000'}${rawImage}`
+        : rawImage || '/assets/img-card.jpg';
 
     return (
         <article

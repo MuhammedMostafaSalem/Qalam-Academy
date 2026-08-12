@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import ResetPasswordForm from "@/components/auth/resetPassword/ResetPasswordForm";
 
 export default function ResetPasswordPage() {
@@ -11,7 +12,9 @@ export default function ResetPasswordPage() {
                 px-4
             "
         >
-            <ResetPasswordForm />
+            <Suspense fallback={null}>
+                <ResetPasswordForm />
+            </Suspense>
         </main>
     );
 }
