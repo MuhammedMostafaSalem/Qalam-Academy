@@ -12,6 +12,8 @@ const partnerBaseObject = {
         .url("Invalid partner URL")
         .or(z.literal(""))
         .optional(),
+
+    image: z.string().url("Invalid image URL").or(z.literal("")).optional(),
 }
 
 // 2. Creation schema (all fields are mandatory)

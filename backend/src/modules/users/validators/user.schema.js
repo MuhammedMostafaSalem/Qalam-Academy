@@ -42,7 +42,9 @@ const userBaseObject = {
         .trim()
         .max(500, "Bio must not exceed 500 characters")
         .optional(),
-
+    avatar: z.string({ error: "Avatar is required" })
+        .trim()
+        .optional(),
     // role: z.enum(
     //     [
     //         "admin",

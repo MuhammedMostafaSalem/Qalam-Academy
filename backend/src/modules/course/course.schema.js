@@ -20,13 +20,13 @@ const courseBaseObject = {
         ar: z
             .string({ error: "وصف الدورة مطلوب" })
             .trim()
-            .min(20, "وصف الدورة يجب أن يكون على الأقل 20 حرف")
+            .min(3, "وصف الدورة يجب أن يكون على الأقل 3 أحرف")
             .max(10000, "وصف الدورة يجب ألا يتجاوز 10000 حرف"),
 
         en: z
             .string({ error: "Course description is required" })
             .trim()
-            .min(20, "Description must be at least 20 characters")
+            .min(3, "Description must be at least 3 characters")
             .max(10000, "Description must not exceed 10000 characters"),
     }),
 
