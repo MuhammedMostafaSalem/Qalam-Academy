@@ -5,7 +5,9 @@ import {
 } from "@/services/authService";
 import { cookies } from "next/headers";
 
-const BASE_URL = `${process.env.NEXT_PUBLIC_BASE_URL}/api` || "http://localhost:5000/api";
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL
+    ? `${process.env.NEXT_PUBLIC_BASE_URL}/api`
+    : "http://localhost:5000/api";
 
 // 1. Signup Action
 export async function signupAction(prevState, formData) {

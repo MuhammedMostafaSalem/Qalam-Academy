@@ -1,4 +1,3 @@
-import CourseCurriculum from "@/components/courseDetails/curriculum/CourseCurriculum";
 import CourseDetailsHero from "@/components/courseDetails/hero/CourseDetailsHero";
 import InstructorSection from "@/components/courseDetails/instructor/InstructorSection";
 import CourseOverview from "@/components/courseDetails/overview/CourseOverview";
@@ -11,20 +10,36 @@ import { getCourseDetailsAction } from "@/actions/lessonActions";
 import { notFound } from "next/navigation";
 
 export default async function CourseDetailsPage({ params }) {
-    const { slug } = params;
-    
+    const resolvedParams = await params;
+    const slug = resolvedParams?.slug;
+
+    if (!slug) {
+        notFound();
+    }
+
     // Fetch course details from API
     const result = await getCourseDetailsAction(slug);
-    
+
     if (!result.success || !result.data) {
         notFound();
     }
 
-    const courseData = result.data;
+    const courseDetails = result.data;
+    const course = courseDetails.course || courseDetails;
+    const lessons = courseDetails.lessons || course.lessons || [];
+    const reviews = courseDetails.reviews || course.reviews || [];
+
+    const fullCourseData = {
+        ...course,
+        lessons,
+        reviews,
+        isEnrolled: courseDetails.isEnrolled,
+        progress: courseDetails.progress,
+    };
 
     return (
         <>
-            <CourseDetailsHero course={courseData} />
+            <CourseDetailsHero course={fullCourseData} />
 
             <Section className="pb-24">
                 <Container>
@@ -36,17 +51,16 @@ export default async function CourseDetailsPage({ params }) {
                         "
                     >
                         <div className="space-y-20">
-                            <CourseOverview course={courseData} />
-                            <CourseCurriculum course={courseData} />
-                            <InstructorSection course={courseData} />
-                            <ReviewsSection course={courseData} />
-                            <RelatedCourses courseId={courseData._id} categoryId={courseData.category?._id} />
+                            <CourseOverview course={fullCourseData} />
+                            <InstructorSection course={fullCourseData} />
+                            <ReviewsSection course={fullCourseData} />
+                            <RelatedCourses excludeSlug={slug} courseId={fullCourseData._id} categoryId={fullCourseData.category?._id} />
                         </div>
 
-                        <CourseSidebar course={courseData} />
+                        <CourseSidebar course={fullCourseData} />
                     </div>
                 </Container>
             </Section>
         </>
-    )
+    );
 }

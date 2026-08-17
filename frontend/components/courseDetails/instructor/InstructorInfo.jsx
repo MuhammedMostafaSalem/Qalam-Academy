@@ -1,7 +1,21 @@
 import Image from "next/image";
-import instructor from "./instructor";
+import { HiOutlineEnvelope } from "react-icons/hi2";
 
-const InstructorInfo = () => {
+const InstructorInfo = ({ instructor }) => {
+    if (!instructor) return null;
+
+    const name = (instructor.firstName || instructor.lastName)
+        ? `${instructor.firstName || ""} ${instructor.lastName || ""}`.trim()
+        : instructor.name || "المدرب";
+
+    const role = instructor.role === "instructor" 
+        ? "مدرب معتمد" 
+        : instructor.role || "محاضر ومطور برمجيات";
+
+    const avatarSrc = instructor.avatar || instructor.image || "/assets/user-icon.png";
+    const email = instructor.email;
+    const skills = instructor.skills || ["تطوير البرمجيات", "حل المشكلات", "تطبيقات الويب"];
+
     return (
         <div
             className="
@@ -14,8 +28,10 @@ const InstructorInfo = () => {
             "
         >
             <Image
-                src={instructor.image}
-                alt={instructor.name}
+                src={avatarSrc}
+                alt={name}
+                width={160}
+                height={160}
                 className="
                     mx-auto
                     h-40
@@ -26,38 +42,62 @@ const InstructorInfo = () => {
             />
 
             <h3 className="mt-6 text-2xl font-bold">
-                {instructor.name}
+                {name}
             </h3>
 
-            <p className="mt-2 text-primary">
-                {instructor.role}
+            <p className="mt-2 text-primary font-medium">
+                {role}
             </p>
 
-            <div
-                className="
-                    mt-8
-                    flex
-                    flex-wrap
-                    justify-center
-                    gap-2
-                "
-            >
-                {instructor.skills.map((skill) => (
-                    <span
-                        key={skill}
-                        className="
-                            rounded-full
-                            bg-primary/10
-                            px-4
-                            py-2
-                            text-sm
-                            text-primary
-                        "
+            {email && (
+                <div
+                    className="
+                        mt-4
+                        flex
+                        items-center
+                        justify-center
+                        gap-2
+                        text-sm
+                        text-text-secondary
+                    "
+                >
+                    <HiOutlineEnvelope className="text-primary text-base shrink-0" />
+                    <a
+                        href={`mailto:${email}`}
+                        className="hover:text-primary transition-colors dir-ltr"
                     >
-                        {skill}
-                    </span>
-                ))}
-            </div>
+                        {email}
+                    </a>
+                </div>
+            )}
+
+            {skills && skills.length > 0 && (
+                <div
+                    className="
+                        mt-8
+                        flex
+                        flex-wrap
+                        justify-center
+                        gap-2
+                    "
+                >
+                    {skills.map((skill) => (
+                        <span
+                            key={skill}
+                            className="
+                                rounded-full
+                                bg-primary/10
+                                px-4
+                                py-2
+                                text-sm
+                                text-primary
+                            "
+                        >
+                            {skill}
+                        </span>
+                    ))}
+                </div>
+            )}
         </div>
     );
 };

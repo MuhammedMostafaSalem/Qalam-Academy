@@ -2,8 +2,6 @@
 
 import { useState } from "react";
 import ResourcesTab from "./ResourcesTab";
-import NotesTab from "./NotesTab";
-import QATab from "./QATab";
 import OverviewTab from "./OverviewTab";
 
 const tabs = [
@@ -15,32 +13,18 @@ const tabs = [
         id: "resources",
         label: "المرفقات",
     },
-    {
-        id: "notes",
-        label: "الملاحظات",
-    },
-    {
-        id: "qa",
-        label: "الأسئلة",
-    },
 ];
 
-const LessonTabs = () => {
+const LessonTabs = ({ lesson }) => {
     const [activeTab, setActiveTab] = useState("overview");
 
     const renderTab = () => {
         switch (activeTab) {
             case "resources":
-                return <ResourcesTab />;
-
-            case "notes":
-                return <NotesTab />;
-
-            case "qa":
-                return <QATab />;
+                return <ResourcesTab lesson={lesson} />;
 
             default:
-                return <OverviewTab />;
+                return <OverviewTab lesson={lesson} />;
         }
     };
 

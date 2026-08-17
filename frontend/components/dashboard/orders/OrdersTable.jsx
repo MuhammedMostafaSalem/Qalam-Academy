@@ -11,6 +11,7 @@ import { cancelOrderAction } from "@/actions/orderActions";
 import { useState } from "react";
 import userIcon from "@/public/assets/user-icon.png";
 import { useSearchParams } from "next/navigation";
+import { useAuth } from "@/providers/AuthProvider";
 
 const STATUS_MAP = {
     pending: { label: "قيد الانتظار", class: "bg-warning/20 text-warning" },
@@ -32,6 +33,8 @@ const OrdersTable = () => {
     const searchParams = useSearchParams();
     const queryString = searchParams.toString();
     const { orders, loading, error, refetch } = useOrders(queryString);
+    const { user: currentUser } = useAuth();
+    const isInstructor = currentUser?.role === "instructor";
     const { successMessage, errorMessage } = useToast();
     const [cancellingId, setCancellingId] = useState(null);
 
@@ -42,7 +45,7 @@ const OrdersTable = () => {
         "طريقة الدفع",
         "الحالة",
         "تاريخ الطلب",
-        "الإجراءات",
+        ...(isInstructor ? [] : ["الإجراءات"]),
     ];
 
     const handleCancel = async (orderId) => {
@@ -135,26 +138,28 @@ const OrdersTable = () => {
                                             {new Date(order.createdAt).toLocaleDateString("ar-EG")}
                                         </Table.Td>
 
-                                        <Table.Td>
-                                            <ActionsTable
-                                                actions={
-                                                    <div className="flex gap-3 justify-center items-center text-[20px]">
-                                                        {order.status !== "paid" && (
-                                                            <div
-                                                                className="text-error cursor-pointer"
-                                                                onClick={() => handleCancel(order._id)}
-                                                            >
-                                                                {cancellingId === order._id ? (
-                                                                    <span className="text-sm">...</span>
-                                                                ) : (
-                                                                    <MdOutlineDelete />
-                                                                )}
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                }
-                                            />
-                                        </Table.Td>
+                                        {!isInstructor && (
+                                            <Table.Td>
+                                                <ActionsTable
+                                                    actions={
+                                                        <div className="flex gap-3 justify-center items-center text-[20px]">
+                                                            {order.status !== "paid" && (
+                                                                <div
+                                                                    className="text-error cursor-pointer"
+                                                                    onClick={() => handleCancel(order._id)}
+                                                                >
+                                                                    {cancellingId === order._id ? (
+                                                                        <span className="text-sm">...</span>
+                                                                    ) : (
+                                                                        <MdOutlineDelete />
+                                                                    )}
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    }
+                                                />
+                                            </Table.Td>
+                                        )}
                                     </Table.Row>
                                 );
                             })}

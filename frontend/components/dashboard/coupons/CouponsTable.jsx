@@ -9,10 +9,13 @@ import useToast from "@/hooks/useToast";
 import { deleteCouponAction } from "@/actions/couponActions";
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { useAuth } from "@/providers/AuthProvider";
 import UpdateCouponModal from "@/components/ui/modal/coupon/UpdateCouponModal";
 
 const CouponsTable = () => {
     const searchParams = useSearchParams();
+    const { user } = useAuth();
+    const isInstructor = user?.role === "instructor";
     
     // Create a new URLSearchParams instance to manipulate the query
     const backendParams = new URLSearchParams(searchParams);
@@ -36,6 +39,10 @@ const CouponsTable = () => {
 
     // Local filtering in case the backend doesn't support the status parameter natively
     const filteredCoupons = coupons.filter(coupon => {
+        if (isInstructor && user?._id) {
+            const creatorId = coupon.createdBy?._id || coupon.createdBy;
+            if (creatorId && creatorId !== user._id) return false;
+        }
         if (!statusFilter) return true;
         const expired = isExpired(coupon.expire);
         if (statusFilter === "active") return !expired;

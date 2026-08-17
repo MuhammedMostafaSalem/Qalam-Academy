@@ -26,6 +26,10 @@ export async function addToWishlistAction(courseId) {
             method: "POST",
             body: JSON.stringify({ courseId }),
         });
+
+        revalidatePath("/user/wishlist");
+        revalidatePath("/courses");
+
         return {
             success: true,
             message: response.message || "تمت الإضافة إلى المفضلة",

@@ -1,7 +1,7 @@
 import CurriculumAccordion from "./CurriculumAccordion";
 import ProgressCard from "./ProgressCard";
 
-const LessonSidebar = ({ lesson, courseSlug, courseProgress }) => {
+const LessonSidebar = ({ lesson, courseSlug, courseProgress, courseLessons }) => {
     const courseTitle = lesson?.course?.title?.ar || lesson?.course?.title?.en || lesson?.course?.title || "الكورس";
 
     return (
@@ -26,7 +26,8 @@ const LessonSidebar = ({ lesson, courseSlug, courseProgress }) => {
             <div className="flex-1 overflow-y-auto">
                 <CurriculumAccordion 
                     courseProgress={courseProgress}
-                    currentLessonId={lesson._id}
+                    courseLessons={courseLessons}
+                    currentLessonId={lesson?._id}
                     courseSlug={courseSlug}
                 />
             </div>

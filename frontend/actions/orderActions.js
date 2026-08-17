@@ -66,10 +66,11 @@ export async function cancelOrderAction(id) {
 }
 
 // Create Cash Order
-export async function createCashOrderAction(cartId) {
+export async function createCashOrderAction(cartId, shippingAddress = {}) {
     try {
         const response = await authApi(`/orders/${cartId}`, {
             method: "POST",
+            body: JSON.stringify({ shippingAddress }),
         });
 
         revalidatePath("/user/orders");
@@ -88,16 +89,24 @@ export async function createCashOrderAction(cartId) {
 }
 
 // Create Paymob Checkout
-export async function checkoutPaymobAction(cartId) {
+export async function checkoutPaymobAction(cartId, paymentType = "card", shippingAddress = {}) {
     try {
         const response = await authApi(`/orders/checkout-paymob/${cartId}`, {
             method: "POST",
+            body: JSON.stringify({ paymentType, shippingAddress }),
         });
+
+        const redirect_url = response?.redirect_url || response?.data?.redirect_url;
+        const client_secret = response?.client_secret || response?.data?.client_secret;
+        const orderId = response?.orderId || response?.data?.orderId;
 
         return {
             success: true,
-            data: response.data,
-            message: response.message || "تم إنشاء رابط الدفع",
+            data: response?.data || response,
+            redirect_url,
+            client_secret,
+            orderId,
+            message: response?.message || "تم إنشاء رابط الدفع",
         };
     } catch (error) {
         return {
@@ -108,10 +117,11 @@ export async function checkoutPaymobAction(cartId) {
 }
 
 // Create PayPal Checkout
-export async function checkoutPaypalAction(cartId) {
+export async function checkoutPaypalAction(cartId, shippingAddress = {}) {
     try {
         const response = await authApi(`/orders/checkout-paypal/${cartId}`, {
             method: "POST",
+            body: JSON.stringify({ shippingAddress }),
         });
 
         return {

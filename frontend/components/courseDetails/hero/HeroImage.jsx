@@ -3,13 +3,14 @@ import { heroAnimation } from "@/lib/animation/heroAnimation";
 import { animations } from "@/lib/animations";
 
 const HeroImage = ({ course }) => {
-    const imageUrl = course?.thumbnail?.startsWith('http') 
-        ? course.thumbnail 
-        : course?.thumbnail 
-            ? `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:5000'}${course.thumbnail}`
-            : '/assets/images/course-details-hero.png';
+    const rawTitle = course?.title?.ar || course?.title?.en || course?.title;
+    const title = typeof rawTitle === "string" && rawTitle.trim() !== "" ? rawTitle : "دورة تعليمية";
+    const imageUrl = (course?.thumbnail && typeof course.thumbnail === 'string' && course.thumbnail.trim() !== '')
+        ? (course.thumbnail.startsWith('http')
+            ? course.thumbnail
+            : `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:5000'}${course.thumbnail}`)
+        : '/assets/images/course-details-hero.png';
 
-    const title = course?.title?.ar || course?.title?.en || course?.title || "دورة تعليمية";
     const duration = course?.duration || "—";
 
     return (

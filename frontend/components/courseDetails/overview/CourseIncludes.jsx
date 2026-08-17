@@ -2,45 +2,43 @@ import {
     HiOutlineClock,
     HiOutlineAcademicCap,
     HiOutlinePlayCircle,
-    HiOutlineDocumentText,
-    HiOutlineDevicePhoneMobile,
-    HiOutlineTrophy,
 } from "react-icons/hi2";
 
-const includes = [
-    {
-        icon: HiOutlineClock,
-        title: "مدة الكورس",
-        value: "40 ساعة",
-    },
-    {
-        icon: HiOutlinePlayCircle,
-        title: "الفيديوهات",
-        value: "48 درس",
-    },
-    {
-        icon: HiOutlineAcademicCap,
-        title: "المستوى",
-        value: "مبتدئ → متقدم",
-    },
-    {
-        icon: HiOutlineDocumentText,
-        title: "المشاريع",
-        value: "8 مشاريع",
-    },
-    {
-        icon: HiOutlineDevicePhoneMobile,
-        title: "الوصول",
-        value: "مدى الحياة",
-    },
-    {
-        icon: HiOutlineTrophy,
-        title: "الشهادة",
-        value: "معتمدة",
-    },
-];
+const CourseIncludes = ({ course }) => {
+    const duration = course?.duration
+        ? `${course.duration} دقيقة`
+        : "40 ساعة";
 
-const CourseIncludes = () => {
+    const lessonsCount = (course?.totalLessons ?? course?.lessonsCount ?? course?.lessons?.length) !== undefined
+        ? `${course?.totalLessons ?? course?.lessonsCount ?? course?.lessons?.length ?? 0} درس`
+        : "—";
+
+    const levelText = course?.level === "beginner"
+        ? "مبتدئ"
+        : course?.level === "intermediate"
+            ? "متوسط"
+            : course?.level === "advanced"
+                ? "متقدم"
+                : course?.level || "مبتدئ → متقدم";
+
+    const includes = [
+        {
+            icon: HiOutlineClock,
+            title: "مدة الكورس",
+            value: duration,
+        },
+        {
+            icon: HiOutlinePlayCircle,
+            title: "الفيديوهات",
+            value: lessonsCount,
+        },
+        {
+            icon: HiOutlineAcademicCap,
+            title: "المستوى",
+            value: levelText,
+        },
+    ];
+
     return (
         <div
             className="

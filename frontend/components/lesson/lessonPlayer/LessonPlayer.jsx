@@ -1,10 +1,9 @@
 import LessonHeader from "../lessonContent/LessonHeader";
 import LessonTabs from "../lessonContent/LessonTabs";
 import LessonNavigation from "../LessonNavigation";
-import PlayerControls from "./PlayerControls";
 import VideoPlayer from "./VideoPlayer";
 
-const LessonPlayer = ({ lesson, courseSlug, courseProgress }) => {
+const LessonPlayer = ({ lesson, courseSlug, courseProgress, courseLessons }) => {
     return (
         <div className="flex flex-col">
             <VideoPlayer lesson={lesson} />
@@ -20,10 +19,6 @@ const LessonPlayer = ({ lesson, courseSlug, courseProgress }) => {
             >
                 <LessonHeader lesson={lesson} />
 
-                <div className="mt-8">
-                    <PlayerControls lesson={lesson} />
-                </div>
-
                 <div className="mt-10">
                     <LessonTabs lesson={lesson} />
                 </div>
@@ -33,6 +28,7 @@ const LessonPlayer = ({ lesson, courseSlug, courseProgress }) => {
                         lesson={lesson}
                         courseSlug={courseSlug}
                         courseProgress={courseProgress}
+                        courseLessons={courseLessons}
                     />
                 </div>
             </div>

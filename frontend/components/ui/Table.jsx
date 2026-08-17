@@ -23,8 +23,8 @@ Table.Body = ({ children }) => (
     </tbody>
 );
 
-Table.Row = ({ children }) => (
-    <tr className="border-b border-border last:border-none">
+Table.Row = ({ children, className = "", ...props }) => (
+    <tr className={`border-b border-border last:border-none ${className}`} {...props}>
         {children}
     </tr>
 );

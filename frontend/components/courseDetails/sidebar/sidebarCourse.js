@@ -2,9 +2,7 @@ import {
     HiOutlineClock,
     HiOutlineAcademicCap,
     HiOutlineLanguage,
-    HiOutlineDevicePhoneMobile,
     HiOutlineDocumentDuplicate,
-    HiOutlineTrophy,
 } from "react-icons/hi2";
 
 const sidebarCourse = {
@@ -31,16 +29,6 @@ const sidebarCourse = {
             icon: HiOutlineLanguage,
             label: "اللغة",
             value: "العربية",
-        },
-        {
-            icon: HiOutlineDevicePhoneMobile,
-            label: "الوصول",
-            value: "مدى الحياة",
-        },
-        {
-            icon: HiOutlineTrophy,
-            label: "الشهادة",
-            value: "معتمدة",
         },
     ],
 };

@@ -36,6 +36,7 @@ const RegisterBanner = () => {
                     src={logo}
                     alt="Qalam Academy"
                     width={42}
+                    height={42}
                     priority
                 />
 
@@ -64,7 +65,9 @@ const RegisterBanner = () => {
             >
                 <Image
                     src={registerIllustration}
-                    alt="Login Illustration"
+                    alt="Register Illustration"
+                    width={160}
+                    height={160}
                     priority
                     className="
                         h-auto

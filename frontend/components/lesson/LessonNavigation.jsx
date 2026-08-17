@@ -3,44 +3,44 @@ import {
     HiArrowLongLeft,
     HiArrowLongRight,
 } from "react-icons/hi2";
-import lessonData from "./lessonData";
 
-const LessonNavigation = () => {
-    const lessons = lessonData.modules.flatMap(
-        (module) => module.lessons
+const LessonNavigation = ({ lesson, courseSlug, courseLessons = [] }) => {
+    if (!courseLessons || courseLessons.length === 0) {
+        return null;
+    }
+
+    const currentId = String(lesson?._id || lesson?.id || "");
+    const currentIndex = courseLessons.findIndex(
+        (item) => String(item._id || item.id) === currentId
     );
 
-    const currentIndex = lessons.findIndex(
-        (lesson) => lesson.active
-    );
+    const previousLesson = currentIndex > 0 ? courseLessons[currentIndex - 1] : null;
+    const nextLesson = (currentIndex >= 0 && currentIndex < courseLessons.length - 1)
+        ? courseLessons[currentIndex + 1]
+        : null;
 
-    const previousLesson =
-        currentIndex > 0
-            ? lessons[currentIndex - 1]
-            : null;
+    if (!previousLesson && !nextLesson) {
+        return null;
+    }
 
-    const nextLesson =
-        currentIndex < lessons.length - 1
-            ? lessons[currentIndex + 1]
-            : null;
+    const getLessonTitle = (l) => l?.title?.ar || l?.title?.en || l?.title || "درس";
+    const getLessonId = (l) => l?._id || l?.id;
 
     return (
         <div
-            className="
+            className={`
                 mt-12
                 flex
                 flex-col
                 gap-5
-
-                md:flex-row
-                md:justify-between
-            "
+                sm:flex-row
+                ${previousLesson && nextLesson ? "sm:justify-between" : previousLesson ? "sm:justify-start" : "sm:justify-end"}
+            `}
         >
-            {/* Previous */}
-
+            {/* Previous Lesson */}
             {previousLesson && (
                 <Link
-                    href={`/courses/slag/lesson/${previousLesson.id}`}
+                    href={`/courses/${courseSlug}/lesson/${getLessonId(previousLesson)}`}
                     className="
                         group
                         flex
@@ -78,27 +78,23 @@ const LessonNavigation = () => {
                         </div>
 
                         <div>
-
                             <p className="text-sm text-text-secondary">
                                 الدرس السابق
                             </p>
 
                             <h3 className="mt-1 font-semibold">
-                                {previousLesson.title}
+                                {getLessonTitle(previousLesson)}
                             </h3>
-
                         </div>
-
                     </div>
                 </Link>
             )}
 
-            {/* Next */}
-            {
-                nextLesson && (
-                    <Link
-                        href={`/courses/slag/lesson/${nextLesson.id}`}
-                        className="
+            {/* Next Lesson */}
+            {nextLesson && (
+                <Link
+                    href={`/courses/${courseSlug}/lesson/${getLessonId(nextLesson)}`}
+                    className="
                         group
                         flex
                         flex-1
@@ -114,19 +110,19 @@ const LessonNavigation = () => {
                         hover:border-primary
                         hover:-translate-y-1
                     "
-                    >
-                        <div>
-                            <p className="text-sm text-text-secondary">
-                                الدرس التالي
-                            </p>
+                >
+                    <div>
+                        <p className="text-sm text-text-secondary">
+                            الدرس التالي
+                        </p>
 
-                            <h3 className="mt-1 font-semibold">
-                                {nextLesson.title}
-                            </h3>
-                        </div>
+                        <h3 className="mt-1 font-semibold">
+                            {getLessonTitle(nextLesson)}
+                        </h3>
+                    </div>
 
-                        <div
-                            className="
+                    <div
+                        className="
                             flex
                             h-12
                             w-12
@@ -139,12 +135,11 @@ const LessonNavigation = () => {
                             group-hover:bg-primary
                             group-hover:text-white
                         "
-                        >
-                            <HiArrowLongLeft size={24} />
-                        </div>
-                    </Link>
-                )
-            }
+                    >
+                        <HiArrowLongLeft size={24} />
+                    </div>
+                </Link>
+            )}
         </div>
     );
 };

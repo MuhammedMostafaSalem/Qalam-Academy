@@ -1,20 +1,33 @@
 import Image from "next/image";
 import Link from "next/link";
-
-import { HiArrowLeft, HiTag, HiCode } from "react-icons/hi";
+import { HiArrowLeft, HiTag } from "react-icons/hi";
 
 const ProjectCard = ({ project }) => {
-    // Handle image URL properly (string URLs or imported static assets)
     const rawImage = project?.image;
-    const imageUrl = typeof rawImage === "string"
-        ? rawImage.startsWith("http")
-            ? rawImage
-            : `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:5000'}${rawImage}`
-        : rawImage || '/assets/img-card.jpg'; // Fallback image
+    const imageUrl = (typeof rawImage === "string" && rawImage.trim() !== "")
+        ? (rawImage.startsWith("http") ? rawImage : `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:5000'}${rawImage}`)
+        : (rawImage || '/assets/img-card.jpg');
 
-    const title = project?.title?.ar || project?.title?.en || project?.title || "مشروع";
-    const description = project?.description?.ar || project?.description?.en || project?.description || "";
-    const category = project?.category?.name?.ar || project?.category?.name?.en || project?.category?.name || project?.category || "عام";
+    const rawTitle = project?.title?.ar || project?.title?.en || project?.title;
+    const title = typeof rawTitle === "string" && rawTitle.trim() !== ""
+        ? rawTitle
+        : (typeof rawTitle === "object" ? (rawTitle.ar || rawTitle.en || "مشروع") : "مشروع");
+
+    const rawDesc = project?.description?.ar || project?.description?.en || project?.description;
+    const description = typeof rawDesc === "string"
+        ? rawDesc
+        : (typeof rawDesc === "object" ? (rawDesc.ar || rawDesc.en || "") : "");
+
+    const rawCat = project?.category;
+    let category = "عام";
+    if (typeof rawCat === "string") {
+        category = rawCat;
+    } else if (typeof rawCat === "object" && rawCat !== null) {
+        category = rawCat.title?.ar || rawCat.title?.en || rawCat.title || rawCat.name?.ar || rawCat.name?.en || rawCat.name || "عام";
+        if (typeof category === "object") {
+            category = category.ar || category.en || "عام";
+        }
+    }
 
     return (
         <article
@@ -40,6 +53,7 @@ const ProjectCard = ({ project }) => {
                     alt={title}
                     width={500}
                     height={320}
+                    unoptimized
                     className="
                         h-56
                         w-full
@@ -72,11 +86,11 @@ const ProjectCard = ({ project }) => {
                 {/* Title */}
                 <h3
                     className="
-                            line-clamp-2
-                            text-xl
-                            font-bold
-                            text-text-primary
-                        "
+                        line-clamp-2
+                        text-xl
+                        font-bold
+                        text-text-primary
+                    "
                 >
                     {title}
                 </h3>
@@ -103,11 +117,11 @@ const ProjectCard = ({ project }) => {
                     "
                 >
                     <div>عرض المشروع</div>
-                    <HiArrowLeft size={22} className="" />
+                    <HiArrowLeft size={22} />
                 </Link>
             </div>
         </article>
-    )
-}
+    );
+};
 
-export default ProjectCard
+export default ProjectCard;

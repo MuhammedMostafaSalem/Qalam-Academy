@@ -4,40 +4,41 @@ import {
     HiOutlineStar,
     HiOutlineBriefcase,
 } from "react-icons/hi2";
-import instructor from "./instructor";
 
-const stats = [
-    {
-        icon: HiOutlineBriefcase,
-        value: instructor.experience,
-        label: "الخبرة",
-    },
-    {
-        icon: HiOutlineUsers,
-        value: instructor.students,
-        label: "طالب",
-    },
-    {
-        icon: HiOutlineAcademicCap,
-        value: instructor.courses,
-        label: "كورس",
-    },
-    {
-        icon: HiOutlineStar,
-        value: instructor.rating,
-        label: "التقييم",
-    },
-];
+const InstructorStats = ({ instructor }) => {
+    const bio = instructor?.bio ||
+        "مهندس برمجيات متخصص في تطوير التطبيقات بخبرة واسعة في بناء الحلول البرمجية الحديثة. قام بتدريب آلاف الطلاب وساعد الكثير منهم في الحصول على أول وظيفة في مجال البرمجة.";
 
-const InstructorStats = () => {
+    const stats = [
+        {
+            icon: HiOutlineBriefcase,
+            value: instructor?.experience || "+5 سنوات",
+            label: "الخبرة",
+        },
+        {
+            icon: HiOutlineUsers,
+            value: instructor?.students || "+1,000",
+            label: "طالب",
+        },
+        {
+            icon: HiOutlineAcademicCap,
+            value: instructor?.courses || "10+",
+            label: "كورس",
+        },
+        {
+            icon: HiOutlineStar,
+            value: instructor?.rating || "4.9",
+            label: "التقييم",
+        },
+    ];
+
     return (
         <div>
             <p className="leading-8 text-text-secondary">
-                {instructor.bio}
+                {bio}
             </p>
 
             <div className="mt-10 grid gap-5 sm:grid-cols-2">
-
                 {stats.map((item) => {
                     const Icon = item.icon;
 

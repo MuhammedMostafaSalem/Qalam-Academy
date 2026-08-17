@@ -23,18 +23,20 @@ export async function getCartAction() {
 }
 
 // Add Item to Cart (itemType: "Course" | "Product")
-export async function addToCartAction(itemId, itemType) {
+export async function addToCartAction(itemId, itemType = "Course", color = "") {
     try {
         const response = await authApi("/cart", {
             method: "POST",
-            body: JSON.stringify({ itemId, itemType }),
+            body: JSON.stringify({ itemId, itemType, color }),
         });
 
         revalidatePath("/");
+        revalidatePath("/cart");
 
         return {
             success: true,
             data: response.data,
+            meta: response.meta,
             message: response.message || "تمت الإضافة إلى السلة بنجاح",
         };
     } catch (error) {
@@ -112,6 +114,8 @@ export async function applyCouponAction(couponName) {
             body: JSON.stringify({ couponName }),
         });
 
+        revalidatePath("/cart");
+
         return {
             success: true,
             data: response.data,
@@ -131,6 +135,8 @@ export async function removeCouponAction() {
         const response = await authApi("/cart/remove-coupon", {
             method: "DELETE",
         });
+
+        revalidatePath("/cart");
 
         return {
             success: true,

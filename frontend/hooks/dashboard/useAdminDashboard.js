@@ -1,9 +1,11 @@
 "use client";
 
-import { getAdminDashboardAction } from "@/actions/dashboardActions";
+import { getAdminDashboardAction, getInstructorDashboardAction } from "@/actions/dashboardActions";
+import { useAuth } from "@/providers/AuthProvider";
 import { useCallback, useEffect, useState } from "react";
 
 const useAdminDashboard = () => {
+    const { user } = useAuth();
     const [dashboardData, setDashboardData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -13,7 +15,8 @@ const useAdminDashboard = () => {
         setError(null);
         
         try {
-            const result = await getAdminDashboardAction();
+            const action = user?.role === "instructor" ? getInstructorDashboardAction : getAdminDashboardAction;
+            const result = await action();
             
             if (result.success) {
                 setDashboardData(result.data);
@@ -21,15 +24,17 @@ const useAdminDashboard = () => {
                 setError(result.message);
             }
         } catch (err) {
-            setError(err.message || "An unexpected error occurred");
+            setError(err.message || "حدث خطأ أثناء جلب البيانات");
         } finally {
             setLoading(false);
         }
-    }, []);
+    }, [user?.role]);
 
     useEffect(() => {
-        fetchDashboardData();
-    }, [fetchDashboardData]);
+        if (user) {
+            fetchDashboardData();
+        }
+    }, [fetchDashboardData, user]);
 
     return {
         dashboardData,

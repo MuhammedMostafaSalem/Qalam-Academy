@@ -2,14 +2,18 @@ import {
     HiOutlineInformationCircle,
 } from "react-icons/hi2";
 
-const requirements = [
+const defaultRequirements = [
     "امتلاك جهاز كمبيوتر أو Laptop.",
     "لا تحتاج لأي خبرة برمجية سابقة.",
     "اتصال جيد بالإنترنت.",
     "الرغبة في التعلم والتطبيق العملي.",
 ];
 
-const Requirements = () => {
+const Requirements = ({ requirements: reqProp }) => {
+    const reqList = (reqProp && reqProp.length > 0)
+        ? reqProp
+        : defaultRequirements;
+
     return (
         <section className="mt-14">
             <h2 className="text-2xl font-bold">
@@ -27,9 +31,9 @@ const Requirements = () => {
                 "
             >
                 <ul className="space-y-5">
-                    {requirements.map((item) => (
+                    {reqList.map((item, index) => (
                         <li
-                            key={item}
+                            key={index}
                             className="
                                 flex
                                 items-start
@@ -40,6 +44,7 @@ const Requirements = () => {
                                 className="
                                     mt-1
                                     text-primary
+                                    shrink-0
                                 "
                                 size={22}
                             />

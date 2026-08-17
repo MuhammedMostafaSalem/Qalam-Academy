@@ -1,7 +1,31 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import SectionBadge from "@/components/sections/SectionBadge";
 import { heroAnimation } from "@/lib/animation/heroAnimation";
+import { getHeroByPageAction } from "@/actions/heroActions";
 
 const ContactHeader = () => {
+    const [hero, setHero] = useState(null);
+
+    useEffect(() => {
+        const fetchHero = async () => {
+            try {
+                const res = await getHeroByPageAction("contact");
+                if (res.success && res.data) {
+                    setHero(res.data);
+                }
+            } catch (err) {
+                console.error("Failed to fetch contact hero", err);
+            }
+        };
+        fetchHero();
+    }, []);
+
+    const title = hero?.title?.ar || hero?.title?.en || hero?.title || "يسعدنا التواصل معك";
+    const subtitle = hero?.subtitle?.ar || hero?.subtitle?.en || hero?.subtitle || "تواصل معنا";
+    const description = hero?.description?.ar || hero?.description?.en || hero?.description || "سواء كنت ترغب في بدء مشروع جديد، أو لديك استفسار حول خدماتنا، أو تحتاج إلى استشارة تقنية، فإن فريق قلم أكاديمي جاهز للإجابة على جميع أسئلتك ومساعدتك في الوصول إلى أفضل الحلول الرقمية.";
+
     return (
         <header
             className="
@@ -11,7 +35,7 @@ const ContactHeader = () => {
             "
         >
             <SectionBadge>
-                تواصل معنا
+                {subtitle}
             </SectionBadge>
 
             <h1
@@ -26,7 +50,7 @@ const ContactHeader = () => {
                     lg:text-6xl
                 "
             >
-                يسعدنا التواصل معك
+                {title}
             </h1>
 
             <p
@@ -40,9 +64,7 @@ const ContactHeader = () => {
                     text-text-secondary
                 "
             >
-                سواء كنت ترغب في بدء مشروع جديد، أو لديك استفسار حول خدماتنا،
-                أو تحتاج إلى استشارة تقنية، فإن فريق قلم أكاديمي جاهز للإجابة
-                على جميع أسئلتك ومساعدتك في الوصول إلى أفضل الحلول الرقمية.
+                {description}
             </p>
         </header>
     );

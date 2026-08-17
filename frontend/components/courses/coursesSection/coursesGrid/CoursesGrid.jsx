@@ -8,17 +8,23 @@ import { animations } from "@/lib/animations";
 import { cardAnimation } from "@/lib/animation/cardAnimation";
 import { getCoursesAction } from "@/actions/courseActions";
 import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 
 const CoursesGrid = ({ view }) => {
     const [courses, setCourses] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const searchParams = useSearchParams();
+
+    const searchQuery = (searchParams.get("search") || "").toLowerCase().trim();
+    const levelFilter = searchParams.get("level") || "all";
+    const sortFilter = searchParams.get("sort") || "newest";
 
     useEffect(() => {
         setLoading(true);
         getCoursesAction("isPublished=true").then((result) => {
             if (result.success) {
-                setCourses(result.data);
+                setCourses(result.data || []);
             } else {
                 setError(result.message);
             }
@@ -42,24 +48,38 @@ const CoursesGrid = ({ view }) => {
         );
     }
 
+    // Filter courses based on URL parameters
+    let filteredCourses = courses.filter((course) => {
+        const titleStr = (typeof course.title === "object"
+            ? (course.title.ar || course.title.en)
+            : course.title || "").toLowerCase();
+
+        const descStr = (typeof course.description === "object"
+            ? (course.description.ar || course.description.en)
+            : course.description || "").toLowerCase();
+
+        const matchesSearch = !searchQuery || titleStr.includes(searchQuery) || descStr.includes(searchQuery);
+
+        const courseLevel = (course.level || "").toLowerCase();
+        const matchesLevel = levelFilter === "all" || courseLevel === levelFilter;
+
+        return matchesSearch && matchesLevel;
+    });
+
+    // Sort courses
+    if (sortFilter === "price_asc") {
+        filteredCourses.sort((a, b) => (a.discountPrice || a.price || 0) - (b.discountPrice || b.price || 0));
+    } else if (sortFilter === "price_desc") {
+        filteredCourses.sort((a, b) => (b.discountPrice || b.price || 0) - (a.discountPrice || a.price || 0));
+    }
+
     return (
         <div className="flex-1">
             {/* Result Count */}
-            <div
-                className="
-                    mb-8
-                    flex
-                    items-center
-                    justify-between
-                "
-            >
+            <div className="mb-8 flex items-center justify-between">
                 <h2
                     {...heroAnimation.title}
-                    className={`
-                        text-2xl
-                        font-bold
-                        ${animations.transition}
-                    `}
+                    className={`text-2xl font-bold ${animations.transition}`}
                 >
                     جميع الكورسات
                 </h2>
@@ -68,13 +88,13 @@ const CoursesGrid = ({ view }) => {
                     {...heroAnimation.badge}
                     className={`text-text-secondary ${animations.transition}`}
                 >
-                    {courses.length} دورة
+                    {filteredCourses.length} دورة
                 </span>
             </div>
 
-            {courses.length === 0 ? (
+            {filteredCourses.length === 0 ? (
                 <div className="py-16 text-center text-text-muted">
-                    لا توجد كورسات متاحة حالياً
+                    لا توجد كورسات متاحة تطابق خيارات التصفية والبحث
                 </div>
             ) : (
                 <>
@@ -90,7 +110,7 @@ const CoursesGrid = ({ view }) => {
                             }
                         `}
                     >
-                        {courses.map((course, index) => (
+                        {filteredCourses.map((course, index) => (
                             <div key={course._id} {...cardAnimation(index)}>
                                 <CourseCard
                                     course={{
@@ -99,7 +119,7 @@ const CoursesGrid = ({ view }) => {
                                         description: course.description?.ar || course.description?.en || course.description,
                                         slug: course.slug,
                                         duration: course.duration || "—",
-                                        lessons: course.lessonsCount || 0,
+                                        lessons: course.totalLessons || course.lessonsCount || 0,
                                         price: course.discountPrice || course.price || 0,
                                         originalPrice: course.discountPrice ? course.price : null,
                                         badge: course.discountPrice ? "خصم" : course.isFeatured ? "مميز" : null,

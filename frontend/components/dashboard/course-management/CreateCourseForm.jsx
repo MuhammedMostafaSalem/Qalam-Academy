@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { createCourseAction } from "@/actions/courseActions";
 import { getCategoriesAction } from "@/actions/categoryActions";
 import { getInstructorsAction } from "@/actions/userActions";
+import { useAuth } from "@/providers/AuthProvider";
 import useToast from "@/hooks/useToast";
 
 const inputClass = `
@@ -24,7 +25,9 @@ const labelClass = "mb-2 block font-medium text-text-secondary text-sm";
 
 const CreateCourseForm = () => {
     const router = useRouter();
+    const { user } = useAuth();
     const { successMessage, errorMessage } = useToast();
+    const isInstructor = user?.role === "instructor";
 
     const [categories, setCategories] = useState([]);
     const [instructors, setInstructors] = useState([]);
@@ -130,17 +133,30 @@ const CreateCourseForm = () => {
                         ))}
                     </select>
                 </div>
-                <div>
-                    <label className={labelClass}>المدرب</label>
-                    <select name="instructor" required className={inputClass} defaultValue="">
-                        <option value="" disabled>اختر المدرب</option>
-                        {instructors.map((instructor) => (
-                            <option key={instructor._id} value={instructor._id}>
-                                {instructor.firstName} {instructor.lastName}
-                            </option>
-                        ))}
-                    </select>
-                </div>
+                {isInstructor ? (
+                    <div>
+                        <label className={labelClass}>المدرب</label>
+                        <input
+                            type="text"
+                            disabled
+                            value={`${user?.firstName || ""} ${user?.lastName || ""}`}
+                            className={`${inputClass} bg-background/50 cursor-not-allowed`}
+                        />
+                        <input type="hidden" name="instructor" value={user?._id || user?.id || ""} />
+                    </div>
+                ) : (
+                    <div>
+                        <label className={labelClass}>المدرب</label>
+                        <select name="instructor" required className={inputClass} defaultValue="">
+                            <option value="" disabled>اختر المدرب</option>
+                            {instructors.map((instructor) => (
+                                <option key={instructor._id} value={instructor._id}>
+                                    {instructor.firstName} {instructor.lastName}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                )}
             </div>
 
             {/* المستوى واللغة */}

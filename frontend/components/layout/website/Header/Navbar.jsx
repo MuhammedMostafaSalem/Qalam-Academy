@@ -1,9 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import NavLinks from "./NavLinks"
 import Logo from "./Logo"
 import CTAButton from "./CTAButton"
-import { HiOutlineMenuAlt3, HiX } from "react-icons/hi";
+import { HiOutlineMenuAlt3, HiX, HiOutlineShoppingBag } from "react-icons/hi";
 import LanguageSwitcher from "./LanguageSwitcher";
 import { fadeDown } from "@/lib/animationHelpers";
 import UserMenu from "@/components/shared/UserMenu";
@@ -45,6 +46,14 @@ const Navbar = ({ isTop, openMenu, setOpenMenu }) => {
                 />
 
                 <div className="flex items-center gap-3">
+                    <Link
+                        href="/cart"
+                        className="flex h-11 w-11 items-center justify-center rounded-full glass text-white hover:text-primary transition"
+                        title="سلة الشراء"
+                    >
+                        <HiOutlineShoppingBag size={22} />
+                    </Link>
+
                     <LanguageSwitcher />
 
                     {

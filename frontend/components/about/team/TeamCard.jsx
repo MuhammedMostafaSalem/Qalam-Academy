@@ -12,20 +12,26 @@ import {
 } from "react-icons/fa6";
 
 const TeamCard = ({ member }) => {
+    const name = member?.name || "عضو فريق";
+    const rawImage = member?.image;
+    const imageSrc = (rawImage && typeof rawImage === "string" && rawImage.trim() !== "")
+        ? rawImage
+        : "/assets/user-icon.png";
+
     const socialLinks = [
         {
             icon: FaLinkedinIn,
-            href: member.socials.linkedin,
+            href: member?.socials?.linkedin || "#",
             label: "LinkedIn",
         },
         {
             icon: FaGithub,
-            href: member.socials.github,
+            href: member?.socials?.github || "#",
             label: "GitHub",
         },
         {
             icon: FaXTwitter,
-            href: member.socials.twitter,
+            href: member?.socials?.twitter || "#",
             label: "X",
         },
     ];
@@ -49,10 +55,11 @@ const TeamCard = ({ member }) => {
             {/* Avatar */}
             <div className="mx-auto mb-5 h-24 w-24 overflow-hidden rounded-full">
                 <Image
-                    src={member.image}
-                    alt={member.name}
+                    src={imageSrc}
+                    alt={name}
                     width={96}
                     height={96}
+                    unoptimized
                     className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
                 />
             </div>

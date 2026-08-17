@@ -67,6 +67,12 @@ const UserMenu = () => {
 
     const FirstIcon = firstMenuItem.icon;
 
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:5000";
+    const avatarSrc = (user.avatar && typeof user.avatar === 'string' && user.avatar.trim() !== '')
+        ? (user.avatar.startsWith('http') ? user.avatar : `${BASE_URL}${user.avatar}`)
+        : userIcon;
+    const avatarAlt = user.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : "المستخدم";
+
     return (
         <div
             className="relative"
@@ -88,12 +94,11 @@ const UserMenu = () => {
                 "
             >
                 <Image
-                    src={
-                        user.avatar ? user.avatar : userIcon
-                    }
-                    alt={user.firstName || "User"}
+                    src={avatarSrc}
+                    alt={avatarAlt}
                     width={44}
                     height={44}
+                    unoptimized
                     className="
                         h-11
                         w-11

@@ -49,8 +49,8 @@ export const addCategoryAction = async (prevStata, formData) => {
         return {
             success: false,
             category: null,
-            error: err?.response?.data?.message || err?.message || "Something went wrong",
-            errors: err?.response?.data?.errors || null,
+            error: err?.message || "Something went wrong",
+            errors: err?.errors || null,
         }
     }
 }
@@ -94,7 +94,6 @@ export const updateCategoryAction = async (id, prevState, formData) => {
 
         return {
             success: true,
-            // message: "تم تعديل التصنيف بنجاح",
             message: response.message,
             category: response.data,
         }
@@ -103,7 +102,8 @@ export const updateCategoryAction = async (id, prevState, formData) => {
 
         return {
             success: false,
-            error: err?.response?.data?.message || err?.message || "Something went wrong",
+            error: err?.message || "Something went wrong",
+            errors: err?.errors || null,
         };
     }
 }
@@ -127,7 +127,8 @@ export async function updateCategoryFieldAction(id, updateData) {
     } catch (err) {
         return {
             success: false,
-            message: err?.response?.data?.message || err?.message || "حدث خطأ أثناء التعديل",
+            message: err?.message || "حدث خطأ أثناء التعديل",
+            errors: err?.errors || null,
         };
     }
 }

@@ -22,9 +22,10 @@ export async function authApi(endpoint, options = {}) {
         headers.set("Content-Type", "application/json");
     }
 
-    // Set default language to Arabic
+    // Set language header from cookie or default to Arabic
     if (!headers.has("Accept-Language")) {
-        headers.set("Accept-Language", "ar");
+        const lang = cookieStore.get("NEXT_LOCALE")?.value || cookieStore.get("NEXT_LANG")?.value || "ar";
+        headers.set("Accept-Language", lang);
     }
 
     // Forward authentication cookie to backend

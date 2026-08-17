@@ -22,7 +22,7 @@ const ProtectedRoute = ({ children, allowedRoles = [] }) => {
                 // توجيه المستخدم حسب دوره لو حاول يدخل مكان مش مخصص ليه
                 const dashboardRoutes = {
                     admin: "/dashboard",
-                    instructor: "/instructor",
+                    instructor: "/dashboard",
                     student: "/user",
                 };
 

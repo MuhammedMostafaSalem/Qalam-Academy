@@ -2,6 +2,11 @@ import Image from "next/image";
 import { HiStar } from "react-icons/hi";
 
 const TestimonialCard = ({ testimonial }) => {
+    const name = testimonial?.name || "طالب بالأكاديمية";
+    const avatar = (testimonial?.avatar && typeof testimonial.avatar === 'string' && testimonial.avatar.trim() !== '')
+        ? testimonial.avatar
+        : "/assets/user-icon.png";
+
     return (
         <article
             className="
@@ -28,7 +33,7 @@ const TestimonialCard = ({ testimonial }) => {
             {/* Rating */}
             <div className="flex items-center gap-1">
 
-                {Array.from({ length: testimonial.rating }).map((_, index) => (
+                {Array.from({ length: testimonial.rating || 5 }).map((_, index) => (
                     <HiStar
                         key={index}
                         className="
@@ -54,10 +59,11 @@ const TestimonialCard = ({ testimonial }) => {
                     "
                 >
                     <Image
-                        src={testimonial.avatar}
-                        alt={testimonial.name}
+                        src={avatar}
+                        alt={name}
                         fill
                         className="object-cover"
+                        unoptimized
                     />
                 </div>
 

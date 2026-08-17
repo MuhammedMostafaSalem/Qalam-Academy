@@ -2,18 +2,20 @@ import {
     HiOutlineCheckCircle,
 } from "react-icons/hi2";
 
-const learningPoints = [
-    "بناء صفحات احترافية باستخدام HTML5 و CSS3.",
-    "إتقان JavaScript الحديثة (ES6+).",
-    "إنشاء تطبيقات React احترافية.",
-    "استخدام Next.js لبناء تطبيقات سريعة.",
-    "إدارة الـ State باستخدام Redux Toolkit.",
+const defaultLearningPoints = [
+    "بناء صفحات احترافية وتطبيقات متكاملة.",
+    "إتقان المفاهيم الأساسية والمتقدمة وتطبيقها عملياً.",
+    "التعامل مع واجهات البرمجة والبيانات بكفاءة.",
     "تنفيذ مشاريع تحاكي بيئة العمل الحقيقية.",
 ];
 
-const LearningPoints = () => {
+const LearningPoints = ({ objectives }) => {
+    const points = (objectives && objectives.length > 0)
+        ? objectives
+        : defaultLearningPoints;
+
     return (
-        <section className="mt-14">
+        <section>
             <h2 className="text-2xl font-bold">
                 ماذا ستتعلم؟
             </h2>
@@ -26,9 +28,9 @@ const LearningPoints = () => {
                     md:grid-cols-2
                 "
             >
-                {learningPoints.map((item) => (
+                {points.map((item, index) => (
                     <div
-                        key={item}
+                        key={index}
                         className="
                             flex
                             items-start
@@ -44,6 +46,7 @@ const LearningPoints = () => {
                             className="
                                 mt-1
                                 text-primary
+                                shrink-0
                             "
                             size={22}
                         />

@@ -34,9 +34,14 @@ const useLoginForm = () => {
                     type: "success",
                 })
             );
-            // التوجيه للوحة التحكم أو الصفحة الرئيسية بعد تسجيل الدخول بنجاح
-            // router.push("/");
-            router.replace("/");
+            // التوجيه للوحة التحكم حسب دور المستخدم
+            const roleRedirects = {
+                admin: "/dashboard",
+                instructor: "/dashboard",
+                student: "/user",
+            };
+            const redirectPath = roleRedirects[state.data?.user?.role] || "/";
+            router.replace(redirectPath);
         } else {
             // console.log(state)
             if (state.fieldErrors) {

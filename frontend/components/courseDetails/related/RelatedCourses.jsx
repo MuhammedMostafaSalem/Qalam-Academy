@@ -82,12 +82,12 @@ const RelatedCourses = ({ excludeSlug }) => {
                                 title: course.title?.ar || course.title,
                                 slug: course.slug,
                                 duration: course.duration || "—",
-                                lessons: course.lessonsCount || 0,
+                                lessons: course.totalLessons || course.lessonsCount || 0,
                                 price: course.discountPrice || course.price || 0,
                                 originalPrice: course.discountPrice ? course.price : null,
                                 badge: course.discountPrice ? "خصم" : null,
                                 instructor: course.instructor
-                                    ? `${course.instructor.firstName} ${course.instructor.lastName}`
+                                    ? `${course.instructor.firstName || ""} ${course.instructor.lastName || ""}`.trim()
                                     : "—",
                                 rating: course.averageRating || 0,
                                 reviewsCount: course.reviewsCount || 0,

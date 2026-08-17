@@ -215,12 +215,12 @@ const CourseHeader = ({ courseId }) => {
                             <StatCard
                                 icon={HiOutlineVideoCamera}
                                 label="الدروس"
-                                value={course?.lessonsCount || 0}
+                                value={course?.totalLessons ?? course?.lessonsCount ?? 0}
                             />
                             <StatCard
                                 icon={HiOutlineUsers}
                                 label="الطلاب"
-                                value={course?.studentsCount || 0}
+                                value={course?.totalStudents ?? course?.studentsCount ?? 0}
                             />
                             <StatCard
                                 icon={HiOutlineCurrencyDollar}

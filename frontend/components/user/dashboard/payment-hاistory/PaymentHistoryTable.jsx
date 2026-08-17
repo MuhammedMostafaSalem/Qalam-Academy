@@ -1,180 +1,154 @@
+"use client";
+
 import Table from "@/components/ui/Table";
+import useOrders from "@/hooks/orders/useOrders";
+import { useSearchParams } from "next/navigation";
 import {
     HiOutlineBanknotes,
     HiOutlineEye
 } from "react-icons/hi2";
 
-const payments = [
-    {
-        id: "TXN-10001",
-        order: "#ORD-1001",
-        method: "Visa",
-        amount: "999 ج.م",
-        status: "ناجحة",
-        date: "10 يوليو 2026",
-    },
-    {
-        id: "TXN-10002",
-        order: "#ORD-1002",
-        method: "Instapay",
-        amount: "350 ج.م",
-        status: "قيد المعالجة",
-        date: "8 يوليو 2026",
-    },
-    {
-        id: "TXN-10003",
-        order: "#ORD-1003",
-        method: "Vodafone Cash",
-        amount: "1650 ج.م",
-        status: "مستردة",
-        date: "5 يوليو 2026",
-    },
-    {
-        id: "TXN-10004",
-        order: "#ORD-1004",
-        method: "Fawry",
-        amount: "220 ج.م",
-        status: "فشلت",
-        date: "2 يوليو 2026",
-    },
-];
-
-const methodIcons = {
-    Visa: HiOutlineBanknotes,
-    MasterCard: HiOutlineBanknotes,
-    Instapay: HiOutlineBanknotes,
-    "Vodafone Cash": HiOutlineBanknotes,
-    Fawry: HiOutlineBanknotes,
-    PayPal: HiOutlineBanknotes,
-    "Apple Pay": HiOutlineBanknotes,
-    "Google Pay": HiOutlineBanknotes,
+const mapPaymentMethod = (method) => {
+    switch (method) {
+        case "cash":
+            return "الدفع عند الاستلام";
+        case "paymob":
+            return "بطاقة ائتمان (Paymob)";
+        case "paypal":
+            return "حساب بايبال (PayPal)";
+        default:
+            return method || "وسيلة إلكترونية";
+    }
 };
 
-const statusColors = {
-    "ناجحة": "bg-green-500/10 text-green-600",
-    "قيد المعالجة": "bg-yellow-500/10 text-yellow-600",
-    "فشلت": "bg-red-500/10 text-red-600",
-    "مستردة": "bg-blue-500/10 text-blue-600",
+const mapPaymentStatus = (isPaid, status) => {
+    if (isPaid || status === "paid") return { label: "ناجحة", color: "bg-green-500/10 text-green-600" };
+    if (status === "cancelled") return { label: "ملغاة", color: "bg-red-500/10 text-red-600" };
+    return { label: "قيد المعالجة", color: "bg-yellow-500/10 text-yellow-600" };
 };
 
 const PaymentHistoryTable = () => {
+    const { orders, loading, error } = useOrders();
+    const searchParams = useSearchParams();
+
+    const searchQuery = (searchParams.get("search") || "").toLowerCase().trim();
+    const methodFilter = searchParams.get("method") || "all";
+    const statusFilter = searchParams.get("status") || "all";
+
+    if (loading) {
+        return (
+            <div className="py-12 text-center text-text-secondary">
+                جاري تحميل سجل المدفوعات...
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="py-12 text-center text-error">
+                {error}
+            </div>
+        );
+    }
+
+    if (!orders || orders.length === 0) {
+        return (
+            <div className="py-12 text-center text-text-muted">
+                لا توجد مدفوعات مسجلة حتى الآن
+            </div>
+        );
+    }
+
+    // Filter payment orders based on URL params
+    const filteredOrders = orders.filter((order) => {
+        const txnId = (order.paymentIntentId || order.transactionId || order._id || "").toLowerCase();
+        const orderIdStr = (order._id || "").toLowerCase();
+
+        const matchesSearch = !searchQuery || txnId.includes(searchQuery) || orderIdStr.includes(searchQuery);
+
+        const method = order.paymentMethodType || "cash";
+        const matchesMethod = methodFilter === "all" || method === methodFilter;
+
+        let matchesStatus = true;
+        if (statusFilter === "paid") {
+            matchesStatus = order.isPaid || order.paymentStatus === "paid";
+        } else if (statusFilter === "pending") {
+            matchesStatus = !order.isPaid && order.paymentStatus === "pending";
+        } else if (statusFilter === "cancelled") {
+            matchesStatus = order.paymentStatus === "cancelled";
+        }
+
+        return matchesSearch && matchesMethod && matchesStatus;
+    });
+
+    if (filteredOrders.length === 0) {
+        return (
+            <div className="py-12 text-center text-text-muted">
+                لا توجد نتائج مدفوعات تطابق خيارات التصفية والبحث المختارة
+            </div>
+        );
+    }
+
     return (
         <Table>
             <Table.Head>
                 <Table.Row>
-                    <Table.Th>رقم العملية</Table.Th>
-
+                    <Table.Th>رقم العملية / المعاملة</Table.Th>
                     <Table.Th>رقم الطلب</Table.Th>
-
                     <Table.Th>وسيلة الدفع</Table.Th>
-
                     <Table.Th>المبلغ</Table.Th>
-
                     <Table.Th>التاريخ</Table.Th>
-
                     <Table.Th>الحالة</Table.Th>
-
-                    <Table.Th>الإيصال</Table.Th>
+                    <Table.Th>الإجراء</Table.Th>
                 </Table.Row>
             </Table.Head>
 
             <Table.Body>
-                {payments.map((payment) => {
-                    const Icon =
-                        methodIcons[payment.method] ||
-                        HiOutlineBanknotes;
+                {filteredOrders.map((order, index) => {
+                    const methodLabel = mapPaymentMethod(order.paymentMethodType);
+                    const statusObj = mapPaymentStatus(order.isPaid, order.paymentStatus);
+                    const txnId = order.paymentIntentId || order.transactionId || `TXN-${order._id?.slice(-8).toUpperCase()}`;
+                    const orderNum = `#ORD-${order._id?.slice(-6).toUpperCase()}`;
+                    const dateStr = order.createdAt
+                        ? new Date(order.createdAt).toLocaleDateString("ar-EG")
+                        : "—";
 
                     return (
-                        <Table.Row
-                            key={payment.id}
-                        >
-                            <Table.Td>
-                                {payment.id}
+                        <Table.Row key={order._id || index}>
+                            <Table.Td className="font-mono text-xs">
+                                {txnId}
+                            </Table.Td>
+
+                            <Table.Td className="font-mono text-xs">
+                                {orderNum}
                             </Table.Td>
 
                             <Table.Td>
-                                {payment.order}
-                            </Table.Td>
-
-                            <Table.Td>
-                                <div
-                                    className="
-                                        flex
-                                        items-center
-                                        gap-3
-                                    "
-                                >
-                                    <div
-                                        className="
-                                            flex
-
-                                            h-10
-                                            w-10
-
-                                            items-center
-                                            justify-center
-
-                                            rounded-xl
-
-                                            bg-primary/10
-
-                                            text-primary
-                                        "
-                                    >
-                                        <Icon size={20} />
+                                <div className="flex items-center gap-3">
+                                    <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                                        <HiOutlineBanknotes size={18} />
                                     </div>
-
-                                    {payment.method}
+                                    <span className="text-sm font-medium">{methodLabel}</span>
                                 </div>
                             </Table.Td>
 
-                            <Table.Td>
-                                {payment.amount}
+                            <Table.Td className="font-bold text-primary">
+                                {order.totalOrderPrice} ج.م
                             </Table.Td>
 
                             <Table.Td>
-                                {payment.date}
+                                {dateStr}
                             </Table.Td>
 
                             <Table.Td>
-                                <span
-                                    className={`
-                                            rounded-full
-
-                                            px-3
-                                            py-1
-
-                                            text-xs
-
-                                            font-medium
-
-                                            ${statusColors[payment.status]}
-                                        `}
-                                >
-                                    {payment.status}
+                                <span className={`rounded-full px-3 py-1 text-xs font-medium ${statusObj.color}`}>
+                                    {statusObj.label}
                                 </span>
                             </Table.Td>
 
                             <Table.Td>
-                                <div
-                                    className="
-                                        flex
-                                        justify-center
-                                    "
-                                >
-                                    <button
-                                        className="
-                                                flex
-
-                                                items-center
-                                                gap-2
-                                                
-                                                px-4
-                                                py-2
-
-                                                text-sm
-                                            "
-                                    >
+                                <div className="flex justify-center">
+                                    <button className="p-2 text-white/70 hover:text-white transition" title="عرض التفاصيل">
                                         <HiOutlineEye size={18} />
                                     </button>
                                 </div>

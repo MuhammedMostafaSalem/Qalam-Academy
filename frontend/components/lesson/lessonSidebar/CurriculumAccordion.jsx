@@ -7,10 +7,12 @@ import {
 } from "react-icons/hi2";
 import LessonItem from "./LessonItem";
 
-const CurriculumAccordion = ({ courseProgress, currentLessonId, courseSlug }) => {
+const CurriculumAccordion = ({ courseProgress, courseLessons = [], currentLessonId, courseSlug }) => {
     const [openModule, setOpenModule] = useState(0);
 
-    const lessons = courseProgress?.lessons || [];
+    const lessons = (courseLessons && courseLessons.length > 0)
+        ? courseLessons
+        : (courseProgress?.lessons || []);
     
     if (lessons.length === 0) {
         return (
@@ -20,8 +22,6 @@ const CurriculumAccordion = ({ courseProgress, currentLessonId, courseSlug }) =>
         );
     }
 
-    // For now, display all lessons in one module
-    // You can enhance this later to group by sections
     const modules = [
         {
             id: 1,
@@ -82,7 +82,7 @@ const CurriculumAccordion = ({ courseProgress, currentLessonId, courseSlug }) =>
                             <div>
                                 {module.lessons.map((lesson) => (
                                     <LessonItem
-                                        key={lesson._id}
+                                        key={lesson._id || lesson.id}
                                         lesson={lesson}
                                         currentLessonId={currentLessonId}
                                         courseSlug={courseSlug}

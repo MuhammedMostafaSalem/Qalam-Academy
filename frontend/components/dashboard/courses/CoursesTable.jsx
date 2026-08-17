@@ -12,12 +12,24 @@ import { deleteCourseAction } from "@/actions/courseActions";
 import useToast from "@/hooks/useToast";
 import { useSearchParams } from "next/navigation";
 
+import { useAuth } from "@/providers/AuthProvider";
+
 const CoursesTable = () => {
     const searchParams = useSearchParams();
     const queryString = searchParams.toString();
     const { courses, loading, error, meta, refetch } = useCourses(queryString);
+    const { user } = useAuth();
     const { successMessage, errorMessage } = useToast();
     const [deletingId, setDeletingId] = useState(null);
+
+    const isInstructor = user?.role === "instructor";
+    const filteredCourses = isInstructor && user?._id
+        ? courses.filter(
+              (course) =>
+                  (course.instructor?._id || course.instructor) === user._id ||
+                  (course.createdBy?._id || course.createdBy) === user._id
+          )
+        : courses;
 
     const titleHead = [
         "الكورس",
@@ -61,7 +73,7 @@ const CoursesTable = () => {
         );
     }
 
-    if (!courses || courses.length === 0) {
+    if (!filteredCourses || filteredCourses.length === 0) {
         return (
             <div className="mt-[20px] text-center py-10">
                 <p className="text-text-secondary">لا توجد كورسات متاحة</p>
@@ -81,7 +93,7 @@ const CoursesTable = () => {
                 </Table.Head>
 
                 <Table.Body>
-                    {courses.map((course) => (
+                    {filteredCourses.map((course) => (
                         <Table.Row key={course._id}>
                             <Table.Td>
                                 <Link href={`/dashboard/courses/${course._id}`}>

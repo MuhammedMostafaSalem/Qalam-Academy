@@ -4,11 +4,24 @@ import { useState } from "react";
 import Sidebar from "../../shared/Sidebar/Sidebar";
 import DashboardHeader from "@/components/dashboard/header/DashboardHeader";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
+import { useAuth } from "@/providers/AuthProvider";
 import menu from "./menu";
 
 const DashboardLayout = ({ children }) => {
     const [collapsed, setCollapsed] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
+    const { user } = useAuth();
+
+    // Filter sidebar menu items based on role
+    const filteredMenu = menu
+        .filter((section) => !section.roles || section.roles.includes(user?.role))
+        .map((section) => ({
+            ...section,
+            items: section.items.filter(
+                (item) => !item.roles || item.roles.includes(user?.role)
+            ),
+        }))
+        .filter((section) => section.items.length > 0);
 
     return (
         <ProtectedRoute
@@ -16,7 +29,7 @@ const DashboardLayout = ({ children }) => {
         >
             <div className="flex min-screen bg-background">
                 <Sidebar
-                    menu={menu}
+                    menu={filteredMenu}
                     collapsed={collapsed}
                     setCollapsed={setCollapsed}
                     mobileOpen={mobileOpen}

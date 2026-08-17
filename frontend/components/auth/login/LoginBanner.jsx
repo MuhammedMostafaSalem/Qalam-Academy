@@ -35,6 +35,7 @@ const LoginBanner = () => {
                     src={logo}
                     alt="Qalam Academy"
                     width={42}
+                    height={42}
                     priority
                 />
 
@@ -62,6 +63,8 @@ const LoginBanner = () => {
                 <Image
                     src={loginIllustration}
                     alt="Login Illustration"
+                    width={160}
+                    height={160}
                     priority
                     className="
                         h-auto

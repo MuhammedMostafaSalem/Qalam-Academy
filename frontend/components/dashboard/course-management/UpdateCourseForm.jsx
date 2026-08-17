@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { updateCourseAction, getCourseByIdAction } from "@/actions/courseActions";
 import { getCategoriesAction } from "@/actions/categoryActions";
 import { getInstructorsAction } from "@/actions/userActions";
+import { useAuth } from "@/providers/AuthProvider";
 import useToast from "@/hooks/useToast";
 
 const inputClass = `
@@ -24,7 +25,9 @@ const labelClass = "mb-2 block font-medium text-text-secondary text-sm";
 
 const UpdateCourseForm = ({ courseId }) => {
     const router = useRouter();
+    const { user } = useAuth();
     const { successMessage, errorMessage } = useToast();
+    const isInstructor = user?.role === "instructor";
 
     const [categories, setCategories] = useState([]);
     const [instructors, setInstructors] = useState([]);
@@ -142,17 +145,30 @@ const UpdateCourseForm = ({ courseId }) => {
                         ))}
                     </select>
                 </div>
-                <div>
-                    <label className={labelClass}>المدرب</label>
-                    <select name="instructor" required className={inputClass} defaultValue={courseData.instructor?._id || courseData.instructor || ""}>
-                        <option value="" disabled>اختر المدرب</option>
-                        {instructors.map((instructor) => (
-                            <option key={instructor._id} value={instructor._id}>
-                                {instructor.firstName} {instructor.lastName}
-                            </option>
-                        ))}
-                    </select>
-                </div>
+                {isInstructor ? (
+                    <div>
+                        <label className={labelClass}>المدرب</label>
+                        <input
+                            type="text"
+                            disabled
+                            value={`${courseData.instructor?.firstName || user?.firstName || ""} ${courseData.instructor?.lastName || user?.lastName || ""}`}
+                            className={`${inputClass} bg-background/50 cursor-not-allowed`}
+                        />
+                        <input type="hidden" name="instructor" value={courseData.instructor?._id || courseData.instructor || user?._id || user?.id || ""} />
+                    </div>
+                ) : (
+                    <div>
+                        <label className={labelClass}>المدرب</label>
+                        <select name="instructor" required className={inputClass} defaultValue={courseData.instructor?._id || courseData.instructor || ""}>
+                            <option value="" disabled>اختر المدرب</option>
+                            {instructors.map((instructor) => (
+                                <option key={instructor._id} value={instructor._id}>
+                                    {instructor.firstName} {instructor.lastName}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                )}
             </div>
 
             {/* المستوى واللغة */}

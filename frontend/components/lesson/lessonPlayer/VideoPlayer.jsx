@@ -1,53 +1,49 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import { HiOutlinePlay, HiOutlinePause } from "react-icons/hi2";
+import { useRef, useEffect } from "react";
 import { updateProgressAction } from "@/actions/progressActions";
 
 const VideoPlayer = ({ lesson }) => {
-    const [isPlaying, setIsPlaying] = useState(false);
-    const [showControls, setShowControls] = useState(true);
     const videoRef = useRef(null);
     const progressUpdateRef = useRef(null);
 
-    const videoUrl = lesson?.video?.startsWith('http') 
+    const videoUrl = lesson?.video?.startsWith("http") 
         ? lesson.video 
         : lesson?.video 
-            ? `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:5000'}${lesson.video}`
+            ? `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:5000"}${lesson.video}`
+            : null;
+
+    const thumbnailUrl = lesson?.thumbnail?.startsWith("http")
+        ? lesson.thumbnail
+        : lesson?.thumbnail
+            ? `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:5000"}${lesson.thumbnail}`
             : null;
 
     useEffect(() => {
         const video = videoRef.current;
         if (!video) return;
 
+        // Reset tracking on lesson change
+        progressUpdateRef.current = false;
+
         // Update progress when video reaches 90% completion
         const handleTimeUpdate = () => {
+            if (!video.duration) return;
             const progress = (video.currentTime / video.duration) * 100;
             
             // Mark as completed when 90% watched
-            if (progress >= 90 && !progressUpdateRef.current) {
+            if (progress >= 90 && !progressUpdateRef.current && lesson?._id) {
                 progressUpdateRef.current = true;
                 updateProgressAction(lesson._id, true).catch(console.error);
             }
         };
 
-        video.addEventListener('timeupdate', handleTimeUpdate);
+        video.addEventListener("timeupdate", handleTimeUpdate);
         
         return () => {
-            video.removeEventListener('timeupdate', handleTimeUpdate);
+            video.removeEventListener("timeupdate", handleTimeUpdate);
         };
-    }, [lesson._id]);
-
-    const handlePlayPause = () => {
-        if (videoRef.current) {
-            if (isPlaying) {
-                videoRef.current.pause();
-            } else {
-                videoRef.current.play();
-            }
-            setIsPlaying(!isPlaying);
-        }
-    };
+    }, [lesson?._id]);
 
     if (!videoUrl) {
         return (
@@ -78,57 +74,19 @@ const VideoPlayer = ({ lesson }) => {
                 w-full
                 overflow-hidden
                 bg-black
-                group
             "
-            onMouseEnter={() => setShowControls(true)}
-            onMouseLeave={() => setShowControls(isPlaying ? false : true)}
         >
             {/* Video Element */}
             <video
+                key={videoUrl}
                 ref={videoRef}
-                className="h-full w-full"
+                className="h-full w-full object-contain"
                 src={videoUrl}
-                onPlay={() => setIsPlaying(true)}
-                onPause={() => setIsPlaying(false)}
+                poster={thumbnailUrl || undefined}
                 controls
+                playsInline
+                controlsList="nodownload"
             />
-
-            {/* Custom Play/Pause Overlay (when video is paused) */}
-            {!isPlaying && showControls && (
-                <div
-                    className="
-                        absolute
-                        inset-0
-                        flex
-                        items-center
-                        justify-center
-                        bg-black/40
-                        transition-opacity
-                    "
-                >
-                    <button
-                        onClick={handlePlayPause}
-                        className="
-                            flex
-                            h-20
-                            w-20
-                            items-center
-                            justify-center
-                            rounded-full
-                            bg-primary
-                            text-white
-                            shadow-2xl
-                            transition
-                            hover:scale-110
-                        "
-                    >
-                        <HiOutlinePlay
-                            size={34}
-                            className="translate-x-[2px]"
-                        />
-                    </button>
-                </div>
-            )}
         </div>
     );
 };

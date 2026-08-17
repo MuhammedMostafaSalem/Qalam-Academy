@@ -220,7 +220,7 @@ export const deleteCourseAction = async (id) => {
 
         return {
             success: false,
-            message: error?.response?.data?.message || error?.message || "فشل حذف الكورس",
+            message: error?.message || "فشل حذف الكورس",
         };
     }
 };

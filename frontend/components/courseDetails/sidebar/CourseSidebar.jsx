@@ -24,17 +24,6 @@ const CourseSidebar = ({ course }) => {
             <hr className="border-border my-8" />
 
             <CourseFeatures course={course} />
-
-            <p
-                className="
-                    mt-8
-                    text-center
-                    text-sm
-                    text-text-secondary
-                "
-            >
-                يمكنك الوصول إلى جميع الدروس مدى الحياة بعد الاشتراك.
-            </p>
         </aside>
     );
 };

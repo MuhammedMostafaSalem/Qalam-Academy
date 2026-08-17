@@ -18,7 +18,8 @@ const Logo = () => {
         >
             <Image
                 src={logo}
-                alt="Qalam Academy Logo"
+                alt="أكاديمية قلم"
+                width={55}
                 height={55}
                 priority
                 className="w-auto h-auto"

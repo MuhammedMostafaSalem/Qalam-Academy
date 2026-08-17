@@ -15,42 +15,78 @@ import {
 export default function Dashboard() {
     const { dashboardData, loading, error } = useAdminDashboard();
     const { user } = useAuth();
+    const isInstructor = user?.role === "instructor";
 
     // Transform dashboard data into stats format
-    const statsData = dashboardData?.overview ? [
-        {
-            id: 1,
-            title: "إجمالي الإيرادات",
-            value: `${(dashboardData.overview.totalRevenue / 1000).toFixed(1)} ألف جنيه`,
-            change: null,
-            positive: true,
-            icon: HiOutlineCurrencyDollar,
-        },
-        {
-            id: 2,
-            title: "إجمالي الطلاب",
-            value: dashboardData.overview.totalStudents.toString(),
-            change: null,
-            positive: true,
-            icon: HiOutlineUsers,
-        },
-        {
-            id: 3,
-            title: "الكورسات",
-            value: dashboardData.overview.totalCourses.toString(),
-            change: null,
-            positive: true,
-            icon: HiOutlineAcademicCap,
-        },
-        {
-            id: 4,
-            title: "الطلبات",
-            value: dashboardData.overview.totalOrders.toString(),
-            change: null,
-            positive: true,
-            icon: HiOutlineShoppingBag,
-        },
-    ] : [];
+    const statsData = dashboardData?.overview ? (
+        isInstructor ? [
+            {
+                id: 1,
+                title: "الكورسات",
+                value: (dashboardData.overview.totalCourses || 0).toString(),
+                change: null,
+                positive: true,
+                icon: HiOutlineAcademicCap,
+            },
+            {
+                id: 2,
+                title: "الدروس",
+                value: (dashboardData.overview.totalLessons || 0).toString(),
+                change: null,
+                positive: true,
+                icon: HiOutlineShoppingBag,
+            },
+            {
+                id: 3,
+                title: "إجمالي الطلاب",
+                value: (dashboardData.overview.totalStudents || 0).toString(),
+                change: null,
+                positive: true,
+                icon: HiOutlineUsers,
+            },
+            {
+                id: 4,
+                title: "متوسط التقييم",
+                value: (dashboardData.overview.averageRating || 0).toString(),
+                change: null,
+                positive: true,
+                icon: HiOutlineCurrencyDollar,
+            },
+        ] : [
+            {
+                id: 1,
+                title: "إجمالي الإيرادات",
+                value: `${((dashboardData.overview.totalRevenue || 0) / 1000).toFixed(1)} ألف جنيه`,
+                change: null,
+                positive: true,
+                icon: HiOutlineCurrencyDollar,
+            },
+            {
+                id: 2,
+                title: "إجمالي الطلاب",
+                value: (dashboardData.overview.totalStudents || 0).toString(),
+                change: null,
+                positive: true,
+                icon: HiOutlineUsers,
+            },
+            {
+                id: 3,
+                title: "الكورسات",
+                value: (dashboardData.overview.totalCourses || 0).toString(),
+                change: null,
+                positive: true,
+                icon: HiOutlineAcademicCap,
+            },
+            {
+                id: 4,
+                title: "الطلبات",
+                value: (dashboardData.overview.totalOrders || 0).toString(),
+                change: null,
+                positive: true,
+                icon: HiOutlineShoppingBag,
+            },
+        ]
+    ) : [];
 
     if (loading) {
         return (
@@ -102,11 +138,11 @@ export default function Dashboard() {
             "
         >
             <PageHeader
-                title={`مرحبًا بعودتك، ${user?.firstName} ${user?.lastName}`}
-                description="إليك ملخص أداء موقعك اليوم."
+                title={`مرحبًا بعودتك، ${user?.firstName || ""} ${user?.lastName || ""}`}
+                description={isInstructor ? "إليك ملخص أداء كورساتك اليوم." : "إليك ملخص أداء موقعك اليوم."}
             />
             <StatsCards stats={statsData} />
-            <ChartsSection dashboardData={dashboardData} />
+            {!isInstructor && <ChartsSection dashboardData={dashboardData} />}
         </div>
     )
 }

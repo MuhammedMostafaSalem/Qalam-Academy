@@ -10,13 +10,15 @@ import {
 } from "react-icons/hi";
 
 const CourseCard = ({ course }) => {
-    // Handle image URL - string URLs or imported static assets
-    const rawImage = course.image;
-    const imageUrl = typeof rawImage === "string"
-        ? rawImage.startsWith('http')
-            ? rawImage
-            : `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:5000'}${rawImage}`
-        : rawImage || '/assets/img-card.jpg';
+    const rawTitle = course?.title;
+    const title = (typeof rawTitle === "string" && rawTitle.trim() !== "")
+        ? rawTitle
+        : (typeof rawTitle === "object" ? (rawTitle.ar || rawTitle.en || "كورس") : "كورس تعليمي");
+
+    const rawImage = course?.image;
+    const imageUrl = (typeof rawImage === "string" && rawImage.trim() !== "")
+        ? (rawImage.startsWith('http') ? rawImage : `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:5000'}${rawImage}`)
+        : (rawImage || '/assets/img-card.jpg');
 
     return (
         <article
@@ -39,9 +41,10 @@ const CourseCard = ({ course }) => {
             <div className="relative overflow-hidden">
                 <Image
                     src={imageUrl}
-                    alt={course.title}
+                    alt={title}
                     width={500}
                     height={320}
+                    unoptimized
                     className="
                         h-56
                         w-full

@@ -2,17 +2,19 @@ import {
     HiOutlineClock,
     HiOutlineAcademicCap,
     HiOutlineLanguage,
-    HiOutlineDevicePhoneMobile,
     HiOutlineDocumentDuplicate,
-    HiOutlineTrophy,
 } from "react-icons/hi2";
 
 const CourseFeatures = ({ course }) => {
+    const duration = course?.duration
+        ? (typeof course.duration === "number" ? `${course.duration} دقيقة` : course.duration)
+        : "—";
+
     const features = [
         {
             icon: HiOutlineClock,
             label: "المدة",
-            value: course?.duration || "—",
+            value: duration,
         },
         {
             icon: HiOutlineAcademicCap,
@@ -28,26 +30,18 @@ const CourseFeatures = ({ course }) => {
         {
             icon: HiOutlineDocumentDuplicate,
             label: "عدد الدروس",
-            value: course?.lessonsCount ? `${course.lessonsCount} درس` : "—",
+            value: (course?.totalLessons ?? course?.lessonsCount ?? course?.lessons?.length) !== undefined
+                ? `${course?.totalLessons ?? course?.lessonsCount ?? course?.lessons?.length} درس`
+                : "—",
         },
         {
             icon: HiOutlineLanguage,
             label: "اللغة",
-            value: course?.language === "ar" 
+            value: course?.language === "arabic" || course?.language === "ar"
                 ? "العربية" 
-                : course?.language === "en" 
+                : course?.language === "english" || course?.language === "en"
                     ? "English" 
                     : course?.language || "—",
-        },
-        {
-            icon: HiOutlineDevicePhoneMobile,
-            label: "الوصول",
-            value: "مدى الحياة",
-        },
-        {
-            icon: HiOutlineTrophy,
-            label: "الشهادة",
-            value: "معتمدة",
         },
     ];
 

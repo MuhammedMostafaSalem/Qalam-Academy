@@ -20,7 +20,9 @@ const InstructorCard = () => {
         >
             <Image
                 src={instructorImage}
-                alt="Instructor"
+                alt="المحاضر"
+                width={128}
+                height={128}
                 className="
                     mx-auto
                     h-32

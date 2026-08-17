@@ -6,6 +6,7 @@ import PageHeader from '@/components/dashboard/PageHeader';
 import FullPageLoader from "@/components/ui/FullPageLoader";
 import AddCategoryModal from "@/components/ui/modal/category/AddCategoryModal";
 import UpdateCategoryModal from '@/components/ui/modal/category/UpdateCategoryModal';
+import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import useGetCategories from '@/hooks/category/useGetCategories';
 import { closeCategoryModal, openCategoryModal } from '@/store/slices/categorySlice';
 import { showToast } from '@/store/slices/toastSlice';
@@ -64,16 +65,17 @@ const CategoryLayout = () => {
     }
 
     return (
-        <div
-            className="
-                glass 
-                rounded-3xl
-                border
-                border-border
-                p-6
-                shadow-sm
-            "
-        >
+        <ProtectedRoute allowedRoles={["admin"]}>
+            <div
+                className="
+                    glass 
+                    rounded-3xl
+                    border
+                    border-border
+                    p-6
+                    shadow-sm
+                "
+            >
             <PageHeader
                 title="تصنيفات الكورسات"
                 description="ادارة جميع تصنيفات كورسات المنصة"
@@ -137,7 +139,8 @@ const CategoryLayout = () => {
                     onSuccess={handleCategorySuccess}
                 />
             )} */}
-        </div>
+            </div>
+        </ProtectedRoute>
     );
 };
 

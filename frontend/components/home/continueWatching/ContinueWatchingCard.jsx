@@ -5,12 +5,13 @@ import { cardAnimation } from "@/lib/animation/cardAnimation";
 
 const ContinueWatchingCard = ({ course, index }) => {
     const courseData = course.course || course;
-    const title = courseData.title?.ar || courseData.title?.en || courseData.title;
-    const thumbnail = courseData.thumbnail?.startsWith('http')
-        ? courseData.thumbnail
-        : courseData.thumbnail
-            ? `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:5000'}${courseData.thumbnail}`
-            : '/assets/img-card.jpg';
+    const rawTitle = courseData.title?.ar || courseData.title?.en || courseData.title;
+    const title = typeof rawTitle === "string" && rawTitle.trim() !== "" ? rawTitle : "دورة تعليمية";
+    const thumbnail = (courseData.thumbnail && typeof courseData.thumbnail === 'string' && courseData.thumbnail.trim() !== '')
+        ? (courseData.thumbnail.startsWith('http')
+            ? courseData.thumbnail
+            : `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:5000'}${courseData.thumbnail}`)
+        : '/assets/img-card.jpg';
 
     const progress = course.progress || 0;
     const lastLesson = course.lastLesson;
@@ -21,7 +22,7 @@ const ContinueWatchingCard = ({ course, index }) => {
             href={
                 lastLesson
                     ? `/courses/${courseData.slug}/lesson/${lastLesson._id}`
-                    : `/courses/${courseData.slug}`
+                    : `/courses/${courseData.slug || '#'}`
             }
             {...cardAnimation(index)}
         >
@@ -49,6 +50,7 @@ const ContinueWatchingCard = ({ course, index }) => {
                         alt={title}
                         width={500}
                         height={280}
+                        unoptimized
                         className="
                             h-full
                             w-full

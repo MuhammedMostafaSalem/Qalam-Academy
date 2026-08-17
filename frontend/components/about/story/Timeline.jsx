@@ -1,105 +1,33 @@
-import timeline from "./timeline";
+"use client";
+
+import { useEffect, useState } from "react";
+import { getTimelineAction } from "@/actions/timelineActions";
+import fallbackTimeline from "./timeline";
 
 const Timeline = () => {
-    // <div className="relative w-[220px]">
+    const [items, setItems] = useState(fallbackTimeline);
 
-    //     {/* Vertical Line */}
-    //     <div
-    //         className="
-    //             absolute
-    //             right-[7px]
-    //             top-[16px]
-    //             bottom-[16px]
-    //             w-[2px]
-    //             rounded-full
-    //             bg-primary
-    //         "
-    //     />
+    useEffect(() => {
+        const fetchTimeline = async () => {
+            try {
+                const res = await getTimelineAction();
+                if (res.success && Array.isArray(res.data) && res.data.length > 0) {
+                    const formatted = res.data.map((item) => ({
+                        id: item._id,
+                        year: item.year,
+                        title: typeof item.title === "object" ? (item.title.ar || item.title.en) : item.title,
+                    }));
+                    setItems(formatted);
+                }
+            } catch (err) {
+                console.error("Failed to fetch timeline API", err);
+            }
+        };
+        fetchTimeline();
+    }, []);
 
-    //     <div className="flex flex-col gap-8">
-
-    //         {timeline.map((item, index) => (
-
-    //             <div
-    //                 key={item.id}
-    //                 className="relative min-h-[60px]"
-    //             >
-
-    //                 {/* Dot */}
-
-    //                 <div
-    //                     className="
-    //                         absolute
-    //                         right-0
-    //                         top-2
-    //                         z-10
-    //                     "
-    //                 >
-
-    //                     {index === 0 ? (
-
-    //                         <div className="h-[14px] w-[14px] rounded-full bg-primary" />
-
-    //                     ) : (
-
-    //                         <div
-    //                             className="
-    //                                 flex
-    //                                 h-[14px]
-    //                                 w-[14px]
-    //                                 items-center
-    //                                 justify-center
-    //                                 rounded-full
-    //                                 border-2
-    //                                 border-primary
-    //                                 bg-[#08101F]
-    //                             "
-    //                         >
-    //                             <div className="h-[5px] w-[5px] rounded-full bg-primary" />
-    //                         </div>
-
-    //                     )}
-
-    //                 </div>
-
-    //                 {/* Text */}
-
-    //                 <div className="pr-10 text-right">
-
-    //                     <h3
-    //                         className="
-    //                             text-[28px]
-    //                             font-bold
-    //                             leading-none
-    //                             text-primary
-    //                         "
-    //                     >
-    //                         {item.year}
-    //                     </h3>
-
-    //                     <p
-    //                         className="
-    //                             mt-2
-    //                             text-[17px]
-    //                             leading-6
-    //                             text-white
-    //                         "
-    //                     >
-    //                         {item.title}
-    //                     </p>
-
-    //                 </div>
-
-    //             </div>
-
-    //         ))}
-
-    //     </div>
-
-    // </div>
     return (
         <div className="relative w-full md:w-[220px]">
-
             {/* Horizontal Line (Mobile) */}
             <div
                 className="
@@ -138,9 +66,9 @@ const Timeline = () => {
                     md:gap-8
                 "
             >
-                {timeline.map((item, index) => (
+                {items.map((item, index) => (
                     <div
-                        key={item.id}
+                        key={item.id || index}
                         className="
                             relative
                             flex-1
@@ -156,7 +84,6 @@ const Timeline = () => {
                                 -translate-x-1/2
                                 top-0
                                 z-10
-
                                 md:left-auto
                                 md:translate-x-0
                                 md:right-0
@@ -189,7 +116,6 @@ const Timeline = () => {
                             className="
                                 pt-8
                                 text-center
-
                                 md:pt-0
                                 md:pr-10
                                 md:text-right
@@ -224,7 +150,7 @@ const Timeline = () => {
                 ))}
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default Timeline
+export default Timeline;

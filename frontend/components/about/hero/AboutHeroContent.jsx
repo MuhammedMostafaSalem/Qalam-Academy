@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { useEffect, useState } from "react";
 import SectionBadge from "@/components/sections/SectionBadge";
 import SectionTitle from "@/components/sections/SectionTitle";
 import SectionDescription from "@/components/sections/SectionDescription";
@@ -8,9 +8,29 @@ import Button from "@/components/ui/Button";
 import { HiArrowRight, HiOutlinePlay } from "react-icons/hi2";
 import { useRouter } from "next/navigation";
 import { heroAnimation } from "@/lib/animation/heroAnimation";
+import { getHeroByPageAction } from "@/actions/heroActions";
 
 const AboutHeroContent = () => {
     const router = useRouter();
+    const [hero, setHero] = useState(null);
+
+    useEffect(() => {
+        const fetchHero = async () => {
+            try {
+                const res = await getHeroByPageAction("about");
+                if (res.success && res.data) {
+                    setHero(res.data);
+                }
+            } catch (err) {
+                console.error("Failed to fetch about hero", err);
+            }
+        };
+        fetchHero();
+    }, []);
+
+    const title = hero?.title?.ar || hero?.title?.en || hero?.title;
+    const subtitle = hero?.subtitle?.ar || hero?.subtitle?.en || hero?.subtitle || "من نحن";
+    const description = hero?.description?.ar || hero?.description?.en || hero?.description;
 
     return (
         <div
@@ -22,12 +42,11 @@ const AboutHeroContent = () => {
                 items-center
                 gap-7
                 text-center
-
                 lg:mx-0
             "
         >
             <SectionBadge>
-                من نحن
+                {subtitle}
             </SectionBadge>
 
             <SectionTitle
@@ -40,17 +59,21 @@ const AboutHeroContent = () => {
                 "
             >
                 <div className="text-3xl leading-[1.2] md:text-[40px]">
-                    <div>نحوّل الأفكار إلى</div>
-
-                    <div className="gradient-text">
-                        حلول برمجية متكاملة
-                    </div>
+                    {title ? (
+                        <div>{title}</div>
+                    ) : (
+                        <>
+                            <div>نحوّل الأفكار إلى</div>
+                            <div className="gradient-text">
+                                حلول برمجية متكاملة
+                            </div>
+                        </>
+                    )}
                 </div>
             </SectionTitle>
 
             <SectionDescription className="max-w-lg">
-                قلم أكاديمي هي شركة متخصصة في تقديم حلول رقمية مبتكرة تساعد
-                الشركات والأفراد على النمو والتطور في عالم يتغير بسرعة
+                {description || "قلم أكاديمي هي شركة متخصصة في تقديم حلول رقمية مبتكرة تساعد الشركات والأفراد على النمو والتطور في عالم يتغير بسرعة"}
             </SectionDescription>
 
             <div
@@ -93,7 +116,7 @@ const AboutHeroContent = () => {
                 </Button>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default AboutHeroContent
+export default AboutHeroContent;
