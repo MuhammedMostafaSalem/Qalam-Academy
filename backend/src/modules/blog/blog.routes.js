@@ -27,7 +27,7 @@ router
         isAuthenticatedUser,
         authorizeRoles("admin"),
         uploadSingle({
-            fieldName: "cover",
+            fieldName: "featuredImage",
             folder: "blogs",
             fileType: "image",
         }),
@@ -43,7 +43,7 @@ router
         isAuthenticatedUser,
         authorizeRoles("admin"),
         uploadSingle({
-            fieldName: "cover",
+            fieldName: "featuredImage",
             folder: "blogs",
             fileType: "image",
         }),

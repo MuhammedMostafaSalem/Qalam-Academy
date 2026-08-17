@@ -1,9 +1,9 @@
 class ApiFeatures {
-    constructor(model, queryString) {
+    constructor(model, queryString, filterObject = {}) {
         this.model = model;
         this.queryString = queryString;
 
-        this.query = model.find();
+        this.query = model.find(filterObject);
 
         this.meta = {};
     }

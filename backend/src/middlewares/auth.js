@@ -70,7 +70,35 @@ const authorizeRoles = (...roles) => {
     }
 }
 
+// Optional authentication middleware (attaches user if valid token, does not throw if no token)
+const optionalAuth = catchAsync(async (req, res, next) => {
+    let token;
+    if (req.cookies?.Qalam_Token) {
+        token = req.cookies.Qalam_Token;
+    }
+
+    const authHeader = req.headers.authorization || req.headers.Authorization;
+    if (!token && authHeader?.startsWith("Bearer ")) {
+        token = authHeader.split(" ")[1];
+    }
+
+    if (token) {
+        try {
+            const decoded = jwt.verify(token, env.jwtSecretToken);
+            const user = await User.findById(decoded.id);
+            if (user && user.isActive) {
+                req.user = user;
+            }
+        } catch (err) {
+            // Silently ignore token errors for optional authentication
+        }
+    }
+
+    next();
+});
+
 module.exports = {
     isAuthenticatedUser,
+    optionalAuth,
     authorizeRoles
 }

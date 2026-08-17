@@ -378,6 +378,27 @@ exports.getStudentDashboard = async (userId) => {
             .select("wishlist"),
     ]);
 
+    // Sum of lessons durations (in minutes) for the enrolled courses
+    const courseIds = enrollments.map(enrollment => enrollment.course?._id).filter(Boolean);
+
+    const lessonMinutes = courseIds.length
+        ? await Lesson.aggregate([
+            {
+                $match: {
+                    course: { $in: courseIds },
+                },
+            },
+            {
+                $group: {
+                    _id: null,
+                    total: { $sum: "$duration" },
+                },
+            },
+        ])
+        : [];
+
+    const totalHours = Math.round(((lessonMinutes[0]?.total || 0) / 60) * 100) / 100;
+
     const averageProgress =
         enrollments.length === 0
             ? 0
@@ -390,8 +411,11 @@ exports.getStudentDashboard = async (userId) => {
 
     return {
         overview: {
+            totalEnrollments: enrollments.length,
             totalCourses: enrollments.length,
             completedCourses,
+            totalCertificates: completedCourses,
+            totalHours,
             wishlist: wishlistCount?.wishlist?.length || 0,
             averageProgress: Number(
                 averageProgress.toFixed(2)

@@ -18,7 +18,7 @@ exports.addCourseToWishlist = catchAsync(async (req, res, next) => {
         { new: true }
     );
 
-    const course = await Course.findById(user.wishlist);
+    const course = await Course.findById(courseId);
 
     return sendResponse(res, {
         statusCode: StatusCodes.OK,
@@ -33,15 +33,13 @@ exports.addCourseToWishlist = catchAsync(async (req, res, next) => {
 // @access    Private/User
 exports.removeCourseFromWishlist = catchAsync(async (req, res, next) => {
     const { courseId } = req.params;
-    const user = await User.findByIdAndUpdate(
+    await User.findByIdAndUpdate(
         req.user._id,
         {
             $pull: { wishlist: courseId },
         },
         { new: true }
     );
-
-    const course = await Course.findById(user.wishlist);
 
     return sendResponse(res, {
         statusCode: StatusCodes.OK,

@@ -35,6 +35,11 @@ exports.updateLessonProgress = async ({
         );
     }
 
+    const existingProgress = await Progress.findOne({
+        user: userId,
+        lesson: lessonId,
+    });
+
     // Create / Update Progress
     const progress = await Progress.findOneAndUpdate(
         {
@@ -49,7 +54,7 @@ exports.updateLessonProgress = async ({
             lastPosition,
             completed,
             completedAt: completed
-                ? progress?.completedAt || new Date()
+                ? existingProgress?.completedAt || new Date()
                 : null,
             lastWatchedAt: new Date(),
         },

@@ -70,7 +70,8 @@ exports.getAll = (
         translatableFields = [],
     } = {}
 ) => catchAsync(async (req, res) => {
-    const features = new ApiFeatures(Model, req.query)
+    const filterObj = req.filterObject || {};
+    const features = new ApiFeatures(Model, req.query, filterObj)
         .search(searchFields)
         .filter()
         .sort(defaultSort)
@@ -104,7 +105,11 @@ exports.getOne = (
         translatableFields = [],
     } = {}
 ) => catchAsync(async (req, res) => {
-    let query = Model.findById(req.params.id);
+    const mongoose = require("mongoose");
+    const isId = mongoose.Types.ObjectId.isValid(req.params.id);
+    let query = isId
+        ? Model.findOne({ $or: [{ _id: req.params.id }, { slug: req.params.id }] })
+        : Model.findOne({ slug: req.params.id });
 
     if (populate) {
         query = query.populate(populate);

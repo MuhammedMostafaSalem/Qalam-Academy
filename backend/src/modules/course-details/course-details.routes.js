@@ -5,14 +5,14 @@ const {
 } = require("./course-details.controller");
 
 const {
-    isAuthenticatedUser,
+    optionalAuth,
 } = require("../../middlewares/auth");
 
 const router = express.Router();
 
 router.get(
     "/:slug/details",
-    isAuthenticatedUser,
+    optionalAuth,
     getCourseDetails
 );
 

@@ -97,7 +97,7 @@ exports.createCashOrder = catchAsync(async (req, res, next) => {
 // @route   POST /api/orders/checkout-paymob/:cartId
 // @access  Private/User
 exports.createPaymobCheckoutSession = catchAsync(async (req, res, next) => {
-    const { paymentType } = req.body; // 'card', 'wallet', 'fawry'
+    const { paymentType = 'card' } = req.body || {}; // 'card', 'wallet', 'fawry'
     const taxPrice = 0;
     const shippingPrice = 0;
 
@@ -173,6 +173,11 @@ exports.createPaymobCheckoutSession = catchAsync(async (req, res, next) => {
             client_secret: intentionResponse.client_secret,
             redirect_url: paymobRedirectUrl, // رابط الدفع المباشر لو حابب تحوله عليه
             orderId: order._id,
+            data: {
+                client_secret: intentionResponse.client_secret,
+                redirect_url: paymobRedirectUrl,
+                orderId: order._id,
+            },
         });
     } catch (error) {
         // لو حصل خطأ امسح الأوردر المؤقت
@@ -307,7 +312,7 @@ exports.getSpecificOrder = factory.getOne(Order, {
 });
 
 exports.filterOrdersForLoggedUser = catchAsync(async (req, res, next) => {
-    if (req.user.role === 'user') req.filterObject = { user: req.user._id };
+    if (req.user.role === 'student') req.filterObject = { user: req.user._id };
     next();
 });
 

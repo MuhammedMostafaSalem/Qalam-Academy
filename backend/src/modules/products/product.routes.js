@@ -67,7 +67,7 @@ router
                 },
             ],
             folder: "products",
-            fileType: "image",
+            fileType: ["image", "pdf"],
         }),
         parseNestedFormData,
         validate(updateProductSchema),

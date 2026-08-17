@@ -237,12 +237,14 @@ exports.applyCouponToCart = catchAsync(async (req, res, next) => {
             populate: { path: 'category', select: 'name -_id', model: 'Category' },
         });
 
+    if (!cart) {
+        return next(new ApiError('Cart not found', StatusCodes.NOT_FOUND));
+    }
+
     if (!coupon) {
-        if (cart) {
-            cart.totalAfterDiscount = undefined;
-            cart.coupon = undefined;
-            await cart.save();
-        }
+        cart.totalAfterDiscount = undefined;
+        cart.coupon = undefined;
+        await cart.save();
         return next(new ApiError('Coupon is invalid or has expired', StatusCodes.BAD_REQUEST));
     }
 

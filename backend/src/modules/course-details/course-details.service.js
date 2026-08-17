@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const Course = require("../course/course.model");
 const Lesson = require("../lesson/lesson.model");
 const Review = require("../review/review.model");
@@ -7,18 +8,18 @@ const { StatusCodes } = require("http-status-codes");
 
 // Get Course Details
 exports.getCourseDetails = async (slug, userId = null) => {
-    // Course
-    const course = await Course.findOne({
-        slug,
-        isPublished: true,
-    })
+    const isId = mongoose.Types.ObjectId.isValid(slug);
+    const query = isId ? { $or: [{ slug }, { _id: slug }] } : { slug };
+
+    // Find course by slug or ID
+    let course = await Course.findOne(query)
         .populate({
             path: "category",
-            select: "title slug",
+            select: "title slug name",
         })
         .populate({
             path: "instructor",
-            select: "firstName lastName avatar bio",
+            select: "firstName lastName avatar bio email",
         });
 
     if (!course) {

@@ -6,8 +6,6 @@ const {
     getAllOrders,
     getSpecificOrder,
     filterOrdersForLoggedUser,
-    updateOrderToPaid,
-    updateOrderToDelivered,
     createPayPalCheckoutSession,
     verifyPayPalPayment,
     cancelOrder,
