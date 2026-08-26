@@ -7,7 +7,7 @@ const ApiError = require("../../utils/ApiError");
 const { StatusCodes } = require("http-status-codes");
 
 // Get Course Details
-exports.getCourseDetails = async (slug, userId = null) => {
+exports.getCourseDetails = async (req, slug, userId = null) => {
     const isId = mongoose.Types.ObjectId.isValid(slug);
     const query = isId ? { $or: [{ slug }, { _id: slug }] } : { slug };
 
@@ -23,10 +23,7 @@ exports.getCourseDetails = async (slug, userId = null) => {
         });
 
     if (!course) {
-        throw new ApiError(
-            "Course not found",
-            StatusCodes.NOT_FOUND
-        );
+        throw new ApiError(req.t("course.notFound"), StatusCodes.NOT_FOUND);
     }
 
     // Lessons

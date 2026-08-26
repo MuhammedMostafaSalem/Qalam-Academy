@@ -16,7 +16,7 @@ exports.getSettings = catchAsync(async (req, res) => {
     return sendResponse(res, {
         statusCode: StatusCodes.OK,
         success: true,
-        message: "Settings fetched successfully",
+        message: req.t("settings.fetched"),
         data: settings,
     });
 });
@@ -34,7 +34,7 @@ exports.updateSettings = catchAsync(async (req, res) => {
     return sendResponse(res, {
         statusCode: StatusCodes.OK,
         success: true,
-        message: "Settings updated successfully",
+        message: req.t("settings.updated"),
         data: settings,
     });
 });
@@ -46,7 +46,7 @@ exports.getTheme = catchAsync(async (req, res) => {
     return sendResponse(res, {
         success: true,
         statusCode: StatusCodes.OK,
-        message: "Theme fetched successfully.",
+        message: req.t('settings.themeFetched'),
         data: settings.theme,
     });
 });
@@ -64,7 +64,7 @@ exports.updateTheme = catchAsync(async (req, res) => {
     return sendResponse(res, {
         success: true,
         statusCode: StatusCodes.OK,
-        message: "Theme updated successfully.",
+        message: req.t("settings.themeUpdated"),
         data: settings.theme,
     });
 });

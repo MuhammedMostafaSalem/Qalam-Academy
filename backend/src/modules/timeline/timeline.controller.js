@@ -10,7 +10,7 @@ const Timeline = require("./timeline.model");
 
 // Create Timeline
 exports.createTimeline = createOne(Timeline, {
-    modelName: "Timeline",
+    modelName: "timeline",
 
     translatableFields: [
         "title",
@@ -29,7 +29,7 @@ exports.createTimeline = createOne(Timeline, {
 
 // Get All Timelines
 exports.getTimelines = getAll(Timeline, {
-    modelName: "Timelines",
+    modelName: "timeline",
 
     searchFields: [
         "title.ar",
@@ -47,7 +47,7 @@ exports.getTimelines = getAll(Timeline, {
 
 // Get Timeline
 exports.getTimeline = getOne(Timeline, {
-    modelName: "Timeline",
+    modelName: "timeline",
 
     translatableFields: [
         "title",
@@ -56,7 +56,7 @@ exports.getTimeline = getOne(Timeline, {
 
 // Update Timeline
 exports.updateTimeline = updateOne(Timeline, {
-    modelName: "Timeline",
+    modelName: "timeline",
 
     translatableFields: [
         "title",
@@ -112,5 +112,5 @@ exports.updateTimeline = updateOne(Timeline, {
 
 // Delete Timeline
 exports.deleteTimeline = deleteOne(Timeline, {
-    modelName: "Timeline",
+    modelName: "timeline",
 });

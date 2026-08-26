@@ -11,7 +11,7 @@ const Blog = require("./blog.model");
 
 // Create Blog
 exports.createBlog = createOne(Blog, {
-    modelName: "Blog",
+    modelName: "blog",
 
     fileFields: [
         "featuredImage",
@@ -37,7 +37,7 @@ exports.createBlog = createOne(Blog, {
 
 // Get Blogs
 exports.getBlogs = getAll(Blog, {
-    modelName: "Blogs",
+    modelName: "blog",
 
     searchFields: [
         "title.ar",
@@ -76,7 +76,7 @@ exports.getBlogs = getAll(Blog, {
 
 // Get Blog
 exports.getBlog = getOne(Blog, {
-    modelName: "Blog",
+    modelName: "blog",
 
     translatableFields: [
         "title",
@@ -102,7 +102,7 @@ exports.getBlog = getOne(Blog, {
 
 // Update Blog
 exports.updateBlog = updateOne(Blog, {
-    modelName: "Blog",
+    modelName: "blog",
 
     fileFields: [
         "featuredImage",
@@ -130,7 +130,7 @@ exports.updateBlog = updateOne(Blog, {
 
 // Delete Blog
 exports.deleteBlog = deleteOne(Blog, {
-    modelName: "Blog",
+    modelName: "blog",
 
     fileFields: [
         "featuredImage",

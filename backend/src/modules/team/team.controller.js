@@ -3,12 +3,12 @@ const Team = require("./team.model");
 
 // Create team
 exports.createTeam = createOne(Team, {
-    modelName: "Team",
+    modelName: "team",
 });
 
 // Get all team members
 exports.getTeams = getAll(Team, {
-    modelName: "Team",
+    modelName: "team",
     searchFields: ["position"],
     populate: {
         path: "user",
@@ -18,7 +18,7 @@ exports.getTeams = getAll(Team, {
 
 // Get one team member
 exports.getTeam = getOne(Team, {
-    modelName: "Team",
+    modelName: "team",
     populate: {
         path: "user",
         select: "firstName lastName slug email avatar",
@@ -27,10 +27,10 @@ exports.getTeam = getOne(Team, {
 
 // Update team member
 exports.updateTeam = updateOne(Team, {
-    modelName: "Team",
+    modelName: "team",
 });
 
 // Delete team member
 exports.deleteTeam = deleteOne(Team, {
-    modelName: "Team",
+    modelName: "team",
 });

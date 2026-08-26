@@ -9,7 +9,7 @@ const Product = require("./product.model");
 
 // Create product
 exports.createProduct = createOne(Product, {
-    modelName: "Product",
+    modelName: "product",
     fileFields: ["image", "pdf"],
     translatableFields: [
         "title",
@@ -23,7 +23,7 @@ exports.createProduct = createOne(Product, {
 
 // Get all products
 exports.getProducts = getAll(Product, {
-    modelName: "Products",
+    modelName: "product",
     searchFields: [
         "title.en",
         "title.ar",
@@ -47,7 +47,7 @@ exports.getProducts = getAll(Product, {
 
 // Get one product
 exports.getProduct = getOne(Product, {
-    modelName: "Product",
+    modelName: "product",
     translatableFields: [
         "title",
         "description",
@@ -63,7 +63,7 @@ exports.getProduct = getOne(Product, {
 
 // Update Product
 exports.updateProduct = updateOne(Product, {
-    modelName: "Product",
+    modelName: "product",
     fileFields: ["image", "pdf"],
     translatableFields: [
         "title",
@@ -73,6 +73,6 @@ exports.updateProduct = updateOne(Product, {
 
 // Delete Product
 exports.deleteProduct = deleteOne(Product, {
-    modelName: "Product",
+    modelName: "product",
     fileFields: ["image", "pdf"],
 });

@@ -63,7 +63,9 @@ exports.createCashOrder = catchAsync(async (req, res, next) => {
 
     const cart = await Cart.findById(req.params.cartId);
     if (!cart) {
-        return next(new ApiError(`There is no cart for this user :${req.user._id}`, StatusCodes.NOT_FOUND));
+        return next(new ApiError(req.t("order.noCart", {
+            user: req.user._id
+        }), StatusCodes.NOT_FOUND));
     }
 
     const cartPrice = cart.totalAfterDiscount ? cart.totalAfterDiscount : cart.totalCartPrice;
@@ -88,7 +90,7 @@ exports.createCashOrder = catchAsync(async (req, res, next) => {
     sendResponse(res, {
         success: true,
         statusCode: StatusCodes.OK,
-        message: "Order created cash successfully",
+        message: req.t("order.createdCash"),
         data: updatedOrder,
     });
 });
@@ -108,7 +110,9 @@ exports.createPaymobCheckoutSession = catchAsync(async (req, res, next) => {
     });
 
     if (!cart) {
-        return next(new ApiError(`There is no cart for this user :${req.user._id}`, StatusCodes.NOT_FOUND));
+        return next(new ApiError(req.t("order.noCart", {
+            user: req.user._id
+        }), StatusCodes.NOT_FOUND));
     }
     const cartPrice = cart.totalAfterDiscount ? cart.totalAfterDiscount : cart.totalCartPrice;
     const totalOrderPrice = taxPrice + shippingPrice + cartPrice;
@@ -123,7 +127,7 @@ exports.createPaymobCheckoutSession = catchAsync(async (req, res, next) => {
     } else if (paymentType === 'fawry') {
         paymentMethodsIds = [parseInt(paymobFawryIntegrationId)];
     } else {
-        return next(new ApiError('Invalid payment type selected', StatusCodes.BAD_REQUEST));
+        return next(new ApiError(req.t("order.InvalidPayment"), StatusCodes.BAD_REQUEST));
     }
 
     // 3) Create Pending Order in Database first
@@ -169,7 +173,7 @@ exports.createPaymobCheckoutSession = catchAsync(async (req, res, next) => {
 
         res.status(StatusCodes.OK).json({
             success: true,
-            message: 'Paymob intention created successfully',
+            message: req.t("order.createdPaymob"),
             client_secret: intentionResponse.client_secret,
             redirect_url: paymobRedirectUrl, // رابط الدفع المباشر لو حابب تحوله عليه
             orderId: order._id,
@@ -195,7 +199,9 @@ exports.createPayPalCheckoutSession = catchAsync(async (req, res, next) => {
 
     const cart = await Cart.findById(req.params.cartId).populate('products.item');
     if (!cart) {
-        return next(new ApiError(`There is no cart for this user :${req.user._id}`, 404));
+        return next(new ApiError(req.t("order.noCart", {
+            user: req.user._id
+        }), StatusCodes.NOT_FOUND));
     }
 
     const cartPrice = cart.totalAfterDiscount ? cart.totalAfterDiscount : cart.totalCartPrice;
@@ -250,20 +256,20 @@ exports.verifyPayPalPayment = catchAsync(async (req, res, next) => {
 
     const order = await Order.findById(orderId);
     if (!order) {
-        return next(new ApiError('Order not found', StatusCodes.NOT_FOUND));
+        return next(new ApiError(req.t("order.notFound"), StatusCodes.NOT_FOUND));
     }
 
     if (order.isPaid) {
         return res.status(StatusCodes.OK).json({
             success: true,
-            message: 'Order is already paid',
+            message: req.t("order.alreadyPaid"),
         });
     }
 
     // الـ paymentIntentId هو الـ PayPal Order ID الحقيقي اللي اتسيف وقت الإنشاء
     const paypalOrderId = order.paymentIntentId;
     if (!paypalOrderId) {
-        return next(new ApiError('PayPal Payment Intent ID not found for this order', StatusCodes.BAD_REQUEST));
+        return next(new ApiError(req.t("order.payPalIdNotFound"), StatusCodes.BAD_REQUEST));
     }
 
     const captureData = await capturePayPalPayment(paypalOrderId);
@@ -273,10 +279,10 @@ exports.verifyPayPalPayment = catchAsync(async (req, res, next) => {
 
         return res.status(StatusCodes.OK).json({
             success: true,
-            message: 'Payment completed successfully via PayPal',
+            message: req.t("order.paypalCompleted"),
         });
     } else {
-        return next(new ApiError('Payment was not completed by PayPal', StatusCodes.BAD_REQUEST));
+        return next(new ApiError(req.t("order.paypalNotCompleted"), StatusCodes.BAD_REQUEST));
     }
 });
 
@@ -317,7 +323,7 @@ exports.filterOrdersForLoggedUser = catchAsync(async (req, res, next) => {
 });
 
 exports.getAllOrders = factory.getAll(Order, {
-    modelName: "Order",
+    modelName: "order",
 });
 
 // @desc    Handle Payment Cancellation (لو اليوزر ضغط Cancel ورجع لموقعك أو البعتة وصلت)
@@ -327,7 +333,7 @@ exports.cancelOrder = catchAsync(async (req, res, next) => {
     const order = await Order.findById(req.params.id);
 
     if (!order) {
-        return next(new ApiError("Order not found", StatusCodes.NOT_FOUND));
+        return next(new ApiError(req.t("order.notFound"), StatusCodes.NOT_FOUND));
     }
 
     // صاحب الأوردر فقط أو الأدمن
@@ -340,13 +346,13 @@ exports.cancelOrder = catchAsync(async (req, res, next) => {
 
     if (order.status === "cancelled") {
         return next(
-            new ApiError("Order already cancelled", StatusCodes.BAD_REQUEST)
+            new ApiError(req.t("order.alreadyCancelled"), StatusCodes.BAD_REQUEST)
         );
     }
 
     if (order.isPaid) {
         return next(
-            new ApiError("Paid orders can't be cancelled. Refund is required.", StatusCodes.BAD_REQUEST)
+            new ApiError(req.t("order.notCancelled"), StatusCodes.BAD_REQUEST)
         );
     }
 
@@ -357,7 +363,7 @@ exports.cancelOrder = catchAsync(async (req, res, next) => {
     sendResponse(res, {
         success: true,
         statusCode: StatusCodes.OK,
-        message: "Order cancelled successfully",
+        message: req.t("order.cancelled"),
         data: order,
     });
 });

@@ -11,7 +11,7 @@ const Coupon = require("./coupon.model");
 // @route   GET /api/coupons
 // @access  Private/Admin/Manager
 exports.getCoupons = getAll(Coupon, {
-    modelName: "Coupons",
+    modelName: "coupon",
     searchFields: ["name"],
     populate: [
         {
@@ -27,7 +27,7 @@ exports.getCoupons = getAll(Coupon, {
 // @route   GET /api/coupons/:id
 // @access  Private/Admin/Manager
 exports.getCoupon = getOne(Coupon, {
-    modelName: "Coupon",
+    modelName: "coupon",
     populate: [
         {
             path: "createdBy",
@@ -40,19 +40,19 @@ exports.getCoupon = getOne(Coupon, {
 // @route   POST /api/coupons
 // @access  Private/Admin/Manager
 exports.createCoupon = createOne(Coupon, {
-    modelName: "Coupon",
+    modelName: "coupon",
 });
 
 // @desc    Update coupon
 // @route   PATCH /api/coupons/:id
 // @access  Private/Admin/Manager
 exports.updateCoupon = updateOne(Coupon, {
-    modelName: "Coupon",
+    modelName: "coupon",
 });
 
 // @desc    Delete coupon
 // @route   DELETE /api/coupons/:id
 // @access  Private/Admin/Manager
 exports.deleteCoupon = deleteOne(Coupon, {
-    modelName: "Coupon",
+    modelName: "coupon",
 });

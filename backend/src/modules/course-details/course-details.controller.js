@@ -9,6 +9,7 @@ const {
 // Get Course Details
 exports.getCourseDetails = catchAsync(async (req, res) => {
     const data = await getCourseDetails(
+        req,
         req.params.slug,
         req.user?.id || null
     );
@@ -16,7 +17,7 @@ exports.getCourseDetails = catchAsync(async (req, res) => {
     return sendResponse(res, {
         statusCode: StatusCodes.OK,
         success: true,
-        message: "Course details fetched successfully.",
+        message: req.t("courseDetails.fetched"),
         data,
     });
 });

@@ -3,7 +3,7 @@ const Portfolio = require("./portfolio.model");
 
 // Create Portfolio
 exports.createPortfolio = createOne(Portfolio, {
-    modelName: "Portfolio",
+    modelName: "portfolio",
     fileFields: ["image"],
     translatableFields: [
         "title",
@@ -13,7 +13,7 @@ exports.createPortfolio = createOne(Portfolio, {
 
 // Get all Portfolios
 exports.getPortfolios = getAll(Portfolio, {
-    modelName: "Portfolios",
+    modelName: "portfolio",
     searchFields: [
         "title.en",
         "title.ar",
@@ -36,7 +36,7 @@ exports.getPortfolios = getAll(Portfolio, {
 
 // Get one Portfolio
 exports.getPortfolio = getOne(Portfolio, {
-    modelName: "Portfolio",
+    modelName: "portfolio",
     translatableFields: [
         "title",
         "description",
@@ -50,7 +50,7 @@ exports.getPortfolio = getOne(Portfolio, {
 
 // Update one Portfolio
 exports.updatePortfolio = updateOne(Portfolio, {
-    modelName: "Portfolio",
+    modelName: "portfolio",
     fileFields: ["image"],
     translatableFields: [
         "title",
@@ -60,6 +60,6 @@ exports.updatePortfolio = updateOne(Portfolio, {
 
 // Delete one Portfolio
 exports.deletePortfolio = deleteOne(Portfolio, {
-    modelName: "Portfolio",
+    modelName: "portfolio",
     fileFields: ["image"],
 });

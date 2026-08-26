@@ -30,7 +30,7 @@ exports.getJourney = catchAsync(async (req, res) => {
     sendResponse(res, {
         statusCode: StatusCodes.OK,
         success: true,
-        message: "Journey fetched successfully",
+        message: req.t("journey.fetched"),
         data: translateDocument(
             journey,
             req.language,
@@ -58,7 +58,7 @@ exports.updateJourney = catchAsync(async (req, res) => {
     sendResponse(res, {
         statusCode: StatusCodes.OK,
         success: true,
-        message: "Journey updated successfully",
+        message: req.t("journey.updated"),
         data: translateDocument(
             journey,
             req.language,

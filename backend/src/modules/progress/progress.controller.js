@@ -13,6 +13,7 @@ const {
 */
 exports.updateProgress = catchAsync(async (req, res) => {
     const progress = await updateLessonProgress({
+        req,
         userId: req.user.id,
         lessonId: req.body.lesson,
         watchedSeconds: req.body.watchedSeconds,
@@ -23,7 +24,7 @@ exports.updateProgress = catchAsync(async (req, res) => {
     return sendResponse(res, {
         statusCode: StatusCodes.OK,
         success: true,
-        message: "Progress updated successfully.",
+        message: req.t("progress.updated"),
         data: progress,
     });
 });
@@ -34,6 +35,7 @@ exports.updateProgress = catchAsync(async (req, res) => {
 */
 exports.getProgress = catchAsync(async (req, res) => {
     const progress = await getCourseProgress(
+        req,
         req.user.id,
         req.params.courseId
     );
@@ -41,7 +43,7 @@ exports.getProgress = catchAsync(async (req, res) => {
     return sendResponse(res, {
         statusCode: StatusCodes.OK,
         success: true,
-        message: "Course progress fetched successfully.",
+        message: req.t("progress.fetched"),
         data: progress,
     });
 });
@@ -56,7 +58,7 @@ exports.getContinueWatchingList = catchAsync(async (req, res) => {
     return sendResponse(res, {
         statusCode: StatusCodes.OK,
         success: true,
-        message: "Continue watching fetched successfully.",
+        message: req.t("progress.continueWatchingFetched"),
         data: lessons,
     });
 });

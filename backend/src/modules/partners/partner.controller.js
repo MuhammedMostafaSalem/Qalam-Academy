@@ -3,13 +3,13 @@ const Partner = require("./partner.model");
 
 // Create partner
 exports.createPartner = createOne(Partner, {
-    modelName: "Partner",
+    modelName: "partner",
     fileFields: ["image"],
 });
 
 // Get all partners
 exports.getPartners = getAll(Partner, {
-    modelName: "Partners",
+    modelName: "partner",
     searchFields: ["name"],
     defaultLimit: 10,
     defaultSort: "-createdAt",
@@ -17,17 +17,17 @@ exports.getPartners = getAll(Partner, {
 
 // Get one partner
 exports.getPartner = getOne(Partner, {
-    modelName: "Partner",
+    modelName: "partner",
 });
 
 // Update one partner
 exports.updatePartner = updateOne(Partner, {
-    modelName: "Partner",
+    modelName: "partner",
     fileFields: ["image"],
 });
 
 // Delete one partner
 exports.deletePartner = deleteOne(Partner, {
-    modelName: "Partner",
+    modelName: "partner",
     fileFields: ["image"],
 });

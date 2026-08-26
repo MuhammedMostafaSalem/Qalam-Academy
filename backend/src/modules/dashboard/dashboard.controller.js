@@ -15,7 +15,7 @@ exports.getAdminDashboard = catchAsync(async (req, res) => {
     return sendResponse(res, {
         statusCode: StatusCodes.OK,
         success: true,
-        message: "Admin dashboard fetched successfully",
+        message: req.t("dashboard.fetched"),
         data: dashboard,
     });
 });
@@ -29,7 +29,7 @@ exports.getInstructorDashboard = catchAsync(async (req, res) => {
     return sendResponse(res, {
         statusCode: StatusCodes.OK,
         success: true,
-        message: "Instructor dashboard fetched successfully",
+        message: req.t("dashboard.fetched"),
         data: dashboard,
     });
 });
@@ -43,7 +43,7 @@ exports.getStudentDashboard = catchAsync(async (req, res) => {
     return sendResponse(res, {
         statusCode: StatusCodes.OK,
         success: true,
-        message: "Student dashboard fetched successfully",
+        message: req.t("dashboard.fetched"),
         data: dashboard,
     });
 });

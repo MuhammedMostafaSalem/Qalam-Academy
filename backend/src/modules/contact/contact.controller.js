@@ -14,7 +14,7 @@ const Contact = require("./contact.model");
 
 // Create Contact Message
 exports.createContact = createOne(Contact, {
-    modelName: "Contact Message",
+    modelName: "contact",
 
     beforeCreate: async ({ req }) => {
         req.body.ipAddress =
@@ -48,7 +48,7 @@ exports.createContact = createOne(Contact, {
 
 // Get All Messages
 exports.getContacts = getAll(Contact, {
-    modelName: "Contact Messages",
+    modelName: "contact",
 
     searchFields: [
         "fullName",
@@ -69,7 +69,7 @@ exports.getContacts = getAll(Contact, {
 
 // Get One Message
 exports.getContact = getOne(Contact, {
-    modelName: "Contact Message",
+    modelName: "contact",
 
     populate: {
         path: "repliedBy",
@@ -80,7 +80,7 @@ exports.getContact = getOne(Contact, {
 
 // Update Message
 exports.updateContact = updateOne(Contact, {
-    modelName: "Contact Message",
+    modelName: "contact",
 
     beforeUpdate: async ({ req }) => {
         // لو الأدمن كتب Reply
@@ -109,5 +109,5 @@ exports.updateContact = updateOne(Contact, {
 
 // Delete Message
 exports.deleteContact = deleteOne(Contact, {
-    modelName: "Contact Message",
+    modelName: "contact",
 });

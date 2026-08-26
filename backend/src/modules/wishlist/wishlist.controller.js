@@ -23,7 +23,7 @@ exports.addCourseToWishlist = catchAsync(async (req, res, next) => {
     return sendResponse(res, {
         statusCode: StatusCodes.OK,
         success: true,
-        message: "Course added successfully to your wishlist",
+        message: req.t("wishlist.added"),
         data: { course: course },
     });
 });
@@ -44,7 +44,7 @@ exports.removeCourseFromWishlist = catchAsync(async (req, res, next) => {
     return sendResponse(res, {
         statusCode: StatusCodes.OK,
         success: true,
-        message: "Course removed successfully from your wishlist",
+        message: req.t("wishlist.removed"),
     });
 });
 
@@ -59,7 +59,7 @@ exports.myWishlist = catchAsync(async (req, res, next) => {
     return sendResponse(res, {
         statusCode: StatusCodes.OK,
         success: true,
-        message: "Wishlist fetched successfully",
+        message: req.t("wishlist.fetched"),
         data: wishlist.wishlist,
     });
 });
