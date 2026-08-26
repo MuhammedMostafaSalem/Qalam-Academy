@@ -21,7 +21,7 @@ const createReviewSchema = z.object({
         .trim()
         .min(3, "Comment must be at least 3 characters")
         .max(1000, "Comment cannot exceed 1000 characters"),
-}).strict();
+});
 
 
 // Update Review
@@ -41,7 +41,6 @@ const updateReviewSchema = z.object({
         .max(1000, "Comment cannot exceed 1000 characters")
         .optional(),
 })
-    .strict()
     .refine(
         (data) => Object.keys(data).length > 0,
         {

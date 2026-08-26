@@ -69,10 +69,10 @@ const portfolioBaseObject = {
 }
 
 // 2. Creation schema (all fields are mandatory)
-const createPortfolioSchema = z.object(portfolioBaseObject).strict();
+const createPortfolioSchema = z.object(portfolioBaseObject);
 
 // 3. The update schema (all fields are optional using .partial)
-const updatePortfolioSchema = z.object(portfolioBaseObject).partial().strict();
+const updatePortfolioSchema = z.object(portfolioBaseObject).partial();
 
 module.exports = {
     createPortfolioSchema,

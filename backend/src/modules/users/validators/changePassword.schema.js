@@ -13,7 +13,7 @@ const changePasswordSchema = z.object({
 
     confirmPassword: z
         .string({ error: "Confirm password is required" }),
-}).strict();
+});
 
 module.exports = {
     changePasswordSchema,

@@ -34,10 +34,10 @@ const serviceBaseObject = {
 }
 
 // 2. Creation schema (all fields are mandatory)
-const createServiceSchema = z.object(serviceBaseObject).strict();
+const createServiceSchema = z.object(serviceBaseObject);
 
 // 3. The update schema (all fields are optional using .partial)
-const updateServiceSchema = z.object(serviceBaseObject).partial().strict();
+const updateServiceSchema = z.object(serviceBaseObject).partial();
 
 module.exports = {
     createServiceSchema,

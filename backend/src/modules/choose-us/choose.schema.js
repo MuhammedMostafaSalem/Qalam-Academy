@@ -44,8 +44,7 @@ const updateChooseSchema = z
             },
             z.boolean().optional()
         ),
-    })
-    .strict();
+    });
 
 module.exports = {
     updateChooseSchema,

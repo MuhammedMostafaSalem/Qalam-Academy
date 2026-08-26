@@ -46,14 +46,12 @@ const timelineBaseObject = {
 
 // Create
 const createTimelineSchema = z
-    .object(timelineBaseObject)
-    .strict();
+    .object(timelineBaseObject);
 
 // Update
 const updateTimelineSchema = z
     .object(timelineBaseObject)
-    .partial()
-    .strict();
+    .partial();
 
 module.exports = {
     createTimelineSchema,

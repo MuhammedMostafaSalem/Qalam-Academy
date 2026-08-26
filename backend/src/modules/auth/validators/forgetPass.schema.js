@@ -6,7 +6,6 @@ const forgetSchema = z
             .email("Please enter a valid email address")
             .trim()
             .toLowerCase(),
-    })
-    .strict();
+    });
 
 module.exports = forgetSchema;

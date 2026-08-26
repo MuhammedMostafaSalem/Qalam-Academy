@@ -20,6 +20,6 @@ const resetSchema = z.object({
         .trim()
         .min(6, "Confirm password must be at least 6 characters")
         .max(20, "Confirm password must be at most 20 characters"),
-}).strict();
+});
 
 module.exports = resetSchema;

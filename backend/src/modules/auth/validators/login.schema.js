@@ -15,7 +15,6 @@ const loginSchema = z
                 /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*#?&_-]{6,20}$/,
                 "Password must be 6-20 characters, contain at least one letter and one number, and may include symbols: _@$!%*#?&-"
             ),
-    })
-    .strict();
+    });
 
 module.exports = loginSchema;

@@ -68,10 +68,10 @@ const categoryBaseObject = {
 }
 
 // Create
-const createCategorySchema = z.object(categoryBaseObject).strict();
+const createCategorySchema = z.object(categoryBaseObject);
 
 // Update
-const updateCategorySchema = z.object(categoryBaseObject).partial().strict();
+const updateCategorySchema = z.object(categoryBaseObject).partial();
 
 module.exports = {
     createCategorySchema,

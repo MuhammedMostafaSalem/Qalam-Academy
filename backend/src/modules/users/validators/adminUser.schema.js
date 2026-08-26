@@ -11,7 +11,7 @@ const updateUserAdminSchema = z.object({
     ).optional(),
 
     isActive: z.boolean().optional(),
-}).strict();
+});
 
 module.exports = {
     updateUserAdminSchema,
