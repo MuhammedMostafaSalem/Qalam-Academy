@@ -150,6 +150,9 @@ export async function updateProfileAction(userId, formData) {
             body,
         });
 
+        revalidatePath("/dashboard/profile");
+        revalidatePath("/user/profile");
+
         return {
             success: true,
             message: response.message || "تم تحديث الملف الشخصي بنجاح",
@@ -159,6 +162,7 @@ export async function updateProfileAction(userId, formData) {
         return {
             success: false,
             message: error.message || "فشل تحديث الملف الشخصي",
+            errors: error.errors || null,
         };
     }
 }

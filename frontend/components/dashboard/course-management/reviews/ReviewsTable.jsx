@@ -4,6 +4,7 @@ import Section from "@/components/sections/Section";
 import ActionsTable from "@/components/shared/ActionsTable";
 import Table from "@/components/ui/Table";
 import { useLanguage } from "@/providers/LanguageProvider";
+import { DEFAULT_AVATAR_URL } from "@/constants/avatar";
 
 import {
     HiOutlineEye,
@@ -72,7 +73,7 @@ const ReviewsTable = () => {
                             <Table.Td>
                                 <div className="flex items-center gap-3">
                                     <img
-                                        src={`https://i.pravatar.cc/100?img=${review.id + 20}`}
+                                        src={DEFAULT_AVATAR_URL}
                                         alt={review.student}
                                         className="
                                             h-10

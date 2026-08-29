@@ -1,8 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import { HiOutlineEnvelope } from "react-icons/hi2";
 import { LuShieldCheck } from "react-icons/lu";
+import { DEFAULT_AVATAR_URL } from "@/constants/avatar";
 
 const ProfileHeader = () => {
     return (
@@ -20,7 +20,7 @@ const ProfileHeader = () => {
                 {/* User */}
                 <div className="flex items-center gap-5">
                     <img
-                        src="https://i.pravatar.cc/150?img=12"
+                        src={DEFAULT_AVATAR_URL}
                         alt="Profile"
                         width={90}
                         height={90}

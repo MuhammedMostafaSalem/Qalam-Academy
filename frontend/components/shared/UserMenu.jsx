@@ -8,9 +8,9 @@ import { MdAccountCircle } from "react-icons/md";
 import { FaSignOutAlt } from "react-icons/fa";
 import { MdDashboard } from "react-icons/md";
 import { CgProfile } from "react-icons/cg";
-import userIcon from '@/public/assets/user-icon.png';
 import { useAuth } from "@/providers/AuthProvider";
 import { useLanguage } from "@/providers/LanguageProvider";
+import { resolveAvatarUrl } from "@/constants/avatar";
 
 const UserMenu = () => {
     const { user, logout } = useAuth();
@@ -71,10 +71,7 @@ const UserMenu = () => {
 
     const FirstIcon = firstMenuItem.icon;
 
-    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:5000";
-    const avatarSrc = (user.avatar && typeof user.avatar === 'string' && user.avatar.trim() !== '')
-        ? (user.avatar.startsWith('http') ? user.avatar : `${BASE_URL}${user.avatar}`)
-        : userIcon;
+    const avatarSrc = resolveAvatarUrl(user.avatar);
     const avatarAlt = user.firstName
         ? `${user.firstName} ${user.lastName || ''}`.trim()
         : (language === "en" ? "User" : "المستخدم");

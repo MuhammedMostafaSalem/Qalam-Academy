@@ -6,6 +6,7 @@ import Table from "@/components/ui/Table";
 import { HiOutlineEye } from "react-icons/hi2";
 import { MdOutlineEmail } from "react-icons/md";
 import { useLanguage } from "@/providers/LanguageProvider";
+import { DEFAULT_AVATAR_URL } from "@/constants/avatar";
 
 const students = [
     {
@@ -72,7 +73,7 @@ const StudentsTable = () => {
                             <Table.Td>
                                 <div className="flex items-center gap-3">
                                     <img
-                                        src={`https://i.pravatar.cc/100?img=${student.id + 10}`}
+                                        src={DEFAULT_AVATAR_URL}
                                         alt={student.name}
                                         className="
                                             h-10

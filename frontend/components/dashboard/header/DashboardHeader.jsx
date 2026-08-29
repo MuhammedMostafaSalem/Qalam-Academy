@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import {
     HiOutlineBars3,
@@ -12,7 +11,7 @@ import { FaSignOutAlt } from "react-icons/fa";
 import { MdAccountCircle } from "react-icons/md";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import { useRouter } from "next/navigation";
-import userIcon from '@/public/assets/user-icon.png';
+import { resolveAvatarUrl } from "@/constants/avatar";
 import { useAuth } from "@/providers/AuthProvider";
 import { useLanguage } from "@/providers/LanguageProvider";
 import LanguageSwitcher from "@/components/layout/website/Header/LanguageSwitcher";
@@ -145,9 +144,7 @@ const DashboardHeader = ({
                         "
                     >
                         <img
-                            src={
-                                user.avatar ? user.avatar : userIcon
-                            }
+                            src={resolveAvatarUrl(user.avatar)}
                             alt={user.firstName || "User"}
                             width={44}
                             height={44}
