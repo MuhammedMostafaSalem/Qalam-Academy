@@ -54,7 +54,7 @@ exports.createPayPalOrder = async ({ amount, currency = 'USD', orderId }) => {
                 ],
                 application_context: {
                     return_url: `${paypalSuccessUrl}?orderId=${orderId}`,
-                    cancel_url: paypalCancelUrl,
+                    cancel_url: `${paypalCancelUrl}?orderId=${orderId}`,
                     user_action: 'PAY_NOW',
                 },
             },

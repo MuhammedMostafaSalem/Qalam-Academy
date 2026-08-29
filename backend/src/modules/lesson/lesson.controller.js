@@ -87,6 +87,7 @@ exports.getLesson = getOne(Lesson, {
     translatableFields: [
         "title",
         "description",
+        "course.title",
     ],
 
     populate: [

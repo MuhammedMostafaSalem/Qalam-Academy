@@ -89,20 +89,22 @@ exports.getEnrollmentsChart = async () => {
     ]);
 }
 
-// Top Courses
-exports.getTopCourses = async () => {
-    return await Course.find()
+const translateDocument = require("../../utils/translateDocument");
+const translateDocuments = require("../../utils/translateDocuments");
 
+// Top Courses
+exports.getTopCourses = async (language = "ar") => {
+    const courses = await Course.find()
         .sort({
             totalStudents: -1,
             averageRating: -1,
         })
-
         .limit(10)
-
         .select(
             "title slug thumbnail totalStudents averageRating"
         );
+
+    return translateDocuments(courses, language, ["title", "description"]);
 }
 
 // Top Instructors
@@ -152,7 +154,7 @@ exports.getTopInstructors = async () => {
 }
 
 // Admin Dashboard
-exports.getAdminDashboard = async () => {
+exports.getAdminDashboard = async (language = "ar") => {
     const [
         totalUsers,
         totalStudents,
@@ -233,6 +235,15 @@ exports.getAdminDashboard = async () => {
             .populate("course", "title"),
     ]);
 
+    const translatedLatestCourses = translateDocuments(latestCourses, language, ["title", "description"]);
+    const translatedLatestReviews = latestReviews.map((r) => {
+        const rObj = typeof r.toObject === "function" ? r.toObject() : { ...r };
+        if (rObj.course) {
+            rObj.course = translateDocument(rObj.course, language, ["title"]);
+        }
+        return rObj;
+    });
+
     return {
         overview: {
             totalUsers,
@@ -249,8 +260,8 @@ exports.getAdminDashboard = async () => {
 
         latestOrders,
         latestStudents,
-        latestCourses,
-        latestReviews,
+        latestCourses: translatedLatestCourses,
+        latestReviews: translatedLatestReviews,
 
         charts: {
             revenue: await exports.getRevenueChart(),
@@ -258,14 +269,14 @@ exports.getAdminDashboard = async () => {
             enrollments: await exports.getEnrollmentsChart(),
         },
 
-        topCourses: await exports.getTopCourses(),
+        topCourses: await exports.getTopCourses(language),
 
         topInstructors: await exports.getTopInstructors(),
     };
 }
 
 // Instructor Dashboard
-exports.getInstructorDashboard = async (instructorId) => {
+exports.getInstructorDashboard = async (instructorId, language = "ar") => {
     const courses = await Course.find({
         instructor: instructorId,
     }).select("_id");
@@ -343,6 +354,22 @@ exports.getInstructorDashboard = async (instructorId) => {
             .populate("course", "title"),
     ]);
 
+    const translatedStudents = latestStudents.map((s) => {
+        const sObj = typeof s.toObject === "function" ? s.toObject() : { ...s };
+        if (sObj.course) {
+            sObj.course = translateDocument(sObj.course, language, ["title"]);
+        }
+        return sObj;
+    });
+
+    const translatedReviews = latestReviews.map((r) => {
+        const rObj = typeof r.toObject === "function" ? r.toObject() : { ...r };
+        if (rObj.course) {
+            rObj.course = translateDocument(rObj.course, language, ["title"]);
+        }
+        return rObj;
+    });
+
     return {
         overview: {
             totalCourses,
@@ -352,13 +379,13 @@ exports.getInstructorDashboard = async (instructorId) => {
             averageRating: ratings[0]?.averageRating || 0,
         },
 
-        latestStudents,
-        latestReviews,
+        latestStudents: translatedStudents,
+        latestReviews: translatedReviews,
     };
 }
 
 // Student Dashboard
-exports.getStudentDashboard = async (userId) => {
+exports.getStudentDashboard = async (userId, language = "ar") => {
     const [
         enrollments,
         completedCourses,
@@ -377,6 +404,14 @@ exports.getStudentDashboard = async (userId) => {
         User.findById(userId)
             .select("wishlist"),
     ]);
+
+    const translatedEnrollments = enrollments.map((enr) => {
+        const enrObj = typeof enr.toObject === "function" ? enr.toObject() : { ...enr };
+        if (enrObj.course) {
+            enrObj.course = translateDocument(enrObj.course, language, ["title"]);
+        }
+        return enrObj;
+    });
 
     // Sum of lessons durations (in minutes) for the enrolled courses
     const courseIds = enrollments.map(enrollment => enrollment.course?._id).filter(Boolean);
@@ -422,6 +457,6 @@ exports.getStudentDashboard = async (userId) => {
             ),
         },
 
-        continueLearning: enrollments,
+        continueLearning: translatedEnrollments,
     };
 }

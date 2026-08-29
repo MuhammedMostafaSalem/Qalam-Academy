@@ -227,14 +227,22 @@ exports.createPayPalCheckoutSession = catchAsync(async (req, res, next) => {
 
         // استخراج رابط الموافقة (Approval URL) لإرساله للفرونت إند
         const approvalLink = paypalOrder.links.find((link) => link.rel === 'approve')?.href;
+        if (!approvalLink) {
+            throw new Error('PayPal did not return an approval URL');
+        }
 
         order.paymentIntentId = paypalOrder.id; // حفظ الـ PayPal Order ID
         await order.save();
 
         res.status(StatusCodes.OK).json({
-            status: 'success',
+            success: true,
+            message: 'PayPal checkout created successfully',
             approvalUrl: approvalLink,
             orderId: order._id,
+            data: {
+                approvalUrl: approvalLink,
+                orderId: order._id,
+            },
         });
     } catch (error) {
         await Order.findByIdAndDelete(order._id);
@@ -251,6 +259,10 @@ exports.verifyPayPalPayment = catchAsync(async (req, res, next) => {
     const order = await Order.findById(orderId);
     if (!order) {
         return next(new ApiError('Order not found', StatusCodes.NOT_FOUND));
+    }
+
+    if (order.user.toString() !== req.user._id.toString()) {
+        return next(new ApiError('You are not allowed to capture this order', StatusCodes.FORBIDDEN));
     }
 
     if (order.isPaid) {
@@ -309,15 +321,38 @@ exports.paymobWebhook = catchAsync(async (req, res, next) => {
 // بقية الدوال زي getSpecificOrder, getAllOrders, filterOrdersForLoggedUser تظل كما هي
 exports.getSpecificOrder = factory.getOne(Order, {
     modelName: "Order",
+    translatableFields: [
+        "cartItems.item.title",
+        "cartItems.item.description",
+    ],
 });
 
 exports.filterOrdersForLoggedUser = catchAsync(async (req, res, next) => {
-    if (req.user.role === 'student') req.filterObject = { user: req.user._id };
+    if (req.user.role === 'student') {
+        req.filterObject = { user: req.user._id };
+    }
+
+    if (req.user.role === 'instructor') {
+        const courseIds = await Course.find({ instructor: req.user._id }).distinct('_id');
+        req.filterObject = {
+            cartItems: {
+                $elemMatch: {
+                    itemType: 'Course',
+                    item: { $in: courseIds },
+                },
+            },
+        };
+    }
+
     next();
 });
 
 exports.getAllOrders = factory.getAll(Order, {
     modelName: "Order",
+    translatableFields: [
+        "cartItems.item.title",
+        "cartItems.item.description",
+    ],
 });
 
 // @desc    Handle Payment Cancellation (لو اليوزر ضغط Cancel ورجع لموقعك أو البعتة وصلت)
@@ -330,13 +365,10 @@ exports.cancelOrder = catchAsync(async (req, res, next) => {
         return next(new ApiError("Order not found", StatusCodes.NOT_FOUND));
     }
 
-    // صاحب الأوردر فقط أو الأدمن
-    // if (
-    //     order.user.toString() !== req.user._id.toString() &&
-    //     req.user.role !== "admin"
-    // ) {
-    //     return next(new ApiError("Unauthorized", StatusCodes.FORBIDDEN));
-    // }
+    const orderUserId = order.user?._id || order.user;
+    if (orderUserId?.toString() !== req.user._id.toString()) {
+        return next(new ApiError("Unauthorized", StatusCodes.FORBIDDEN));
+    }
 
     if (order.status === "cancelled") {
         return next(

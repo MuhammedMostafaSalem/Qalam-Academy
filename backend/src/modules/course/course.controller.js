@@ -34,6 +34,7 @@ exports.getCourses = getAll(Course, {
     translatableFields: [
         "title",
         "description",
+        "category.title",
     ],
     populate: [
         {
@@ -55,6 +56,7 @@ exports.getCourse = getOne(Course, {
     translatableFields: [
         "title",
         "description",
+        "category.title",
     ],
     populate: [
         {

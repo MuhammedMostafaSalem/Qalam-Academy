@@ -113,6 +113,9 @@ exports.deleteReview = factory.deleteOne(Review, {
 // Get Review
 exports.getReview = factory.getOne(Review, {
     modelName: "Review",
+    translatableFields: [
+        "course.title",
+    ],
     populate: [
         {
             path: "user",
@@ -128,6 +131,9 @@ exports.getReview = factory.getOne(Review, {
 // Get Reviews
 exports.getReviews = factory.getAll(Review, {
     modelName: "Review",
+    translatableFields: [
+        "course.title",
+    ],
     populate: [
         {
             path: "user",

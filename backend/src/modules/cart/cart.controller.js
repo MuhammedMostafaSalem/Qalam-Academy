@@ -6,6 +6,26 @@ const Course = require('../course/course.model');
 const Cart = require('../cart/cart.model');
 const Coupon = require('../coupon/coupon.model');
 const { StatusCodes } = require('http-status-codes');
+const translateDocument = require('../../utils/translateDocument');
+
+const formatCartWithTranslations = (cart, language = 'ar') => {
+    if (!cart) return cart;
+    const cartObj = typeof cart.toObject === 'function' ? cart.toObject() : { ...cart };
+    if (Array.isArray(cartObj.products)) {
+        cartObj.products = cartObj.products.map((prod) => {
+            if (prod.item && typeof prod.item === 'object') {
+                prod.item = translateDocument(prod.item, language, [
+                    'title',
+                    'description',
+                    'category.name',
+                    'category.title',
+                ]);
+            }
+            return prod;
+        });
+    }
+    return cartObj;
+};
 
 // دالة حساب إجمالي السعر وتصفية الكوبون لو السعر اتغير
 const calcTotalCartPrice = async (cart) => {
@@ -118,7 +138,7 @@ exports.getLoggedUserCart = catchAsync(async (req, res, next) => {
     return sendResponse(res, {
         success: true,
         statusCode: StatusCodes.OK,
-        data: cart,
+        data: formatCartWithTranslations(cart, req.language),
         meta: {
             totalCart: cart.products.length
         }
@@ -211,7 +231,7 @@ exports.updateCartProductCount = catchAsync(async (req, res, next) => {
     return sendResponse(res, {
         success: true,
         statusCode: StatusCodes.OK,
-        data: cart,
+        data: formatCartWithTranslations(cart, req.language),
         meta: {
             totalCart: cart.products.length
         }
@@ -264,7 +284,7 @@ exports.applyCouponToCart = catchAsync(async (req, res, next) => {
     return res.status(StatusCodes.OK).json({
         status: 'success',
         coupon: coupon.name,
-        data: cart,
+        data: formatCartWithTranslations(cart, req.language),
         meta: {
             totalCart: cart.products.length
         }

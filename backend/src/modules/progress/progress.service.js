@@ -141,16 +141,35 @@ exports.getCourseProgress = async (
     };
 };
 
+const translateDocument = require("../../utils/translateDocument");
+
 // Get Continue Watching
 exports.getContinueWatching = async (
-    userId
+    userId,
+    language = "ar"
 ) => {
-    return await Progress.find({
+    const list = await Progress.find({
         user: userId,
     })
         .populate({
             path: "lesson",
             select: "title duration thumbnail course",
+            populate: {
+                path: "course",
+                select: "title slug",
+            },
         })
         .sort("-lastWatchedAt");
+
+    return list.map((item) => {
+        const itemObj = typeof item.toObject === "function" ? item.toObject() : { ...item };
+        if (itemObj.lesson) {
+            itemObj.lesson = translateDocument(itemObj.lesson, language, [
+                "title",
+                "description",
+                "course.title",
+            ]);
+        }
+        return itemObj;
+    });
 };

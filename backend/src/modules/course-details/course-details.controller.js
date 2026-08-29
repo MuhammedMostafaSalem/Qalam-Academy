@@ -10,7 +10,8 @@ const {
 exports.getCourseDetails = catchAsync(async (req, res) => {
     const data = await getCourseDetails(
         req.params.slug,
-        req.user?.id || null
+        req.user?.id || null,
+        req.language
     );
 
     return sendResponse(res, {

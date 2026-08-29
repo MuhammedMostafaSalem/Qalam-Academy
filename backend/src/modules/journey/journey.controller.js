@@ -26,16 +26,15 @@ const initializeJourney = async () => {
 // GET /journey
 exports.getJourney = catchAsync(async (req, res) => {
     const journey = await initializeJourney();
+    const data = req.query.raw === "true"
+        ? journey.toObject()
+        : translateDocument(journey, req.language, TRANSLATABLE_FIELDS);
 
     sendResponse(res, {
         statusCode: StatusCodes.OK,
         success: true,
         message: "Journey fetched successfully",
-        data: translateDocument(
-            journey,
-            req.language,
-            TRANSLATABLE_FIELDS
-        ),
+        data,
     });
 });
 

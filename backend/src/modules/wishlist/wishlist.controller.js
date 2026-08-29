@@ -24,7 +24,7 @@ exports.addCourseToWishlist = catchAsync(async (req, res, next) => {
         statusCode: StatusCodes.OK,
         success: true,
         message: "Course added successfully to your wishlist",
-        data: { course: course },
+        data: { course: translateDocument(course, req.language, ["title", "description"]) },
     });
 });
 
@@ -48,18 +48,34 @@ exports.removeCourseFromWishlist = catchAsync(async (req, res, next) => {
     });
 });
 
+const translateDocument = require('../../utils/translateDocument');
+
 // @desc      Get logged user wishlist
 // @route     GET /api/wishlist/
 // @access    Private/User
 exports.myWishlist = catchAsync(async (req, res, next) => {
-    const wishlist = await User.findById(req.user._id)
+    const user = await User.findById(req.user._id)
         .select('wishlist')
-        .populate('wishlist');
+        .populate({
+            path: 'wishlist',
+            populate: [
+                { path: 'instructor', select: 'firstName lastName avatar' },
+                { path: 'category', select: 'title slug' }
+            ]
+        });
+
+    const translatedWishlist = (user?.wishlist || []).map((course) => {
+        return translateDocument(course, req.language, [
+            'title',
+            'description',
+            'category.title',
+        ]);
+    });
 
     return sendResponse(res, {
         statusCode: StatusCodes.OK,
         success: true,
         message: "Wishlist fetched successfully",
-        data: wishlist.wishlist,
+        data: translatedWishlist,
     });
 });

@@ -10,9 +10,15 @@ const { verifyOtp, resendOtp } = require("./otp.service");
 const sendToken = require("../../utils/sendToken");
 const env = require("../../config/env");
 const crypto = require("crypto");
+const { getSettings } = require("../settings/settings.service");
 
 // Registration logic will go here
 const signup = catchAsync(async (req, res, next) => {
+    const settings = await getSettings();
+    if (settings.allowRegistration === false) {
+        return next(new ApiError("New account registration is currently disabled", StatusCodes.FORBIDDEN));
+    }
+
     // Extract user details from request body
     const {
         firstName,
@@ -42,12 +48,21 @@ const signup = catchAsync(async (req, res, next) => {
     await newUser.save();
 
     // Send verification email with OTP
-    await sendEmail({
-        email: newUser.email,
-        subject: 'Verify your email - Qalam Academy',
-        message: `Your OTP for email verification is: ${otp}. It is valid for 10 minutes.`,
-        html: verifyEmailTemplate(`${newUser.firstName} ${newUser.lastName}`, otp),
-    });
+    try {
+        await sendEmail({
+            email: newUser.email,
+            subject: 'Verify your email - Qalam Academy',
+            message: `Your OTP for email verification is: ${otp}. It is valid for 10 minutes.`,
+            html: verifyEmailTemplate(`${newUser.firstName} ${newUser.lastName}`, otp),
+        });
+    } catch (error) {
+        // Do not leave an unusable unverified account behind when SMTP fails.
+        await User.deleteOne({ _id: newUser._id, isVerified: false });
+        return next(new ApiError(
+            "We could not send the verification email. Please try again shortly.",
+            StatusCodes.BAD_GATEWAY
+        ));
+    }
 
     // Send success response
     sendResponse(res, {
@@ -223,8 +238,6 @@ const resetPassword = catchAsync(async (req, res, next) => {
             $gt: Date.now()
         }
     }).select("+password");
-    console.log(token);
-    console.log(hashedToken);
     // If user not found, return error
     if (!user) return next(new ApiError(req.t("auth.invalidResetToken"), StatusCodes.BAD_REQUEST));
 

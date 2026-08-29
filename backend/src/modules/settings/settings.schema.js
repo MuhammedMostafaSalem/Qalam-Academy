@@ -49,7 +49,7 @@ const updateSettingsSchema = z.object({
 
     // Contact
     supportEmail: z
-        .email("Invalid support email")
+        .union([z.literal(""), z.email("Invalid support email")])
         .optional(),
 
     supportPhone: z
@@ -72,27 +72,27 @@ const updateSettingsSchema = z.object({
 
     // Social
     facebook: z
-        .url("Invalid Facebook URL")
+        .union([z.literal(""), z.url("Invalid Facebook URL")])
         .optional(),
 
     instagram: z
-        .url("Invalid Instagram URL")
+        .union([z.literal(""), z.url("Invalid Instagram URL")])
         .optional(),
 
     linkedin: z
-        .url("Invalid LinkedIn URL")
+        .union([z.literal(""), z.url("Invalid LinkedIn URL")])
         .optional(),
 
     youtube: z
-        .url("Invalid YouTube URL")
+        .union([z.literal(""), z.url("Invalid YouTube URL")])
         .optional(),
 
     twitter: z
-        .url("Invalid Twitter URL")
+        .union([z.literal(""), z.url("Invalid Twitter URL")])
         .optional(),
 
     tiktok: z
-        .url("Invalid TikTok URL")
+        .union([z.literal(""), z.url("Invalid TikTok URL")])
         .optional(),
 
     // Platform
@@ -127,11 +127,19 @@ const updateSettingsSchema = z.object({
         .max(300)
         .optional(),
 
-    seoKeywords: z
-        .array(
-            z.string().trim()
-        )
-        .optional(),
+    seoKeywords: z.preprocess(
+        (value) => {
+            if (Array.isArray(value)) return value;
+            if (typeof value !== "string") return value;
+            try {
+                const parsed = JSON.parse(value);
+                return Array.isArray(parsed) ? parsed : [];
+            } catch {
+                return value.split(",").map((keyword) => keyword.trim()).filter(Boolean);
+            }
+        },
+        z.array(z.string().trim()).optional()
+    ),
 
     currency: z
         .string()

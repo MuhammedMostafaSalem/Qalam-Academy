@@ -20,6 +20,7 @@ const validate = require("../../middlewares/validate");
 const { updateUserSchema } = require("./validators/user.schema");
 const { changePasswordSchema } = require("./validators/changePassword.schema");
 const { updateUserAdminSchema } = require("./validators/adminUser.schema");
+const { updateThemeModeSchema } = require("./validators/theme.schema");
 
 const router = express.Router();
 
@@ -33,6 +34,7 @@ router.get(
 router.patch(
     "/theme/toggle",
     isAuthenticatedUser,
+    validate(updateThemeModeSchema),
     toggleThemeMode
 );
 

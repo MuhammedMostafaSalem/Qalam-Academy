@@ -7,6 +7,8 @@ const handleUploadedFiles = require("../../utils/handleUploadedFiles");
 
 const TRANSLATABLE_FIELDS = [
     "title",
+    "subTitle",
+    "subtitle",
     "description",
 ];
 

@@ -5,17 +5,27 @@ const {
 const t = require("../utils/t")
 
 module.exports = (req, res, next) => {
-    let lang =
+    let rawLang =
         req.headers["accept-language"] ||
         req.headers["Accept-language"] ||
+        req.cookies?.NEXT_LOCALE ||
+        req.cookies?.NEXT_LANG ||
         req.query.lang ||
         DEFAULT_LANGUAGE;
 
-    if (lang.includes(",")) {
-        lang = lang.split(",")[0];
+    if (typeof rawLang === "string") {
+        if (rawLang.includes(",")) {
+            rawLang = rawLang.split(",")[0];
+        }
+        if (rawLang.includes(";")) {
+            rawLang = rawLang.split(";")[0];
+        }
+        if (rawLang.includes("-")) {
+            rawLang = rawLang.split("-")[0];
+        }
     }
 
-    lang = lang.toLowerCase().trim();
+    let lang = String(rawLang || DEFAULT_LANGUAGE).toLowerCase().trim();
 
     if (!SUPPORTED_LANGUAGES.includes(lang)) {
         lang = DEFAULT_LANGUAGE;

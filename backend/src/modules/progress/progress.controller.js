@@ -51,7 +51,7 @@ exports.getProgress = catchAsync(async (req, res) => {
     * GET /api/progress/continue-watching
 */
 exports.getContinueWatchingList = catchAsync(async (req, res) => {
-    const lessons = await getContinueWatching(req.user.id);
+    const lessons = await getContinueWatching(req.user.id, req.language);
 
     return sendResponse(res, {
         statusCode: StatusCodes.OK,

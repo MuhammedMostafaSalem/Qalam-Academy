@@ -5,9 +5,10 @@ const Review = require("../review/review.model");
 const Enrollment = require("../enrollment/enrollment.model");
 const ApiError = require("../../utils/ApiError");
 const { StatusCodes } = require("http-status-codes");
+const translateDocument = require("../../utils/translateDocument");
 
 // Get Course Details
-exports.getCourseDetails = async (slug, userId = null) => {
+exports.getCourseDetails = async (slug, userId = null, language = "ar") => {
     const isId = mongoose.Types.ObjectId.isValid(slug);
     const query = isId ? { $or: [{ slug }, { _id: slug }] } : { slug };
 
@@ -60,26 +61,39 @@ exports.getCourseDetails = async (slug, userId = null) => {
         });
     }
 
-    // Format Lessons
-    const formattedLessons = lessons.map((lesson) => ({
-        _id: lesson._id,
-        title: lesson.title,
-        description: lesson.description,
-        thumbnail: lesson.thumbnail,
-        video: lesson.video,
-        duration: lesson.duration,
-        sortOrder: lesson.sortOrder,
-        isPreview: lesson.isPreview,
+    // Format and translate Lessons
+    const formattedLessons = lessons.map((lesson) => {
+        const translatedLesson = translateDocument(lesson, language, [
+            "title",
+            "description",
+        ]);
 
-        canAccess: enrollment
-            ? true
-            : lesson.isPreview,
+        return {
+            _id: translatedLesson._id,
+            title: translatedLesson.title,
+            description: translatedLesson.description,
+            thumbnail: translatedLesson.thumbnail,
+            video: translatedLesson.video,
+            duration: translatedLesson.duration,
+            sortOrder: translatedLesson.sortOrder,
+            isPreview: translatedLesson.isPreview,
 
-        isCompleted: false,
-    }));
+            canAccess: enrollment
+                ? true
+                : translatedLesson.isPreview,
+
+            isCompleted: false,
+        };
+    });
+
+    const translatedCourse = translateDocument(course, language, [
+        "title",
+        "description",
+        "category.title",
+    ]);
 
     return {
-        course,
+        course: translatedCourse,
         reviews,
 
         isEnrolled: !!enrollment,

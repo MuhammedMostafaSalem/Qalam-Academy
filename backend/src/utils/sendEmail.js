@@ -3,14 +3,20 @@ const env = require('../config/env');
 
 // Function to send email
 const sendEmail = async (options) => {
+    const port = Number(env.emailPort) || 587;
+
     // Create a transporter
     const transporter = nodeMailer.createTransport({
         host: env.emailHost,
-        port: env.emailPort,
+        port,
+        secure: port === 465,
         auth: {
             user: env.emailUser,
             pass: env.emailPass,
         },
+        connectionTimeout: 15000,
+        greetingTimeout: 15000,
+        socketTimeout: 20000,
     });
 
     // Define the email options
@@ -23,7 +29,7 @@ const sendEmail = async (options) => {
     };
 
     // Send the email
-    await transporter.sendMail(mailOptions);
+    return transporter.sendMail(mailOptions);
 }
 
 module.exports = sendEmail;

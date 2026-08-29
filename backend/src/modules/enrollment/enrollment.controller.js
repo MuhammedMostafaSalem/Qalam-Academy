@@ -7,6 +7,8 @@ const Enrollment = require('./enrollment.model');
 const Order = require('../order/orders.model');
 const Course = require('../course/course.model');
 
+const translateDocument = require('../../utils/translateDocument');
+
 // 1- عرض تسجيلات الكورسات (Admin يشوف الكل، Instructor يشوف كورساته فقط)
 exports.getAllEnrollments = catchAsync(async (req, res, next) => {
     let filter = {};
@@ -24,18 +26,35 @@ exports.getAllEnrollments = catchAsync(async (req, res, next) => {
     // بناء الاستعلام باستخدام الـ Factory أو مباشرة
     const documentsCount = await Enrollment.countDocuments(filter);
 
-    // استخدام الـ ApiFeatures لو متاح عندك في المشروع، أو جلب البيانات مباشرة مع الـ Populate
-    let query = Enrollment.find(filter);
+    const enrollments = await Enrollment.find(filter)
+        .populate({
+            path: 'course',
+            select: 'title slug thumbnail duration totalLessons price instructor level category',
+            populate: [
+                { path: 'instructor', select: 'firstName lastName avatar' },
+                { path: 'category', select: 'title slug' }
+            ]
+        })
+        .populate('user', 'firstName lastName email avatar');
 
-    // لو بتستخدم نظام Pagination أو Filter مخصص يقدر الـ factory يكمله، أو نعمله كالتالي:
-    const enrollments = await query;
+    const translatedEnrollments = enrollments.map((enr) => {
+        const enrObj = typeof enr.toObject === 'function' ? enr.toObject() : { ...enr };
+        if (enrObj.course) {
+            enrObj.course = translateDocument(enrObj.course, req.language, [
+                'title',
+                'description',
+                'category.title',
+            ]);
+        }
+        return enrObj;
+    });
 
     sendResponse(res, {
         success: true,
         message: req.t("enrollment.fetched"),
         statusCode: StatusCodes.OK,
         results: enrollments.length,
-        data: enrollments,
+        data: translatedEnrollments,
         meta: {
             totalEnrollments: documentsCount,
         }
@@ -46,13 +65,33 @@ exports.getAllEnrollments = catchAsync(async (req, res, next) => {
 // @route   GET /api/enrollments/my-courses
 // @access  Private/User
 exports.getMyEnrollments = catchAsync(async (req, res, next) => {
-    const enrollments = await Enrollment.find({ user: req.user._id });
+    const enrollments = await Enrollment.find({ user: req.user._id })
+        .populate({
+            path: 'course',
+            select: 'title slug thumbnail duration totalLessons price instructor level category',
+            populate: [
+                { path: 'instructor', select: 'firstName lastName avatar' },
+                { path: 'category', select: 'title slug' }
+            ]
+        });
+
+    const translatedEnrollments = enrollments.map((enr) => {
+        const enrObj = typeof enr.toObject === 'function' ? enr.toObject() : { ...enr };
+        if (enrObj.course) {
+            enrObj.course = translateDocument(enrObj.course, req.language, [
+                'title',
+                'description',
+                'category.title',
+            ]);
+        }
+        return enrObj;
+    });
 
     sendResponse(res, {
         success: true,
         message: req.t("enrollment.fetched"),
         statusCode: StatusCodes.OK,
-        data: enrollments,
+        data: translatedEnrollments,
         meta: {
             totalEnrollments: enrollments.length,
         }
@@ -67,7 +106,6 @@ exports.getMyPurchasedProducts = catchAsync(async (req, res, next) => {
     const orders = await Order.find({ user: req.user._id, isPaid: true, status: 'paid' })
         .populate({
             path: 'cartItems.item',
-            match: { itemType: 'Product' }, // لو بنستخدم الـ RefPath أو ممكن نجيبها بتصفية مصفوفة الـ cartItems
         });
     
     // تصفية واستخراج المنتجات المشتراة وتجميعها
@@ -75,8 +113,14 @@ exports.getMyPurchasedProducts = catchAsync(async (req, res, next) => {
     orders.forEach(order => {
         order.cartItems.forEach(item => {
             if (item.itemType === 'Product' && item.item) {
+                const translatedProduct = translateDocument(item.item, req.language, [
+                    'title',
+                    'description',
+                ]);
+
                 purchasedProducts.push({
-                    product: item.item,
+                    _id: `${order._id}-${item.item._id}`,
+                    product: translatedProduct,
                     count: item.count,
                     price: item.price,
                     purchasedAt: order.paidAt || order.createdAt,

@@ -10,7 +10,7 @@ const {
 
 // Admin Dashboard
 exports.getAdminDashboard = catchAsync(async (req, res) => {
-    const dashboard = await getAdminDashboard();
+    const dashboard = await getAdminDashboard(req.language);
 
     return sendResponse(res, {
         statusCode: StatusCodes.OK,
@@ -23,7 +23,8 @@ exports.getAdminDashboard = catchAsync(async (req, res) => {
 // Instructor Dashboard
 exports.getInstructorDashboard = catchAsync(async (req, res) => {
     const dashboard = await getInstructorDashboard(
-        req.user.id
+        req.user.id,
+        req.language
     );
 
     return sendResponse(res, {
@@ -37,7 +38,8 @@ exports.getInstructorDashboard = catchAsync(async (req, res) => {
 // Student Dashboard
 exports.getStudentDashboard = catchAsync(async (req, res) => {
     const dashboard = await getStudentDashboard(
-        req.user.id
+        req.user.id,
+        req.language
     );
 
     return sendResponse(res, {

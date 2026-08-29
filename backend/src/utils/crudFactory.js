@@ -165,15 +165,24 @@ exports.updateOne = (
             });
         }
 
-        Object.assign(document, req.body);
-        // const updatedDocument = await Model.findByIdAndUpdate(
-        //     req.params.id,
-        //     req.body,
-        //     {
-        //         new: true,
-        //         runValidators: true,
-        //     }
-        // );
+        const applyDocumentUpdates = (doc, body) => {
+            for (const [key, value] of Object.entries(body)) {
+                if (value === undefined) continue;
+                if (key.includes(".")) {
+                    doc.set(key, value);
+                } else if (typeof value === "object" && value !== null && !Array.isArray(value) && !(value instanceof Date)) {
+                    for (const [subKey, subVal] of Object.entries(value)) {
+                        if (subVal !== undefined) {
+                            doc.set(`${key}.${subKey}`, subVal);
+                        }
+                    }
+                } else {
+                    doc.set(key, value);
+                }
+            }
+        };
+
+        applyDocumentUpdates(document, req.body);
 
         await document.save();
 

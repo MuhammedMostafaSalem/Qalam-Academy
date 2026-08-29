@@ -164,8 +164,12 @@ exports.updateUserByAdmin = catchAsync(async (req, res, next) => {
 });
 
 // Get Theme Mode
-exports.getThemeMode = catchAsync(async (req, res) => {
+exports.getThemeMode = catchAsync(async (req, res, next) => {
     const user = await User.findById(req.user.id).select("themeMode");
+
+    if (!user) {
+        return next(new ApiError(req.t("user.notFound"), StatusCodes.NOT_FOUND));
+    }
 
     return sendResponse(res, {
         success: true,
@@ -178,15 +182,16 @@ exports.getThemeMode = catchAsync(async (req, res) => {
 });
 
 
-// Toggle Theme Mode
-exports.toggleThemeMode = catchAsync(async (req, res) => {
+// Set Theme Mode. The endpoint name is kept for API compatibility, but the
+// operation is deterministic so retries and duplicate clicks are safe.
+exports.toggleThemeMode = catchAsync(async (req, res, next) => {
     const user = await User.findById(req.user.id);
 
-    if (user.themeMode === "light") {
-        user.themeMode = "dark";
-    } else {
-        user.themeMode = "light";
+    if (!user) {
+        return next(new ApiError(req.t("user.notFound"), StatusCodes.NOT_FOUND));
     }
+
+    user.themeMode = req.body.themeMode;
 
     await user.save();
 
