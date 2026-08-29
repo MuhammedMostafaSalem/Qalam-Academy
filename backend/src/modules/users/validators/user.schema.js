@@ -64,8 +64,7 @@ const userBaseObject = {
 // Update Schema
 const updateUserSchema = z
     .object(userBaseObject)
-    .partial()
-    .strict();
+    .partial();
 
 module.exports = {
     updateUserSchema,

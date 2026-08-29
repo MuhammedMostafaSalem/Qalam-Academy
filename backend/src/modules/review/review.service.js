@@ -6,14 +6,11 @@ const ApiError = require("../../utils/ApiError");
 
 
 // Check Review Permission
-exports.checkReviewPermission = async (userId, courseId) => {
+exports.checkReviewPermission = async (req, userId, courseId) => {
     const course = await Course.findById(courseId);
 
     if (!course) {
-        throw new ApiError(
-            "Course not found",
-            StatusCodes.NOT_FOUND
-        );
+        throw new ApiError(req.t("course.notFound"), StatusCodes.NOT_FOUND);
     }
 
     const enrollment = await Enrollment.findOne({
@@ -22,10 +19,7 @@ exports.checkReviewPermission = async (userId, courseId) => {
     });
 
     if (!enrollment) {
-        throw new ApiError(
-            "You must enroll in this course before leaving a review",
-            StatusCodes.FORBIDDEN
-        );
+        throw new ApiError(req.t("review.mustEnroll"), StatusCodes.FORBIDDEN);
     }
 
     const review = await Review.findOne({
@@ -34,10 +28,7 @@ exports.checkReviewPermission = async (userId, courseId) => {
     });
 
     if (review) {
-        throw new ApiError(
-            "You have already reviewed this course",
-            StatusCodes.CONFLICT
-        );
+        throw new ApiError(req.t("review.alreadyReviewed"), StatusCodes.CONFLICT);
     }
 
     return true;

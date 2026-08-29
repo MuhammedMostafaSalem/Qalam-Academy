@@ -13,7 +13,6 @@ const resendOtpSchema = z
                 error: "Invalid OTP purpose",
             }
         ),
-    })
-    .strict();
+    });
 
 module.exports = resendOtpSchema;

@@ -183,7 +183,6 @@ const updateFields = {
 
 // Create
 const createCourseSchema = z.object(courseBaseObject)
-    .strict()
     .refine(
         (data) =>
             data.discountPrice === undefined ||
@@ -197,7 +196,6 @@ const createCourseSchema = z.object(courseBaseObject)
 // Update
 const updateCourseSchema = z.object(updateFields)
     .partial()
-    .strict()
     .refine(
         (data) =>
             data.discountPrice === undefined ||

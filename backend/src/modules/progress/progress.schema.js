@@ -28,7 +28,7 @@ const updateProgressSchema = z.object({
             required_error: "Completed is required",
             invalid_type_error: "Completed must be true or false",
         }),
-}).strict();
+});
 
 module.exports = {
     updateProgressSchema,

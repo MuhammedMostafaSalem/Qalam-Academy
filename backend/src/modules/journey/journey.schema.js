@@ -49,8 +49,7 @@ const updateJourneySchema = z
             },
             z.boolean().optional()
         ),
-    })
-    .strict();
+    });
 
 module.exports = {
     updateJourneySchema,

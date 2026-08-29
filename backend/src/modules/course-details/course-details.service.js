@@ -8,7 +8,11 @@ const { StatusCodes } = require("http-status-codes");
 const translateDocument = require("../../utils/translateDocument");
 
 // Get Course Details
+<<<<<<< HEAD
 exports.getCourseDetails = async (slug, userId = null, language = "ar") => {
+=======
+exports.getCourseDetails = async (req, slug, userId = null) => {
+>>>>>>> 7ea9760e7cb2cb1767b54e651d9b9764e6b93b57
     const isId = mongoose.Types.ObjectId.isValid(slug);
     const query = isId ? { $or: [{ slug }, { _id: slug }] } : { slug };
 
@@ -24,10 +28,7 @@ exports.getCourseDetails = async (slug, userId = null, language = "ar") => {
         });
 
     if (!course) {
-        throw new ApiError(
-            "Course not found",
-            StatusCodes.NOT_FOUND
-        );
+        throw new ApiError(req.t("course.notFound"), StatusCodes.NOT_FOUND);
     }
 
     // Lessons

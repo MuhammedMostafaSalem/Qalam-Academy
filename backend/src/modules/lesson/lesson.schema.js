@@ -62,14 +62,12 @@ const updateFields = {
 
 // Create
 const createLessonSchema = z
-    .object(lessonBaseObject)
-    .strict();
+    .object(lessonBaseObject);
 
 // Update
 const updateLessonSchema = z
     .object(updateFields)
-    .partial()
-    .strict();
+    .partial();
 
 module.exports = {
     createLessonSchema,

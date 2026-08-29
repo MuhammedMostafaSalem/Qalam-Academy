@@ -63,16 +63,13 @@ const blogBaseObject = {
 
 
 // Create
-const createBlogSchema = z
-    .object(blogBaseObject)
-    .strict();
+const createBlogSchema = z.object(blogBaseObject);
 
 
 // Update
 const updateBlogSchema = z
     .object(blogBaseObject)
-    .partial()
-    .strict();
+    .partial();
 
 module.exports = {
     createBlogSchema,

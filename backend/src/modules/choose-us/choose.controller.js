@@ -30,7 +30,7 @@ exports.getChoose = catchAsync(async (req, res) => {
     sendResponse(res, {
         statusCode: StatusCodes.OK,
         success: true,
-        message: "Choose fetched successfully",
+        message: req.t("choose.fetched"),
         data: translateDocument(
             choose,
             req.language,
@@ -58,7 +58,7 @@ exports.updateChoose = catchAsync(async (req, res) => {
     sendResponse(res, {
         statusCode: StatusCodes.OK,
         success: true,
-        message: "Choose updated successfully",
+        message: req.t("choose.updated"),
         data: translateDocument(
             choose,
             req.language,

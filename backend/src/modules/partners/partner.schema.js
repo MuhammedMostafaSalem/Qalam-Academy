@@ -17,10 +17,10 @@ const partnerBaseObject = {
 }
 
 // 2. Creation schema (all fields are mandatory)
-const createPartnerSchema = z.object(partnerBaseObject).strict();
+const createPartnerSchema = z.object(partnerBaseObject);
 
 // 3. The update schema (all fields are optional using .partial)
-const updatePartnerSchema = z.object(partnerBaseObject).partial().strict();
+const updatePartnerSchema = z.object(partnerBaseObject).partial();
 
 module.exports = {
     createPartnerSchema,

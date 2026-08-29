@@ -12,7 +12,7 @@ const { StatusCodes } = require("http-status-codes");
 
 // Create lesson
 exports.createLesson = createOne(Lesson, {
-    modelName: "Lesson",
+    modelName: "lesson",
     fileFields: [
         "thumbnail",
         "video",
@@ -54,7 +54,7 @@ exports.createLesson = createOne(Lesson, {
 
 // Get all lessons
 exports.getLessons = getAll(Lesson, {
-    modelName: "Lessons",
+    modelName: "lesson",
 
     searchFields: [
         "title.en",
@@ -82,7 +82,7 @@ exports.getLessons = getAll(Lesson, {
 
 // Get one lesson
 exports.getLesson = getOne(Lesson, {
-    modelName: "Lesson",
+    modelName: "lesson",
 
     translatableFields: [
         "title",
@@ -100,7 +100,7 @@ exports.getLesson = getOne(Lesson, {
 
 // Update lesson
 exports.updateLesson = updateOne(Lesson, {
-    modelName: "Lesson",
+    modelName: "lesson",
 
     fileFields: [
         "thumbnail",
@@ -166,7 +166,7 @@ exports.updateLesson = updateOne(Lesson, {
 
 // Delete lesson
 exports.deleteLesson = deleteOne(Lesson, {
-    modelName: "Lesson",
+    modelName: "lesson",
 
     fileFields: [
         "thumbnail",

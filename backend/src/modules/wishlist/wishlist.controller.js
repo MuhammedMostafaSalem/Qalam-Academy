@@ -44,7 +44,7 @@ exports.removeCourseFromWishlist = catchAsync(async (req, res, next) => {
     return sendResponse(res, {
         statusCode: StatusCodes.OK,
         success: true,
-        message: "Course removed successfully from your wishlist",
+        message: req.t("wishlist.removed"),
     });
 });
 

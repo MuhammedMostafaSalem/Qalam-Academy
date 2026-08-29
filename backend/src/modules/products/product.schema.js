@@ -57,14 +57,12 @@ const updateFields = {
 
 // Create Schema
 const createProductSchema = z
-    .object(productBaseObject)
-    .strict()
+    .object(productBaseObject);
 
 // Update Schema
 const updateProductSchema = z
     .object(updateFields)
-    .partial()
-    .strict()
+    .partial();
 
 module.exports = {
     createProductSchema,

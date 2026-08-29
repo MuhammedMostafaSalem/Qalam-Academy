@@ -3,7 +3,7 @@ const Service = require("./service.model");
 
 // Create Service
 exports.createService = createOne(Service, {
-    modelName: "Service",
+    modelName: "service",
     fileFields: ["image"],
     translatableFields: [
         "title",
@@ -13,7 +13,7 @@ exports.createService = createOne(Service, {
 
 // Get all services
 exports.getServices = getAll(Service, {
-    modelName: "Services",
+    modelName: "service",
     searchFields: [
         "title.en",
         "title.ar",
@@ -30,7 +30,7 @@ exports.getServices = getAll(Service, {
 
 // Get one Service
 exports.getService = getOne(Service, {
-    modelName: "Service",
+    modelName: "service",
     translatableFields: [
         "title",
         "description",
@@ -39,7 +39,7 @@ exports.getService = getOne(Service, {
 
 // Update one service
 exports.updateService = updateOne(Service, {
-    modelName: "Service",
+    modelName: "service",
     fileFields: ["image"],
     translatableFields: [
         "title",
@@ -49,6 +49,6 @@ exports.updateService = updateOne(Service, {
 
 // Delete one service
 exports.deleteService = deleteOne(Service, {
-    modelName: "Service",
+    modelName: "service",
     fileFields: ["image"],
 });

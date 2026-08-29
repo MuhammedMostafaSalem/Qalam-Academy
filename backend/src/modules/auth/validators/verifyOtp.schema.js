@@ -17,6 +17,6 @@ const verifyOtpSchema = z.object({
             error: "Invalid OTP purpose",
         }
     ),
-}).strict();
+});
 
 module.exports = verifyOtpSchema;

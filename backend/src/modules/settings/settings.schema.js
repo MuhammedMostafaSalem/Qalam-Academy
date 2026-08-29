@@ -153,7 +153,6 @@ const updateSettingsSchema = z.object({
         .optional(),
 
 })
-    .strict()
     .refine(
         (data) => Object.keys(data).length > 0,
         {

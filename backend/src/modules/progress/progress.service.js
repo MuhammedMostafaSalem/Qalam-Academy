@@ -6,6 +6,7 @@ const ApiError = require("../../utils/ApiError");
 
 // Update Lesson Progress
 exports.updateLessonProgress = async ({
+    req,
     userId,
     lessonId,
     watchedSeconds,
@@ -16,10 +17,7 @@ exports.updateLessonProgress = async ({
     const lesson = await Lesson.findById(lessonId);
 
     if (!lesson) {
-        throw new ApiError(
-            "Lesson not found",
-            StatusCodes.NOT_FOUND
-        );
+        throw new ApiError(req.t("lesson.notFound"), StatusCodes.NOT_FOUND);
     }
 
     // Check enrollment
@@ -29,10 +27,7 @@ exports.updateLessonProgress = async ({
     });
 
     if (!enrollment) {
-        throw new ApiError(
-            "You are not enrolled in this course",
-            StatusCodes.FORBIDDEN
-        );
+        throw new ApiError(req.t("progress.notEnrolledCourse"), StatusCodes.FORBIDDEN);
     }
 
     const existingProgress = await Progress.findOne({
@@ -114,6 +109,7 @@ exports.calculateCourseProgress = async (
 
 // Get Course Progress
 exports.getCourseProgress = async (
+    req,
     userId,
     courseId
 ) => {
@@ -123,10 +119,7 @@ exports.getCourseProgress = async (
     });
 
     if (!enrollment) {
-        throw new ApiError(
-            "Enrollment not found",
-            StatusCodes.NOT_FOUND
-        );
+        throw new ApiError(req.t("enrollment.notFound"), StatusCodes.NOT_FOUND);
     }
 
     const lessons = await Progress.find({

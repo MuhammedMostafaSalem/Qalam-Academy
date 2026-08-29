@@ -69,8 +69,7 @@ const createContactSchema = z
         phone: contactBaseObject.phone,
         subject: contactBaseObject.subject,
         message: contactBaseObject.message,
-    })
-    .strict();
+    });
 
 /*
     Update
@@ -79,8 +78,7 @@ const updateContactSchema = z
     .object({
         status: contactBaseObject.status,
         reply: contactBaseObject.reply,
-    })
-    .strict();
+    });
 
 module.exports = {
     createContactSchema,

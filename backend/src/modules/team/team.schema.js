@@ -18,10 +18,10 @@ const teamBaseObject = {
 }
 
 // 2. Creation schema (all fields are mandatory)
-const createTeamSchema = z.object(teamBaseObject).strict();
+const createTeamSchema = z.object(teamBaseObject);
 
 // 3. The update schema (all fields are optional using .partial)
-const updateTeamSchema = z.object(teamBaseObject).partial().strict();
+const updateTeamSchema = z.object(teamBaseObject).partial();
 
 module.exports = {
     createTeamSchema,

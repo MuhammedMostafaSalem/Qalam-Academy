@@ -280,7 +280,7 @@ const logout = catchAsync(async (req, res, next) => {
     sendResponse(res, {
         statusCode: StatusCodes.OK,
         success: true,
-        message: "Logged out successfully",
+        message: req.t("auth.logout"),
     });
 });
 

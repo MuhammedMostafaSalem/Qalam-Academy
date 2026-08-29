@@ -51,7 +51,7 @@ exports.addProductToCart = catchAsync(async (req, res, next) => {
     const { itemId, itemType, color } = req.body; // itemType لازم يتبعت يا 'Product' يا 'Course'
 
     if (!['Product', 'Course'].includes(itemType)) {
-        return next(new ApiError('Invalid item type. Must be Product or Course', StatusCodes.BAD_REQUEST));
+        return next(new ApiError(req.t("cart.validateitmeType"), StatusCodes.BAD_REQUEST));
     }
 
     // 1) Find item based on type
@@ -63,7 +63,9 @@ exports.addProductToCart = catchAsync(async (req, res, next) => {
     }
 
     if (!dbItem) {
-        return next(new ApiError(`No ${itemType} found with this ID`, StatusCodes.NOT_FOUND));
+        return next(new ApiError(req.t("cart.notDbItem", {
+            type: itemType
+        }), StatusCodes.NOT_FOUND));
     }
 
     // تحديد السعر (لو فيه discountPrice بنعتمدها، لو مش موجودة بنخد الـ price العادي)
@@ -113,7 +115,7 @@ exports.addProductToCart = catchAsync(async (req, res, next) => {
     return sendResponse(res, {
         success: true,
         statusCode: StatusCodes.OK,
-        message: "Product added successfully to your cart",
+        message: req.t("cart.created"),
         data: cart,
         meta: {
             totalCart: cart.products.length
@@ -132,7 +134,9 @@ exports.getLoggedUserCart = catchAsync(async (req, res, next) => {
         });
 
     if (!cart) {
-        return next(new ApiError(`No cart exist for this user: ${req.user._id}`, StatusCodes.NOT_FOUND));
+        return next(new ApiError(req.t("cart.exist", {
+            user: req.user._id
+        }), StatusCodes.NOT_FOUND));
     }
 
     return sendResponse(res, {
@@ -163,7 +167,7 @@ exports.removeCartProduct = catchAsync(async (req, res, next) => {
     });
 
     if (!cart) {
-        return next(new ApiError('Cart not found', StatusCodes.NOT_FOUND));
+        return next(new ApiError(req.t("cart.notFound"), StatusCodes.NOT_FOUND));
     }
 
     // Calculate total cart price
@@ -172,7 +176,7 @@ exports.removeCartProduct = catchAsync(async (req, res, next) => {
     return sendResponse(res, {
         success: true,
         statusCode: StatusCodes.OK,
-        message: "Item removed from cart successfully",
+        message: req.t("cart.deleted"),
         // data: cart,
         // meta: {
         //     totalCart: cart.products.length
@@ -190,7 +194,7 @@ exports.clearLoggedUserCart = catchAsync(async (req, res, next) => {
     sendResponse(res, {
         success: true,
         statusCode: StatusCodes.OK,
-        message: "Cart cleared successfully",
+        message: req.t("cart.cleared"),
     });
 });
 
@@ -209,7 +213,9 @@ exports.updateCartProductCount = catchAsync(async (req, res, next) => {
         });
 
     if (!cart) {
-        return next(new ApiError(`No cart exist for this user: ${req.user._id}`, StatusCodes.NOT_FOUND));
+        return next(new ApiError(req.t("cart.exist", {
+            user: req.user._id
+        }), StatusCodes.NOT_FOUND));
     }
 
     const itemIndex = cart.products.findIndex(
@@ -222,7 +228,9 @@ exports.updateCartProductCount = catchAsync(async (req, res, next) => {
         cart.products[itemIndex] = productItem;
     } else {
         return next(
-            new ApiError(`No Product Cart item found for this id: ${itemId}`, StatusCodes.NOT_FOUND)
+            new ApiError(req.t("cart.itemFound", {
+                id: itemId
+            }), StatusCodes.NOT_FOUND)
         );
     }
 
@@ -258,14 +266,14 @@ exports.applyCouponToCart = catchAsync(async (req, res, next) => {
         });
 
     if (!cart) {
-        return next(new ApiError('Cart not found', StatusCodes.NOT_FOUND));
+        return next(new ApiError(req.t("cart.notFound"), StatusCodes.NOT_FOUND));
     }
 
     if (!coupon) {
         cart.totalAfterDiscount = undefined;
         cart.coupon = undefined;
         await cart.save();
-        return next(new ApiError('Coupon is invalid or has expired', StatusCodes.BAD_REQUEST));
+        return next(new ApiError(req.t("cart.invalidCoupon"), StatusCodes.BAD_REQUEST));
     }
 
     const totalPrice = await calcTotalCartPrice(cart);
@@ -301,7 +309,7 @@ exports.removeCoupon = catchAsync(async (req, res) => {
     });
 
     if (!cart) {
-        throw new ApiError("Cart not found", StatusCodes.NOT_FOUND);
+        throw new ApiError(req.t("cart.notFound"), StatusCodes.NOT_FOUND);
     }
 
     cart.coupon = null;
@@ -312,6 +320,6 @@ exports.removeCoupon = catchAsync(async (req, res) => {
     return sendResponse(res, {
         success: true,
         statusCode: StatusCodes.OK,
-        message: "Coupon removed successfully",
+        message: req.t("cart.removeCoupon"),
     });
 });
