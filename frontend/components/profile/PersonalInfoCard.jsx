@@ -2,9 +2,12 @@
 
 import Section from "../sections/Section";
 import useProfile from "@/hooks/profile/useProfile";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const PersonalInfoCard = () => {
     const { user, loadingProfile, handleUpdateProfile } = useProfile();
+    const { language } = useLanguage();
+    const isEn = language === "en";
 
     if (!user) return null;
 
@@ -26,11 +29,11 @@ const PersonalInfoCard = () => {
         >
             <div className="mb-8">
                 <h2 className="text-xl font-bold">
-                    المعلومات الشخصية
+                    {isEn ? "Personal Information" : "المعلومات الشخصية"}
                 </h2>
 
                 <p className="mt-2 text-text-secondary">
-                    قم بتحديث بيانات حسابك الشخصية.
+                    {isEn ? "Update your personal account details." : "قم بتحديث بيانات حسابك الشخصية."}
                 </p>
             </div>
 
@@ -40,7 +43,7 @@ const PersonalInfoCard = () => {
 
                     <div>
                         <label className="mb-2 block font-medium">
-                            الاسم الأول
+                            {isEn ? "First Name" : "الاسم الأول"}
                         </label>
 
                         <input
@@ -64,7 +67,7 @@ const PersonalInfoCard = () => {
 
                     <div>
                         <label className="mb-2 block font-medium">
-                            الاسم الأخير
+                            {isEn ? "Last Name" : "الاسم الأخير"}
                         </label>
 
                         <input
@@ -88,7 +91,7 @@ const PersonalInfoCard = () => {
 
                     <div>
                         <label className="mb-2 block font-medium">
-                            البريد الإلكتروني
+                            {isEn ? "Email Address" : "البريد الإلكتروني"}
                         </label>
 
                         <input
@@ -112,7 +115,7 @@ const PersonalInfoCard = () => {
 
                     <div>
                         <label className="mb-2 block font-medium">
-                            رقم الهاتف
+                            {isEn ? "Phone Number" : "رقم الهاتف"}
                         </label>
 
                         <input
@@ -136,7 +139,7 @@ const PersonalInfoCard = () => {
 
                     <div>
                         <label className="mb-2 block font-medium">
-                            الدولة
+                            {isEn ? "Country" : "الدولة"}
                         </label>
 
                         <input
@@ -160,7 +163,7 @@ const PersonalInfoCard = () => {
 
                     <div>
                         <label className="mb-2 block font-medium">
-                            المدينة
+                            {isEn ? "City" : "المدينة"}
                         </label>
 
                         <input
@@ -186,7 +189,7 @@ const PersonalInfoCard = () => {
 
                 <div>
                     <label className="mb-2 block font-medium">
-                        العنوان
+                        {isEn ? "Address" : "العنوان"}
                     </label>
 
                     <input
@@ -210,7 +213,7 @@ const PersonalInfoCard = () => {
 
                 <div>
                     <label className="mb-2 block font-medium">
-                        نبذة شخصية
+                        {isEn ? "Bio / About" : "نبذة شخصية"}
                     </label>
 
                     <textarea
@@ -251,7 +254,7 @@ const PersonalInfoCard = () => {
                             disabled:cursor-not-allowed
                         "
                     >
-                        {loadingProfile ? "جاري الحفظ..." : "حفظ التعديلات"}
+                        {loadingProfile ? (isEn ? "Saving..." : "جاري الحفظ...") : (isEn ? "Save Changes" : "حفظ التعديلات")}
                     </button>
 
                 </div>

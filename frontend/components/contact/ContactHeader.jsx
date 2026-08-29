@@ -5,7 +5,10 @@ import SectionBadge from "@/components/sections/SectionBadge";
 import { heroAnimation } from "@/lib/animation/heroAnimation";
 import { getHeroByPageAction } from "@/actions/heroActions";
 
+import { useLanguage } from "@/providers/LanguageProvider";
+
 const ContactHeader = () => {
+    const { language, localize } = useLanguage();
     const [hero, setHero] = useState(null);
 
     useEffect(() => {
@@ -22,9 +25,15 @@ const ContactHeader = () => {
         fetchHero();
     }, []);
 
-    const title = hero?.title?.ar || hero?.title?.en || hero?.title || "يسعدنا التواصل معك";
-    const subtitle = hero?.subtitle?.ar || hero?.subtitle?.en || hero?.subtitle || "تواصل معنا";
-    const description = hero?.description?.ar || hero?.description?.en || hero?.description || "سواء كنت ترغب في بدء مشروع جديد، أو لديك استفسار حول خدماتنا، أو تحتاج إلى استشارة تقنية، فإن فريق قلم أكاديمي جاهز للإجابة على جميع أسئلتك ومساعدتك في الوصول إلى أفضل الحلول الرقمية.";
+    const defaultTitle = language === "en" ? "We'd Love to Hear From You" : "يسعدنا التواصل معك";
+    const defaultSubtitle = language === "en" ? "Contact Us" : "تواصل معنا";
+    const defaultDesc = language === "en"
+        ? "Whether you're starting a new project, asking about courses, or needing technical consultation, our team is here to help."
+        : "سواء كنت ترغب في بدء مشروع جديد، أو لديك استفسار حول خدماتنا، أو تحتاج إلى استشارة تقنية، فإن فريق قلم أكاديمي جاهز للإجابة على جميع أسئلتك ومساعدتك في الوصول إلى أفضل الحلول الرقمية.";
+
+    const title = localize(hero?.title, defaultTitle);
+    const subtitle = localize(hero?.subtitle, defaultSubtitle);
+    const description = localize(hero?.description, defaultDesc);
 
     return (
         <header

@@ -2,46 +2,57 @@
 
 import { useEffect, useState } from "react";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import { testimonials as fallbackTestimonials } from "@/constants/testimonials";
 import TestimonialCard from "../home/testimonials/TestimonialCard";
 import Slider from '@/components/ui/Slider';
 import { getReviewsAction } from "@/actions/reviewActions";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:5000";
 
 const TestimonialsSlider = () => {
+    const { language } = useLanguage();
     const [testimonialsList, setTestimonialsList] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         const fetchReviews = async () => {
             try {
                 const res = await getReviewsAction("limit=10");
-                if (res.success && Array.isArray(res.data) && res.data.length > 0) {
+                if (res.success && Array.isArray(res.data)) {
+                    const defaultStudentName = language === "en" ? "Academy Student" : "طالب بالأكاديمية";
                     const formatted = res.data.map((r) => ({
                         review: r.comment || "",
                         rating: r.rating || 5,
-                        name: r.user ? `${r.user.firstName || ''} ${r.user.lastName || ''}`.trim() : "طالب بالأكاديمية",
-                        position: typeof r.course?.title === "object" ? (r.course.title.ar || r.course.title.en) : r.course?.title || "طالب الأكاديمية",
+                        name: r.user ? `${r.user.firstName || ''} ${r.user.lastName || ''}`.trim() : defaultStudentName,
+                        position: r.course?.title || defaultStudentName,
                         avatar: r.user?.avatar ? (r.user.avatar.startsWith("http") ? r.user.avatar : `${BASE_URL}${r.user.avatar}`) : "/assets/user-icon.png",
                     }));
                     setTestimonialsList(formatted);
-                }
+                } else setError(res.message);
             } catch (err) {
-                console.error("Failed to fetch testimonials API", err);
+                setError(err?.message || "Failed to fetch testimonials");
             } finally {
                 setLoading(false);
             }
         };
         fetchReviews();
-    }, []);
-
-    const displayTestimonials = testimonialsList.length > 0 ? testimonialsList : fallbackTestimonials;
+    }, [language]);
 
     if (loading) {
         return (
-            <div className="py-12 text-center text-white/60">
-                جاري تحميل آراء الطلاب...
+            <div className="py-12 text-center text-text-secondary">
+                {language === "en" ? "Loading testimonials..." : "جاري تحميل آراء الطلاب..."}
+            </div>
+        );
+    }
+
+    if (error) return <div className="py-12 text-center text-error">{error}</div>;
+
+    if (testimonialsList.length === 0) {
+        return (
+            <div className="py-12 text-center text-text-muted">
+                {language === "en" ? "No student reviews available yet" : "لا توجد آراء طلاب متاحة حتى الآن"}
             </div>
         );
     }
@@ -61,7 +72,7 @@ const TestimonialsSlider = () => {
             prevEl=".testi-prev"
             nextEl=".testi-next"
         >
-            {displayTestimonials.map((testimonial, index) => (
+            {testimonialsList.map((testimonial, index) => (
                 <TestimonialCard
                     key={index}
                     testimonial={testimonial}

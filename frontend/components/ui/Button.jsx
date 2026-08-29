@@ -15,7 +15,7 @@ const Button = ({
             "border border-primary text-primary hover:bg-primary hover:text-white",
 
         ghost:
-            "text-primary hover:bg-blue-50",
+            "text-primary hover:bg-primary/10",
     };
 
     return (

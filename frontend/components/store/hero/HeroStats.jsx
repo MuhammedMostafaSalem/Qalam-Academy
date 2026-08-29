@@ -1,28 +1,35 @@
+"use client";
+
 import { MdOutlineHighQuality } from "react-icons/md";
 import { FiDownload } from "react-icons/fi";
 import { GoShieldCheck } from "react-icons/go";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const HeroStats = () => {
-        const stats = [
-            {
-                id: 1,
-                icon: MdOutlineHighQuality,
-                value: "جودة عالية",
-                label: "محتوى منظم ومجرب",
-            },
-            {
-                id: 2,
-                icon: FiDownload,
-                value: "تحميل فوري",
-                label: "ملفات جازة للتحميل",
-            },
-            {
-                id: 3,
-                icon: GoShieldCheck,
-                value: "+أمان في الدفع",
-                label: "دفع آمن 100%",
-            },
-        ]
+    const { language } = useLanguage();
+    const isEn = language === "en";
+
+    const stats = [
+        {
+            id: 1,
+            icon: MdOutlineHighQuality,
+            value: isEn ? "High Quality" : "جودة عالية",
+            label: isEn ? "Organized & Tested Content" : "محتوى منظم ومجرب",
+        },
+        {
+            id: 2,
+            icon: FiDownload,
+            value: isEn ? "Instant Download" : "تحميل فوري",
+            label: isEn ? "Ready-to-use Files" : "ملفات جاهزة للتحميل",
+        },
+        {
+            id: 3,
+            icon: GoShieldCheck,
+            value: isEn ? "Payment Security" : "أمان في الدفع",
+            label: isEn ? "100% Secure Checkout" : "دفع آمن 100%",
+        },
+    ];
+
     return (
         <div className="mt-16 flex justify-center gap-5">
             {stats.map((item, index) => {
@@ -36,7 +43,7 @@ const HeroStats = () => {
                         <Icon
                             size={18}
                             className="
-                                text-[#36C8FF]
+                                text-accent
                             "
                         />
 
@@ -45,7 +52,7 @@ const HeroStats = () => {
                             sm:text-[12px]
                             md:text-[14px]
                             leading-none
-                            text-white
+                            text-text-primary
                         ">
                             {item.value}
                         </h3>
@@ -54,7 +61,7 @@ const HeroStats = () => {
                             text-[8px]
                             sm:text-[10px]
                             md:text-[12px]
-                            text-[#A6B0CF]
+                            text-text-secondary
                         ">
                             {item.label}
                         </p>
@@ -68,7 +75,7 @@ const HeroStats = () => {
                                     -translate-y-1/2
                                     h-[40px]
                                     w-[1px]
-                                    bg-white/5
+                                    bg-card-hover
                                 "
                             />
                         )}
@@ -76,7 +83,7 @@ const HeroStats = () => {
                 );
             })}
         </div>
-    )
-}
+    );
+};
 
-export default HeroStats
+export default HeroStats;

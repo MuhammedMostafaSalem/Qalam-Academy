@@ -2,10 +2,13 @@
 
 import { useRouter } from "next/navigation";
 import Button from "@/components/ui/Button";
-import { HiArrowRight, HiOutlineBookOpen } from "react-icons/hi2";
+import { HiArrowLeft, HiArrowRight, HiOutlineBookOpen } from "react-icons/hi2";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const HeroButtons = () => {
     const router = useRouter();
+    const { language, isRtl } = useLanguage();
+    const isEn = language === "en";
 
     return (
         <div
@@ -27,9 +30,8 @@ const HeroButtons = () => {
                 "
                 onClick={() => router.push("/contact")}
             >
-                <HiArrowRight size={20} />
-
-                <span>ابدأ مشروعك معنا</span>
+                <span>{isEn ? "Start Your Project" : "ابدأ مشروعك معنا"}</span>
+                {isRtl ? <HiArrowLeft size={20} /> : <HiArrowRight size={20} />}
             </Button>
 
             <Button
@@ -48,7 +50,7 @@ const HeroButtons = () => {
             >
                 <HiOutlineBookOpen size={20} />
 
-                <span>تصفح المقالات</span>
+                <span>{isEn ? "Browse Articles" : "تصفح المقالات"}</span>
             </Button>
         </div>
     );

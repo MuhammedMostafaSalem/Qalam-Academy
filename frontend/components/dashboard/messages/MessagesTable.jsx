@@ -8,8 +8,12 @@ import { useState, useEffect } from "react";
 import useMessages from "@/hooks/messages/useMessages";
 import { deleteMessageAction } from "@/actions/contactActions";
 import useToast from "@/hooks/useToast";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const MessagesTable = ({ setMessagesLength }) => {
+    const { language } = useLanguage();
+    const isEn = language === "en";
+
     const { messages, loading, error, refetch } = useMessages();
     const { successMessage, errorMessage } = useToast();
     const [deletingId, setDeletingId] = useState(null);
@@ -23,16 +27,16 @@ const MessagesTable = ({ setMessagesLength }) => {
     }, [messages, setMessagesLength]);
 
     const handleDelete = async (messageId) => {
-        if (!confirm("هل أنت متأكد من حذف هذه الرسالة؟")) return;
+        if (!confirm(isEn ? "Are you sure you want to delete this message?" : "هل أنت متأكد من حذف هذه الرسالة؟")) return;
 
         setDeletingId(messageId);
         const result = await deleteMessageAction(messageId);
 
         if (result.success) {
-            successMessage(result.message || "تم حذف الرسالة بنجاح");
+            successMessage(result.message || (isEn ? "Message deleted successfully" : "تم حذف الرسالة بنجاح"));
             refetch();
         } else {
-            errorMessage(result.message || "فشل حذف الرسالة");
+            errorMessage(result.message || (isEn ? "Failed to delete message" : "فشل حذف الرسالة"));
         }
 
         setDeletingId(null);
@@ -41,7 +45,7 @@ const MessagesTable = ({ setMessagesLength }) => {
     if (loading) {
         return (
             <div className="mt-[20px] text-center py-10">
-                <p className="text-text-secondary">جاري التحميل...</p>
+                <p className="text-text-secondary">{isEn ? "Loading messages..." : "جاري التحميل..."}</p>
             </div>
         );
     }
@@ -57,7 +61,9 @@ const MessagesTable = ({ setMessagesLength }) => {
     if (!messages || messages.length === 0) {
         return (
             <div className="mt-[20px] text-center py-10">
-                <div className="text-center py-6 text-text-muted">لا يوجد بيانات متاحة</div>
+                <div className="text-center py-6 text-text-muted">
+                    {isEn ? "No messages available" : "لا يوجد بيانات متاحة"}
+                </div>
             </div>
         );
     }
@@ -68,12 +74,12 @@ const MessagesTable = ({ setMessagesLength }) => {
                 <Table className="w-full min-w-[1000px]">
                     <Table.Head>
                         <Table.Row>
-                            <Table.Th>الاسم</Table.Th>
-                            <Table.Th>البريد</Table.Th>
-                            <Table.Th>الموضوع</Table.Th>
-                            <Table.Th>الرسالة</Table.Th>
-                            <Table.Th>التاريخ</Table.Th>
-                            <Table.Th>الإجراءات</Table.Th>
+                            <Table.Th>{isEn ? "Name" : "الاسم"}</Table.Th>
+                            <Table.Th>{isEn ? "Email" : "البريد"}</Table.Th>
+                            <Table.Th>{isEn ? "Subject" : "الموضوع"}</Table.Th>
+                            <Table.Th>{isEn ? "Message" : "الرسالة"}</Table.Th>
+                            <Table.Th>{isEn ? "Date" : "التاريخ"}</Table.Th>
+                            <Table.Th>{isEn ? "Actions" : "الإجراءات"}</Table.Th>
                         </Table.Row>
                     </Table.Head>
 
@@ -98,7 +104,7 @@ const MessagesTable = ({ setMessagesLength }) => {
 
                                 <Table.Td>
                                     {message.createdAt
-                                        ? new Date(message.createdAt).toLocaleDateString("ar-EG")
+                                        ? new Date(message.createdAt).toLocaleDateString(isEn ? "en-US" : "ar-EG")
                                         : "—"}
                                 </Table.Td>
 

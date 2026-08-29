@@ -11,8 +11,12 @@ import SectionTitle from "@/components/sections/SectionTitle";
 import SectionDescription from "@/components/sections/SectionDescription";
 
 import useResetPasswordForm from "@/hooks/auth/useResetPasswordForm";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const ResetPasswordForm = () => {
+    const { language } = useLanguage();
+    const isEn = language === "en";
+
     const {
         token,
         formAction,
@@ -53,22 +57,19 @@ const ResetPasswordForm = () => {
                         font-bold
                     "
                 >
-                    إعادة تعيين كلمة المرور
+                    {isEn ? "Reset Password" : "إعادة تعيين كلمة المرور"}
                 </SectionTitle>
 
                 <SectionDescription>
-                    أدخل كلمة المرور الجديدة لحسابك
+                    {isEn ? "Enter the new password for your account" : "أدخل كلمة المرور الجديدة لحسابك"}
                 </SectionDescription>
             </div>
 
-
             <form
                 action={formAction}
-                className="
-                    space-y-5
-                "
+                className="space-y-5"
             >
-                {/* حقول مخفية لتمرير الـ Token للـ Server Action */}
+                {/* Hidden token for Server Action */}
                 <input
                     type="hidden"
                     name="token"
@@ -78,8 +79,8 @@ const ResetPasswordForm = () => {
                 <AuthInput
                     type="password"
                     name="password"
-                    label="كلمة المرور الجديدة"
-                    placeholder="********"
+                    label={isEn ? "New Password" : "كلمة المرور الجديدة"}
+                    placeholder="••••••••"
                     onChange={handleInputChange}
                     error={fieldErrors.password}
                     required
@@ -88,15 +89,15 @@ const ResetPasswordForm = () => {
                 <AuthInput
                     type="password"
                     name="confirmPassword"
-                    label="تأكيد كلمة المرور"
-                    placeholder="********"
+                    label={isEn ? "Confirm Password" : "تأكيد كلمة المرور"}
+                    placeholder="••••••••"
                     onChange={handleInputChange}
                     error={fieldErrors.confirmPassword}
                     required
                 />
 
                 {errors && (
-                    <p className="text-sm text-red-500 text-center">
+                    <p className="text-sm text-error text-center">
                         {errors}
                     </p>
                 )}
@@ -120,11 +121,11 @@ const ResetPasswordForm = () => {
                 >
                     <MdLockOutline size={20} />
 
-                    {
-                        loading
-                            ? "جارٍ التحديث..."
-                            : "تغيير كلمة المرور"
-                    }
+                    <span>
+                        {loading
+                            ? (isEn ? "Updating..." : "جارٍ التحديث...")
+                            : (isEn ? "Change Password" : "تغيير كلمة المرور")}
+                    </span>
                 </Button>
             </form>
 
@@ -136,23 +137,22 @@ const ResetPasswordForm = () => {
                     text-text-secondary
                 "
             >
-                تذكرت كلمة المرور؟
+                {isEn ? "Remembered your password?" : "تذكرت كلمة المرور؟"}
 
                 <Link
                     href="/login"
                     className="
-                        mr-2
+                        mx-2
                         font-semibold
                         text-primary
                         hover:underline
                     "
                 >
-                    تسجيل الدخول
+                    {isEn ? "Sign in" : "تسجيل الدخول"}
                 </Link>
             </p>
         </AuthCard>
     );
 };
-
 
 export default ResetPasswordForm;

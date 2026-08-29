@@ -25,21 +25,24 @@ const FALLBACK_ICONS = [
     HiOutlineShieldCheck,
 ];
 
+import { useLanguage } from "@/providers/LanguageProvider";
+
 const ServicesGrid = () => {
+    const { language } = useLanguage();
     const [services, setServices] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        getServicesAction("limit=6").then((result) => {
+        getServicesAction("isActive=true&limit=6").then((result) => {
             if (result.success) setServices(result.data);
             setLoading(false);
         });
-    }, []);
+    }, [language]);
 
     if (loading) {
         return (
             <div className="py-10 text-center text-text-secondary">
-                جاري تحميل الخدمات...
+                {language === "en" ? "Loading services..." : "جاري تحميل الخدمات..."}
             </div>
         );
     }
@@ -47,7 +50,7 @@ const ServicesGrid = () => {
     if (services.length === 0) {
         return (
             <div className="py-10 text-center text-text-muted">
-                لا توجد خدمات متاحة حالياً
+                {language === "en" ? "No services available currently" : "لا توجد خدمات متاحة حالياً"}
             </div>
         );
     }
@@ -67,9 +70,9 @@ const ServicesGrid = () => {
                     index={index}
                     service={{
                         icon: FALLBACK_ICONS[index % FALLBACK_ICONS.length],
-                        title: service.title?.ar || service.title,
-                        description: service.description?.ar || service.description,
-                        slug: service._id,
+                        title: service.title,
+                        description: service.description,
+                        slug: service.slug,
                     }}
                 />
             ))}

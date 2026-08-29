@@ -31,7 +31,7 @@ const CompanyStatCard = ({
                         {value}
                     </h3>
 
-                    <p className="mt-1 text-muted-foreground">
+                    <p className="mt-1 text-text-secondary">
                         {label}
                     </p>
 
@@ -63,7 +63,7 @@ const CompanyStatCard = ({
             h-2/3
             w-px
             -translate-y-1/2
-            bg-white/10
+            bg-card-hover
         "
                 />
             )}

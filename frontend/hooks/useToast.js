@@ -1,26 +1,17 @@
 import { useDispatch } from "react-redux";
 import { showToast } from "@/store/slices/toastSlice";
+import { useCallback, useMemo } from "react";
 
 export default function useToast() {
     const dispatch = useDispatch();
 
-    return {
-        successMessage: (message) => {
-            dispatch(
-                showToast({
-                    message,
-                    type: "success"
-                })
-            );
-        },
+    const successMessage = useCallback((message) => {
+        dispatch(showToast({ message, type: "success" }));
+    }, [dispatch]);
 
-        errorMessage: (message) => {
-            dispatch(
-                showToast({
-                    message,
-                    type: "error"
-                })
-            );
-        },
-    };
+    const errorMessage = useCallback((message) => {
+        dispatch(showToast({ message, type: "error" }));
+    }, [dispatch]);
+
+    return useMemo(() => ({ successMessage, errorMessage }), [errorMessage, successMessage]);
 }

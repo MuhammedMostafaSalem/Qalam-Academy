@@ -4,8 +4,11 @@ import { useEffect, useState } from "react";
 import ReviewCard from "./ReviewCard";
 import { getReviewsAction } from "@/actions/reviewActions";
 import ReviewForm from "./ReviewForm";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const ReviewsList = ({ courseId }) => {
+    const { language } = useLanguage();
+    const isEn = language === "en";
     const [reviews, setReviews] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showForm, setShowForm] = useState(false);
@@ -27,7 +30,7 @@ const ReviewsList = ({ courseId }) => {
         if (courseId) {
             fetchReviews();
         }
-    }, [courseId]);
+    }, [courseId, language]);
 
     const handleReviewSubmitted = () => {
         setShowForm(false);
@@ -37,7 +40,7 @@ const ReviewsList = ({ courseId }) => {
     if (loading) {
         return (
             <div className="py-8 text-center text-text-secondary">
-                جاري تحميل التقييمات...
+                {isEn ? "Loading reviews..." : "جاري تحميل التقييمات..."}
             </div>
         );
     }
@@ -46,7 +49,7 @@ const ReviewsList = ({ courseId }) => {
         <div className="space-y-6">
             {/* Add Review Button */}
             <div className="flex justify-between items-center">
-                <h3 className="text-xl font-bold">جميع التقييمات</h3>
+                <h3 className="text-xl font-bold">{isEn ? "All Reviews" : "جميع التقييمات"}</h3>
                 <button
                     onClick={() => setShowForm(!showForm)}
                     className="
@@ -61,7 +64,9 @@ const ReviewsList = ({ courseId }) => {
                         hover:opacity-90
                     "
                 >
-                    {showForm ? "إلغاء" : "أضف تقييمك"}
+                    {showForm
+                        ? (isEn ? "Cancel" : "إلغاء")
+                        : (isEn ? "Add Your Review" : "أضف تقييمك")}
                 </button>
             </div>
 
@@ -77,7 +82,9 @@ const ReviewsList = ({ courseId }) => {
             {/* Reviews List */}
             {reviews.length === 0 ? (
                 <div className="py-16 text-center text-text-secondary">
-                    لا توجد تقييمات حتى الآن. كن أول من يقيم هذا الكورس!
+                    {isEn
+                        ? "No reviews yet. Be the first to review this course!"
+                        : "لا توجد تقييمات حتى الآن. كن أول من يقيم هذا الكورس!"}
                 </div>
             ) : (
                 <div className="grid gap-6">

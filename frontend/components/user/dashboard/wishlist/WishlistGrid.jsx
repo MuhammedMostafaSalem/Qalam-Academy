@@ -1,12 +1,13 @@
 "use client";
 
-import LoadMore from "@/components/shared/LoadMore";
 import WishlistCard from "@/components/ui/WishlistCard";
 import FullPageLoader from "@/components/ui/FullPageLoader";
 import useWishlist from "@/hooks/wishlist/useWishlist";
 import imgCourse from '@/public/assets/img-card.jpg';
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const WishlistGrid = () => {
+    const { language, localize } = useLanguage();
     const { wishlist, loading, removeFromWishlist } = useWishlist();
 
     if (loading) {
@@ -16,17 +17,21 @@ const WishlistGrid = () => {
     if (wishlist.length === 0) {
         return (
             <div className="text-center py-12 text-text-muted">
-                <p className="text-lg">لا توجد كورسات في المفضلة</p>
+                <p className="text-lg">
+                    {language === "en" ? "No courses in your wishlist" : "لا توجد كورسات في المفضلة"}
+                </p>
             </div>
         );
     }
 
+    const defaultInstructor = language === "en" ? "Qalam Academy" : "أكاديمية قلم";
+
     const mappedCourses = wishlist.map((course) => ({
         _id: course._id,
-        title: typeof course.title === "object" ? (course.title.ar || course.title.en) : course.title,
+        title: localize(course.title, language === "en" ? "Untitled Course" : "كورس بدون عنوان"),
         instructor: course.instructor
             ? `${course.instructor.firstName || ""} ${course.instructor.lastName || ""}`.trim()
-            : "أكاديمية قلم",
+            : defaultInstructor,
         price: course.discountPrice > 0 ? course.discountPrice : course.price,
         image: course.thumbnail || imgCourse,
     }));
@@ -50,11 +55,8 @@ const WishlistGrid = () => {
                     />
                 ))}
             </div>
-
-            {wishlist.length >= 6 && <LoadMore />}
         </div>
     );
 };
-
 
 export default WishlistGrid;

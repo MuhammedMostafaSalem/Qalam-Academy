@@ -1,13 +1,16 @@
 "use client";
 
-import Select from "@/components/ui/Select"
-import Toolbar from "@/components/ui/Toolbar"
+import Select from "@/components/ui/Select";
+import Toolbar from "@/components/ui/Toolbar";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import { getCategoriesAction } from "@/actions/categoryActions";
 import { MdClose } from "react-icons/md";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const BlogToolbar = () => {
+    const { language, localize } = useLanguage();
+    const isEn = language === "en";
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
@@ -21,16 +24,14 @@ const BlogToolbar = () => {
 
     useEffect(() => {
         const fetchCategories = async () => {
-            const res = await getCategoriesAction("limit=100");
-            console.log(res);
-            console.log(res.data);
+            const res = await getCategoriesAction("type=blog&limit=100");
             if (res.success) {
                 const list = res.data?.categories || res.data?.documents || res.data || [];
                 setCategories(list);
             }
         };
         fetchCategories();
-    }, []);
+    }, [language]);
 
     useEffect(() => {
         const params = new URLSearchParams();
@@ -51,20 +52,20 @@ const BlogToolbar = () => {
         setSearchQuery("");
         setCategoryFilter("");
         setStatusFilter("");
-    }
+    };
 
     const categoryOptions = [
-        { value: "", label: "كل التصنيفات" },
+        { value: "", label: isEn ? "All Categories" : "كل التصنيفات" },
         ...categories.map((c) => ({
             value: c._id,
-            label: c.title?.ar || c.title
+            label: localize(c.title, isEn ? "Category" : "تصنيف")
         }))
     ];
 
     const statusOptions = [
-        { value: "", label: "كل الحالات" },
-        { value: "true", label: "منشور" },
-        { value: "false", label: "مسودة" }
+        { value: "", label: isEn ? "All Statuses" : "كل الحالات" },
+        { value: "true", label: isEn ? "Published" : "منشور" },
+        { value: "false", label: isEn ? "Draft" : "مسودة" }
     ];
 
     return (
@@ -72,7 +73,7 @@ const BlogToolbar = () => {
             <Toolbar
                 searchQuery={searchQuery}
                 setSearchQuery={setSearchQuery}
-                inputPlaceholder="ابحث عن مقال..."
+                inputPlaceholder={isEn ? "Search articles..." : "ابحث عن مقال..."}
                 filters={
                     <>
                         <Select
@@ -103,14 +104,14 @@ const BlogToolbar = () => {
                                 "
                             >
                                 <MdClose size={16} />
-                                <span>مسح الفلاتر</span>
+                                <span>{isEn ? "Clear Filters" : "مسح الفلاتر"}</span>
                             </button>
                         )}
                     </>
                 }
             />
         </div>
-    )
-}
+    );
+};
 
-export default BlogToolbar
+export default BlogToolbar;

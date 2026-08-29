@@ -4,8 +4,12 @@ import { useState, useEffect } from "react";
 import { HiXMark } from "react-icons/hi2";
 import { updatePartnerAction } from "@/actions/partnerActions";
 import useToast from "@/hooks/useToast";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const UpdatePartnerModal = ({ isOpen, onClose, partner, onSuccess }) => {
+    const { language } = useLanguage();
+    const isEn = language === "en";
+
     const [name, setName] = useState("");
     const [partnerUrl, setPartnerUrl] = useState("");
     const [image, setImage] = useState(null);
@@ -37,10 +41,13 @@ const UpdatePartnerModal = ({ isOpen, onClose, partner, onSuccess }) => {
         setIsPending(false);
 
         if (result.success) {
-            successMessage(result.message);
+            successMessage(result.message || (isEn ? "Partner updated successfully" : "تم تعديل الشريك بنجاح"));
+            if (typeof window !== "undefined") {
+                window.dispatchEvent(new Event("partner-updated"));
+            }
             onSuccess();
         } else {
-            errorMessage(result.message);
+            errorMessage(result.message || (isEn ? "Failed to update partner" : "فشل تعديل الشريك"));
         }
     };
 
@@ -56,17 +63,17 @@ const UpdatePartnerModal = ({ isOpen, onClose, partner, onSuccess }) => {
           <button
             type="button"
             onClick={onClose}
-            className="absolute left-6 top-6 text-text-secondary hover:text-text-primary transition p-1 rounded-xl hover:bg-background"
+            className="absolute rtl:left-6 rtl:right-auto ltr:right-6 ltr:left-auto top-6 text-text-secondary hover:text-text-primary transition p-1 rounded-xl hover:bg-background"
           >
             <HiXMark size={24} />
           </button>
           <h2 className="text-xl font-bold mb-6 text-text-primary">
-            تعديل الشريك
+            {isEn ? "Edit Partner" : "تعديل الشريك"}
           </h2>
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <div>
               <label className="block text-sm text-text-secondary mb-1">
-                اسم الشريك
+                {isEn ? "Partner Name" : "اسم الشريك"}
               </label>
               <input
                 type="text"
@@ -78,7 +85,7 @@ const UpdatePartnerModal = ({ isOpen, onClose, partner, onSuccess }) => {
             </div>
             <div>
               <label className="block text-sm text-text-secondary mb-1">
-                الموقع الإلكتروني (اختياري)
+                {isEn ? "Website URL (Optional)" : "الموقع الإلكتروني (اختياري)"}
               </label>
               <input
                 type="url"
@@ -90,7 +97,7 @@ const UpdatePartnerModal = ({ isOpen, onClose, partner, onSuccess }) => {
             </div>
             <div>
               <label className="block text-sm text-text-secondary mb-1">
-                صورة الشريك (تغيير الشعار)
+                {isEn ? "Partner Logo (Change Logo)" : "صورة الشريك (تغيير الشعار)"}
               </label>
               <input
                 type="file"
@@ -106,14 +113,14 @@ const UpdatePartnerModal = ({ isOpen, onClose, partner, onSuccess }) => {
                 disabled={isPending}
                 className="px-5 py-2.5 rounded-xl border border-border text-text-primary hover:bg-background transition font-medium"
               >
-                إلغاء
+                {isEn ? "Cancel" : "إلغاء"}
               </button>
               <button
                 type="submit"
                 disabled={isPending}
                 className="gradient-button px-6 py-2.5 rounded-xl text-white font-medium hover:opacity-90 transition shadow-lg shadow-primary/20"
               >
-                {isPending ? "جاري الحفظ..." : "حفظ التعديلات"}
+                {isPending ? (isEn ? "Saving..." : "جاري الحفظ...") : (isEn ? "Save Changes" : "حفظ التعديلات")}
               </button>
             </div>
           </form>

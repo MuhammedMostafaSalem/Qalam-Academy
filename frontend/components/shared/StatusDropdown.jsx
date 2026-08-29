@@ -1,8 +1,14 @@
+"use client";
+
 import { useRef, useEffect, useState } from "react";
 import { BsCheckCircleFill, BsXCircleFill } from "react-icons/bs";
 import { HiChevronDown } from "react-icons/hi";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const StatusDropdown = ({ isActive, onSelect }) => {
+    const { language } = useLanguage();
+    const isEn = language === "en";
+
     const [open, setOpen] = useState(false);
     const [openUp, setOpenUp] = useState(false);
     const menuRef = useRef(null);
@@ -20,15 +26,15 @@ const StatusDropdown = ({ isActive, onSelect }) => {
     const statuses = [
         {
             value: true,
-            label: "نشط",
+            label: isEn ? "Active" : "نشط",
             icon: BsCheckCircleFill,
-            color: "text-emerald-500 bg-emerald-500/10 border-emerald-500/20"
+            color: "text-success bg-success/10 border-success/20"
         },
         {
             value: false,
-            label: "معطل",
+            label: isEn ? "Inactive" : "معطل",
             icon: BsXCircleFill,
-            color: "text-red-500 bg-red-500/10 border-red-500/20"
+            color: "text-error bg-error/10 border-error/20"
         },
     ];
 
@@ -126,7 +132,7 @@ const StatusDropdown = ({ isActive, onSelect }) => {
                                 }
                             `}
                         >
-                            <Icon className={`text-sm ${status.value ? "text-emerald-500" : "text-red-500"}`} />
+                            <Icon className={`text-sm ${status.value ? "text-success" : "text-error"}`} />
                             <span>{status.label}</span>
                         </button>
                     );

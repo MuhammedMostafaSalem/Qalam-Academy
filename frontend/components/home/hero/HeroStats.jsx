@@ -1,35 +1,39 @@
+"use client";
+
 import {
     HiOutlineFolder,
     HiOutlineUsers,
     HiOutlineClock,
     HiOutlineAcademicCap,
 } from "react-icons/hi2";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const HeroStats = () => {
+    const { language } = useLanguage();
     const stats = [
         {
             id: 1,
             icon: HiOutlineAcademicCap,
             value: "+25",
-            label: "محاضر",
+            label: language === "en" ? "Instructors" : "محاضرون",
         },
         {
             id: 2,
             icon: HiOutlineClock,
             value: "+7",
-            label: "سنوات خبرة",
+            label: language === "en" ? "Years of Experience" : "سنوات خبرة",
         },
         {
             id: 3,
             icon: HiOutlineUsers,
             value: "+80",
-            label: "عميل سعيد",
+            label: language === "en" ? "Happy Clients" : "عملاء سعداء",
         },
         {
             id: 4,
             icon: HiOutlineFolder,
             value: "+150",
-            label: "مشروع مكتمل",
+            label: language === "en" ? "Completed Projects" : "مشاريع مكتملة",
         },
     ]
 
@@ -45,14 +49,14 @@ const HeroStats = () => {
                     >
                         <Icon
                             size={18}
-                            className="mb-2 text-[#36C8FF]"
+                            className="mb-2 text-accent"
                         />
 
-                        <h3 className="text-[26px] leading-none text-white">
+                        <h3 className="text-[26px] leading-none text-text-primary">
                             {item.value}
                         </h3>
 
-                        <p className="mt-2 text-xs text-[#A6B0CF]">
+                        <p className="mt-2 text-xs text-text-secondary">
                             {item.label}
                         </p>
 
@@ -65,7 +69,7 @@ const HeroStats = () => {
                                     -translate-y-1/2
                                     h-full
                                     w-[2px]
-                                    bg-white/10
+                                    bg-card-hover
                                 "
                             />
                         )}

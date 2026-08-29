@@ -1,3 +1,5 @@
+"use client";
+
 import { fadeRight } from "@/lib/animationHelpers";
 import Link from "next/link";
 import {
@@ -6,42 +8,44 @@ import {
     HiOutlinePhone,
     HiOutlineClock,
 } from "react-icons/hi2";
-
-const contactItems = [
-    {
-        id: 1,
-        icon: HiOutlinePhone,
-        title: "رقم الهاتف",
-        value: "+20 100 123 4567",
-        href: "tel:+201001234567",
-    },
-    {
-        id: 2,
-        icon: HiOutlineEnvelope,
-        title: "البريد الإلكتروني",
-        value: "info@qlam-academy.dev",
-        href: "mailto:info@qlam-academy.dev",
-    },
-    {
-        id: 3,
-        icon: HiOutlineMapPin,
-        title: "العنوان",
-        value: "القاهرة، مصر",
-    },
-    {
-        id: 4,
-        icon: HiOutlineClock,
-        title: "ساعات العمل",
-        value: "الأحد - الخميس | 9:00 ص - 6:00 م",
-    },
-];
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const ContactInfo = () => {
+    const { language } = useLanguage();
+    const isEn = language === "en";
+
+    const contactItems = [
+        {
+            id: 1,
+            icon: HiOutlinePhone,
+            title: isEn ? "Phone Number" : "رقم الهاتف",
+            value: "+20 100 123 4567",
+            href: "tel:+201001234567",
+        },
+        {
+            id: 2,
+            icon: HiOutlineEnvelope,
+            title: isEn ? "Email Address" : "البريد الإلكتروني",
+            value: "info@qlam-academy.dev",
+            href: "mailto:info@qlam-academy.dev",
+        },
+        {
+            id: 3,
+            icon: HiOutlineMapPin,
+            title: isEn ? "Location" : "العنوان",
+            value: isEn ? "Cairo, Egypt" : "القاهرة، مصر",
+        },
+        {
+            id: 4,
+            icon: HiOutlineClock,
+            title: isEn ? "Working Hours" : "ساعات العمل",
+            value: isEn ? "Sun - Thu | 9:00 AM - 6:00 PM" : "الأحد - الخميس | 9:00 ص - 6:00 م",
+        },
+    ];
+
     return (
         <div {...fadeRight()} className="flex h-full flex-col">
-
             <div>
-
                 <span
                     className="
                         inline-flex
@@ -54,7 +58,7 @@ const ContactInfo = () => {
                         text-primary
                     "
                 >
-                    معلومات التواصل
+                    {isEn ? "Contact Information" : "معلومات التواصل"}
                 </span>
 
                 <h2
@@ -65,7 +69,7 @@ const ContactInfo = () => {
                         text-text-primary
                     "
                 >
-                    يسعدنا سماعك
+                    {isEn ? "We'd Love to Hear From You" : "يسعدنا سماعك"}
                 </h2>
 
                 <p
@@ -75,14 +79,13 @@ const ContactInfo = () => {
                         text-text-secondary
                     "
                 >
-                    يمكنك التواصل معنا عبر أي من الوسائل التالية،
-                    وسنحرص على الرد عليك في أقرب وقت ممكن.
+                    {isEn
+                        ? "Feel free to reach out to us through any of the channels below, and we'll respond promptly."
+                        : "يمكنك التواصل معنا عبر أي من الوسائل التالية، وسنحرص على الرد عليك في أقرب وقت ممكن."}
                 </p>
-
             </div>
 
             <div className="mt-10 space-y-6">
-
                 {contactItems.map((item) => {
                     const Icon = item.icon;
 
@@ -145,9 +148,7 @@ const ContactInfo = () => {
                         </div>
                     );
                 })}
-
             </div>
-
         </div>
     );
 };

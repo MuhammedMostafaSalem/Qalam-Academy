@@ -108,11 +108,14 @@ export async function loginAction(prevState, formData) {
     try {
         const email = formData.get("email");
         const password = formData.get("password");
+        const cookieStore = await cookies();
+        const lang = cookieStore.get("NEXT_LOCALE")?.value || cookieStore.get("NEXT_LANG")?.value || "ar";
 
         const res = await fetch(`${BASE_URL}/auth/login`, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Accept-Language": lang,
             },
             body: JSON.stringify({
                 email,
@@ -149,7 +152,6 @@ export async function loginAction(prevState, formData) {
         const maxAge = Math.max(0, Math.floor((sessionExpiresAt - Date.now()) / 1000));
         
         // Store token in Next.js HttpOnly Cookie
-        const cookieStore = await cookies();
         cookieStore.set("Qalam_Token", token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",

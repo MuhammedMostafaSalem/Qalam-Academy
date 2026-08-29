@@ -1,8 +1,13 @@
+"use client";
+
 import CurriculumAccordion from "./CurriculumAccordion";
 import ProgressCard from "./ProgressCard";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const LessonSidebar = ({ lesson, courseSlug, courseProgress, courseLessons }) => {
-    const courseTitle = lesson?.course?.title?.ar || lesson?.course?.title?.en || lesson?.course?.title || "الكورس";
+    const { language, localize } = useLanguage();
+    const defaultCourseTitle = language === "en" ? "Course" : "الكورس";
+    const courseTitle = localize(lesson?.course?.title, defaultCourseTitle);
 
     return (
         <div className="flex h-screen flex-col">
@@ -13,7 +18,9 @@ const LessonSidebar = ({ lesson, courseSlug, courseProgress, courseLessons }) =>
                 </h2>
 
                 <p className="mt-2 text-sm text-text-secondary">
-                    تابع تقدمك وأكمل الدروس بالترتيب.
+                    {language === "en"
+                        ? "Track your progress and complete lessons sequentially."
+                        : "تابع تقدمك وأكمل الدروس بالترتيب."}
                 </p>
             </div>
 

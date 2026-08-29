@@ -27,7 +27,7 @@ const CardHeader = ({
                     className="
                         text-lg
                         font-semibold
-                        text-foreground
+                        text-text-primary
                     "
                 >
                     {title}

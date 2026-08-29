@@ -5,32 +5,50 @@ import CardTable from "@/components/shared/CardTable";
 import LoadMore from "@/components/shared/LoadMore";
 import ActionsTable from "@/components/shared/ActionsTable";
 import { MdOutlineDelete, MdOutlineEdit } from "react-icons/md";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import usePartners from "@/hooks/partners/usePartners";
 import { deletePartnerAction } from "@/actions/partnerActions";
 import useToast from "@/hooks/useToast";
 import UpdatePartnerModal from "@/components/ui/modal/partner/UpdatePartnerModal";
+import { useLanguage } from "@/providers/LanguageProvider";
+import { useSearchParams } from "next/navigation";
 
 const PartnersTable = () => {
-  const { partners, loading, error, meta, refetch } = usePartners();
+  const { language } = useLanguage();
+  const isEn = language === "en";
+
+  const searchParams = useSearchParams();
+  const { partners, loading, error, meta, refetch } = usePartners(searchParams.toString());
   const { successMessage, errorMessage } = useToast();
   const [deletingId, setDeletingId] = useState(null);
   const [editingPartner, setEditingPartner] = useState(null);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
 
-  const titleHead = ["الشريك", "الرابط", "تاريخ الاضافة", "الإجراءات"];
+  useEffect(() => {
+    const handlePartnerUpdated = () => {
+      refetch();
+    };
+    window.addEventListener("partner-updated", handlePartnerUpdated);
+    return () => {
+      window.removeEventListener("partner-updated", handlePartnerUpdated);
+    };
+  }, [refetch]);
+
+  const titleHead = isEn
+    ? ["Partner", "Website Link", "Creation Date", "Actions"]
+    : ["الشريك", "الرابط", "تاريخ الاضافة", "الإجراءات"];
 
   const handleDelete = async (partnerId) => {
-    if (!confirm("هل أنت متأكد من حذف هذا الشريك؟")) return;
+    if (!confirm(isEn ? "Are you sure you want to delete this partner?" : "هل أنت متأكد من حذف هذا الشريك؟")) return;
 
     setDeletingId(partnerId);
     const result = await deletePartnerAction(partnerId);
 
     if (result.success) {
-      successMessage(result.message || "تم حذف الشريك بنجاح");
+      successMessage(result.message || (isEn ? "Partner deleted successfully" : "تم حذف الشريك بنجاح"));
       refetch();
     } else {
-      errorMessage(result.message || "فشل حذف الشريك");
+      errorMessage(result.message || (isEn ? "Failed to delete partner" : "فشل حذف الشريك"));
     }
 
     setDeletingId(null);
@@ -44,7 +62,7 @@ const PartnersTable = () => {
   if (loading) {
     return (
       <div className="mt-[20px] text-center py-10">
-        <p className="text-text-secondary">جاري التحميل...</p>
+        <p className="text-text-secondary">{isEn ? "Loading partners..." : "جاري التحميل..."}</p>
       </div>
     );
   }
@@ -61,7 +79,7 @@ const PartnersTable = () => {
     return (
       <div className="mt-[20px] text-center py-10">
         <div className="text-center py-6 text-text-muted">
-          لا يوجد بيانات متاحة
+          {isEn ? "No partners available" : "لا يوجد بيانات متاحة"}
         </div>
       </div>
     );
@@ -109,7 +127,7 @@ const PartnersTable = () => {
 
                 <Table.Td>
                   {partner.createdAt
-                    ? new Date(partner.createdAt).toLocaleDateString("ar-EG")
+                    ? new Date(partner.createdAt).toLocaleDateString(isEn ? "en-US" : "ar-EG")
                     : "—"}
                 </Table.Td>
 

@@ -6,9 +6,12 @@ import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { useEffect, useState } from "react";
 import { getTeamAction } from "@/actions/teamActions";
 
+import { useLanguage } from "@/providers/LanguageProvider";
+
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:5000";
 
 const TeamSlider = () => {
+    const { language, localize } = useLanguage();
     const [teamMembers, setTeamMembers] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -17,12 +20,12 @@ const TeamSlider = () => {
             if (result.success) setTeamMembers(result.data);
             setLoading(false);
         });
-    }, []);
+    }, [language]);
 
     if (loading) {
         return (
             <div className="py-10 text-center text-text-secondary">
-                جاري تحميل الفريق...
+                {language === "en" ? "Loading team..." : "جاري تحميل الفريق..."}
             </div>
         );
     }
@@ -30,7 +33,7 @@ const TeamSlider = () => {
     if (teamMembers.length === 0) {
         return (
             <div className="py-10 text-center text-text-muted">
-                لا يوجد أعضاء في الفريق حالياً
+                {language === "en" ? "No team members currently available" : "لا يوجد أعضاء في الفريق حالياً"}
             </div>
         );
     }

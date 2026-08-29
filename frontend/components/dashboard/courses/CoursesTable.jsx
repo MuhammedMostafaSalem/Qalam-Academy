@@ -14,7 +14,10 @@ import { useSearchParams } from "next/navigation";
 
 import { useAuth } from "@/providers/AuthProvider";
 
+import { useLanguage } from "@/providers/LanguageProvider";
+
 const CoursesTable = () => {
+    const { language, localize } = useLanguage();
     const searchParams = useSearchParams();
     const queryString = searchParams.toString();
     const { courses, loading, error, meta, refetch } = useCourses(queryString);
@@ -31,7 +34,15 @@ const CoursesTable = () => {
           )
         : courses;
 
-    const titleHead = [
+    const titleHead = language === "en" ? [
+        "Course",
+        "Instructor",
+        "Category",
+        "Level",
+        "Price",
+        "Date Added",
+        "Actions",
+    ] : [
         "الكورس",
         "المدرب",
         "التصنيف",
@@ -42,16 +53,16 @@ const CoursesTable = () => {
     ];
 
     const handleDelete = async (courseId) => {
-        if (!confirm("هل أنت متأكد من حذف هذا الكورس؟")) return;
+        if (!confirm(language === "en" ? "Are you sure you want to delete this course?" : "هل أنت متأكد من حذف هذا الكورس؟")) return;
 
         setDeletingId(courseId);
         const result = await deleteCourseAction(courseId);
 
         if (result.success) {
-            successMessage(result.message || "تم حذف الكورس بنجاح");
+            successMessage(result.message || (language === "en" ? "Course deleted successfully" : "تم حذف الكورس بنجاح"));
             refetch();
         } else {
-            errorMessage(result.message || "فشل حذف الكورس");
+            errorMessage(result.message || (language === "en" ? "Failed to delete course" : "فشل حذف الكورس"));
         }
 
         setDeletingId(null);
@@ -60,7 +71,9 @@ const CoursesTable = () => {
     if (loading) {
         return (
             <div className="mt-[20px] text-center py-10">
-                <p className="text-text-secondary">جاري تحميل الكورسات...</p>
+                <p className="text-text-secondary">
+                    {language === "en" ? "Loading courses..." : "جاري تحميل الكورسات..."}
+                </p>
             </div>
         );
     }
@@ -76,10 +89,14 @@ const CoursesTable = () => {
     if (!filteredCourses || filteredCourses.length === 0) {
         return (
             <div className="mt-[20px] text-center py-10">
-                <p className="text-text-secondary">لا توجد كورسات متاحة</p>
+                <p className="text-text-secondary">
+                    {language === "en" ? "No courses available" : "لا توجد كورسات متاحة"}
+                </p>
             </div>
         );
     }
+
+    const currencyText = language === "en" ? "EGP" : "ج.م";
 
     return (
         <div className="mt-[20px]">
@@ -101,44 +118,46 @@ const CoursesTable = () => {
                                         data={{
                                             id: course._id,
                                             image: course.thumbnail,
-                                            name: course.title?.ar || course.title,
-                                            description: course.description?.ar || course.description,
+                                            name: localize(course.title),
+                                            description: localize(course.description),
                                         }}
                                     />
                                 </Link>
                             </Table.Td>
 
                             <Table.Td>
-                                {course.instructor?.firstName || "غير محدد"}
+                                {course.instructor?.firstName
+                                    ? `${course.instructor.firstName || ""} ${course.instructor.lastName || ""}`.trim()
+                                    : (language === "en" ? "Unassigned" : "غير محدد")}
                             </Table.Td>
 
                             <Table.Td>
-                                {course.category?.title?.ar || course.category || "غير مصنف"}
+                                {localize(course.category?.title || course.category?.name || course.category, language === "en" ? "Uncategorized" : "غير مصنف")}
                             </Table.Td>
 
                             <Table.Td>
-                                {course.level === "beginner" && "مبتدئ"}
-                                {course.level === "intermediate" && "متوسط"}
-                                {course.level === "advanced" && "متقدم"}
+                                {course.level === "beginner" && (language === "en" ? "Beginner" : "مبتدئ")}
+                                {course.level === "intermediate" && (language === "en" ? "Intermediate" : "متوسط")}
+                                {course.level === "advanced" && (language === "en" ? "Advanced" : "متقدم")}
                             </Table.Td>
 
                             <Table.Td>
                                 {course.discountPrice > 0 ? (
                                     <div className="flex flex-col">
                                         <span className="text-primary font-bold">
-                                            {course.discountPrice} ج.م
+                                            {course.discountPrice} {currencyText}
                                         </span>
                                         <span className="text-text-muted text-sm line-through">
-                                            {course.price} ج.م
+                                            {course.price} {currencyText}
                                         </span>
                                     </div>
                                 ) : (
-                                    <span>{course.price} ج.م</span>
+                                    <span>{course.price} {currencyText}</span>
                                 )}
                             </Table.Td>
 
                             <Table.Td>
-                                {new Date(course.createdAt).toLocaleDateString("ar-EG")}
+                                {new Date(course.createdAt).toLocaleDateString(language === "en" ? "en-US" : "ar-EG")}
                             </Table.Td>
 
                             <Table.Td>

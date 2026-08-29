@@ -13,7 +13,7 @@ const SectionTitle = ({
                 md:text-2xl
                 font-bold
                 leading-tight
-                text-white
+                text-text-primary
                 ${center ? "text-center" : ""}
                 ${animations.transition}
             `}

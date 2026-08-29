@@ -2,22 +2,22 @@ const whyChooseStats = [
     {
         id: 1,
         value: "+7",
-        label: "سنوات خبرة",
+        label: { ar: "سنوات خبرة", en: "Years Experience" },
     },
     {
         id: 2,
         value: "+250",
-        label: "عميل سعيد",
+        label: { ar: "عميل سعيد", en: "Happy Clients" },
     },
     {
         id: 3,
         value: "+350",
-        label: "مشروع مكتمل",
+        label: { ar: "مشروع مكتمل", en: "Completed Projects" },
     },
     {
         id: 4,
         value: "+25",
-        label: "خبير تقني",
+        label: { ar: "خبير تقني", en: "Tech Experts" },
     },
 ];
 

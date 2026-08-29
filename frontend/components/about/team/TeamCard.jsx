@@ -43,7 +43,7 @@ const TeamCard = ({ member }) => {
                 w-full
                 rounded-2xl
                 border
-                border-[#29405f]
+                border-border
                 glass
                 p-6
                 text-center
@@ -65,7 +65,7 @@ const TeamCard = ({ member }) => {
             </div>
 
             {/* Name */}
-            <h3 className="text-lg font-bold text-white">
+            <h3 className="text-lg font-bold text-text-primary">
                 {member.name}
             </h3>
 
@@ -93,8 +93,8 @@ const TeamCard = ({ member }) => {
                                 items-center
                                 justify-center
                                 rounded-full
-                                bg-white/10
-                                text-gray-300
+                                bg-card-hover
+                                text-text-secondary
                                 transition
                                 hover:bg-primary
                                 hover:text-white

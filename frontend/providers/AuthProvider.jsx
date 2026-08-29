@@ -32,7 +32,6 @@ export function AuthProvider({ children }) {
             //     setUser(null);
             // }
             if (result.success) {
-                console.log("CURRENT USER:", result.data);
                 setUser(result.data.user);
                 return;
             }

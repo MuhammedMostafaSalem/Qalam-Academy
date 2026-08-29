@@ -5,8 +5,11 @@ import Toolbar from "@/components/ui/Toolbar";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import { MdClose } from "react-icons/md";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const CoursesToolbar = () => {
+    const { language } = useLanguage();
+    const isEn = language === "en";
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
@@ -36,15 +39,15 @@ const CoursesToolbar = () => {
     };
 
     const statusOptions = [
-        { value: "all", label: "جميع الكورسات" },
-        { value: "in_progress", label: "قيد التعلم" },
-        { value: "completed", label: "مكتملة" },
+        { value: "all", label: isEn ? "All Courses" : "جميع الكورسات" },
+        { value: "in_progress", label: isEn ? "In Progress" : "قيد التعلم" },
+        { value: "completed", label: isEn ? "Completed" : "مكتملة" },
     ];
 
     return (
         <div className="mt-[20px]">
             <Toolbar
-                inputPlaceholder="ابحث عن كورس..."
+                inputPlaceholder={isEn ? "Search courses..." : "ابحث عن كورس..."}
                 searchQuery={searchQuery}
                 setSearchQuery={setSearchQuery}
                 filters={
@@ -69,7 +72,7 @@ const CoursesToolbar = () => {
                             "
                         >
                             <MdClose size={16} />
-                            <span>مسح الفلاتر</span>
+                            <span>{isEn ? "Clear Filters" : "مسح الفلاتر"}</span>
                         </button>
                     )
                 }

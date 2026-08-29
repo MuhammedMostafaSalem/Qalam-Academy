@@ -1,7 +1,13 @@
+"use client";
+
 import Section from "@/components/sections/Section";
 import { HiOutlineMagnifyingGlass } from "react-icons/hi2";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const StudentsToolbar = () => {
+    const { language } = useLanguage();
+    const isEn = language === "en";
+
     return (
         <Section
             className="
@@ -30,22 +36,8 @@ const StudentsToolbar = () => {
                             font-bold
                         "
                     >
-                        الطلاب المسجلون
+                        {isEn ? "Enrolled Students" : "الطلاب المسجلون"}
                     </h2>
-
-                    <span
-                        className="
-                            rounded-full
-                            bg-primary/10
-                            px-3
-                            py-1
-                            text-sm
-                            font-medium
-                            text-primary
-                        "
-                    >
-                        128 طالب
-                    </span>
                 </div>
 
                 <p
@@ -55,7 +47,7 @@ const StudentsToolbar = () => {
                         text-text-secondary
                     "
                 >
-                    جميع الطلاب المشتركين في هذا الكورس.
+                    {isEn ? "All students currently enrolled in this course." : "جميع الطلاب المشتركين في هذا الكورس."}
                 </p>
             </div>
 
@@ -84,7 +76,7 @@ const StudentsToolbar = () => {
 
                     <input
                         type="text"
-                        placeholder="البحث عن طالب..."
+                        placeholder={isEn ? "Search student..." : "البحث عن طالب..."}
                         className="
                             h-12
                             w-full
@@ -127,11 +119,11 @@ const StudentsToolbar = () => {
                         focus:border-primary
                     "
                 >
-                    <option>جميع الطلاب</option>
-                    <option>نشط</option>
-                    <option>غير نشط</option>
-                    <option>أكمل الكورس</option>
-                    <option>قيد الدراسة</option>
+                    <option value="">{isEn ? "All Students" : "جميع الطلاب"}</option>
+                    <option value="active">{isEn ? "Active" : "نشط"}</option>
+                    <option value="inactive">{isEn ? "Inactive" : "غير نشط"}</option>
+                    <option value="completed">{isEn ? "Completed Course" : "أكمل الكورس"}</option>
+                    <option value="in_progress">{isEn ? "In Progress" : "قيد الدراسة"}</option>
                 </select>
             </div>
         </Section>

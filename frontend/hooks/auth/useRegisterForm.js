@@ -38,6 +38,13 @@ const useRegisterForm = () => {
             if (state.fieldErrors) {
                 setFieldErrors(state.fieldErrors);
             }
+
+            dispatch(
+                showToast({
+                    message: state.message,
+                    type: "error",
+                })
+            );
         }
     }, [state, router, dispatch]);
 

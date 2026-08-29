@@ -1,12 +1,14 @@
+"use client";
+
 import PageHeader from "@/components/dashboard/PageHeader";
 import SettingsForm from "@/components/dashboard/settings/SettingsForm";
-
-export const metadata = {
-    title: "إعدادات المنصة | Qalam Academy",
-    description: "إدارة إعدادات المنصة",
-};
+import ThemeSettingsForm from "@/components/dashboard/settings/ThemeSettingsForm";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 export default function AdminSettings() {
+    const { language } = useLanguage();
+    const isEn = language === "en";
+
     return (
         <div
             className="
@@ -19,11 +21,12 @@ export default function AdminSettings() {
             "
         >
             <PageHeader
-                title="إعدادات المنصة"
-                description="إدارة جميع المعلومات الأساسية للمنصة"
+                title={isEn ? "Platform Settings" : "إعدادات المنصة"}
+                description={isEn ? "Manage general platform details and configuration" : "إدارة جميع المعلومات الأساسية للمنصة"}
             />
             
             <SettingsForm />
+            <ThemeSettingsForm />
         </div>
     );
 }

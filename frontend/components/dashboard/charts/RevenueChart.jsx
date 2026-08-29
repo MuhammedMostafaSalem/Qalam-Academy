@@ -12,8 +12,11 @@ import {
     YAxis,
 } from "recharts";
 import CustomTooltip from "./CustomTooltip";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const RevenueChart = ({ data = [] }) => {
+    const { language } = useLanguage();
+    const isEnglish = language === "en";
     // Format revenue values for tooltip
     const formattedData = data.map(item => ({
         ...item,
@@ -23,10 +26,10 @@ const RevenueChart = ({ data = [] }) => {
     return (
         <DashboardCard className="h-full">
             <CardHeader
-                title="الإيرادات"
-                subtitle="تحليل الإيرادات الشهرية"
+                title={isEnglish ? "Revenue" : "الإيرادات"}
+                subtitle={isEnglish ? "Monthly revenue analysis" : "تحليل الإيرادات الشهرية"}
                 filter
-                filterLabel="هذا العام"
+                filterLabel={isEnglish ? "This Year" : "هذا العام"}
             />
 
             <div className="h-[340px]">
@@ -53,13 +56,13 @@ const RevenueChart = ({ data = [] }) => {
                             >
                                 <stop
                                     offset="0%"
-                                    stopColor="#4F46E5"
+                                    stopColor="var(--color-primary)"
                                     stopOpacity={0.35}
                                 />
 
                                 <stop
                                     offset="100%"
-                                    stopColor="#4F46E5"
+                                    stopColor="var(--color-primary)"
                                     stopOpacity={0}
                                 />
                             </linearGradient>
@@ -81,26 +84,26 @@ const RevenueChart = ({ data = [] }) => {
                         <YAxis
                             width={60}
                             tickMargin={25}
-                            tickFormatter={(value) => `${value / 1000} ألف`}
+                            tickFormatter={(value) => `${value / 1000}${isEnglish ? "K" : " ألف"}`}
                             tickLine={false}
                             axisLine={false}
                             tick={{ fontSize: 12 }}
                         />
 
                         <Tooltip
-                            content={<CustomTooltip prefix="" suffix=" جنيه" />}
+                            content={<CustomTooltip prefix="" suffix={isEnglish ? " EGP" : " ج.م"} />}
                         />
 
                         <Area
                             type="monotone"
                             dataKey="revenue"
-                            stroke="#4F46E5"
+                            stroke="var(--color-primary)"
                             strokeWidth={3}
                             fill="url(#revenueGradient)"
                             activeDot={{
                                 r: 6,
                                 strokeWidth: 3,
-                                fill: "#4F46E5",
+                                fill: "var(--color-primary)",
                             }}
                         />
                     </AreaChart>

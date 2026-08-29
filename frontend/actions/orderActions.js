@@ -124,15 +124,60 @@ export async function checkoutPaypalAction(cartId, shippingAddress = {}) {
             body: JSON.stringify({ shippingAddress }),
         });
 
+        const approvalUrl = response.approvalUrl
+            || response.approval_url
+            || response.data?.approvalUrl
+            || response.data?.approval_url;
+        const orderId = response.orderId || response.data?.orderId;
+
+        if (!approvalUrl) {
+            return {
+                success: false,
+                message: response.message || "لم يتم استلام رابط PayPal",
+            };
+        }
+
         return {
             success: true,
-            data: response.data,
+            data: response.data || response,
+            approvalUrl,
+            orderId,
             message: response.message || "تم إنشاء رابط الدفع",
         };
     } catch (error) {
         return {
             success: false,
             message: error?.message || "فشل إنشاء رابط الدفع",
+        };
+    }
+}
+
+// Capture an approved PayPal order after the user returns from PayPal.
+export async function verifyPaypalPaymentAction(orderId) {
+    if (!orderId) {
+        return { success: false, message: "Missing order ID" };
+    }
+
+    try {
+        const response = await authApi("/orders/paypal/success", {
+            method: "POST",
+            body: JSON.stringify({ orderId }),
+        });
+
+        revalidatePath("/user/orders");
+        revalidatePath("/user/payment-history");
+        revalidatePath("/user/my-courses");
+        revalidatePath("/user/downloads");
+
+        return {
+            success: true,
+            data: response.data,
+            message: response.message || "تم تأكيد الدفع عبر PayPal",
+        };
+    } catch (error) {
+        return {
+            success: false,
+            message: error?.message || "فشل تأكيد الدفع عبر PayPal",
         };
     }
 }

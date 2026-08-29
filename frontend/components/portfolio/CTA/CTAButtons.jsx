@@ -1,10 +1,13 @@
-"use client"
+"use client";
 
 import Button from "@/components/ui/Button";
 import { useRouter } from "next/navigation";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const CTAButtons = () => {
     const router = useRouter();
+    const { language } = useLanguage();
+    const isEn = language === "en";
 
     return (
         <div className="mt-8 flex flex-wrap justify-center gap-4">
@@ -12,14 +15,14 @@ const CTAButtons = () => {
                 onClick={() => router.push("/contact")}
                 className="gradient-button"
             >
-                ابدأ مشروعك
+                {isEn ? "Start Your Project" : "ابدأ مشروعك"}
             </Button>
 
             <Button
                 onClick={() => router.push("/services")}
                 variant="ghost"
             >
-                استكشف خدماتنا
+                {isEn ? "Explore Services" : "استكشف خدماتنا"}
             </Button>
         </div>
     );

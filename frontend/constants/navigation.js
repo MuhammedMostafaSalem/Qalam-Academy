@@ -1,30 +1,51 @@
 export const navigation = [
     {
-        title: "الرئيسية",
+        title: {
+            ar: "الرئيسية",
+            en: "Home",
+        },
         href: "/",
     },
     {
-        title: "من نحن",
+        title: {
+            ar: "من نحن",
+            en: "About Us",
+        },
         href: "/about",
     },
     {
-        title: "خدماتنا",
+        title: {
+            ar: "خدماتنا",
+            en: "Services",
+        },
         href: "/services",
     },
     {
-        title: "كورساتنا",
+        title: {
+            ar: "كورساتنا",
+            en: "Courses",
+        },
         href: "/courses",
     },
     {
-        title: "المعرض",
+        title: {
+            ar: "المعرض",
+            en: "Portfolio",
+        },
         href: "/portfolio",
     },
     {
-        title: "المتجر",
+        title: {
+            ar: "المتجر",
+            en: "Store",
+        },
         href: "/store",
     },
     {
-        title: "المدونة",
+        title: {
+            ar: "المدونة",
+            en: "Blog",
+        },
         href: "/blog",
     },
 ];

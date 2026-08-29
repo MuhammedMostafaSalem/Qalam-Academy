@@ -12,7 +12,12 @@ import useToast from "@/hooks/useToast";
 import UpdateBlogModal from "@/components/ui/modal/blog/UpdateBlogModal";
 import { useSearchParams } from "next/navigation";
 
+import { useLanguage } from "@/providers/LanguageProvider";
+import { useEffect } from "react";
+
 const BlogTable = () => {
+    const { language, localize } = useLanguage();
+    const isEn = language === "en";
     const searchParams = useSearchParams();
     const queryString = searchParams.toString();
 
@@ -22,7 +27,23 @@ const BlogTable = () => {
     const [editingBlog, setEditingBlog] = useState(null);
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
 
-    const titleHead = [
+    useEffect(() => {
+        const handleBlogUpdated = () => {
+            refetch();
+        };
+        window.addEventListener("blog-updated", handleBlogUpdated);
+        return () => {
+            window.removeEventListener("blog-updated", handleBlogUpdated);
+        };
+    }, [refetch]);
+
+    const titleHead = isEn ? [
+        "Article",
+        "Category",
+        "Status",
+        "Publish Date",
+        "Actions",
+    ] : [
         "المقالة",
         "التصنيف",
         "الحالة",
@@ -31,16 +52,16 @@ const BlogTable = () => {
     ];
 
     const handleDelete = async (blogId) => {
-        if (!confirm("هل أنت متأكد من حذف هذا المقال؟")) return;
+        if (!confirm(language === "en" ? "Are you sure you want to delete this article?" : "هل أنت متأكد من حذف هذا المقال؟")) return;
 
         setDeletingId(blogId);
         const result = await deleteBlogAction(blogId);
 
         if (result.success) {
-            successMessage(result.message || "تم حذف المقال بنجاح");
+            successMessage(result.message || (language === "en" ? "Article deleted successfully" : "تم حذف المقال بنجاح"));
             refetch();
         } else {
-            errorMessage(result.message || "فشل حذف المقال");
+            errorMessage(result.message || (language === "en" ? "Failed to delete article" : "فشل حذف المقال"));
         }
 
         setDeletingId(null);
@@ -54,7 +75,9 @@ const BlogTable = () => {
     if (loading) {
         return (
             <div className="mt-[20px] text-center py-10">
-                <p className="text-text-secondary">جاري التحميل...</p>
+                <p className="text-text-secondary">
+                    {language === "en" ? "Loading..." : "جاري التحميل..."}
+                </p>
             </div>
         );
     }
@@ -70,7 +93,9 @@ const BlogTable = () => {
     if (!blogs || blogs.length === 0) {
         return (
             <div className="mt-[20px] text-center py-10">
-                <div className="text-center py-6 text-text-muted">لا يوجد بيانات متاحة</div>
+                <div className="text-center py-6 text-text-muted">
+                    {language === "en" ? "No data available" : "لا يوجد بيانات متاحة"}
+                </div>
             </div>
         );
     }
@@ -95,31 +120,33 @@ const BlogTable = () => {
                                         data={{
                                             id: blog._id,
                                             image: blog.featuredImage,
-                                            name: blog.title?.ar || blog.title,
-                                            description: blog.excerpt?.ar || blog.excerpt,
+                                            name: localize(blog.title),
+                                            description: localize(blog.excerpt),
                                         }}
                                     />
                                 </Table.Td>
 
                                 <Table.Td>
-                                    {blog.category?.title?.ar || blog.category?.title || blog.category || "غير مصنف"}
+                                    {localize(blog.category?.title || blog.category?.name || blog.category, language === "en" ? "Uncategorized" : "غير مصنف")}
                                 </Table.Td>
 
                                 <Table.Td>
                                     <span
                                         className={`rounded-full px-3 py-1 text-sm ${
                                             blog.isPublished
-                                                ? "bg-green-500/10 text-green-500"
-                                                : "bg-red-500/10 text-red-500"
+                                                ? "bg-success/10 text-success"
+                                                : "bg-error/10 text-error"
                                         }`}
                                     >
-                                        {blog.isPublished ? "منشور" : "مسودة"}
+                                        {blog.isPublished
+                                            ? (language === "en" ? "Published" : "منشور")
+                                            : (language === "en" ? "Draft" : "مسودة")}
                                     </span>
                                 </Table.Td>
 
                                 <Table.Td>
                                     {blog.createdAt
-                                        ? new Date(blog.createdAt).toLocaleDateString("ar-EG")
+                                        ? new Date(blog.createdAt).toLocaleDateString(language === "en" ? "en-US" : "ar-EG")
                                         : "—"}
                                 </Table.Td>
 

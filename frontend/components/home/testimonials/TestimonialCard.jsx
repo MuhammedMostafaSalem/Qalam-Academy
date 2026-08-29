@@ -1,8 +1,17 @@
+"use client";
+
 import Image from "next/image";
 import { HiStar } from "react-icons/hi";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const TestimonialCard = ({ testimonial }) => {
-    const name = testimonial?.name || "طالب بالأكاديمية";
+    const { language, localize } = useLanguage();
+
+    const defaultName = language === "en" ? "Academy Student" : "طالب بالأكاديمية";
+    const name = localize(testimonial?.name, defaultName);
+    const review = localize(testimonial?.review, "");
+    const position = localize(testimonial?.position, "");
+
     const avatar = (testimonial?.avatar && typeof testimonial.avatar === 'string' && testimonial.avatar.trim() !== '')
         ? testimonial.avatar
         : "/assets/user-icon.png";
@@ -27,7 +36,7 @@ const TestimonialCard = ({ testimonial }) => {
                     text-text-secondary
                 "
             >
-                "{testimonial.review}"
+                "{review}"
             </blockquote>
 
             {/* Rating */}
@@ -75,25 +84,27 @@ const TestimonialCard = ({ testimonial }) => {
                             text-text-primary
                         "
                     >
-                        {testimonial.name}
+                        {name}
                     </h3>
 
-                    <p
-                        className="
-                            mt-1
-                            text-sm
-                            text-text-secondary
-                        "
-                    >
-                        {testimonial.position}
-                    </p>
+                    {position && (
+                        <p
+                            className="
+                                mt-1
+                                text-sm
+                                text-text-secondary
+                            "
+                        >
+                            {position}
+                        </p>
+                    )}
 
                 </div>
 
             </div>
 
         </article>
-    )
-}
+    );
+};
 
-export default TestimonialCard
+export default TestimonialCard;

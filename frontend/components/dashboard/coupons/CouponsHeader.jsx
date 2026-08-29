@@ -4,17 +4,20 @@ import { useState } from "react";
 import PageHeader from "@/components/dashboard/PageHeader";
 import AddCouponModal from "@/components/ui/modal/coupon/AddCouponModal";
 import { useRouter } from "next/navigation";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const CouponsHeader = () => {
+    const { language } = useLanguage();
+    const isEn = language === "en";
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const router = useRouter();
 
     return (
         <>
             <PageHeader
-                title="كوبونات الخصم"
-                description="ادارة جميع كوبونات الخصم"
-                button="اضافة كوبون جديدة"
+                title={isEn ? "Discount Coupons" : "كوبونات الخصم"}
+                description={isEn ? "Manage all platform discount coupons" : "ادارة جميع كوبونات الخصم"}
+                button={isEn ? "Add New Coupon" : "اضافة كوبون جديد"}
                 onButtonClick={() => setIsAddModalOpen(true)}
             />
             <AddCouponModal
@@ -22,7 +25,10 @@ const CouponsHeader = () => {
                 onClose={() => setIsAddModalOpen(false)}
                 onSuccess={() => {
                     setIsAddModalOpen(false);
-                    router.refresh(); // Refresh the page to show new coupon
+                    if (typeof window !== "undefined") {
+                        window.dispatchEvent(new Event("coupon-updated"));
+                    }
+                    router.refresh();
                 }}
             />
         </>

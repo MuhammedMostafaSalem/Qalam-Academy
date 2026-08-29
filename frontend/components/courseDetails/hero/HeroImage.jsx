@@ -1,17 +1,23 @@
+"use client";
+
 import Image from "next/image";
 import { heroAnimation } from "@/lib/animation/heroAnimation";
 import { animations } from "@/lib/animations";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const HeroImage = ({ course }) => {
-    const rawTitle = course?.title?.ar || course?.title?.en || course?.title;
-    const title = typeof rawTitle === "string" && rawTitle.trim() !== "" ? rawTitle : "دورة تعليمية";
+    const { language, localize } = useLanguage();
+    const defaultCourseTitle = language === "en" ? "Course" : "دورة تعليمية";
+    const title = localize(course?.title, defaultCourseTitle);
     const imageUrl = (course?.thumbnail && typeof course.thumbnail === 'string' && course.thumbnail.trim() !== '')
         ? (course.thumbnail.startsWith('http')
             ? course.thumbnail
             : `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:5000'}${course.thumbnail}`)
         : '/assets/images/course-details-hero.png';
 
-    const duration = course?.duration || "—";
+    const hoursText = language === "en" ? "hours" : "ساعات";
+    const duration = course?.duration ? `${course.duration} ${hoursText}` : "—";
+    const trainingContentBadge = language === "en" ? "Training Content" : "محتوى تدريبي";
 
     return (
         <div {...heroAnimation.image} className="relative">
@@ -71,7 +77,7 @@ const HeroImage = ({ course }) => {
                 </h3>
 
                 <p className="text-sm text-text-secondary">
-                    محتوى تدريبي
+                    {trainingContentBadge}
                 </p>
             </div>
         </div>

@@ -6,15 +6,15 @@ import {
     HiOutlineHeart,
     HiOutlineArrowDownTray,
     HiOutlineCreditCard,
-    HiOutlineCog6Tooth,
+    HiOutlineUserCircle,
 } from "react-icons/hi2";
 
 export const menu = [
     {
-        section: "الرئيسية",
+        section: { ar: "الرئيسية", en: "Overview" },
         items: [
             {
-                title: "لوحة التحكم",
+                title: { ar: "لوحة التحكم", en: "Dashboard" },
                 href: "/user",
                 icon: HiOutlineHome,
             },
@@ -22,25 +22,25 @@ export const menu = [
     },
 
     {
-        section: "التعلم",
+        section: { ar: "التعلم", en: "Learning" },
         items: [
             {
-                title: "كورساتي",
+                title: { ar: "كورساتي", en: "My Courses" },
                 href: "/user/my-courses",
                 icon: HiOutlineAcademicCap,
             },
             {
-                title: "الشهادات",
+                title: { ar: "الشهادات", en: "Certificates" },
                 href: "/user/certificates",
                 icon: HiOutlineDocumentCheck,
             },
             {
-                title: "المفضلة",
+                title: { ar: "المفضلة", en: "Wishlist" },
                 href: "/user/wishlist",
                 icon: HiOutlineHeart,
             },
             {
-                title: "التنزيلات",
+                title: { ar: "التنزيلات", en: "Downloads" },
                 href: "/user/downloads",
                 icon: HiOutlineArrowDownTray,
             },
@@ -48,15 +48,15 @@ export const menu = [
     },
 
     {
-        section: "المشتريات",
+        section: { ar: "المشتريات", en: "Purchases" },
         items: [
             {
-                title: "طلباتي",
+                title: { ar: "طلباتي", en: "My Orders" },
                 href: "/user/orders",
                 icon: HiOutlineShoppingBag,
             },
             {
-                title: "سجل المدفوعات",
+                title: { ar: "سجل المدفوعات", en: "Payment History" },
                 href: "/user/payment-history",
                 icon: HiOutlineCreditCard,
             },
@@ -64,12 +64,12 @@ export const menu = [
     },
 
     {
-        section: "النظام",
+        section: { ar: "الحساب", en: "Account" },
         items: [
             {
-                title: "الإعدادات",
-                href: "/dashboard/settings",
-                icon: HiOutlineCog6Tooth,
+                title: { ar: "الملف الشخصي", en: "Profile" },
+                href: "/user/profile",
+                icon: HiOutlineUserCircle,
             },
         ],
     },

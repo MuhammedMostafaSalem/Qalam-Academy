@@ -1,12 +1,16 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Toolbar from '@/components/ui/Toolbar'
-import Select from '@/components/ui/Select'
+import Toolbar from '@/components/ui/Toolbar';
+import Select from '@/components/ui/Select';
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { MdClose } from "react-icons/md";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const ServicesToolbar = () => {
+    const { language } = useLanguage();
+    const isEn = language === "en";
+
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
@@ -33,12 +37,12 @@ const ServicesToolbar = () => {
     const handleClearFilters = () => {
         setSearchQuery("");
         setStatusFilter("");
-    }
+    };
 
     const statusOptions = [
-        { value: "", label: "كل الحالات" },
-        { value: "true", label: "نشط" },
-        { value: "false", label: "غير نشط" },
+        { value: "", label: isEn ? "All Statuses" : "كل الحالات" },
+        { value: "true", label: isEn ? "Active" : "نشط" },
+        { value: "false", label: isEn ? "Inactive" : "غير نشط" },
     ];
 
     return (
@@ -46,7 +50,7 @@ const ServicesToolbar = () => {
             <Toolbar
                 searchQuery={searchQuery}
                 setSearchQuery={setSearchQuery}
-                inputPlaceholder="ابحث عن خدمة..."
+                inputPlaceholder={isEn ? "Search services..." : "ابحث عن خدمة..."}
                 filters={
                     <>
                         <Select
@@ -72,14 +76,14 @@ const ServicesToolbar = () => {
                                 "
                             >
                                 <MdClose size={16} />
-                                <span>مسح الفلاتر</span>
+                                <span>{isEn ? "Clear Filters" : "مسح الفلاتر"}</span>
                             </button>
                         )}
                     </>
                 }
             />
         </div>
-    )
-}
+    );
+};
 
-export default ServicesToolbar
+export default ServicesToolbar;

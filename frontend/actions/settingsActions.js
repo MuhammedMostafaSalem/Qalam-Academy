@@ -36,30 +36,24 @@ export async function updateSettingsAction(prevState, formData) {
 
         keys.forEach(key => {
             const value = formData.get(key);
-            if (value !== null && value !== "") {
+            if (value !== null) {
                 body.append(key, value);
             }
         });
 
         const seoTitle = formData.get("seoTitle");
-        if (seoTitle) body.append("seoTitle", seoTitle);
+        if (seoTitle !== null) body.append("seoTitle", seoTitle);
 
         const seoDescription = formData.get("seoDescription");
-        if (seoDescription) body.append("seoDescription", seoDescription);
+        if (seoDescription !== null) body.append("seoDescription", seoDescription);
 
         // seoKeywords: an array of strings in schema, backend might need them appended multiple times or as JSON. We'll append multiple.
-        const seoKeywords = formData.getAll("seoKeywords");
-        if (seoKeywords && seoKeywords.length > 0) {
-            seoKeywords.forEach(kw => {
-                if (kw) body.append("seoKeywords", kw);
-            });
-        } else {
-            const seoKeywordsString = formData.get("seoKeywordsString");
-            if (seoKeywordsString) {
-                const kws = seoKeywordsString.split(",").map(k => k.trim()).filter(k => k);
-                kws.forEach(kw => body.append("seoKeywords", kw));
-            }
-        }
+        const seoKeywordsString = formData.get("seoKeywordsString") || "";
+        const seoKeywords = seoKeywordsString
+            .split(",")
+            .map((keyword) => keyword.trim())
+            .filter(Boolean);
+        body.append("seoKeywords", JSON.stringify(seoKeywords));
 
         const logoDark = formData.get("logoDark");
         if (logoDark instanceof File && logoDark.size > 0) body.append("logoDark", logoDark);

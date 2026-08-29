@@ -1,3 +1,5 @@
+"use client";
+
 import {
     HiOutlineStar,
     HiOutlineUserGroup,
@@ -6,15 +8,21 @@ import {
 } from "react-icons/hi2";
 import MetaItem from "./MetaItem";
 import { fadeUp } from "@/lib/animationHelpers";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const HeroMeta = ({ course }) => {
+    const { language } = useLanguage();
+    const isEn = language === "en";
+
     const totalStudents = course?.totalStudents ?? course?.studentsCount ?? 0;
     const totalLessons = course?.totalLessons ?? course?.lessonsCount ?? course?.lessons?.length ?? 0;
     const rating = course?.averageRating !== undefined && course?.averageRating !== null 
         ? Number(course.averageRating).toFixed(1) 
         : "0.0";
     const duration = course?.duration 
-        ? (typeof course.duration === "number" ? `${course.duration} دقيقة` : course.duration)
+        ? (typeof course.duration === "number"
+            ? `${course.duration} ${isEn ? "mins" : "دقيقة"}`
+            : course.duration)
         : "—";
 
     const metas = [
@@ -22,25 +30,25 @@ const HeroMeta = ({ course }) => {
             id: "rating",
             icon: HiOutlineStar,
             title: rating,
-            subtitle: "التقييم"
+            subtitle: isEn ? "Rating" : "التقييم",
         },
         {
             id: "students",
             icon: HiOutlineUserGroup,
             title: `${totalStudents}`,
-            subtitle: "طالب"
+            subtitle: isEn ? "Students" : "طالب",
         },
         {
             id: "duration",
             icon: HiOutlineClock,
             title: duration,
-            subtitle: "مدة الكورس"
+            subtitle: isEn ? "Course Duration" : "مدة الكورس",
         },
         {
             id: "lessons",
             icon: HiOutlineAcademicCap,
             title: `${totalLessons}`,
-            subtitle: "درس"
+            subtitle: isEn ? "Lessons" : "درس",
         },
     ];
 
@@ -51,7 +59,6 @@ const HeroMeta = ({ course }) => {
                 mt-10
                 grid
                 gap-6
-
                 sm:grid-cols-2
             "
         >

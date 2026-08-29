@@ -7,6 +7,7 @@ import { getCategoriesAction } from "@/actions/categoryActions";
 import { getInstructorsAction } from "@/actions/userActions";
 import { useAuth } from "@/providers/AuthProvider";
 import useToast from "@/hooks/useToast";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const inputClass = `
     w-full
@@ -24,6 +25,9 @@ const inputClass = `
 const labelClass = "mb-2 block font-medium text-text-secondary text-sm";
 
 const UpdateCourseForm = ({ courseId }) => {
+    const { language, localize } = useLanguage();
+    const isEn = language === "en";
+
     const router = useRouter();
     const { user } = useAuth();
     const { successMessage, errorMessage } = useToast();
@@ -47,7 +51,7 @@ const UpdateCourseForm = ({ courseId }) => {
         let mounted = true;
 
         Promise.all([
-            getCategoriesAction("limit=100"),
+            getCategoriesAction("type=course&limit=100"),
             getInstructorsAction("limit=100"),
             getCourseByIdAction(courseId),
         ]).then(([categoriesRes, instructorsRes, courseRes]) => {
@@ -78,9 +82,9 @@ const UpdateCourseForm = ({ courseId }) => {
     useEffect(() => {
         if (!state.success || !state.course) return;
 
-        successMessage(state.message || "تم تحديث الكورس بنجاح");
+        successMessage(state.message || (isEn ? "Course updated successfully" : "تم تحديث الكورس بنجاح"));
         router.push("/dashboard/courses");
-    }, [state, router, successMessage]);
+    }, [state, router, successMessage, isEn]);
 
     useEffect(() => {
         if (state.success || !state.message) return;
@@ -89,11 +93,11 @@ const UpdateCourseForm = ({ courseId }) => {
     }, [state, errorMessage]);
 
     if (loadingOptions) {
-        return <p className="text-text-secondary py-6">جاري تحميل البيانات...</p>;
+        return <p className="text-text-secondary py-6">{isEn ? "Loading course details..." : "جاري تحميل البيانات..."}</p>;
     }
 
     if (!courseData) {
-        return <p className="text-error py-6">تعذر تحميل بيانات الكورس</p>;
+        return <p className="text-error py-6">{isEn ? "Failed to load course details" : "تعذر تحميل بيانات الكورس"}</p>;
     }
 
     return (
@@ -101,53 +105,53 @@ const UpdateCourseForm = ({ courseId }) => {
             action={formAction}
             className="grid gap-6"
         >
-            {/* الأخطاء */}
+            {/* Errors */}
             {!state.success && state.message && (
                 <div className="p-4 rounded-xl bg-error/10 border border-error/20 text-error">
                     {state.message}
                 </div>
             )}
 
-            {/* الاسم */}
+            {/* Title */}
             <div className="grid gap-6 md:grid-cols-2">
                 <div>
-                    <label className={labelClass}>اسم الكورس (عربي)</label>
-                    <input name="titleAr" type="text" defaultValue={courseData.title?.ar || courseData.title || ""} required className={inputClass} />
+                    <label className={labelClass}>{isEn ? "Course Title (Arabic)" : "اسم الكورس (عربي)"}</label>
+                    <input name="titleAr" type="text" defaultValue={courseData._translations?.title?.ar || courseData.title?.ar || (typeof courseData.title === "string" ? courseData.title : "")} required className={inputClass} />
                 </div>
                 <div>
-                    <label className={labelClass}>اسم الكورس (إنجليزي)</label>
-                    <input name="titleEn" type="text" defaultValue={courseData.title?.en || ""} required className={inputClass} />
+                    <label className={labelClass}>{isEn ? "Course Title (English)" : "اسم الكورس (إنجليزي)"}</label>
+                    <input name="titleEn" type="text" defaultValue={courseData._translations?.title?.en || courseData.title?.en || ""} required className={inputClass} />
                 </div>
             </div>
 
-            {/* الوصف */}
+            {/* Description */}
             <div className="grid gap-6 md:grid-cols-2">
                 <div>
-                    <label className={labelClass}>وصف الكورس (عربي)</label>
-                    <textarea name="descriptionAr" rows={5} defaultValue={courseData.description?.ar || courseData.description || ""} required className={`${inputClass} resize-none`} />
+                    <label className={labelClass}>{isEn ? "Course Description (Arabic)" : "وصف الكورس (عربي)"}</label>
+                    <textarea name="descriptionAr" rows={5} defaultValue={courseData._translations?.description?.ar || courseData.description?.ar || (typeof courseData.description === "string" ? courseData.description : "")} required className={`${inputClass} resize-none`} />
                 </div>
                 <div>
-                    <label className={labelClass}>وصف الكورس (إنجليزي)</label>
-                    <textarea name="descriptionEn" rows={5} defaultValue={courseData.description?.en || ""} required className={`${inputClass} resize-none`} />
+                    <label className={labelClass}>{isEn ? "Course Description (English)" : "وصف الكورس (إنجليزي)"}</label>
+                    <textarea name="descriptionEn" rows={5} defaultValue={courseData._translations?.description?.en || courseData.description?.en || ""} required className={`${inputClass} resize-none`} />
                 </div>
             </div>
 
-            {/* التصنيف والمدرب */}
+            {/* Category & Instructor */}
             <div className="grid gap-6 md:grid-cols-2">
                 <div>
-                    <label className={labelClass}>التصنيف</label>
+                    <label className={labelClass}>{isEn ? "Category" : "التصنيف"}</label>
                     <select name="category" required className={inputClass} defaultValue={courseData.category?._id || courseData.category || ""}>
-                        <option value="" disabled>اختر التصنيف</option>
+                        <option value="" disabled>{isEn ? "Select category" : "اختر التصنيف"}</option>
                         {categories.map((category) => (
                             <option key={category._id} value={category._id}>
-                                {category.title?.ar || category.title?.en || category.title}
+                                {localize(category.title)}
                             </option>
                         ))}
                     </select>
                 </div>
                 {isInstructor ? (
                     <div>
-                        <label className={labelClass}>المدرب</label>
+                        <label className={labelClass}>{isEn ? "Instructor" : "المدرب"}</label>
                         <input
                             type="text"
                             disabled
@@ -158,9 +162,9 @@ const UpdateCourseForm = ({ courseId }) => {
                     </div>
                 ) : (
                     <div>
-                        <label className={labelClass}>المدرب</label>
+                        <label className={labelClass}>{isEn ? "Instructor" : "المدرب"}</label>
                         <select name="instructor" required className={inputClass} defaultValue={courseData.instructor?._id || courseData.instructor || ""}>
-                            <option value="" disabled>اختر المدرب</option>
+                            <option value="" disabled>{isEn ? "Select instructor" : "اختر المدرب"}</option>
                             {instructors.map((instructor) => (
                                 <option key={instructor._id} value={instructor._id}>
                                     {instructor.firstName} {instructor.lastName}
@@ -171,103 +175,105 @@ const UpdateCourseForm = ({ courseId }) => {
                 )}
             </div>
 
-            {/* المستوى واللغة */}
+            {/* Level & Language */}
             <div className="grid gap-6 md:grid-cols-2">
                 <div>
-                    <label className={labelClass}>المستوى</label>
+                    <label className={labelClass}>{isEn ? "Level" : "المستوى"}</label>
                     <select name="level" defaultValue={courseData.level || "beginner"} className={inputClass}>
-                        <option value="beginner">مبتدئ</option>
-                        <option value="intermediate">متوسط</option>
-                        <option value="advanced">متقدم</option>
+                        <option value="beginner">{isEn ? "Beginner" : "مبتدئ"}</option>
+                        <option value="intermediate">{isEn ? "Intermediate" : "متوسط"}</option>
+                        <option value="advanced">{isEn ? "Advanced" : "متقدم"}</option>
                     </select>
                 </div>
                 <div>
-                    <label className={labelClass}>لغة الكورس</label>
+                    <label className={labelClass}>{isEn ? "Course Language" : "لغة الكورس"}</label>
                     <select name="language" defaultValue={courseData.language || "arabic"} className={inputClass}>
-                        <option value="arabic">العربية</option>
-                        <option value="english">English</option>
+                        <option value="arabic">{isEn ? "Arabic" : "العربية"}</option>
+                        <option value="english">{isEn ? "English" : "English"}</option>
                     </select>
                 </div>
             </div>
 
-            {/* السعر */}
+            {/* Price & Duration */}
             <div className="grid gap-6 md:grid-cols-3">
                 <div>
-                    <label className={labelClass}>السعر</label>
+                    <label className={labelClass}>{isEn ? "Price (EGP)" : "السعر"}</label>
                     <input name="price" type="number" min="0" defaultValue={courseData.price || 0} required className={inputClass} />
                 </div>
                 <div>
-                    <label className={labelClass}>السعر بعد الخصم</label>
+                    <label className={labelClass}>{isEn ? "Discount Price (EGP)" : "السعر بعد الخصم"}</label>
                     <input name="discountPrice" type="number" min="0" defaultValue={courseData.discountPrice || 0} className={inputClass} />
                 </div>
                 <div>
-                    <label className={labelClass}>المدة (بالدقائق)</label>
+                    <label className={labelClass}>{isEn ? "Duration (Minutes)" : "المدة (بالدقائق)"}</label>
                     <input name="duration" type="number" min="0" defaultValue={courseData.duration || 0} className={inputClass} />
                 </div>
             </div>
 
-            {/* المتطلبات والأهداف والكلمات المفتاحية */}
+            {/* Requirements & Objectives */}
             <div className="grid gap-6 md:grid-cols-2">
                 <div>
-                    <label className={labelClass}>المتطلبات (افصل بينها بفاصلة ,)</label>
+                    <label className={labelClass}>{isEn ? "Requirements (comma separated ,)" : "المتطلبات (افصل بينها بفاصلة ,)"}</label>
                     <textarea name="requirements" rows={3} defaultValue={courseData.requirements?.join(",") || ""} required className={`${inputClass} resize-none`} />
                 </div>
                 <div>
-                    <label className={labelClass}>الأهداف (افصل بينها بفاصلة ,)</label>
+                    <label className={labelClass}>{isEn ? "Objectives (comma separated ,)" : "الأهداف (افصل بينها بفاصلة ,)"}</label>
                     <textarea name="objectives" rows={3} defaultValue={courseData.objectives?.join(",") || ""} required className={`${inputClass} resize-none`} />
                 </div>
             </div>
 
             <div>
-                <label className={labelClass}>الكلمات المفتاحية / Tags (افصل بينها بفاصلة ,)</label>
+                <label className={labelClass}>{isEn ? "Tags / Keywords (comma separated ,)" : "الكلمات المفتاحية / Tags (افصل بينها بفاصلة ,)"}</label>
                 <textarea name="tags" rows={2} defaultValue={courseData.tags?.join(",") || ""} required className={`${inputClass} resize-none`} />
             </div>
 
-            {/* حالة الكورس */}
+            {/* Status & Featured */}
             <div className="grid gap-6 md:grid-cols-2">
                 <div>
-                    <label className={labelClass}>حالة النشر</label>
+                    <label className={labelClass}>{isEn ? "Publish Status" : "حالة النشر"}</label>
                     <select name="isPublished" defaultValue={courseData.isPublished?.toString()} className={inputClass}>
-                        <option value="true">منشور</option>
-                        <option value="false">مسودة</option>
+                        <option value="true">{isEn ? "Published" : "منشور"}</option>
+                        <option value="false">{isEn ? "Draft" : "مسودة"}</option>
                     </select>
                 </div>
                 <div>
-                    <label className={labelClass}>كورس مميز؟</label>
+                    <label className={labelClass}>{isEn ? "Featured Course?" : "كورس مميز؟"}</label>
                     <select name="isFeatured" defaultValue={courseData.isFeatured?.toString()} className={inputClass}>
-                        <option value="true">نعم</option>
-                        <option value="false">لا</option>
+                        <option value="true">{isEn ? "Yes" : "نعم"}</option>
+                        <option value="false">{isEn ? "No" : "لا"}</option>
                     </select>
                 </div>
             </div>
 
-            {/* صورة الكورس */}
+            {/* Thumbnail */}
             <div>
-                <label className={labelClass}>صورة الكورس (Thumbnail) - اتركها فارغة إذا لم ترد التغيير</label>
+                <label className={labelClass}>
+                    {isEn ? "Course Thumbnail - leave empty to keep current" : "صورة الكورس (Thumbnail) - اتركها فارغة إذا لم ترد التغيير"}
+                </label>
                 <input name="thumbnail" type="file" accept="image/*" className={inputClass} />
                 {courseData.thumbnail && (
                     <div className="mt-2 text-sm text-text-secondary flex items-center gap-2">
                         <img src={courseData.thumbnail} alt="thumbnail" className="h-10 w-10 rounded object-cover" />
-                        صورة الكورس الحالية
+                        {isEn ? "Current thumbnail" : "صورة الكورس الحالية"}
                     </div>
                 )}
             </div>
 
-            {/* زر الحفظ */}
+            {/* Actions */}
             <div className="flex justify-end gap-3">
                 <button
                     type="button"
                     onClick={() => router.push("/dashboard/courses")}
                     className="rounded-2xl border border-border px-6 py-3 transition hover:bg-background"
                 >
-                    إلغاء
+                    {isEn ? "Cancel" : "إلغاء"}
                 </button>
                 <button
                     type="submit"
                     disabled={isPending}
                     className="gradient-button rounded-2xl px-6 py-3 text-white transition hover:opacity-90 disabled:opacity-60"
                 >
-                    {isPending ? "جاري التحديث..." : "حفظ التعديلات"}
+                    {isPending ? (isEn ? "Updating..." : "جاري التحديث...") : (isEn ? "Save Changes" : "حفظ التعديلات")}
                 </button>
             </div>
         </form>

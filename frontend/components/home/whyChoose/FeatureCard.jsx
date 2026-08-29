@@ -1,7 +1,14 @@
+"use client";
+
 import { cardAnimation } from "@/lib/animation/cardAnimation";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const FeatureCard = ({ feature, index }) => {
     const Icon = feature.icon;
+    const { localize } = useLanguage();
+
+    const title = localize(feature.title);
+    const description = localize(feature.description);
 
     return (
         <article
@@ -42,11 +49,11 @@ const FeatureCard = ({ feature, index }) => {
                     mb-3
                     text-xl
                     font-bold
-                    text-foreground
+                    text-text-primary
                     text-primary
                 "
                 >
-                    {feature.title}
+                    {title}
                 </h3>
 
                 {/* Description */}
@@ -55,14 +62,14 @@ const FeatureCard = ({ feature, index }) => {
                     className="
                     text-sm
                     leading-7
-                    text-muted-foreground
+                    text-text-secondary
                 "
                 >
-                    {feature.description}
+                    {description}
                 </p>
             </div>
         </article>
     );
-}
+};
 
 export default FeatureCard

@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import {
     FaLinkedinIn,
@@ -8,7 +10,9 @@ import {
     FaEnvelope,
     FaMapMarkerAlt,
     FaArrowUp,
+    FaFacebookF,
 } from "react-icons/fa";
+import { FaTiktok } from "react-icons/fa6";
 
 import Container from "@/components/ui/Container"
 import logo from "@/public/assets/logos/logo-white.png"
@@ -16,8 +20,48 @@ import Image from "next/image";
 
 import { gridAnimation } from "@/lib/animation/gridAnimation";
 import { animations } from "@/lib/animations";
+import { useLanguage } from "@/providers/LanguageProvider";
+import { usePlatformSettings } from "@/providers/SettingsProvider";
 
 const Footer = () => {
+    const { language } = useLanguage();
+    const { settings } = usePlatformSettings();
+    const isEnglish = language === "en";
+    const siteName = settings.siteName || (isEnglish ? "Qalam Academy" : "أكاديمية قلم");
+    const siteDescription = settings.siteDescription || (isEnglish
+        ? "Software & Learning Solutions"
+        : "لحلول البرمجيات والتعليم");
+    const footerLogo = settings.logoLight || settings.logoDark;
+    const socialLinks = [
+        { Icon: FaFacebookF, href: settings.facebook, label: "Facebook" },
+        { Icon: FaLinkedinIn, href: settings.linkedin, label: "LinkedIn" },
+        { Icon: FaYoutube, href: settings.youtube, label: "YouTube" },
+        { Icon: FaTwitter, href: settings.twitter, label: "Twitter" },
+        { Icon: FaInstagram, href: settings.instagram, label: "Instagram" },
+        { Icon: FaTiktok, href: settings.tiktok, label: "TikTok" },
+    ].filter((item) => item.href);
+    const resources = isEnglish
+        ? ["Our Courses", "Blog", "Frequently Asked Questions", "Privacy Policy", "Terms and Conditions"]
+        : ["دوراتنا", "المدونة", "الأسئلة الشائعة", "سياسة الخصوصية", "الشروط والأحكام"];
+    const services = isEnglish
+        ? ["Web Development", "Mobile Applications", "Custom Systems", "UI/UX Design", "Digital Marketing"]
+        : ["تطوير المواقع", "تطبيقات الجوال", "الأنظمة المخصصة", "تصميم UI/UX", "التسويق الرقمي"];
+    const quickLinks = isEnglish
+        ? [
+            { label: "Home", href: "/" },
+            { label: "About Us", href: "/about" },
+            { label: "Services", href: "/services" },
+            { label: "Portfolio", href: "/portfolio" },
+            { label: "Contact Us", href: "/contact" },
+        ]
+        : [
+            { label: "الرئيسية", href: "/" },
+            { label: "من نحن", href: "/about" },
+            { label: "خدماتنا", href: "/services" },
+            { label: "أعمالنا", href: "/portfolio" },
+            { label: "تواصل معنا", href: "/contact" },
+        ];
+
     return (
         <footer className="relative bg-background border-t border-border mt-[80px]">
             <Container className="py-10">
@@ -27,44 +71,43 @@ const Footer = () => {
                     {/* Logo */}
                     <div {...gridAnimation(0)}>
                         <div className="flex items-center gap-3 mb-5">
-                            <Image
-                                src={logo}
-                                alt="Qalam Academy Logo"
-                                width={16}
-                                priority
-                                className={`w-auto h-auto ${animations.transition} hover:scale-105`}
-                            />
+                            {footerLogo ? (
+                                <img src={footerLogo} alt={`${siteName} logo`} className={`h-14 w-auto object-contain ${animations.transition} hover:scale-105`} />
+                            ) : (
+                                <Image
+                                    src={logo}
+                                    alt={`${siteName} logo`}
+                                    width={55}
+                                    priority
+                                    className={`h-auto w-auto ${animations.transition} hover:scale-105`}
+                                />
+                            )}
 
                             <div>
                                 <h2 className="text-2xl font-bold">
-                                    قلم أكاديمي
+                                    {siteName}
                                 </h2>
 
                                 <p className="text-sm text-text-secondary">
-                                    لتطوير البرمجيات
+                                    {siteDescription}
                                 </p>
                             </div>
                         </div>
 
                         <p className="text-text-secondary leading-8">
-                            نحن شركة برمجيات متخصصة، نساعد الشركات والأفراد على
-                            تحويل أفكارهم إلى منتجات رقمية مبتكرة.
+                            {settings.siteDescription || (isEnglish
+                                ? "We build software and learning experiences that help businesses and individuals turn ideas into innovative digital products."
+                                : "نطوّر حلولًا برمجية وتجارب تعليمية تساعد الشركات والأفراد على تحويل أفكارهم إلى منتجات رقمية مبتكرة.")}
                         </p>
                     </div>
 
                     {/* Resources */}
                     <div {...gridAnimation(1)}>
-                        <h3 className="font-bold text-lg mb-6">الموارد</h3>
+                        <h3 className="font-bold text-lg mb-6">{isEnglish ? "Resources" : "الموارد"}</h3>
 
                         <ul className="space-y-4 text-text-secondary">
                             {
-                                [
-                                    "كورساتنا",
-                                    "المدونة",
-                                    "الأسئلة الشائعة",
-                                    "سياسة الخصوصية",
-                                    "الشروط والأحكام",
-                                ].map(item => (
+                                resources.map(item => (
                                     <li key={item}>
                                         <Link
                                             href="/"
@@ -80,17 +123,11 @@ const Footer = () => {
 
                     {/* Services */}
                     <div {...gridAnimation(2)}>
-                        <h3 className="font-bold text-lg mb-6">خدماتنا</h3>
+                        <h3 className="font-bold text-lg mb-6">{isEnglish ? "Our Services" : "خدماتنا"}</h3>
 
                         <ul className="space-y-4 text-text-secondary">
                             {
-                                [
-                                    "تطوير المواقع",
-                                    "تطبيقات الجوال",
-                                    "الأنظمة المخصصة",
-                                    "تصميم UI/UX",
-                                    "التسويق الرقمي",
-                                ].map(item => (
+                                services.map(item => (
                                     <li
                                         key={item}
                                         className={`${animations.transition} hover:text-primary`}>
@@ -103,23 +140,17 @@ const Footer = () => {
 
                     {/* Quick Links */}
                     <div {...gridAnimation(3)}>
-                        <h3 className="font-bold text-lg mb-6">روابط سريعة</h3>
+                        <h3 className="font-bold text-lg mb-6">{isEnglish ? "Quick Links" : "روابط سريعة"}</h3>
 
                         <ul className="space-y-4 text-text-secondary">
                             {
-                                [
-                                    "الرئيسية",
-                                    "من نحن",
-                                    "خدماتنا",
-                                    "المعرض",
-                                    "تواصل معنا",
-                                ].map((item) => (
-                                    <li key={item}>
+                                quickLinks.map((item) => (
+                                    <li key={item.href}>
                                         <Link
-                                            href="/"
+                                            href={item.href}
                                             className={`${animations.transition} hover:text-primary`}
                                         >
-                                            {item}
+                                            {item.label}
                                         </Link>
                                     </li>
                                 ))
@@ -129,7 +160,7 @@ const Footer = () => {
 
                     {/* Contact */}
                     <div {...gridAnimation(4)}>
-                        <h3 className="font-bold text-lg mb-6">تواصل معنا</h3>
+                        <h3 className="font-bold text-lg mb-6">{isEnglish ? "Contact Us" : "تواصل معنا"}</h3>
 
                         <div className="space-y-5">
 
@@ -137,9 +168,7 @@ const Footer = () => {
                                 <FaMapMarkerAlt className={`mt-1 text-primary ${animations.floating}`} />
 
                                 <p className="text-text-secondary leading-7">
-                                    مصر
-                                    <br />
-                                    الفيوم
+                                    {settings.address || (isEnglish ? "Fayoum, Egypt" : "الفيوم، مصر")}
                                 </p>
                             </div>
 
@@ -147,7 +176,7 @@ const Footer = () => {
                                 <FaEnvelope className="text-primary" />
 
                                 <span className="text-text-secondary">
-                                    info@qlam-academy.dev
+                                    {settings.supportEmail || "info@qlam-academy.dev"}
                                 </span>
                             </div>
 
@@ -155,22 +184,20 @@ const Footer = () => {
                                 <FaPhoneAlt className="text-primary" />
 
                                 <span className="text-text-secondary">
-                                    +20 100 123 4567
+                                    {settings.supportPhone || "+20 100 123 4567"}
                                 </span>
                             </div>
 
                             {/* Social */}
                             <div className="flex gap-3 pt-3">
 
-                                {[
-                                    FaLinkedinIn,
-                                    FaYoutube,
-                                    FaTwitter,
-                                    FaInstagram,
-                                ].map((Icon, index) => (
+                                {socialLinks.map(({ Icon, href, label }) => (
                                     <Link
-                                        key={index}
-                                        href="#"
+                                        key={label}
+                                        href={href}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        aria-label={label}
                                         className={`
                                             flex
                                             h-10
@@ -204,7 +231,9 @@ const Footer = () => {
                     {...gridAnimation(5)}
                     className="mt-14 pt-6 border-t border-border flex items-center justify-center relative">
                     <p className="text-text-muted text-sm">
-                        جميع الحقوق محفوظة ل © Qalam Academy 2024 - صمم بواسطة{" "}
+                        © {siteName}{" "}
+                        {new Date().getFullYear()}
+                        {isEnglish ? ". All rights reserved. Designed by " : ". جميع الحقوق محفوظة. تصميم "}
                         <Link
                             href="https://taninss.com/"
                             className={`${animations.transition} text-primary hover:underline`}

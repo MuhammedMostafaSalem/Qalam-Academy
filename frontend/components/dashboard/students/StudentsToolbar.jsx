@@ -1,6 +1,9 @@
-import Select from "@/components/ui/Select"
-import Toolbar from "@/components/ui/Toolbar"
+"use client";
+
+import Select from "@/components/ui/Select";
+import Toolbar from "@/components/ui/Toolbar";
 import { MdClose } from "react-icons/md";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const StudentsToolbar = ({
     searchQuery,
@@ -9,6 +12,9 @@ const StudentsToolbar = ({
     setStatusFilter,
     onClear
 }) => {
+    const { language } = useLanguage();
+    const isEn = language === "en";
+
     const hasFilters = searchQuery || statusFilter;
 
     return (
@@ -16,7 +22,7 @@ const StudentsToolbar = ({
             <Toolbar
                 searchQuery={searchQuery}
                 setSearchQuery={setSearchQuery}
-                inputPlaceholder="ابحث عن طالب..."
+                inputPlaceholder={isEn ? "Search students..." : "ابحث عن طالب..."}
                 filters={
                     <>
                         <Select
@@ -24,9 +30,9 @@ const StudentsToolbar = ({
                             onChange={(e) => setStatusFilter(e.target.value)}
                             values={
                                 [
-                                    { value: "", name: "كل الحالات" },
-                                    { value: "true", name: "نشط" },
-                                    { value: "false", name: "معطل" }
+                                    { value: "", name: isEn ? "All Statuses" : "كل الحالات" },
+                                    { value: "true", name: isEn ? "Active" : "نشط" },
+                                    { value: "false", name: isEn ? "Inactive" : "معطل" }
                                 ]
                             }
                         />
@@ -47,13 +53,13 @@ const StudentsToolbar = ({
                             "
                         >
                             <MdClose size={16} />
-                            <span>مسح الفلاتر</span>
+                            <span>{isEn ? "Clear Filters" : "مسح الفلاتر"}</span>
                         </button>
                     )
                 }
             />
         </div>
-    )
-}
+    );
+};
 
-export default StudentsToolbar
+export default StudentsToolbar;

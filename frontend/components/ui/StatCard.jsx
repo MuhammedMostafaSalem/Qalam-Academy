@@ -1,7 +1,10 @@
+"use client";
+
 import {
     HiArrowTrendingUp,
     HiArrowTrendingDown,
 } from "react-icons/hi2";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const StatCard = ({
     title,
@@ -11,6 +14,9 @@ const StatCard = ({
     description,
     icon: Icon,
 }) => {
+    const { language, localize } = useLanguage();
+    const isEn = language === "en";
+
     return (
         <div
             className="
@@ -34,7 +40,7 @@ const StatCard = ({
             <div className="flex items-start justify-between">
                 <div>
                     <p className="text-sm text-text-secondary">
-                        {title}
+                        {localize(title)}
                     </p>
 
                     <h3
@@ -50,13 +56,11 @@ const StatCard = ({
                     <span
                         className="
                             mb-1
-
                             text-sm
-
                             text-text-secondary
                         "
                     >
-                        {description}
+                        {localize(description)}
                     </span>
                 </div>
 
@@ -82,37 +86,35 @@ const StatCard = ({
                 </div>
             </div>
 
-            {
-                change && (
-                    <div className="flex items-center gap-2">
-                        <span className="text-text-secondary text-sm">
-                            مقارنة بالشهر الماضي
-                        </span>
+            {change && (
+                <div className="flex items-center gap-2">
+                    <span className="text-text-secondary text-sm">
+                        {isEn ? "Compared to last month" : "مقارنة بالشهر الماضي"}
+                    </span>
 
-                        <span
-                            className={
-                                positive
-                                    ? "text-green-500 font-medium"
-                                    : "text-red-500 font-medium"
-                            }
-                        >
-                            {change}
-                        </span>
+                    <span
+                        className={
+                            positive
+                                ? "text-success font-medium"
+                                : "text-error font-medium"
+                        }
+                    >
+                        {change}
+                    </span>
 
-                        {positive ? (
-                            <HiArrowTrendingUp
-                                className="text-green-500"
-                                size={20}
-                            />
-                        ) : (
-                            <HiArrowTrendingDown
-                                className="text-red-500"
-                                size={20}
-                            />
-                        )}
-                    </div>
-                )
-            }
+                    {positive ? (
+                        <HiArrowTrendingUp
+                            className="text-success"
+                            size={20}
+                        />
+                    ) : (
+                        <HiArrowTrendingDown
+                            className="text-error"
+                            size={20}
+                        />
+                    )}
+                </div>
+            )}
         </div>
     );
 };

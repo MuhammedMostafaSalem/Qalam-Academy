@@ -10,11 +10,13 @@ import { MdDashboard } from "react-icons/md";
 import { CgProfile } from "react-icons/cg";
 import userIcon from '@/public/assets/user-icon.png';
 import { useAuth } from "@/providers/AuthProvider";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const UserMenu = () => {
     const { user, logout } = useAuth();
     const router = useRouter();
     const pathname = usePathname();
+    const { language } = useLanguage();
 
     const [open, setOpen] = useState(false);
 
@@ -53,14 +55,16 @@ const UserMenu = () => {
 
     const dashboardRoutes = {
         admin: "/dashboard",
-        instructor: "/instructor",
-        student: "/user",
+        instructor: "/dashboard",
+        student: "/user/profile",
     }
 
     const isDashboardUser = ["admin", "instructor"].includes(user.role);
 
     const firstMenuItem = {
-        label: isDashboardUser ? "لوحة التحكم" : "ملفك الشخصي",
+        label: isDashboardUser
+            ? (language === "en" ? "Dashboard" : "لوحة التحكم")
+            : (language === "en" ? "Your Profile" : "ملفك الشخصي"),
         href: dashboardRoutes[user.role] || "/profile",
         icon: isDashboardUser ? MdDashboard : CgProfile,
     }
@@ -71,7 +75,9 @@ const UserMenu = () => {
     const avatarSrc = (user.avatar && typeof user.avatar === 'string' && user.avatar.trim() !== '')
         ? (user.avatar.startsWith('http') ? user.avatar : `${BASE_URL}${user.avatar}`)
         : userIcon;
-    const avatarAlt = user.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : "المستخدم";
+    const avatarAlt = user.firstName
+        ? `${user.firstName} ${user.lastName || ''}`.trim()
+        : (language === "en" ? "User" : "المستخدم");
 
     return (
         <div
@@ -90,7 +96,7 @@ const UserMenu = () => {
                     py-1
                     cursor-pointer
                     transition
-                    hover:bg-white/5
+                    hover:bg-card-hover
                 "
             >
                 <Image
@@ -172,9 +178,9 @@ const UserMenu = () => {
                         gap-3
                         px-5
                         py-4
-                        text-red-500
+                        text-error
                         transition
-                        hover:bg-red-500/10
+                        hover:bg-error/10
                     "
                 >
                     <FaSignOutAlt
@@ -182,7 +188,7 @@ const UserMenu = () => {
                     />
 
                     <span>
-                        تسجيل الخروج
+                        {language === "en" ? "Log Out" : "تسجيل الخروج"}
                     </span>
                 </button>
             </div>

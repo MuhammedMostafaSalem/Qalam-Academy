@@ -7,12 +7,16 @@ import ActionsTable from "@/components/shared/ActionsTable";
 import useCoupons from "@/hooks/coupons/useCoupons";
 import useToast from "@/hooks/useToast";
 import { deleteCouponAction } from "@/actions/couponActions";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { useAuth } from "@/providers/AuthProvider";
 import UpdateCouponModal from "@/components/ui/modal/coupon/UpdateCouponModal";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const CouponsTable = () => {
+    const { language } = useLanguage();
+    const isEn = language === "en";
+
     const searchParams = useSearchParams();
     const { user } = useAuth();
     const isInstructor = user?.role === "instructor";
@@ -23,11 +27,21 @@ const CouponsTable = () => {
     backendParams.delete("status");
     const queryString = backendParams.toString();
 
-    const { coupons, loading, error, refetch } = useCoupons(queryString);
+    const { coupons, loading, error, meta, refetch } = useCoupons(queryString);
     const { successMessage, errorMessage } = useToast();
     const [deletingId, setDeletingId] = useState(null);
     const [editingCoupon, setEditingCoupon] = useState(null);
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+
+    useEffect(() => {
+        const handleCouponUpdated = () => {
+            refetch();
+        };
+        window.addEventListener("coupon-updated", handleCouponUpdated);
+        return () => {
+            window.removeEventListener("coupon-updated", handleCouponUpdated);
+        };
+    }, [refetch]);
 
     const isExpired = (expireDate) => {
         const expiration = new Date(expireDate);
@@ -50,7 +64,13 @@ const CouponsTable = () => {
         return true;
     });
 
-    const titleHead = [
+    const titleHead = isEn ? [
+        "Coupon Code",
+        "Discount Value",
+        "Expiry Date",
+        "Status",
+        "Actions",
+    ] : [
         "الكوبون",
         "قيمة الخصم",
         "تاريخ الانتهاء",
@@ -59,16 +79,16 @@ const CouponsTable = () => {
     ];
 
     const handleDelete = async (couponId) => {
-        if (!confirm("هل أنت متأكد من حذف هذا الكوبون؟")) return;
+        if (!confirm(isEn ? "Are you sure you want to delete this coupon?" : "هل أنت متأكد من حذف هذا الكوبون؟")) return;
 
         setDeletingId(couponId);
         const result = await deleteCouponAction(couponId);
 
         if (result.success) {
-            successMessage(result.message || "تم حذف الكوبون بنجاح");
+            successMessage(result.message || (isEn ? "Coupon deleted successfully" : "تم حذف الكوبون بنجاح"));
             refetch();
         } else {
-            errorMessage(result.message || "فشل حذف الكوبون");
+            errorMessage(result.message || (isEn ? "Failed to delete coupon" : "فشل حذف الكوبون"));
         }
 
         setDeletingId(null);
@@ -79,11 +99,10 @@ const CouponsTable = () => {
         setIsUpdateModalOpen(true);
     };
 
-
     if (loading) {
         return (
             <div className="mt-[20px] text-center py-10">
-                <p className="text-text-secondary">جاري تحميل الكوبونات...</p>
+                <p className="text-text-secondary">{isEn ? "Loading coupons..." : "جاري تحميل الكوبونات..."}</p>
             </div>
         );
     }
@@ -100,7 +119,7 @@ const CouponsTable = () => {
         <div className="mt-[20px]">
             {filteredCoupons.length === 0 ? (
                 <div className="text-center py-6 text-text-muted">
-                    لا يوجد كوبونات متاحة
+                    {isEn ? "No coupons available" : "لا يوجد كوبونات متاحة"}
                 </div>
             ) : (
                 <div className="overflow-x-auto overflow-y-hidden">
@@ -125,7 +144,9 @@ const CouponsTable = () => {
                                     <Table.Td>{coupon.discount}%</Table.Td>
 
                                     <Table.Td>
-                                        {new Date(coupon.expire).toLocaleDateString("ar-EG")}
+                                        {coupon.expire
+                                            ? new Date(coupon.expire).toLocaleDateString(isEn ? "en-US" : "ar-EG")
+                                            : "—"}
                                     </Table.Td>
 
                                     <Table.Td>
@@ -136,7 +157,7 @@ const CouponsTable = () => {
                                                     : "bg-success/20 text-success"
                                             }`}
                                         >
-                                            {isExpired(coupon.expire) ? "منتهي" : "نشط"}
+                                            {isExpired(coupon.expire) ? (isEn ? "Expired" : "منتهي") : (isEn ? "Active" : "نشط")}
                                         </span>
                                     </Table.Td>
 
@@ -148,16 +169,18 @@ const CouponsTable = () => {
                                                         className="text-primary cursor-pointer" 
                                                         onClick={() => handleEditClick(coupon)}
                                                     />
-                                                    <div
+                                                    <button
+                                                        type="button"
                                                         className="text-error cursor-pointer"
                                                         onClick={() => handleDelete(coupon._id)}
+                                                        disabled={deletingId === coupon._id}
                                                     >
                                                         {deletingId === coupon._id ? (
                                                             <span className="text-sm">...</span>
                                                         ) : (
                                                             <MdOutlineDelete />
                                                         )}
-                                                    </div>
+                                                    </button>
                                                 </div>
                                             }
                                         />
@@ -167,7 +190,7 @@ const CouponsTable = () => {
                         </Table.Body>
                     </Table>
 
-                    <LoadMore />
+                    {meta?.hasMore && <LoadMore />}
                 </div>
             )}
 

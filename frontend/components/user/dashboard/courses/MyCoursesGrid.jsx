@@ -1,11 +1,12 @@
 "use client";
 
-import LoadMore from "@/components/shared/LoadMore";
 import UserCoursesCard from "@/components/ui/UserCoursesCard";
 import useMyCourses from "@/hooks/enrollments/useMyCourses";
 import { useSearchParams } from "next/navigation";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const MyCoursesGrid = () => {
+    const { language, localize } = useLanguage();
     const { courses, loading, error } = useMyCourses();
     const searchParams = useSearchParams();
 
@@ -15,7 +16,9 @@ const MyCoursesGrid = () => {
     if (loading) {
         return (
             <div className="flex-1 text-center py-10">
-                <p className="text-text-secondary">جاري تحميل كورساتك...</p>
+                <p className="text-text-secondary">
+                    {language === "en" ? "Loading your courses..." : "جاري تحميل كورساتك..."}
+                </p>
             </div>
         );
     }
@@ -31,16 +34,16 @@ const MyCoursesGrid = () => {
     if (!courses || courses.length === 0) {
         return (
             <div className="flex-1 text-center py-10">
-                <p className="text-text-muted">لم تشترك في أي كورسات بعد</p>
+                <p className="text-text-muted">
+                    {language === "en" ? "You have not enrolled in any courses yet" : "لم تشترك في أي كورسات بعد"}
+                </p>
             </div>
         );
     }
 
     // Filter courses based on search query and status filter
     const filteredCourses = courses.filter((enrollment) => {
-        const courseTitle = (typeof enrollment.course?.title === "object"
-            ? (enrollment.course.title.ar || enrollment.course.title.en)
-            : enrollment.course?.title || "").toLowerCase();
+        const courseTitle = localize(enrollment.course?.title).toLowerCase();
 
         const instructorName = enrollment.course?.instructor
             ? `${enrollment.course.instructor.firstName || ''} ${enrollment.course.instructor.lastName || ''}`.toLowerCase()
@@ -62,7 +65,9 @@ const MyCoursesGrid = () => {
     if (filteredCourses.length === 0) {
         return (
             <div className="flex-1 text-center py-10">
-                <p className="text-text-muted">لا توجد نتائج تطابق خيارات البحث والتصفية المختارة</p>
+                <p className="text-text-muted">
+                    {language === "en" ? "No results match your search and filter criteria" : "لا توجد نتائج تطابق خيارات البحث والتصفية المختارة"}
+                </p>
             </div>
         );
     }
@@ -72,9 +77,8 @@ const MyCoursesGrid = () => {
             {/* Grid */}
             <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                 {filteredCourses.map((enrollment) => {
-                    const courseTitle = typeof enrollment.course?.title === "object"
-                        ? (enrollment.course.title.ar || enrollment.course.title.en)
-                        : enrollment.course?.title || "كورس بدون عنوان";
+                    const defaultCourseTitle = language === "en" ? "Untitled Course" : "كورس بدون عنوان";
+                    const courseTitle = localize(enrollment.course?.title, defaultCourseTitle);
 
                     return (
                         <UserCoursesCard
@@ -93,8 +97,6 @@ const MyCoursesGrid = () => {
                     );
                 })}
             </div>
-
-            <LoadMore />
         </div>
     );
 };

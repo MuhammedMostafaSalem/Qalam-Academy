@@ -4,8 +4,12 @@ import { useState, useEffect } from "react";
 import { HiXMark } from "react-icons/hi2";
 import { updateCouponAction } from "@/actions/couponActions";
 import useToast from "@/hooks/useToast";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const UpdateCouponModal = ({ isOpen, onClose, coupon, onSuccess }) => {
+    const { language } = useLanguage();
+    const isEn = language === "en";
+
     const [name, setName] = useState("");
     const [discount, setDiscount] = useState("");
     const [expire, setExpire] = useState("");
@@ -42,10 +46,13 @@ const UpdateCouponModal = ({ isOpen, onClose, coupon, onSuccess }) => {
         setIsPending(false);
 
         if (result.success) {
-            successMessage(result.message);
+            successMessage(result.message || (isEn ? "Coupon updated successfully" : "تم تعديل الكوبون بنجاح"));
+            if (typeof window !== "undefined") {
+                window.dispatchEvent(new Event("coupon-updated"));
+            }
             onSuccess();
         } else {
-            errorMessage(result.message);
+            errorMessage(result.message || (isEn ? "Failed to update coupon" : "فشل تعديل الكوبون"));
         }
     };
 
@@ -62,28 +69,28 @@ const UpdateCouponModal = ({ isOpen, onClose, coupon, onSuccess }) => {
                 <button
                     type="button"
                     onClick={onClose}
-                    className="absolute left-6 top-6 text-text-secondary hover:text-text-primary transition p-1 rounded-xl hover:bg-background"
+                    className="absolute rtl:left-6 rtl:right-auto ltr:right-6 ltr:left-auto top-6 text-text-secondary hover:text-text-primary transition p-1 rounded-xl hover:bg-background"
                 >
                     <HiXMark size={24} />
                 </button>
 
                 {/* Title */}
                 <h2 className="text-xl font-bold mb-6 text-text-primary">
-                    تعديل الكوبون
+                    {isEn ? "Edit Coupon" : "تعديل الكوبون"}
                 </h2>
 
                 <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                     {/* Name */}
                     <div>
                         <label className="block text-sm text-text-secondary mb-1">
-                            اسم الكوبون
+                            {isEn ? "Coupon Code" : "اسم الكوبون"}
                         </label>
                         <input
                             type="text"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                             required
-                            placeholder="مثال: WELCOME10"
+                            placeholder={isEn ? "e.g. WELCOME10" : "مثال: WELCOME10"}
                             className="w-full h-12 rounded-xl border bg-background px-4 text-text-primary outline-none transition border-border focus:border-primary uppercase"
                         />
                     </div>
@@ -91,7 +98,7 @@ const UpdateCouponModal = ({ isOpen, onClose, coupon, onSuccess }) => {
                     {/* Discount */}
                     <div>
                         <label className="block text-sm text-text-secondary mb-1">
-                            نسبة الخصم (%)
+                            {isEn ? "Discount Percentage (%)" : "نسبة الخصم (%)"}
                         </label>
                         <input
                             type="number"
@@ -100,7 +107,7 @@ const UpdateCouponModal = ({ isOpen, onClose, coupon, onSuccess }) => {
                             required
                             min="1"
                             max="100"
-                            placeholder="مثال: 15"
+                            placeholder={isEn ? "e.g. 15" : "مثال: 15"}
                             className="w-full h-12 rounded-xl border bg-background px-4 text-text-primary outline-none transition border-border focus:border-primary"
                         />
                     </div>
@@ -108,7 +115,7 @@ const UpdateCouponModal = ({ isOpen, onClose, coupon, onSuccess }) => {
                     {/* Expire Date */}
                     <div>
                         <label className="block text-sm text-text-secondary mb-1">
-                            تاريخ الانتهاء
+                            {isEn ? "Expiry Date" : "تاريخ الانتهاء"}
                         </label>
                         <input
                             type="date"
@@ -127,14 +134,14 @@ const UpdateCouponModal = ({ isOpen, onClose, coupon, onSuccess }) => {
                             disabled={isPending}
                             className="px-5 py-2.5 rounded-xl border border-border text-text-primary hover:bg-background transition font-medium"
                         >
-                            إلغاء
+                            {isEn ? "Cancel" : "إلغاء"}
                         </button>
                         <button
                             type="submit"
                             disabled={isPending}
                             className="gradient-button px-6 py-2.5 rounded-xl text-white font-medium hover:opacity-90 transition shadow-lg shadow-primary/20"
                         >
-                            {isPending ? "جاري الحفظ..." : "حفظ التعديلات"}
+                            {isPending ? (isEn ? "Saving..." : "جاري الحفظ...") : (isEn ? "Save Changes" : "حفظ التعديلات")}
                         </button>
                     </div>
                 </form>

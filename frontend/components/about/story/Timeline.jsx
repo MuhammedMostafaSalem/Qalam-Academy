@@ -2,29 +2,33 @@
 
 import { useEffect, useState } from "react";
 import { getTimelineAction } from "@/actions/timelineActions";
-import fallbackTimeline from "./timeline";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const Timeline = () => {
-    const [items, setItems] = useState(fallbackTimeline);
+    const { language, localize } = useLanguage();
+    const [items, setItems] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         const fetchTimeline = async () => {
             try {
                 const res = await getTimelineAction();
-                if (res.success && Array.isArray(res.data) && res.data.length > 0) {
-                    const formatted = res.data.map((item) => ({
-                        id: item._id,
-                        year: item.year,
-                        title: typeof item.title === "object" ? (item.title.ar || item.title.en) : item.title,
-                    }));
-                    setItems(formatted);
-                }
+                if (res.success && Array.isArray(res.data)) {
+                    setItems(res.data);
+                } else setError(res.message);
             } catch (err) {
-                console.error("Failed to fetch timeline API", err);
+                setError(err?.message || "Failed to fetch timeline");
+            } finally {
+                setLoading(false);
             }
         };
         fetchTimeline();
-    }, []);
+    }, [language]);
+
+    if (loading) return <div className="py-8 text-center text-text-secondary">{language === "en" ? "Loading timeline..." : "جاري تحميل الخط الزمني..."}</div>;
+    if (error) return <div className="py-8 text-center text-error">{error}</div>;
+    if (items.length === 0) return null;
 
     return (
         <div className="relative w-full md:w-[220px]">
@@ -68,7 +72,7 @@ const Timeline = () => {
             >
                 {items.map((item, index) => (
                     <div
-                        key={item.id || index}
+                        key={item._id || index}
                         className="
                             relative
                             flex-1
@@ -103,7 +107,7 @@ const Timeline = () => {
                                         rounded-full
                                         border-2
                                         border-primary
-                                        bg-[#08101F]
+                                        bg-background
                                     "
                                 >
                                     <div className="h-[5px] w-[5px] rounded-full bg-primary" />
@@ -138,12 +142,12 @@ const Timeline = () => {
                                     mt-2
                                     text-sm
                                     leading-5
-                                    text-white
+                                    text-text-primary
                                     md:text-[17px]
                                     md:leading-6
                                 "
                             >
-                                {item.title}
+                                {localize(item.title)}
                             </p>
                         </div>
                     </div>

@@ -13,15 +13,18 @@ import {
     YAxis,
 } from "recharts";
 import CustomTooltip from "./CustomTooltip";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const StudentsDistributionChart = ({ data = [] }) => {
+    const { language } = useLanguage();
+    const isEnglish = language === "en";
     return (
         <DashboardCard className="h-full">
             <CardHeader
-                title="توزيع الطلاب"
-                subtitle="عدد الطلاب المسجلين في كل كورس"
+                title={isEnglish ? "Student Distribution" : "توزيع الطلاب"}
+                subtitle={isEnglish ? "Students enrolled in each course" : "عدد الطلاب المسجلين في كل دورة"}
                 filter
-                filterLabel="جميع الكورسات"
+                filterLabel={isEnglish ? "All Courses" : "جميع الدورات"}
             />
 
             <div className="h-[340px]">
@@ -65,7 +68,7 @@ const StudentsDistributionChart = ({ data = [] }) => {
                             content={
                                 <CustomTooltip
                                     prefix=""
-                                    suffix=" طالب"
+                                    suffix={isEnglish ? " students" : " طالب"}
                                 />
                             }
                         />
@@ -79,7 +82,7 @@ const StudentsDistributionChart = ({ data = [] }) => {
                                 (_, index) => (
                                     <Cell
                                         key={index}
-                                        fill="#4F46E5"
+                                        fill="var(--color-primary)"
                                     />
                                 )
                             )}

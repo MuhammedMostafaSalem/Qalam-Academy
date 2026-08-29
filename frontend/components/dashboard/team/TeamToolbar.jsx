@@ -2,19 +2,23 @@
 
 import Select from "@/components/ui/Select";
 import Toolbar from "@/components/ui/Toolbar";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const TeamToolbar = ({ searchQuery, setSearchQuery, selectedRole, setSelectedRole }) => {
+    const { language } = useLanguage();
+    const isEn = language === "en";
+
     const roleOptions = [
-        { value: "all", label: "جميع المسميات" },
-        { value: "instructor", label: "محاضر" },
-        { value: "developer", label: "مطور" },
-        { value: "designer", label: "مصمم" },
+        { value: "all", label: isEn ? "All Positions" : "جميع المسميات" },
+        { value: "instructor", label: isEn ? "Instructor" : "محاضر" },
+        { value: "developer", label: isEn ? "Developer" : "مطور" },
+        { value: "designer", label: isEn ? "Designer" : "مصمم" },
     ];
 
     return (
         <div className="mt-[20px]">
             <Toolbar
-                inputPlaceholder="ابحث عن عضو في الفريق..."
+                inputPlaceholder={isEn ? "Search team members..." : "ابحث عن عضو في الفريق..."}
                 searchQuery={searchQuery}
                 setSearchQuery={setSearchQuery}
                 filters={

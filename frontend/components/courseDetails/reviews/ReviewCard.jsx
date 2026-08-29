@@ -1,15 +1,21 @@
+"use client";
+
 import {
     HiStar,
     HiUserCircle,
 } from "react-icons/hi2";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const ReviewCard = ({ review }) => {
+    const { language } = useLanguage();
+    const isEn = language === "en";
+
     const userName = review.user 
         ? `${review.user.firstName || ''} ${review.user.lastName || ''}`.trim()
-        : "مستخدم";
+        : (isEn ? "Student" : "طالب");
     
-    const createdAt = review.createdAt 
-        ? new Date(review.createdAt).toLocaleDateString('ar-EG', { 
+    const createdAt = review.createdAt
+        ? new Date(review.createdAt).toLocaleDateString(isEn ? 'en-US' : 'ar-EG', {
             year: 'numeric', 
             month: 'long', 
             day: 'numeric' 

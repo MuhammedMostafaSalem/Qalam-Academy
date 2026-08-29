@@ -1,29 +1,33 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
-
 import {
     HiOutlineHeart,
     HiOutlineShoppingCart,
 } from "react-icons/hi2";
-
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:5000";
 
 const WishlistCard = ({ course, onRemove }) => {
+    const { language, localize } = useLanguage();
     const rawImage = course?.image || course?.thumbnail;
     const imageSrc = rawImage
         ? (rawImage.startsWith("http") ? rawImage : `${baseUrl}${rawImage}`)
         : null;
 
-    const rawTitle = course?.title;
-    const title = typeof rawTitle === "string"
-        ? rawTitle
-        : (typeof rawTitle === "object" && rawTitle ? (rawTitle.ar || rawTitle.en || "كورس") : "كورس");
+    const defaultTitle = language === "en" ? "Course" : "كورس";
+    const title = localize(course?.title, defaultTitle);
 
     const rawInstructor = course?.instructor;
     const instructor = typeof rawInstructor === "string"
         ? rawInstructor
         : (typeof rawInstructor === "object" && rawInstructor ? `${rawInstructor.firstName || ''} ${rawInstructor.lastName || ''}`.trim() : "—");
+
+    const currencyText = language === "en" ? "EGP" : "ج.م";
+    const viewText = language === "en" ? "View" : "عرض";
+    const buyText = language === "en" ? "Buy" : "شراء";
 
     return (
         <div
@@ -43,7 +47,7 @@ const WishlistCard = ({ course, onRemove }) => {
                     relative
                     h-48
                     w-full
-                    bg-white/5
+                    bg-card-hover
                 "
             >
                 {imageSrc ? (
@@ -70,11 +74,11 @@ const WishlistCard = ({ course, onRemove }) => {
                         items-center
                         justify-center
                         rounded-full
-                        bg-white/90
-                        text-red-500
+                        bg-card
+                        text-error
                         shadow
                         transition
-                        hover:bg-red-500
+                        hover:bg-error
                         hover:text-white
                     "
                 >
@@ -129,7 +133,7 @@ const WishlistCard = ({ course, onRemove }) => {
                             text-primary
                         "
                     >
-                        {course.price} ج.م
+                        {course.price} {currencyText}
                     </span>
                 </div>
 
@@ -165,7 +169,7 @@ const WishlistCard = ({ course, onRemove }) => {
                             hover:bg-background-alt
                         "
                     >
-                        عرض
+                        {viewText}
                     </Link>
 
                     <button
@@ -198,7 +202,7 @@ const WishlistCard = ({ course, onRemove }) => {
                     >
                         <HiOutlineShoppingCart size={18} />
 
-                        شراء
+                        {buyText}
                     </button>
                 </div>
             </div>

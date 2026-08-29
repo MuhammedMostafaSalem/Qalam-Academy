@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import Link from "next/link";
 import Section from "@/components/sections/Section";
@@ -6,12 +6,16 @@ import SectionBadge from "@/components/sections/SectionBadge";
 import Container from "@/components/ui/Container";
 import Button from "@/components/ui/Button";
 import {
+    HiArrowLeft,
     HiArrowRight,
 } from "react-icons/hi2";
 import { useRouter } from "next/navigation";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const CTASection = () => {
     const router = useRouter();
+    const { language, isRtl } = useLanguage();
+    const isEn = language === "en";
 
     return (
         <Section className="mt-[80px]">
@@ -32,7 +36,6 @@ const CTASection = () => {
                     "
                 >
                     {/* Glow */}
-
                     <div
                         className="
                             absolute
@@ -48,9 +51,7 @@ const CTASection = () => {
                     />
 
                     {/* Content */}
-
                     <div className="relative z-10 mx-auto max-w-3xl">
-
                         <SectionBadge
                             className="
                                 border-white/20
@@ -58,7 +59,7 @@ const CTASection = () => {
                                 text-white
                             "
                         >
-                            ابدأ مشروعك الآن
+                            {isEn ? "Start Your Project Now" : "ابدأ مشروعك الآن"}
                         </SectionBadge>
 
                         <h2
@@ -70,9 +71,19 @@ const CTASection = () => {
                                 lg:text-5xl
                             "
                         >
-                            جاهز لتحويل فكرتك
-                            <br />
-                            إلى مشروع ناجح؟
+                            {isEn ? (
+                                <>
+                                    Ready to turn your idea
+                                    <br />
+                                    into a successful product?
+                                </>
+                            ) : (
+                                <>
+                                    جاهز لتحويل فكرتك
+                                    <br />
+                                    إلى مشروع ناجح؟
+                                </>
+                            )}
                         </h2>
 
                         <p
@@ -85,13 +96,12 @@ const CTASection = () => {
                                 text-white/80
                             "
                         >
-                            دع فريقنا يساعدك في بناء حلول رقمية احترافية
-                            تناسب احتياجاتك وتحقق أهداف عملك بأحدث
-                            التقنيات وأفضل الممارسات.
+                            {isEn
+                                ? "Let our team help you build professional digital solutions tailored to your needs and business goals using the latest technologies and best practices."
+                                : "دع فريقنا يساعدك في بناء حلول رقمية احترافية تناسب احتياجاتك وتحقق أهداف عملك بأحدث التقنيات وأفضل الممارسات."}
                         </p>
 
                         {/* Actions */}
-
                         <div
                             className="
                                 mt-10
@@ -107,18 +117,15 @@ const CTASection = () => {
                                 className="gradient-button flex gap-3 items-center"
                                 size="lg"
                             >
-                                <HiArrowRight className="h-5 w-5" />
-                                <span>تواصل معنا</span>
+                                <span>{isEn ? "Contact Us" : "تواصل معنا"}</span>
+                                {isRtl ? <HiArrowLeft className="h-5 w-5" /> : <HiArrowRight className="h-5 w-5" />}
                             </Button>
-
                         </div>
-
                     </div>
-
                 </div>
             </Container>
         </Section>
-    )
-}
+    );
+};
 
-export default CTASection
+export default CTASection;

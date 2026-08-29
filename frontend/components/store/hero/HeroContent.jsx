@@ -6,7 +6,10 @@ import SectionTitle from "@/components/sections/SectionTitle";
 import SectionDescription from "@/components/sections/SectionDescription";
 import { getHeroByPageAction } from "@/actions/heroActions";
 
+import { useLanguage } from "@/providers/LanguageProvider";
+
 const HeroContent = () => {
+    const { language, localize } = useLanguage();
     const [hero, setHero] = useState(null);
 
     useEffect(() => {
@@ -21,11 +24,17 @@ const HeroContent = () => {
             }
         };
         fetchHero();
-    }, []);
+    }, [language]);
 
-    const title = hero?.title?.ar || hero?.title?.en || hero?.title;
-    const subtitle = hero?.subtitle?.ar || hero?.subtitle?.en || hero?.subtitle || "المتجر الرقمي";
-    const description = hero?.description?.ar || hero?.description?.en || hero?.description || "منتجات وأدوات احترافية تساعدك على بناء وتطوير وتصميم مشاريعك بكفاءة عالية";
+    const title = localize(hero?.title);
+    const subtitle = localize(hero?.subtitle, language === "en" ? "Digital Store" : "المتجر الرقمي");
+    const defaultDesc = language === "en"
+        ? "Professional digital products and tools to help you design, build, and scale your projects effectively."
+        : "منتجات وأدوات احترافية تساعدك على بناء وتطوير وتصميم مشاريعك بكفاءة عالية";
+    const description = localize(hero?.description, defaultDesc);
+
+    const defaultTitlePart1 = language === "en" ? "Everything you need to " : "كل ما تحتاجه ";
+    const defaultTitlePart2 = language === "en" ? "grow your work" : "لتطوير عملك";
 
     return (
         <div
@@ -48,7 +57,7 @@ const HeroContent = () => {
                     title
                 ) : (
                     <>
-                        كل ما تحتاجه <span className="gradient-text">لتطوير عملك</span>
+                        {defaultTitlePart1}<span className="gradient-text">{defaultTitlePart2}</span>
                     </>
                 )}
             </SectionTitle>

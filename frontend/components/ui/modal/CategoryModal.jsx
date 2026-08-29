@@ -32,7 +32,7 @@ const CategoryModal = ({ isOpen, onClose, onSubmit, onDelete, initialData, mode 
                 {mode === "delete" ? (
                     <div>
                         <p className="text-text-secondary mb-6 leading-relaxed">
-                            هل أنت متأكد من رغبتك في حذف التصنيف <span className="font-bold text-text-primary">{initialData?.title?.ar}</span>؟ لا يمكن التراجع عن هذا الإجراء.
+                            هل أنت متأكد من رغبتك في حذف التصنيف <span className="font-bold text-text-primary">{initialData?.title?.ar || initialData?.title?.en || (typeof initialData?.title === 'string' ? initialData.title : '')}</span>؟ لا يمكن التراجع عن هذا الإجراء.
                         </p>
                         <div className="flex justify-end gap-3">
                             <button

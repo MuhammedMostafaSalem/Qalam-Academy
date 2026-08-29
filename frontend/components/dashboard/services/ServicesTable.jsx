@@ -12,7 +12,12 @@ import { deleteServiceAction } from "@/actions/serviceActions";
 import useToast from "@/hooks/useToast";
 import UpdateServiceModal from "@/components/ui/modal/service/UpdateServiceModal";
 
+import { useLanguage } from "@/providers/LanguageProvider";
+import { useEffect } from "react";
+
 const ServicesTable = () => {
+    const { language, localize } = useLanguage();
+    const isEn = language === "en";
     const searchParams = useSearchParams();
     const queryString = searchParams.toString();
     const { services, loading, error, meta, refetch } = useServices(queryString);
@@ -21,7 +26,23 @@ const ServicesTable = () => {
     const [editingService, setEditingService] = useState(null);
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
 
-    const titleHead = [
+    useEffect(() => {
+        const handleServiceUpdated = () => {
+            refetch();
+        };
+        window.addEventListener("service-updated", handleServiceUpdated);
+        return () => {
+            window.removeEventListener("service-updated", handleServiceUpdated);
+        };
+    }, [refetch]);
+
+    const titleHead = isEn ? [
+        "Service",
+        "Description",
+        "Status",
+        "Creation Date",
+        "Actions",
+    ] : [
         "الخدمة",
         "الوصف",
         "الحالة",
@@ -30,16 +51,16 @@ const ServicesTable = () => {
     ];
 
     const handleDelete = async (serviceId) => {
-        if (!confirm("هل أنت متأكد من حذف هذه الخدمة؟")) return;
+        if (!confirm(language === "en" ? "Are you sure you want to delete this service?" : "هل أنت متأكد من حذف هذه الخدمة؟")) return;
 
         setDeletingId(serviceId);
         const result = await deleteServiceAction(serviceId);
 
         if (result.success) {
-            successMessage(result.message || "تم حذف الخدمة بنجاح");
+            successMessage(result.message || (language === "en" ? "Service deleted successfully" : "تم حذف الخدمة بنجاح"));
             refetch();
         } else {
-            errorMessage(result.message || "فشل حذف الخدمة");
+            errorMessage(result.message || (language === "en" ? "Failed to delete service" : "فشل حذف الخدمة"));
         }
 
         setDeletingId(null);
@@ -53,7 +74,9 @@ const ServicesTable = () => {
     if (loading) {
         return (
             <div className="mt-[20px] text-center py-10">
-                <p className="text-text-secondary">جاري التحميل...</p>
+                <p className="text-text-secondary">
+                    {language === "en" ? "Loading..." : "جاري التحميل..."}
+                </p>
             </div>
         );
     }
@@ -69,7 +92,9 @@ const ServicesTable = () => {
     if (!services || services.length === 0) {
         return (
             <div className="mt-[20px] text-center py-10">
-                <div className="text-center py-6 text-text-muted">لا يوجد بيانات متاحة</div>
+                <div className="text-center py-6 text-text-muted">
+                    {language === "en" ? "No data available" : "لا يوجد بيانات متاحة"}
+                </div>
             </div>
         );
     }
@@ -87,44 +112,47 @@ const ServicesTable = () => {
                     </Table.Head>
 
                     <Table.Body>
-                        {services.map((service) => (
-                            <Table.Row key={service._id}>
-                                <Table.Td>
-                                    <CardTable
-                                        data={{
-                                            id: service._id,
-                                            image: service.image,
-                                            name: service.title?.ar || service.title,
-                                        }}
-                                    />
-                                </Table.Td>
+                        {services.map((service) => {
+                            const desc = localize(service.description);
+                            return (
+                                <Table.Row key={service._id}>
+                                    <Table.Td>
+                                        <CardTable
+                                            data={{
+                                                id: service._id,
+                                                image: service.image,
+                                                name: localize(service.title),
+                                            }}
+                                        />
+                                    </Table.Td>
 
-                                <Table.Td>
-                                    <p className="max-w-xs truncate">
-                                        {service.description?.ar || service.description
-                                            ? (service.description?.ar || service.description).slice(0, 60) +
-                                              ((service.description?.ar || service.description).length > 60 ? "..." : "")
+                                    <Table.Td>
+                                        <p className="max-w-xs truncate">
+                                            {desc
+                                                ? desc.slice(0, 60) + (desc.length > 60 ? "..." : "")
+                                                : "—"}
+                                        </p>
+                                    </Table.Td>
+
+                                    <Table.Td>
+                                        <span
+                                            className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                                                service.isActive
+                                                    ? "bg-success/20 text-success"
+                                                    : "bg-error/20 text-error"
+                                            }`}
+                                        >
+                                            {service.isActive
+                                                ? (language === "en" ? "Active" : "نشط")
+                                                : (language === "en" ? "Inactive" : "غير نشط")}
+                                        </span>
+                                    </Table.Td>
+
+                                    <Table.Td>
+                                        {service.createdAt
+                                            ? new Date(service.createdAt).toLocaleDateString(language === "en" ? "en-US" : "ar-EG")
                                             : "—"}
-                                    </p>
-                                </Table.Td>
-
-                                <Table.Td>
-                                    <span
-                                        className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                                            service.isActive
-                                                ? "bg-success/20 text-success"
-                                                : "bg-error/20 text-error"
-                                        }`}
-                                    >
-                                        {service.isActive ? "نشط" : "غير نشط"}
-                                    </span>
-                                </Table.Td>
-
-                                <Table.Td>
-                                    {service.createdAt
-                                        ? new Date(service.createdAt).toLocaleDateString("ar-EG")
-                                        : "—"}
-                                </Table.Td>
+                                    </Table.Td>
 
                                 <Table.Td>
                                     <ActionsTable
@@ -147,7 +175,8 @@ const ServicesTable = () => {
                                     />
                                 </Table.Td>
                             </Table.Row>
-                        ))}
+                        );
+                    })}
                     </Table.Body>
                 </Table>
             </div>

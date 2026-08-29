@@ -5,8 +5,10 @@ import CourseCard from "../courses/CourseCard";
 import Slider from "../ui/Slider";
 import { useEffect, useState } from "react";
 import { getCoursesAction } from "@/actions/courseActions";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const CoursesSlider = () => {
+    const { language } = useLanguage();
     const [courses, setCourses] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -15,12 +17,12 @@ const CoursesSlider = () => {
             if (result.success) setCourses(result.data);
             setLoading(false);
         });
-    }, []);
+    }, [language]);
 
     if (loading) {
         return (
             <div className="py-10 text-center text-text-secondary">
-                جاري تحميل الكورسات...
+                {language === "en" ? "Loading courses..." : "جاري تحميل الكورسات..."}
             </div>
         );
     }
@@ -28,7 +30,7 @@ const CoursesSlider = () => {
     if (courses.length === 0) {
         return (
             <div className="py-10 text-center text-text-muted">
-                لا توجد كورسات متاحة حالياً
+                {language === "en" ? "No courses available currently" : "لا توجد كورسات متاحة حالياً"}
             </div>
         );
     }
@@ -52,19 +54,20 @@ const CoursesSlider = () => {
                 <CourseCard
                     key={course._id}
                     course={{
+                        _id: course._id,
                         image: course.thumbnail,
-                        title: course.title?.ar || course.title,
+                        title: course.title,
                         slug: course.slug,
                         duration: course.duration || "—",
-                        lessons: course.lessonsCount || 0,
+                        lessons: course.totalLessons || 0,
                         price: course.discountPrice || course.price || 0,
                         originalPrice: course.discountPrice ? course.price : null,
-                        badge: course.discountPrice ? "خصم" : null,
+                        badge: course.discountPrice ? (language === "en" ? "Sale" : "خصم") : null,
                         instructor: course.instructor
-                            ? `${course.instructor.firstName} ${course.instructor.lastName}`
+                            ? `${course.instructor.firstName || ''} ${course.instructor.lastName || ''}`.trim()
                             : "—",
                         rating: course.averageRating || 0,
-                        reviewsCount: course.reviewsCount || 0,
+                        reviewsCount: course.totalReviews || 0,
                     }}
                 />
             ))}

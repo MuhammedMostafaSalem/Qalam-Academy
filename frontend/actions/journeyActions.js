@@ -4,9 +4,9 @@ import { authApi } from "@/services/authService";
 import { revalidatePath } from "next/cache";
 
 // Get Journey Singleton
-export async function getJourneyAction() {
+export async function getJourneyAction(raw = false) {
     try {
-        const response = await authApi("/journey", {
+        const response = await authApi(`/journey${raw ? "?raw=true" : ""}`, {
             method: "GET",
         });
         return {
@@ -37,10 +37,18 @@ export async function updateJourneyAction(prevState, formData) {
         if (descriptionAr) body.append("description.ar", descriptionAr);
         if (descriptionEn) body.append("description.en", descriptionEn);
 
-        const badgeTextAr = formData.get("badgeTextAr");
-        const badgeTextEn = formData.get("badgeTextEn");
-        if (badgeTextAr) body.append("badgeText.ar", badgeTextAr);
-        if (badgeTextEn) body.append("badgeText.en", badgeTextEn);
+        const badgeAr = formData.get("badgeAr");
+        const badgeEn = formData.get("badgeEn");
+        if (badgeAr) body.append("badge.ar", badgeAr);
+        if (badgeEn) body.append("badge.en", badgeEn);
+
+        const badgeDescriptionAr = formData.get("badgeDescriptionAr");
+        const badgeDescriptionEn = formData.get("badgeDescriptionEn");
+        if (badgeDescriptionAr) body.append("badgeDescription.ar", badgeDescriptionAr);
+        if (badgeDescriptionEn) body.append("badgeDescription.en", badgeDescriptionEn);
+
+        const isActive = formData.get("isActive");
+        if (isActive !== null) body.append("isActive", isActive);
 
         const image = formData.get("image");
         if (image instanceof File && image.size > 0) {
@@ -53,17 +61,17 @@ export async function updateJourneyAction(prevState, formData) {
         });
 
         revalidatePath("/about");
-        revalidatePath("/dashboard");
+        revalidatePath("/dashboard/journey");
 
         return {
             success: true,
             data: response.data,
-            message: response.message || "تم تحديث بيانيات الرحلة بنجاح",
+            message: response.message || "تم تحديث بيانات الرحلة بنجاح",
         };
     } catch (error) {
         return {
             success: false,
-            message: error?.message || "فشل تحديث بيانيات الرحلة",
+            message: error?.message || "فشل تحديث بيانات الرحلة",
             errors: error?.errors || null,
         };
     }

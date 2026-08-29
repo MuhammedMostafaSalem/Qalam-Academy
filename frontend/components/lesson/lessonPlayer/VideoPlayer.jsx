@@ -2,6 +2,7 @@
 
 import { useRef, useEffect } from "react";
 import { updateProgressAction } from "@/actions/progressActions";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const VideoPlayer = ({ lesson }) => {
     const videoRef = useRef(null);
@@ -45,6 +46,9 @@ const VideoPlayer = ({ lesson }) => {
         };
     }, [lesson?._id]);
 
+    const { language } = useLanguage();
+    const isEn = language === "en";
+
     if (!videoUrl) {
         return (
             <div
@@ -60,7 +64,7 @@ const VideoPlayer = ({ lesson }) => {
                 "
             >
                 <p className="text-white text-lg">
-                    لا يوجد فيديو متاح لهذا الدرس
+                    {isEn ? "No video available for this lesson" : "لا يوجد فيديو متاح لهذا الدرس"}
                 </p>
             </div>
         );

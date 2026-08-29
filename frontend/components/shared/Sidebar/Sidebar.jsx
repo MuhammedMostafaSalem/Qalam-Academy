@@ -14,6 +14,7 @@ const Sidebar = ({
     setCollapsed,
     mobileOpen,
     setMobileOpen,
+    isRtl,
 }) => {
     return (
         <>
@@ -41,14 +42,12 @@ const Sidebar = ({
             <aside
                 className={`
                     fixed
-                    right-0
                     top-0
                     z-50
 
                     h-screen
 
                     bg-card
-                    border-l
                     border-border
 
                     transition-all
@@ -62,9 +61,13 @@ const Sidebar = ({
                         : "lg:w-72"
                     }
 
+                    ${isRtl ? "right-0 border-l" : "left-0 border-r"}
+
                     ${mobileOpen
                         ? "translate-x-0"
-                        : "translate-x-full lg:translate-x-0"
+                        : isRtl
+                            ? "translate-x-full lg:translate-x-0"
+                            : "-translate-x-full lg:translate-x-0"
                     }
 
                     w-72
@@ -108,7 +111,7 @@ const Sidebar = ({
                                 duration-300
                             "
                         >
-                            {collapsed ? (
+                            {collapsed === isRtl ? (
                                 <HiOutlineChevronDoubleRight size={20} />
                             ) : (
                                 <HiOutlineChevronDoubleLeft size={20} />

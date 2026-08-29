@@ -1,47 +1,56 @@
+"use client";
+
 import {
     HiOutlineClock,
     HiOutlineAcademicCap,
     HiOutlineLanguage,
     HiOutlineDocumentDuplicate,
 } from "react-icons/hi2";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const CourseFeatures = ({ course }) => {
+    const { language } = useLanguage();
+    const isEn = language === "en";
+
     const duration = course?.duration
-        ? (typeof course.duration === "number" ? `${course.duration} دقيقة` : course.duration)
+        ? (typeof course.duration === "number" ? `${course.duration} ${isEn ? "mins" : "دقيقة"}` : course.duration)
+        : "—";
+
+    const countVal = course?.totalLessons ?? course?.lessonsCount ?? course?.lessons?.length;
+    const lessonsCount = countVal !== undefined
+        ? `${countVal} ${isEn ? "lessons" : "درس"}`
         : "—";
 
     const features = [
         {
             icon: HiOutlineClock,
-            label: "المدة",
+            label: isEn ? "Duration" : "المدة",
             value: duration,
         },
         {
             icon: HiOutlineAcademicCap,
-            label: "المستوى",
+            label: isEn ? "Level" : "المستوى",
             value: course?.level === "beginner" 
-                ? "مبتدئ" 
+                ? (isEn ? "Beginner" : "مبتدئ")
                 : course?.level === "intermediate" 
-                    ? "متوسط" 
+                    ? (isEn ? "Intermediate" : "متوسط")
                     : course?.level === "advanced" 
-                        ? "متقدم" 
-                        : course?.level || "—",
+                        ? (isEn ? "Advanced" : "متقدم")
+                        : course?.level || (isEn ? "All Levels" : "—"),
         },
         {
             icon: HiOutlineDocumentDuplicate,
-            label: "عدد الدروس",
-            value: (course?.totalLessons ?? course?.lessonsCount ?? course?.lessons?.length) !== undefined
-                ? `${course?.totalLessons ?? course?.lessonsCount ?? course?.lessons?.length} درس`
-                : "—",
+            label: isEn ? "Total Lessons" : "عدد الدروس",
+            value: lessonsCount,
         },
         {
             icon: HiOutlineLanguage,
-            label: "اللغة",
+            label: isEn ? "Language" : "اللغة",
             value: course?.language === "arabic" || course?.language === "ar"
-                ? "العربية" 
+                ? (isEn ? "Arabic" : "العربية")
                 : course?.language === "english" || course?.language === "en"
-                    ? "English" 
-                    : course?.language || "—",
+                    ? (isEn ? "English" : "الإنجليزية")
+                    : course?.language || (isEn ? "Arabic" : "العربية"),
         },
     ];
 

@@ -1,9 +1,13 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:5000";
 
 const UserCoursesCard = ({ course }) => {
+    const { language, localize } = useLanguage();
     const rawImage = course?.image;
     const imageSrc = (rawImage && typeof rawImage === "string" && rawImage.trim() !== "")
         ? (rawImage.startsWith("http") ? rawImage : `${baseUrl}${rawImage}`)
@@ -11,15 +15,16 @@ const UserCoursesCard = ({ course }) => {
 
     const courseSlugOrId = course?.slug || course?.id || "";
 
-    const rawTitle = course?.title;
-    const title = typeof rawTitle === "string"
-        ? rawTitle
-        : (typeof rawTitle === "object" && rawTitle ? (rawTitle.ar || rawTitle.en || "كورس") : "كورس");
+    const defaultTitle = language === "en" ? "Course" : "كورس";
+    const title = localize(course?.title, defaultTitle);
 
     const rawInstructor = course?.instructor;
     const instructor = typeof rawInstructor === "string"
         ? rawInstructor
         : (typeof rawInstructor === "object" && rawInstructor ? `${rawInstructor.firstName || ''} ${rawInstructor.lastName || ''}`.trim() : "—");
+
+    const progressText = language === "en" ? "Progress" : "التقدم";
+    const openCourseText = language === "en" ? "Open Course" : "فتح الكورس";
 
     return (
         <div
@@ -40,7 +45,7 @@ const UserCoursesCard = ({ course }) => {
                     relative
                     h-44
                     w-full
-                    bg-white/5
+                    bg-card-hover
                 "
             >
                 {imageSrc ? (
@@ -97,7 +102,7 @@ const UserCoursesCard = ({ course }) => {
                         "
                     >
                         <span>
-                            التقدم
+                            {progressText}
                         </span>
 
                         <span>
@@ -142,11 +147,11 @@ const UserCoursesCard = ({ course }) => {
                         hover:opacity-90
                     "
                 >
-                    فتح الكورس
+                    {openCourseText}
                 </Link>
             </div>
         </div>
     );
 };
 
-export default UserCoursesCard
+export default UserCoursesCard;

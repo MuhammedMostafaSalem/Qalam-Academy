@@ -6,10 +6,12 @@ import { HiOutlineMenuAlt3, HiX } from "react-icons/hi";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import CTAButton from "./CTAButton";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const MobileMenu = ({ open, onClose, isAuthenticated }) => {
     const pathname = usePathname();
     const menuRef = useRef(null);
+    const { localize } = useLanguage();
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -66,7 +68,7 @@ const MobileMenu = ({ open, onClose, isAuthenticated }) => {
                                 : "text-text-secondary hover:text-primary"
                                 }`}
                         >
-                            {item.title}
+                            {localize(item.title)}
                         </Link>
                     </li>
                 ))}

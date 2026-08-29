@@ -29,7 +29,7 @@ const AboutHeroImage = () => {
                     overflow-hidden
                     rounded-3xl
                     border
-                    border-white/10
+                    border-border
                     bg-card
                     animate-pulse-glow
                 "
@@ -54,7 +54,7 @@ const AboutHeroImage = () => {
                     gap-4
                     rounded-2xl
                     border
-                    border-white/10
+                    border-border
                     bg-card/90
                     px-[50]
                     py-4
@@ -69,11 +69,11 @@ const AboutHeroImage = () => {
                         +7
                     </h3>
 
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-text-secondary">
                         سنوات من الخبرة
                     </p>
 
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-text-secondary">
                         في تطوير الحلول الرقمية
                     </p>
 

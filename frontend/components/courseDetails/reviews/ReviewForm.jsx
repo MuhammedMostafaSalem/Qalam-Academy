@@ -3,8 +3,12 @@
 import { useState } from "react";
 import { HiStar } from "react-icons/hi2";
 import { createReviewAction } from "@/actions/reviewActions";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const ReviewForm = ({ courseId, onSuccess, onCancel }) => {
+    const { language } = useLanguage();
+    const isEn = language === "en";
+
     const [rating, setRating] = useState(0);
     const [hoveredRating, setHoveredRating] = useState(0);
     const [comment, setComment] = useState("");
@@ -15,7 +19,7 @@ const ReviewForm = ({ courseId, onSuccess, onCancel }) => {
         e.preventDefault();
         
         if (rating === 0) {
-            setError("الرجاء اختيار تقييم");
+            setError(isEn ? "Please select a rating" : "الرجاء اختيار تقييم");
             return;
         }
 
@@ -36,14 +40,22 @@ const ReviewForm = ({ courseId, onSuccess, onCancel }) => {
                 setComment("");
                 onSuccess();
             } else {
-                setError(result.message || "فشل إرسال التقييم");
+                setError(result.message || (isEn ? "Failed to submit review" : "فشل إرسال التقييم"));
             }
         } catch (err) {
-            setError("حدث خطأ أثناء إرسال التقييم");
+            setError(isEn ? "An error occurred while submitting review" : "حدث خطأ أثناء إرسال التقييم");
             console.error(err);
         } finally {
             setLoading(false);
         }
+    };
+
+    const ratingDescriptions = {
+        5: isEn ? "Excellent!" : "ممتاز!",
+        4: isEn ? "Very Good" : "جيد جداً",
+        3: isEn ? "Good" : "جيد",
+        2: isEn ? "Fair" : "مقبول",
+        1: isEn ? "Poor" : "ضعيف",
     };
 
     return (
@@ -57,12 +69,12 @@ const ReviewForm = ({ courseId, onSuccess, onCancel }) => {
                 p-7
             "
         >
-            <h3 className="text-lg font-bold mb-5">أضف تقييمك</h3>
+            <h3 className="text-lg font-bold mb-5">{isEn ? "Add Your Review" : "أضف تقييمك"}</h3>
 
             {/* Star Rating */}
             <div className="mb-5">
                 <label className="mb-3 block text-sm font-medium">
-                    التقييم <span className="text-error">*</span>
+                    {isEn ? "Rating" : "التقييم"} <span className="text-error">*</span>
                 </label>
                 <div className="flex gap-2">
                     {[1, 2, 3, 4, 5].map((star) => (
@@ -79,7 +91,7 @@ const ReviewForm = ({ courseId, onSuccess, onCancel }) => {
                                 className={
                                     star <= (hoveredRating || rating)
                                         ? "text-yellow-400"
-                                        : "text-gray-300 dark:text-gray-600"
+                                        : "text-text-muted"
                                 }
                             />
                         </button>
@@ -87,7 +99,7 @@ const ReviewForm = ({ courseId, onSuccess, onCancel }) => {
                 </div>
                 {rating > 0 && (
                     <p className="mt-2 text-sm text-text-secondary">
-                        {rating === 5 ? "ممتاز!" : rating === 4 ? "جيد جداً" : rating === 3 ? "جيد" : rating === 2 ? "مقبول" : "ضعيف"}
+                        {ratingDescriptions[rating]}
                     </p>
                 )}
             </div>
@@ -98,14 +110,14 @@ const ReviewForm = ({ courseId, onSuccess, onCancel }) => {
                     htmlFor="comment" 
                     className="mb-3 block text-sm font-medium"
                 >
-                    التعليق (اختياري)
+                    {isEn ? "Comment (Optional)" : "التعليق (اختياري)"}
                 </label>
                 <textarea
                     id="comment"
                     value={comment}
                     onChange={(e) => setComment(e.target.value)}
                     rows={4}
-                    placeholder="شاركنا رأيك في الكورس..."
+                    placeholder={isEn ? "Share your thoughts about this course..." : "شاركنا رأيك في الكورس..."}
                     className="
                         w-full
                         rounded-2xl
@@ -149,7 +161,9 @@ const ReviewForm = ({ courseId, onSuccess, onCancel }) => {
                         disabled:cursor-not-allowed
                     "
                 >
-                    {loading ? "جاري الإرسال..." : "إرسال التقييم"}
+                    {loading
+                        ? (isEn ? "Submitting..." : "جاري الإرسال...")
+                        : (isEn ? "Submit Review" : "إرسال التقييم")}
                 </button>
                 
                 <button
@@ -169,7 +183,7 @@ const ReviewForm = ({ courseId, onSuccess, onCancel }) => {
                         disabled:opacity-50
                     "
                 >
-                    إلغاء
+                    {isEn ? "Cancel" : "إلغاء"}
                 </button>
             </div>
         </form>

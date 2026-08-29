@@ -51,12 +51,12 @@ const ProfileHeader = () => {
                     <span
                         className="
                             rounded-full
-                            bg-green-500/10
+                            bg-success/10
                             px-4
                             py-2
                             text-sm
                             font-medium
-                            text-green-500
+                            text-success
                         "
                     >
                         Active

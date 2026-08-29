@@ -1,11 +1,29 @@
+"use client";
+
 import Section from "@/components/sections/Section";
 import Button from "@/components/ui/Button";
 import Container from "@/components/ui/Container";
 
 import { HiArrowRight } from "react-icons/hi2";
 import { BsEnvelopeFill } from "react-icons/bs";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const CTASection = () => {
+    const { language, isRtl } = useLanguage();
+    const copy = language === "en"
+        ? {
+            title: "Let’s turn your idea into reality",
+            description: "Contact us for a free project consultation, or start your learning journey with us.",
+            placeholder: "Enter your email address",
+            submit: "Send email",
+        }
+        : {
+            title: "دعنا نحوّل فكرتك إلى واقع",
+            description: "تواصل معنا للحصول على استشارة مجانية لمشروعك، أو ابدأ رحلتك التعليمية معنا.",
+            placeholder: "أدخل بريدك الإلكتروني",
+            submit: "إرسال البريد الإلكتروني",
+        };
+
     return (
         <Section className="pt-[80px]">
             <Container>
@@ -73,7 +91,7 @@ const CTASection = () => {
                                         text-white
                                     "
                                 >
-                                    دعنا نساعدك في تحقيق فكرتك
+                                    {copy.title}
                                 </h2>
 
                                 <p
@@ -83,8 +101,7 @@ const CTASection = () => {
                                         text-white/80
                                     "
                                 >
-                                    تواصل معنا الآن واحصل على استشارة مجانية
-                                    لمشروعك أو ابدأ رحلتك التعليمية معنا.
+                                    {copy.description}
                                 </p>
 
                             </div>
@@ -105,22 +122,24 @@ const CTASection = () => {
                             >
                                 <input
                                     type="email"
-                                    placeholder="أدخل بريدك الإلكتروني"
+                                    placeholder={copy.placeholder}
                                     className="
                                         w-full
                                         bg-transparent
                                         px-5
                                         py-4
-                                        text-white
-                                        placeholder:text-muted-foreground
+                                        text-text-primary
+                                        placeholder:text-text-secondary
                                         outline-none
                                     "
                                 />
 
                                 <button
+                                    type="button"
+                                    aria-label={copy.submit}
                                     className="rounded-none bg-white text-secondary px-6 py-3"
                                 >
-                                    <HiArrowRight className="h-5 w-5" />
+                                    <HiArrowRight className={`h-5 w-5 ${isRtl ? "rotate-180" : ""}`} />
                                 </button>
 
                             </div>

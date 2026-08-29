@@ -1,26 +1,32 @@
+"use client";
+
 import { cardAnimation } from "@/lib/animation/cardAnimation";
 import { animations } from "@/lib/animations";
-
-const stats = [
-    {
-        value: "350+",
-        label: "مشروع مكتمل",
-    },
-    {
-        value: "250+",
-        label: "عميل سعيد",
-    },
-    {
-        value: "7+",
-        label: "سنوات خبرة",
-    },
-    {
-        value: "98%",
-        label: "رضا العملاء",
-    },
-];
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const HeroStats = () => {
+    const { language } = useLanguage();
+    const isEn = language === "en";
+
+    const stats = [
+        {
+            value: "350+",
+            label: isEn ? "Completed Projects" : "مشروع مكتمل",
+        },
+        {
+            value: "250+",
+            label: isEn ? "Happy Clients" : "عميل سعيد",
+        },
+        {
+            value: "7+",
+            label: isEn ? "Years of Experience" : "سنوات خبرة",
+        },
+        {
+            value: "98%",
+            label: isEn ? "Client Satisfaction" : "رضا العملاء",
+        },
+    ];
+
     return (
         <div
             className="
@@ -30,7 +36,6 @@ const HeroStats = () => {
                 max-w-4xl
                 grid-cols-2
                 gap-6
-
                 md:grid-cols-4
             "
         >

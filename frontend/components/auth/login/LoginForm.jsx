@@ -1,18 +1,22 @@
 "use client";
 
 import Link from "next/link";
-import { HiArrowRight } from "react-icons/hi2";
+import { HiArrowLeft, HiArrowRight } from "react-icons/hi2";
 
 import Button from "@/components/ui/Button";
 import { fadeLeft } from "@/lib/animationHelpers";
 import AuthInput from "../AuthInput";
 import AuthCard from "../AuthCard";
 import RememberMe from "../RememberMe";
-import SectionTitle from "@/components/sections/SectionTitle"
-import SectionDescription from "@/components/sections/SectionDescription"
+import SectionTitle from "@/components/sections/SectionTitle";
+import SectionDescription from "@/components/sections/SectionDescription";
 import useLoginForm from "@/hooks/auth/useLoginForm";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const LoginForm = () => {
+    const { language, isRtl } = useLanguage();
+    const isEn = language === "en";
+
     const {
         formAction,
         loading,
@@ -34,27 +38,26 @@ const LoginForm = () => {
             {/* Header */}
             <div className="flex flex-col items-center gap-2">
                 <SectionTitle>
-                    تسجيل الدخول
+                    {isEn ? "Login" : "تسجيل الدخول"}
                 </SectionTitle>
 
                 <SectionDescription>
-                    سجل الدخول إلى حسابك للمتابعة
+                    {isEn ? "Sign in to your account to continue" : "سجل الدخول إلى حسابك للمتابعة"}
                 </SectionDescription>
             </div>
 
             {/* Form */}
-
             <form
                 action={formAction}
                 className="
-                mt-5
+                    mt-5
                     space-y-6
                 "
             >
                 <AuthInput
                     type="email"
                     name="email"
-                    label="البريد الإلكتروني"
+                    label={isEn ? "Email Address" : "البريد الإلكتروني"}
                     placeholder="example@email.com"
                     onChange={handleInputChange}
                     error={fieldErrors.email}
@@ -64,7 +67,7 @@ const LoginForm = () => {
                 <AuthInput
                     type="password"
                     name="password"
-                    label="كلمة المرور"
+                    label={isEn ? "Password" : "كلمة المرور"}
                     placeholder="••••••••••"
                     onChange={handleInputChange}
                     error={fieldErrors.password}
@@ -85,14 +88,12 @@ const LoginForm = () => {
                         gap-2
                     "
                 >
-                    <HiArrowRight size={20} />
+                    {isRtl ? <HiArrowLeft size={20} /> : <HiArrowRight size={20} />}
 
                     <span>
-                        {
-                            loading
-                                ? "جاري تسجيل الدخول..."
-                                : "تسجيل الدخول"
-                        }
+                        {loading
+                            ? (isEn ? "Logging in..." : "جاري تسجيل الدخول...")
+                            : (isEn ? "Login" : "تسجيل الدخول")}
                     </span>
                 </Button>
             </form>
@@ -106,25 +107,21 @@ const LoginForm = () => {
                     text-text-secondary
                 "
             >
-                ليس لديك حساب؟
+                {isEn ? "Don't have an account?" : "ليس لديك حساب؟"}
 
                 <Link
                     href="/register"
                     className="
-                        mr-2
+                        mx-2
                         font-semibold
                         text-primary
                         transition-colors
                         hover:text-primary-hover
                     "
                 >
-                    إنشاء حساب جديد
+                    {isEn ? "Create an account" : "إنشاء حساب جديد"}
                 </Link>
             </p>
-            <div className="flex flex-col justify-center items-center gap-1 mt-3">
-                <Link href="/dashboard">Super Admin / Admin</Link>
-                <Link href="/user">user</Link>
-            </div>
         </AuthCard>
     );
 };

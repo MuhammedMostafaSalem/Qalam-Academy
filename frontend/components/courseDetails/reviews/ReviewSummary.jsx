@@ -1,8 +1,14 @@
+"use client";
+
 import { HiStar } from "react-icons/hi2";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const ReviewSummary = ({ course }) => {
+    const { language } = useLanguage();
+    const isEn = language === "en";
+
     const averageRating = course?.averageRating || 0;
-    const reviewsCount = course?.reviewsCount || 0;
+    const reviewsCount = course?.totalReviews ?? course?.reviews?.length ?? 0;
     const ratingDistribution = course?.ratingDistribution || {
         5: 0,
         4: 0,
@@ -54,7 +60,7 @@ const ReviewSummary = ({ course }) => {
                     </div>
 
                     <p className="mt-3 text-text-secondary">
-                        بناءً على {reviewsCount} تقييم
+                        {isEn ? `Based on ${reviewsCount} reviews` : `بناءً على ${reviewsCount} تقييم`}
                     </p>
                 </div>
 

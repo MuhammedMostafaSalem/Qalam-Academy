@@ -1,41 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { MdOutlineLanguage } from "react-icons/md";
 import { animations } from "@/lib/animations";
-import { useRouter } from "next/navigation";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const LanguageSwitcher = () => {
-    const router = useRouter();
-    const [currentLang, setCurrentLang] = useState("ar");
-
-    useEffect(() => {
-        const cookies = document.cookie.split("; ");
-        const localeCookie = cookies.find((c) => c.startsWith("NEXT_LOCALE=") || c.startsWith("NEXT_LANG="));
-        if (localeCookie) {
-            const val = localeCookie.split("=")[1];
-            if (val === "en" || val === "ar") {
-                setCurrentLang(val);
-                document.documentElement.dir = val === "ar" ? "rtl" : "ltr";
-                document.documentElement.lang = val;
-            }
-        }
-    }, []);
-
-    const toggleLanguage = () => {
-        const nextLang = currentLang === "ar" ? "en" : "ar";
-        setCurrentLang(nextLang);
-
-        // Set cookies for client & server
-        document.cookie = `NEXT_LOCALE=${nextLang}; path=/; max-age=31536000`;
-        document.cookie = `NEXT_LANG=${nextLang}; path=/; max-age=31536000`;
-
-        document.documentElement.dir = nextLang === "ar" ? "rtl" : "ltr";
-        document.documentElement.lang = nextLang;
-
-        router.refresh();
-        window.location.reload();
-    };
+    const { language, toggleLanguage } = useLanguage();
 
     return (
         <button
@@ -59,7 +29,7 @@ const LanguageSwitcher = () => {
             `}
         >
             <MdOutlineLanguage size={18} />
-            <span>{currentLang === "ar" ? "EN" : "عربي"}</span>
+            <span>{language === "ar" ? "EN" : "عربي"}</span>
         </button>
     );
 };

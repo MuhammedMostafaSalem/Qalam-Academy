@@ -65,7 +65,7 @@ const PortfolioHeroBackground = () => {
                     absolute
                     inset-0
                     -z-20
-                    bg-[radial-gradient(circle_at_top,#1D4ED805,#070B17_60%)]
+                    theme-hero-background
                 "
             />
 

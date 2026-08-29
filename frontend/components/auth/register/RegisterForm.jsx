@@ -10,14 +10,36 @@ import AuthCard from "../AuthCard";
 import SectionTitle from "@/components/sections/SectionTitle";
 import SectionDescription from "@/components/sections/SectionDescription";
 import useRegisterForm from "@/hooks/auth/useRegisterForm";
+import { useLanguage } from "@/providers/LanguageProvider";
+import { usePlatformSettings } from "@/providers/SettingsProvider";
 
 const RegisterForm = () => {
+    const { language } = useLanguage();
+    const { settings } = usePlatformSettings();
+    const isEn = language === "en";
+
     const {
         formAction,
         loading,
         fieldErrors,
         handleInputChange
     } = useRegisterForm();
+
+    if (settings.allowRegistration === false) {
+        return (
+            <AuthCard className="w-full max-w-xl rounded-[28px] border border-border bg-card p-8 text-center shadow-xl">
+                <SectionTitle>{isEn ? "Registration is currently closed" : "التسجيل مغلق حالياً"}</SectionTitle>
+                <SectionDescription className="mt-3">
+                    {isEn
+                        ? "New account registration has been disabled by the platform administrator."
+                        : "تم إيقاف تسجيل الحسابات الجديدة بواسطة إدارة المنصة."}
+                </SectionDescription>
+                <Link href="/login" className="mt-6 inline-flex rounded-xl bg-primary px-5 py-3 font-semibold text-white">
+                    {isEn ? "Go to sign in" : "الانتقال لتسجيل الدخول"}
+                </Link>
+            </AuthCard>
+        );
+    }
 
     return (
         <AuthCard
@@ -26,41 +48,41 @@ const RegisterForm = () => {
             {/* Header */}
             <div className="flex flex-col items-center text-center gap-2 mb-8">
                 <SectionTitle className="text-2xl sm:text-3xl font-bold">
-                    انشاء حساب جديد
+                    {isEn ? "Create New Account" : "انشاء حساب جديد"}
                 </SectionTitle>
                 <SectionDescription className="text-sm text-text-secondary">
-                    املأ البيانات التالية لانضمامك إلى منصة Qalam Academy
+                    {isEn
+                        ? "Fill in your details below to join Qalam Academy"
+                        : "املأ البيانات التالية لانضمامك إلى منصة Qalam Academy"}
                 </SectionDescription>
             </div>
 
             {/* Form */}
             <form action={formAction} className="space-y-5">
-                {/* الاسم الأول والأخير بجانب بعضهما في الشاشات المتوسطة */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <AuthInput
                         name="firstName"
-                        label="الأسم الأول"
-                        placeholder="اكتب الاسم الأول"
+                        label={isEn ? "First Name" : "الأسم الأول"}
+                        placeholder={isEn ? "John" : "اكتب الاسم الأول"}
                         error={fieldErrors.firstName}
                         onChange={handleInputChange}
                         required
                     />
                     <AuthInput
                         name="lastName"
-                        label="الأسم الأخير"
-                        placeholder="اكتب الاسم الأخير"
+                        label={isEn ? "Last Name" : "الأسم الأخير"}
+                        placeholder={isEn ? "Doe" : "اكتب الاسم الأخير"}
                         error={fieldErrors.lastName}
                         onChange={handleInputChange}
                         required
                     />
                 </div>
 
-                {/* البريد والهاتف */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <AuthInput
                         type="email"
                         name="email"
-                        label="البريد الإلكتروني"
+                        label={isEn ? "Email Address" : "البريد الإلكتروني"}
                         placeholder="example@email.com"
                         error={fieldErrors.email}
                         onChange={handleInputChange}
@@ -68,7 +90,7 @@ const RegisterForm = () => {
                     />
                     <AuthInput
                         name="phone"
-                        label="رقم الهاتف"
+                        label={isEn ? "Phone Number" : "رقم الهاتف"}
                         placeholder="+201000000000"
                         error={fieldErrors.phone}
                         onChange={handleInputChange}
@@ -76,11 +98,10 @@ const RegisterForm = () => {
                     />
                 </div>
 
-                {/* الدولة والمدينة */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <AuthInput
                         name="country"
-                        label="الدولة"
+                        label={isEn ? "Country" : "الدولة"}
                         placeholder="Egypt"
                         error={fieldErrors.country}
                         onChange={handleInputChange}
@@ -88,7 +109,7 @@ const RegisterForm = () => {
                     />
                     <AuthInput
                         name="city"
-                        label="المدينة"
+                        label={isEn ? "City" : "المدينة"}
                         placeholder="Cairo"
                         error={fieldErrors.city}
                         onChange={handleInputChange}
@@ -96,21 +117,19 @@ const RegisterForm = () => {
                     />
                 </div>
 
-                {/* العنوان بالتفصيل */}
                 <AuthInput
                     name="address"
-                    label="العنوان"
-                    placeholder="شارع الجمهورية، عمارة 5..."
+                    label={isEn ? "Detailed Address" : "العنوان"}
+                    placeholder={isEn ? "Street, Building..." : "شارع الجمهورية، عمارة 5..."}
                     error={fieldErrors.address}
                     onChange={handleInputChange}
                     required
                 />
 
-                {/* كلمة المرور وتأكيدها */}
                 <AuthInput
                     type="password"
                     name="password"
-                    label="كلمة المرور"
+                    label={isEn ? "Password" : "كلمة المرور"}
                     placeholder="••••••••"
                     error={fieldErrors.password}
                     onChange={handleInputChange}
@@ -124,19 +143,21 @@ const RegisterForm = () => {
                 >
                     <BsPersonPlus size={20} />
                     <span>
-                        {loading ? "جاري إنشاء الحساب..." : "تسجيل حساب جديد"}
+                        {loading
+                            ? (isEn ? "Creating account..." : "جاري إنشاء الحساب...")
+                            : (isEn ? "Register New Account" : "تسجيل حساب جديد")}
                     </span>
                 </Button>
             </form>
 
             {/* Login Link */}
             <p className="mt-6 text-center text-sm text-text-secondary">
-                لديك حساب بالفعل؟
+                {isEn ? "Already have an account?" : "لديك حساب بالفعل؟"}
                 <Link
                     href="/login"
-                    className="mr-2 font-semibold text-primary hover:underline"
+                    className="mx-2 font-semibold text-primary hover:underline"
                 >
-                    تسجيل الدخول
+                    {isEn ? "Sign in" : "تسجيل الدخول"}
                 </Link>
             </p>
         </AuthCard>

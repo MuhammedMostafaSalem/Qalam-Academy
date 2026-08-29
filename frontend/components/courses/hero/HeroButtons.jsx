@@ -1,12 +1,15 @@
 "use client";
 
 import Button from "@/components/ui/Button";
-import { HiArrowRight, HiOutlinePlay } from "react-icons/hi2";
+import { HiArrowLeft, HiArrowRight, HiOutlinePlay } from "react-icons/hi2";
 import { useRouter } from "next/navigation";
 import { heroAnimation } from "@/lib/animation/heroAnimation";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const HeroButtons = () => {
     const router = useRouter();
+    const { language, isRtl } = useLanguage();
+    const isEn = language === "en";
 
     return (
         <div
@@ -30,8 +33,8 @@ const HeroButtons = () => {
                     min-w-[220px]
                 "
             >
-                <HiArrowRight size={20} />
-                استكشف الكورسات
+                {isRtl ? <HiArrowLeft size={20} /> : <HiArrowRight size={20} />}
+                <span>{isEn ? "Explore Courses" : "استكشف الكورسات"}</span>
             </Button>
 
             <Button
@@ -46,7 +49,7 @@ const HeroButtons = () => {
                 "
             >
                 <HiOutlinePlay size={20} />
-                كيف تعمل الكورسات؟
+                <span>{isEn ? "How Courses Work?" : "كيف تعمل الكورسات؟"}</span>
             </Button>
         </div>
     );

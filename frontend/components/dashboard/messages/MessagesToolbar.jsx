@@ -1,9 +1,15 @@
+"use client";
+
 import Section from "@/components/sections/Section";
 import {
     HiOutlineMagnifyingGlass,
 } from "react-icons/hi2";
+import { useLanguage } from "@/providers/LanguageProvider";
 
-const MessagesToolbar = ({ messagesLength }) => {
+const MessagesToolbar = ({ messagesLength, searchQuery, setSearchQuery, statusFilter, setStatusFilter }) => {
+    const { language } = useLanguage();
+    const isEn = language === "en";
+
     return (
         <Section
             className="
@@ -33,7 +39,7 @@ const MessagesToolbar = ({ messagesLength }) => {
                             font-bold
                         "
                     >
-                        الرسائل
+                        {isEn ? "Messages" : "الرسائل"}
                     </h2>
 
                     <span
@@ -47,7 +53,7 @@ const MessagesToolbar = ({ messagesLength }) => {
                             text-primary
                         "
                     >
-                        {messagesLength} رسالة
+                        {messagesLength} {isEn ? (messagesLength === 1 ? "Message" : "Messages") : "رسالة"}
                     </span>
                 </div>
                 <p
@@ -57,7 +63,7 @@ const MessagesToolbar = ({ messagesLength }) => {
                         text-text-secondary
                     "
                 >
-                    إدارة رسائل العملاء والاستفسارات الواردة.
+                    {isEn ? "Manage customer messages and inquiries." : "إدارة رسائل العملاء والاستفسارات الواردة."}
                 </p>
 
             </div>
@@ -80,19 +86,21 @@ const MessagesToolbar = ({ messagesLength }) => {
                 >
                     <HiOutlineMagnifyingGlass
                         size={20}
-                        className="
+                        className={`
                             absolute
-                            right-4
+                            ${isEn ? "left-4" : "right-4"}
                             top-1/2
                             -translate-y-1/2
                             text-text-secondary
-                        "
+                        `}
                     />
 
                     <input
                         type="text"
-                        placeholder="البحث في الرسائل..."
-                        className="
+                        value={searchQuery || ""}
+                        onChange={(e) => setSearchQuery && setSearchQuery(e.target.value)}
+                        placeholder={isEn ? "Search messages..." : "البحث في الرسائل..."}
+                        className={`
                             h-12
 
                             w-full
@@ -105,21 +113,22 @@ const MessagesToolbar = ({ messagesLength }) => {
 
                             bg-background
 
-                            pr-11
-                            pl-4
+                            ${isEn ? "pl-11 pr-4" : "pr-11 pl-4"}
 
                             outline-none
 
                             transition
 
                             focus:border-primary
-                        "
+                        `}
                     />
 
                 </div>
 
                 {/* Filter */}
                 <select
+                    value={statusFilter || "all"}
+                    onChange={(e) => setStatusFilter && setStatusFilter(e.target.value)}
                     className="
                         h-12
 
@@ -137,16 +146,16 @@ const MessagesToolbar = ({ messagesLength }) => {
                         focus:border-primary
                     "
                 >
-                    <option>
-                        كل الرسائل
+                    <option value="all">
+                        {isEn ? "All Messages" : "كل الرسائل"}
                     </option>
 
-                    <option>
-                        غير مقروءة
+                    <option value="unread">
+                        {isEn ? "Unread" : "غير مقروءة"}
                     </option>
 
-                    <option>
-                        مقروءة
+                    <option value="read">
+                        {isEn ? "Read" : "مقروءة"}
                     </option>
                 </select>
             </div>

@@ -12,11 +12,15 @@ import {
     HiOutlineVideoCamera,
 } from "react-icons/hi2";
 import { getCourseByIdAction } from "@/actions/courseActions";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 
 const FALLBACK_IMAGE = "https://images.unsplash.com/photo-1516321318423-f06f85e504b3";
 
 const CourseHeader = ({ courseId }) => {
+    const { language, localize } = useLanguage();
+    const isEn = language === "en";
+
     const [course, setCourse] = useState(null);
     const [loading, setLoading] = useState(true);
 
@@ -164,7 +168,7 @@ const CourseHeader = ({ courseId }) => {
                                     font-bold
                                 "
                             >
-                                {course?.title?.ar || course?.title}
+                                {localize(course?.title, isEn ? "Untitled Course" : "كورس بدون عنوان")}
                             </h1>
 
                             <span
@@ -179,12 +183,12 @@ const CourseHeader = ({ courseId }) => {
                                     font-medium
 
                                     ${course?.isPublished
-                                        ? "bg-green-500/10 text-green-500"
-                                        : "bg-yellow-500/10 text-yellow-500"
+                                        ? "bg-success/10 text-success"
+                                        : "bg-warning/10 text-warning"
                                     }
                                 `}
                             >
-                                {course?.isPublished ? "Published" : "Draft"}
+                                {course?.isPublished ? (isEn ? "Published" : "منشور") : (isEn ? "Draft" : "مسودة")}
                             </span>
                         </div>
 
@@ -196,7 +200,7 @@ const CourseHeader = ({ courseId }) => {
                                 text-text-secondary
                             "
                         >
-                            {course?.description?.ar || course?.description}
+                            {localize(course?.description, "")}
                         </p>
 
                         {/* Stats */}
@@ -214,18 +218,18 @@ const CourseHeader = ({ courseId }) => {
                         >
                             <StatCard
                                 icon={HiOutlineVideoCamera}
-                                label="الدروس"
+                                label={isEn ? "Lessons" : "الدروس"}
                                 value={course?.totalLessons ?? course?.lessonsCount ?? 0}
                             />
                             <StatCard
                                 icon={HiOutlineUsers}
-                                label="الطلاب"
+                                label={isEn ? "Students" : "الطلاب"}
                                 value={course?.totalStudents ?? course?.studentsCount ?? 0}
                             />
                             <StatCard
                                 icon={HiOutlineCurrencyDollar}
-                                label="السعر"
-                                value={`$${course?.price || 0}`}
+                                label={isEn ? "Price" : "السعر"}
+                                value={`${course?.price || 0} ${isEn ? "EGP" : "ج.م"}`}
                             />
                         </div>
                     </div>
@@ -258,7 +262,7 @@ const CourseHeader = ({ courseId }) => {
                         "
                     >
                         <HiOutlinePencilSquare size={20} />
-                        تعديل الكورس
+                        {isEn ? "Edit Course" : "تعديل الكورس"}
                     </Link>
                 </div>
             </div>

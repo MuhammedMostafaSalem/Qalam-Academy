@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const SidebarItem = ({
     href,
@@ -10,8 +11,9 @@ const SidebarItem = ({
     collapsed,
 }) => {
     const pathname = usePathname();
+    const { localize } = useLanguage();
 
-    const active = pathname === href
+    const active = pathname === href;
 
     return (
         <Link
@@ -82,7 +84,7 @@ const SidebarItem = ({
                     }
                 `}
             >
-                {title}
+                {localize(title)}
             </span>
         </Link>
     );

@@ -1,9 +1,13 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 
 import logo from "@/public/assets/logos/logo-blue.png";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const SidebarLogo = ({ collapsed }) => {
+    const { language } = useLanguage();
     return (
         <Link
             href="/dashboard"
@@ -44,7 +48,7 @@ const SidebarLogo = ({ collapsed }) => {
                 `}
             >
                 <h2 className="text-lg font-bold">
-                    قلم أكاديمي
+                    {language === "en" ? "Qalam Academy" : "أكاديمية قلم"}
                 </h2>
             </div>
         </Link>

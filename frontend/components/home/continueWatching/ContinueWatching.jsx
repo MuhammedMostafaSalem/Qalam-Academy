@@ -6,8 +6,10 @@ import Container from "@/components/ui/Container";
 import { getContinueWatchingAction } from "@/actions/progressActions";
 import ContinueWatchingCard from "./ContinueWatchingCard";
 import { fadeUp } from "@/lib/animationHelpers";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const ContinueWatching = () => {
+    const { language } = useLanguage();
     const [courses, setCourses] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -38,10 +40,12 @@ const ContinueWatching = () => {
             <Container>
                 <div {...fadeUp()} className="mb-12">
                     <h2 className="text-3xl font-bold md:text-4xl">
-                        تابع التعلم
+                        {language === "en" ? "Continue Learning" : "تابع التعلّم"}
                     </h2>
                     <p className="mt-3 text-text-secondary">
-                        استكمل الدروس التي بدأتها وحقق أهدافك التعليمية
+                        {language === "en"
+                            ? "Resume your lessons and keep moving toward your learning goals."
+                            : "استكمل الدروس التي بدأتها وواصل التقدم نحو أهدافك التعليمية."}
                     </p>
                 </div>
 

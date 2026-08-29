@@ -43,7 +43,7 @@ const PartnerCard = ({ partner, index }) => {
                         unoptimized
                     />
                 ) : (
-                    <span className="text-sm font-bold text-white/70">{name}</span>
+                    <span className="text-sm font-bold text-text-secondary">{name}</span>
                 )}
             </div>
         </Link>

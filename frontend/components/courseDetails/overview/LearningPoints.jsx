@@ -1,23 +1,20 @@
+"use client";
+
 import {
     HiOutlineCheckCircle,
 } from "react-icons/hi2";
-
-const defaultLearningPoints = [
-    "بناء صفحات احترافية وتطبيقات متكاملة.",
-    "إتقان المفاهيم الأساسية والمتقدمة وتطبيقها عملياً.",
-    "التعامل مع واجهات البرمجة والبيانات بكفاءة.",
-    "تنفيذ مشاريع تحاكي بيئة العمل الحقيقية.",
-];
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const LearningPoints = ({ objectives }) => {
-    const points = (objectives && objectives.length > 0)
-        ? objectives
-        : defaultLearningPoints;
+    const { language, localize } = useLanguage();
+    const points = Array.isArray(objectives) ? objectives.filter(Boolean) : [];
+
+    if (points.length === 0) return null;
 
     return (
         <section>
             <h2 className="text-2xl font-bold">
-                ماذا ستتعلم؟
+                {language === "en" ? "What You Will Learn" : "ماذا ستتعلم؟"}
             </h2>
 
             <div
@@ -57,7 +54,7 @@ const LearningPoints = ({ objectives }) => {
                                 text-text-secondary
                             "
                         >
-                            {item}
+                            {localize(item)}
                         </p>
                     </div>
                 ))}

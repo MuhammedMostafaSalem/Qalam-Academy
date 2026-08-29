@@ -1,22 +1,30 @@
+"use client";
+
 import Link from "next/link";
 import { HiOutlineClock, HiOutlineBookOpen, HiOutlineUser } from "react-icons/hi2";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const LessonHeader = ({ lesson }) => {
-    const title = lesson?.title?.ar || lesson?.title?.en || lesson?.title || "الدرس الحالي";
-    const courseTitle = lesson?.course?.title?.ar || lesson?.course?.title?.en || lesson?.course?.title || "الكورس";
+    const { language, localize } = useLanguage();
+    const defaultLessonTitle = language === "en" ? "Current Lesson" : "الدرس الحالي";
+    const defaultCourseTitle = language === "en" ? "Course" : "الكورس";
+    const title = localize(lesson?.title, defaultLessonTitle);
+    const courseTitle = localize(lesson?.course?.title, defaultCourseTitle);
     const courseSlug = lesson?.course?.slug;
-    const description = lesson?.description?.ar || lesson?.description?.en || lesson?.description || "";
-    const duration = lesson?.duration ? `${lesson.duration} دقيقة` : "—";
+    const description = localize(lesson?.description, "");
+    const minText = language === "en" ? "min" : "دقيقة";
+    const duration = lesson?.duration ? `${lesson.duration} ${minText}` : "—";
     const instructorName = lesson?.course?.instructor
         ? `${lesson.course.instructor.firstName || ""} ${lesson.course.instructor.lastName || ""}`.trim()
         : null;
-    const level = lesson?.course?.level === "beginner"
-        ? "مبتدئ"
-        : lesson?.course?.level === "intermediate"
-            ? "متوسط"
-            : lesson?.course?.level === "advanced"
-                ? "متقدم"
-                : lesson?.course?.level || "";
+    const rawLevel = lesson?.course?.level;
+    const level = rawLevel === "beginner"
+        ? (language === "en" ? "Beginner" : "مبتدئ")
+        : rawLevel === "intermediate"
+            ? (language === "en" ? "Intermediate" : "متوسط")
+            : rawLevel === "advanced"
+                ? (language === "en" ? "Advanced" : "متقدم")
+                : rawLevel || "";
 
     return (
         <header className="space-y-4">

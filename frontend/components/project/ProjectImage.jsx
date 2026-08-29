@@ -1,13 +1,24 @@
+"use client";
+
 import Image from "next/image";
-import projectImage from "@/public/assets/images/story-image.png";
 import Section from "@/components/sections/Section";
 import Container from "@/components/ui/Container";
 import SectionTitle from "../sections/SectionTitle";
 import SectionDescription from "../sections/SectionDescription";
 import { heroAnimation } from "@/lib/animation/heroAnimation";
 import { animations } from "@/lib/animations"
+import { useLanguage } from "@/providers/LanguageProvider";
 
-const ProjectImage = () => {
+const ProjectImage = ({ project }) => {
+    const { language, localize } = useLanguage();
+    const title = localize(project?.title, language === "en" ? "Project" : "مشروع");
+    const description = localize(project?.description);
+    const category = localize(project?.category?.title, language === "en" ? "Project" : "مشروع");
+    const rawImage = project?.image;
+    const imageUrl = rawImage
+        ? (rawImage.startsWith("http") ? rawImage : `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:5000"}${rawImage}`)
+        : "/assets/img-card.jpg";
+
     return (
         <Section className="pt-[140px] pb-16">
             <Container>
@@ -40,6 +51,7 @@ const ProjectImage = () => {
                             text-center
                             text-white
                             h-auto
+                            z-10
                         "
                     >
                         <span
@@ -55,26 +67,26 @@ const ProjectImage = () => {
                                 ${animations.transition}
                             `}
                         >
-                            منصة تعليم إلكتروني
+                            {category}
                         </span>
 
                         <SectionTitle>
-                            Learning Management System
+                            {title}
                         </SectionTitle>
 
                         <SectionDescription>
-                            منصة متكاملة لإدارة الكورسات، متابعة الطلاب،
-                            وإجراء الاختبارات مع لوحة تحكم احترافية.
+                            {description}
                         </SectionDescription>
                     </div>
 
                     <Image
-                        src={projectImage}
-                        alt="Project Preview"
+                        src={imageUrl}
+                        alt={title}
                         priority
+                        fill
+                        unoptimized
                         className="
-                            aspect-video
-                            w-full h-auto
+                            w-full h-full
                             object-cover
                         "
                     />

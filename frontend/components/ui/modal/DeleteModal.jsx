@@ -37,7 +37,7 @@ const DeleteModal = ({ onConfirmAction }) => {
                 <div className="flex flex-col items-center text-center">
                     <MdWarningAmber className="text-5xl text-error mb-4" />
                     <h2 className="text-xl font-bold text-text-primary">{title}</h2>
-                    <p className="text-muted-foreground mt-2">{message}</p>
+                    <p className="text-text-secondary mt-2">{message}</p>
                 </div>
 
                 <div className="mt-8 flex gap-3">
@@ -50,7 +50,7 @@ const DeleteModal = ({ onConfirmAction }) => {
                             text-sm
                             border
                             border-border
-                            hover:bg-white/5
+                            hover:bg-card-hover
                             transition
                         "
                     >

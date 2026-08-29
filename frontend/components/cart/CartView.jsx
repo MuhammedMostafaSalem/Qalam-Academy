@@ -73,8 +73,11 @@ const PAYMENT_METHODS = [
     },
 ];
 
+import { useLanguage } from "@/providers/LanguageProvider";
+
 export default function CartView() {
     const router = useRouter();
+    const { language, isRtl, localize, t } = useLanguage();
     const { successMessage, errorMessage } = useToast();
     const [cart, setCart] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -82,6 +85,45 @@ export default function CartView() {
     const [isSubmittingCoupon, setIsSubmittingCoupon] = useState(false);
     const [isCheckoutLoading, setIsCheckoutLoading] = useState(false);
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("card");
+
+    const paymentMethods = [
+        {
+            id: "card",
+            name: language === "en" ? "Credit / Debit Card (Visa / MasterCard)" : "بطاقة بنكية (فيزا / ماستركارد)",
+            description: language === "en" ? "Secure and direct payment via Paymob" : "دفع آمن ومباشر عبر Paymob",
+            icon: HiOutlineCreditCard,
+            gateway: "paymob",
+            badge: language === "en" ? "Most Popular" : "الأكثر استخداماً",
+        },
+        {
+            id: "wallet",
+            name: language === "en" ? "Mobile E-Wallet" : "محفظة إلكترونية (E-Wallet)",
+            description: language === "en" ? "Vodafone Cash, Orange, Etisalat, WE Pay" : "فودافون كاش، أورنج، اتصالات، وي باي",
+            icon: HiOutlineDevicePhoneMobile,
+            gateway: "paymob",
+        },
+        {
+            id: "fawry",
+            name: language === "en" ? "Fawry / Aman" : "فوري / أمان (Fawry)",
+            description: language === "en" ? "Pay with Fawry reference code at any outlet" : "الدفع عبر كود فوري في أي منفذ",
+            icon: HiOutlineBanknotes,
+            gateway: "paymob",
+        },
+        {
+            id: "paypal",
+            name: "PayPal (USD)",
+            description: language === "en" ? "International USD payment via PayPal" : "الدفع الدولي بالدولار عبر PayPal",
+            icon: HiOutlineGlobeAlt,
+            gateway: "paypal",
+        },
+        {
+            id: "cash",
+            name: language === "en" ? "Cash on Delivery / Manual Transfer" : "الدفع عند الاستلام / تحويل يدوي",
+            description: language === "en" ? "Create order and complete manual payment" : "إنشاء الطلب والدفع المباشر",
+            icon: HiOutlineBanknotes,
+            gateway: "cash",
+        },
+    ];
 
     const fetchCart = async () => {
         setLoading(true);
@@ -101,7 +143,7 @@ export default function CartView() {
 
     useEffect(() => {
         fetchCart();
-    }, []);
+    }, [language]);
 
     const handleUpdateQuantity = async (cartItemId, newCount) => {
         if (newCount < 1) return;
@@ -113,7 +155,7 @@ export default function CartView() {
                 errorMessage(res.message);
             }
         } catch (err) {
-            errorMessage("فشل تحديث الكمية");
+            errorMessage(language === "en" ? "Failed to update quantity" : "فشل تحديث الكمية");
         }
     };
 
@@ -121,13 +163,13 @@ export default function CartView() {
         try {
             const res = await removeFromCartAction(cartItemId);
             if (res.success) {
-                successMessage("تم حذف العنصر من السلة");
+                successMessage(language === "en" ? "Item removed from cart" : "تم حذف العنصر من السلة");
                 fetchCart();
             } else {
                 errorMessage(res.message);
             }
         } catch (err) {
-            errorMessage("فشل حذف العنصر");
+            errorMessage(language === "en" ? "Failed to remove item" : "فشل حذف العنصر");
         }
     };
 
@@ -135,13 +177,13 @@ export default function CartView() {
         try {
             const res = await clearCartAction();
             if (res.success) {
-                successMessage("تم تفريغ السلة بنجاح");
+                successMessage(language === "en" ? "Cart cleared successfully" : "تم تفريغ السلة بنجاح");
                 setCart(null);
             } else {
                 errorMessage(res.message);
             }
         } catch (err) {
-            errorMessage("فشل تفريغ السلة");
+            errorMessage(language === "en" ? "Failed to clear cart" : "فشل تفريغ السلة");
         }
     };
 
@@ -152,13 +194,13 @@ export default function CartView() {
         try {
             const res = await applyCouponAction(couponCode.trim());
             if (res.success) {
-                successMessage("تم تطبيق الكوبون بنجاح!");
+                successMessage(language === "en" ? "Coupon applied successfully!" : "تم تطبيق الكوبون بنجاح!");
                 fetchCart();
             } else {
                 errorMessage(res.message);
             }
         } catch (err) {
-            errorMessage("فشل تطبيق الكوبون");
+            errorMessage(language === "en" ? "Failed to apply coupon" : "فشل تطبيق الكوبون");
         } finally {
             setIsSubmittingCoupon(false);
         }
@@ -168,13 +210,13 @@ export default function CartView() {
         try {
             const res = await removeCouponAction();
             if (res.success) {
-                successMessage("تم إزالة الكوبون");
+                successMessage(language === "en" ? "Coupon removed" : "تم إزالة الكوبون");
                 fetchCart();
             } else {
                 errorMessage(res.message);
             }
         } catch (err) {
-            errorMessage("فشل إزالة الكوبون");
+            errorMessage(language === "en" ? "Failed to remove coupon" : "فشل إزالة الكوبون");
         }
     };
 
@@ -185,33 +227,33 @@ export default function CartView() {
         try {
             if (selectedPaymentMethod === "paypal") {
                 const res = await checkoutPaypalAction(cart._id);
-                if (res.success && res.data?.approval_url) {
-                    successMessage("جاري توجيهك إلى PayPal...");
-                    window.location.href = res.data.approval_url;
+                if (res.success && res.approvalUrl) {
+                    successMessage(language === "en" ? "Redirecting to PayPal..." : "جاري توجيهك إلى PayPal...");
+                    window.location.assign(res.approvalUrl);
                 } else {
-                    errorMessage(res.message || "فشل توليد رابط PayPal");
+                    errorMessage(res.message || (language === "en" ? "Failed to generate PayPal URL" : "فشل توليد رابط PayPal"));
                 }
             } else if (selectedPaymentMethod === "cash") {
                 const res = await createCashOrderAction(cart._id);
                 if (res.success) {
-                    successMessage("تم إنشاء الطلب بنجاح!");
+                    successMessage(language === "en" ? "Order created successfully!" : "تم إنشاء الطلب بنجاح!");
                     router.push("/user/orders");
                 } else {
-                    errorMessage(res.message || "فشل إنشاء الطلب");
+                    errorMessage(res.message || (language === "en" ? "Failed to create order" : "فشل إنشاء الطلب"));
                 }
             } else {
                 // Paymob: 'card', 'wallet', 'fawry'
                 const res = await checkoutPaymobAction(cart._id, selectedPaymentMethod);
                 const redirectUrl = res?.redirect_url || res?.data?.redirect_url;
                 if (res.success && redirectUrl) {
-                    successMessage("جاري توجيهك إلى بوابة الدفع Paymob...");
+                    successMessage(language === "en" ? "Redirecting to Paymob gateway..." : "جاري توجيهك إلى بوابة الدفع Paymob...");
                     window.location.href = redirectUrl;
                 } else {
-                    errorMessage(res.message || "فشل توليد رابط الدفع الإلكتروني");
+                    errorMessage(res.message || (language === "en" ? "Failed to generate payment URL" : "فشل توليد رابط الدفع الإلكتروني"));
                 }
             }
         } catch (err) {
-            errorMessage("حدث خطأ أثناء معالجة عملية الدفع");
+            errorMessage(language === "en" ? "An error occurred during payment processing" : "حدث خطأ أثناء معالجة عملية الدفع");
         } finally {
             setIsCheckoutLoading(false);
         }
@@ -223,7 +265,9 @@ export default function CartView() {
         return (
             <Section className="py-20 min-h-[60vh] flex items-center justify-center">
                 <Container>
-                    <div className="text-center text-white/70">جاري تحميل السلة...</div>
+                    <div className="text-center text-text-secondary">
+                        {language === "en" ? "Loading cart..." : "جاري تحميل السلة..."}
+                    </div>
                 </Container>
             </Section>
         );
@@ -231,31 +275,42 @@ export default function CartView() {
 
     const cartProducts = cart?.products || [];
     const hasItems = cartProducts.length > 0;
+    const currencyText = language === "en" ? "EGP" : "ج.م";
 
     return (
         <Section className="py-12 md:py-20 min-h-[70vh]">
             <Container>
                 <div className="mb-8">
                     <SectionTitle
-                        title="سلة الشراء"
-                        subtitle="مراجعة العناصر المختارة والدفع"
+                        title={language === "en" ? "Shopping Cart" : "سلة الشراء"}
+                        subtitle={language === "en" ? "Review selected items and checkout" : "مراجعة العناصر المختارة والدفع"}
                         centered={false}
                     />
                 </div>
 
                 {!hasItems ? (
                     <div className="glass rounded-[24px] p-12 text-center max-w-xl mx-auto space-y-6">
-                        <div className="w-20 h-20 rounded-full bg-white/5 flex items-center justify-center mx-auto text-primary">
+                        <div className="w-20 h-20 rounded-full bg-card-hover flex items-center justify-center mx-auto text-primary">
                             <HiOutlineShoppingBag size={40} />
                         </div>
-                        <h3 className="text-2xl font-bold text-white">السلة فارغة حالياً</h3>
-                        <p className="text-white/60">تصفح الدورات والمنتجات المتاحة وأضف ما يناسبك إلى السلة.</p>
+                        <h3 className="text-2xl font-bold text-text-primary">
+                            {language === "en" ? "Cart is currently empty" : "السلة فارغة حالياً"}
+                        </h3>
+                        <p className="text-text-secondary">
+                            {language === "en"
+                                ? "Browse available courses and digital products to add what suits you."
+                                : "تصفح الدورات والمنتجات المتاحة وأضف ما يناسبك إلى السلة."}
+                        </p>
                         <div className="flex justify-center gap-4 pt-4">
                             <Link href="/courses">
-                                <Button className="gradient-button">تصفح الكورسات</Button>
+                                <Button className="gradient-button">
+                                    {language === "en" ? "Browse Courses" : "تصفح الكورسات"}
+                                </Button>
                             </Link>
                             <Link href="/store">
-                                <Button variant="outline">المتجر الرقمي</Button>
+                                <Button variant="outline">
+                                    {language === "en" ? "Digital Store" : "المتجر الرقمي"}
+                                </Button>
                             </Link>
                         </div>
                     </div>
@@ -267,8 +322,8 @@ export default function CartView() {
                                 {cartProducts.map((cartItem) => {
                                     const itemData = cartItem.item || {};
                                     const isCourse = cartItem.itemType === "Course";
-                                    const rawTitle = itemData.title?.ar || itemData.title?.en || itemData.title;
-                                    const title = typeof rawTitle === "string" && rawTitle.trim() !== "" ? rawTitle : "عنصر بالسلة";
+                                    const defaultItemTitle = language === "en" ? "Cart Item" : "عنصر بالسلة";
+                                    const title = localize(itemData.title, defaultItemTitle);
                                     const imgPath = itemData.thumbnail || itemData.image;
                                     const fullImgUrl = (imgPath && typeof imgPath === "string" && imgPath.trim() !== "")
                                         ? (imgPath.startsWith("http") ? imgPath : `${baseUrl}${imgPath}`)
@@ -280,7 +335,7 @@ export default function CartView() {
                                             className="glass rounded-[20px] p-4 md:p-6 flex flex-col md:flex-row items-center gap-6 justify-between"
                                         >
                                             <div className="flex items-center gap-4 w-full md:w-auto">
-                                                <div className="relative w-20 h-20 rounded-[14px] overflow-hidden flex-shrink-0 bg-white/5">
+                                                <div className="relative w-20 h-20 rounded-[14px] overflow-hidden flex-shrink-0 bg-card-hover">
                                                     <Image
                                                         src={fullImgUrl}
                                                         alt={title}
@@ -291,28 +346,30 @@ export default function CartView() {
                                                 </div>
                                                 <div>
                                                     <span className="text-xs px-2.5 py-1 rounded-full bg-primary/20 text-primary font-medium">
-                                                        {isCourse ? "كورس" : "منتج رقمي"}
+                                                        {isCourse
+                                                            ? (language === "en" ? "Course" : "كورس")
+                                                            : (language === "en" ? "Digital Product" : "منتج رقمي")}
                                                     </span>
-                                                    <h4 className="text-lg font-semibold text-white mt-1 line-clamp-1">{title}</h4>
+                                                    <h4 className="text-lg font-semibold text-text-primary mt-1 line-clamp-1">{title}</h4>
                                                     <p className="text-primary font-bold text-base mt-1">
-                                                        {cartItem.price} ج.م
+                                                        {cartItem.price} {currencyText}
                                                     </p>
                                                 </div>
                                             </div>
 
-                                            <div className="flex items-center justify-between md:justify-end gap-6 w-full md:w-auto pt-3 md:pt-0 border-t md:border-0 border-white/10">
+                                            <div className="flex items-center justify-between md:justify-end gap-6 w-full md:w-auto pt-3 md:pt-0 border-t md:border-0 border-border">
                                                 {!isCourse && (
-                                                    <div className="flex items-center border border-white/15 rounded-xl bg-white/5 overflow-hidden">
+                                                    <div className="flex items-center border border-border rounded-xl bg-card-hover overflow-hidden">
                                                         <button
                                                             onClick={() => handleUpdateQuantity(cartItem._id, cartItem.count - 1)}
-                                                            className="px-3 py-1 text-white hover:bg-white/10 transition"
+                                                            className="px-3 py-1 text-text-primary hover:bg-card-hover transition"
                                                         >
                                                             -
                                                         </button>
-                                                        <span className="px-3 text-sm text-white font-medium">{cartItem.count}</span>
+                                                        <span className="px-3 text-sm text-text-primary font-medium">{cartItem.count}</span>
                                                         <button
                                                             onClick={() => handleUpdateQuantity(cartItem._id, cartItem.count + 1)}
-                                                            className="px-3 py-1 text-white hover:bg-white/10 transition"
+                                                            className="px-3 py-1 text-text-primary hover:bg-card-hover transition"
                                                         >
                                                             +
                                                         </button>
@@ -321,8 +378,8 @@ export default function CartView() {
 
                                                 <button
                                                     onClick={() => handleRemoveItem(cartItem._id)}
-                                                    className="p-2.5 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-xl transition"
-                                                    title="حذف العنصر"
+                                                    className="p-2.5 text-error hover:text-error hover:bg-error/10 rounded-xl transition"
+                                                    title={language === "en" ? "Remove item" : "حذف العنصر"}
                                                 >
                                                     <HiOutlineTrash size={20} />
                                                 </button>
@@ -336,25 +393,26 @@ export default function CartView() {
                                 <Button
                                     variant="outline"
                                     onClick={handleClearCart}
-                                    className="text-red-400 border-red-500/30 hover:border-red-500 text-sm"
+                                    className="text-error border-error/30 hover:border-error text-sm"
                                 >
-                                    تفريغ السلة
+                                    {language === "en" ? "Clear Cart" : "تفريغ السلة"}
                                 </Button>
                                 <Link href="/courses">
-                                    <span className="text-sm text-white/70 hover:text-white transition underline">
-                                        إضافة المزيد من الكورسات
+                                    <span className="text-sm text-text-secondary hover:text-text-primary transition underline">
+                                        {language === "en" ? "Add more courses" : "إضافة المزيد من الكورسات"}
                                     </span>
                                 </Link>
                             </div>
 
                             {/* Payment Methods Selection */}
                             <div className="glass rounded-[24px] p-6 space-y-4">
-                                <h4 className="text-lg font-bold text-white flex items-center gap-2 border-b border-white/10 pb-3">
-                                    <HiOutlineCreditCard className="text-primary" /> اختر طريقة الدفع
+                                <h4 className="text-lg font-bold text-text-primary flex items-center gap-2 border-b border-border pb-3">
+                                    <HiOutlineCreditCard className="text-primary" />
+                                    {language === "en" ? "Select Payment Method" : "اختر طريقة الدفع"}
                                 </h4>
 
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-                                    {PAYMENT_METHODS.map((method) => {
+                                    {paymentMethods.map((method) => {
                                         const Icon = method.icon;
                                         const isSelected = selectedPaymentMethod === method.id;
 
@@ -368,7 +426,7 @@ export default function CartView() {
                                                     p-4
                                                     rounded-2xl
                                                     border
-                                                    text-right
+                                                    text-start
                                                     transition-all
                                                     duration-200
                                                     flex
@@ -376,7 +434,7 @@ export default function CartView() {
                                                     gap-3.5
                                                     ${isSelected
                                                         ? "border-primary bg-primary/10 shadow-lg shadow-primary/10"
-                                                        : "border-white/10 bg-white/5 hover:border-white/20 hover:bg-white/8"
+                                                        : "border-border bg-card-hover hover:border-primary hover:bg-card-hover"
                                                     }
                                                 `}
                                             >
@@ -385,7 +443,7 @@ export default function CartView() {
                                                         p-2.5
                                                         rounded-xl
                                                         shrink-0
-                                                        ${isSelected ? "bg-primary text-white" : "bg-white/10 text-white/70"}
+                                                        ${isSelected ? "bg-primary text-white" : "bg-card-hover text-text-secondary"}
                                                     `}
                                                 >
                                                     <Icon size={22} />
@@ -393,14 +451,14 @@ export default function CartView() {
 
                                                 <div className="flex-1 min-w-0">
                                                     <div className="flex items-center justify-between gap-2">
-                                                        <h5 className="font-semibold text-sm text-white truncate">
+                                                        <h5 className="font-semibold text-sm text-text-primary truncate">
                                                             {method.name}
                                                         </h5>
                                                         {isSelected && (
                                                             <HiOutlineCheckCircle className="text-primary shrink-0" size={18} />
                                                         )}
                                                     </div>
-                                                    <p className="text-xs text-white/60 mt-1 leading-relaxed">
+                                                    <p className="text-xs text-text-secondary mt-1 leading-relaxed">
                                                         {method.description}
                                                     </p>
                                                 </div>
@@ -415,35 +473,36 @@ export default function CartView() {
                         <div className="space-y-6">
                             {/* Coupon Form */}
                             <div className="glass rounded-[24px] p-6 space-y-4">
-                                <h4 className="text-lg font-bold text-white flex items-center gap-2">
-                                    <HiOutlineTicket className="text-primary" /> كود الخصم
+                                <h4 className="text-lg font-bold text-text-primary flex items-center gap-2">
+                                    <HiOutlineTicket className="text-primary" />
+                                    {language === "en" ? "Discount Coupon" : "كود الخصم"}
                                 </h4>
                                 {cart?.coupon ? (
                                     <div className="flex items-center justify-between bg-primary/10 border border-primary/30 rounded-xl p-3">
                                         <span className="text-sm font-semibold text-primary">
-                                            الكوبون النشط: {cart.coupon}
+                                            {language === "en" ? "Active Coupon: " : "الكوبون النشط: "} {cart.coupon}
                                         </span>
                                         <button
                                             onClick={handleRemoveCoupon}
-                                            className="text-xs text-red-400 hover:underline"
+                                            className="text-xs text-error hover:underline"
                                         >
-                                            إزالة
+                                            {language === "en" ? "Remove" : "إزالة"}
                                         </button>
                                     </div>
                                 ) : (
                                     <form onSubmit={handleApplyCoupon} className="flex gap-2">
                                         <Input
-                                            placeholder="أدخل كود الكوبون"
+                                            placeholder={language === "en" ? "Enter coupon code" : "أدخل كود الكوبون"}
                                             value={couponCode}
                                             onChange={(e) => setCouponCode(e.target.value)}
-                                            className="text-sm"
+                                            className="text-sm text-text-primary placeholder:text-text-muted"
                                         />
                                         <Button
                                             type="submit"
                                             disabled={isSubmittingCoupon || !couponCode.trim()}
                                             className="gradient-button text-sm px-4 whitespace-nowrap"
                                         >
-                                            تطبيق
+                                            {language === "en" ? "Apply" : "تطبيق"}
                                         </Button>
                                     </form>
                                 )}
@@ -451,27 +510,27 @@ export default function CartView() {
 
                             {/* Cart Summary */}
                             <div className="glass rounded-[24px] p-6 space-y-6">
-                                <h4 className="text-lg font-bold text-white border-b border-white/10 pb-3">
-                                    ملخص الطلب
+                                <h4 className="text-lg font-bold text-text-primary border-b border-border pb-3">
+                                    {language === "en" ? "Order Summary" : "ملخص الطلب"}
                                 </h4>
 
                                 <div className="space-y-3 text-sm">
-                                    <div className="flex justify-between text-white/70">
-                                        <span>إجمالي المنتجات:</span>
-                                        <span className="text-white font-semibold">{cart.totalCartPrice} ج.م</span>
+                                    <div className="flex justify-between text-text-secondary">
+                                        <span>{language === "en" ? "Items Total:" : "إجمالي المنتجات:"}</span>
+                                        <span className="text-text-primary font-semibold">{cart.totalCartPrice} {currencyText}</span>
                                     </div>
 
                                     {cart.totalAfterDiscount && (
-                                        <div className="flex justify-between text-emerald-400">
-                                            <span>السعر بعد الخصم:</span>
-                                            <span className="font-bold">{cart.totalAfterDiscount} ج.م</span>
+                                        <div className="flex justify-between text-success">
+                                            <span>{language === "en" ? "After Discount:" : "السعر بعد الخصم:"}</span>
+                                            <span className="font-bold">{cart.totalAfterDiscount} {currencyText}</span>
                                         </div>
                                     )}
 
-                                    <div className="border-t border-white/10 pt-3 flex justify-between text-lg font-bold text-white">
-                                        <span>المبلغ الإجمالي:</span>
+                                    <div className="border-t border-border pt-3 flex justify-between text-lg font-bold text-text-primary">
+                                        <span>{language === "en" ? "Total Amount:" : "المبلغ الإجمالي:"}</span>
                                         <span className="text-primary">
-                                            {cart.totalAfterDiscount || cart.totalCartPrice} ج.م
+                                            {cart.totalAfterDiscount || cart.totalCartPrice} {currencyText}
                                         </span>
                                     </div>
                                 </div>
@@ -484,13 +543,15 @@ export default function CartView() {
                                     >
                                         <HiOutlineCreditCard size={20} />
                                         {isCheckoutLoading
-                                            ? "جاري تجهيز الدفع..."
-                                            : `إتمام الطلب والدفع (${PAYMENT_METHODS.find(m => m.id === selectedPaymentMethod)?.name.split(" ")[0] || "الآن"})`
+                                            ? (language === "en" ? "Processing Checkout..." : "جاري تجهيز الدفع...")
+                                            : (language === "en" ? "Complete Order & Pay" : "إتمام الطلب والدفع")
                                         }
                                     </Button>
 
-                                    <p className="text-center text-xs text-white/50">
-                                        جميع المعاملات المالية مشفرة وآمنة 100%
+                                    <p className="text-center text-xs text-text-muted">
+                                        {language === "en"
+                                            ? "All transactions are encrypted and 100% secure"
+                                            : "جميع المعاملات المالية مشفرة وآمنة 100%"}
                                     </p>
                                 </div>
                             </div>

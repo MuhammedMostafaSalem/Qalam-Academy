@@ -50,9 +50,9 @@ const Toast = () => {
 
                 ${type === "success"
                     ?
-                    "bg-green-500"
+                    "bg-success"
                     :
-                    "bg-red-500"
+                    "bg-error"
                 }
 
             `}

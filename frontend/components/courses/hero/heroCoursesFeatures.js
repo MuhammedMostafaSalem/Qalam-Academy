@@ -9,25 +9,25 @@ export const heroCoursesFeatures = [
     {
         id: 1,
         icon: HiOutlineRocketLaunch,
-        title: "تعلم ذاتي",
-        description: "في أي وقت ومن أي مكان",
+        title: { ar: "تعلم ذاتي", en: "Self-Paced Learning" },
+        description: { ar: "في أي وقت ومن أي مكان", en: "Anytime, anywhere" },
     },
     {
         id: 2,
         icon: HiOutlineSparkles,
-        title: "دعم مستمر",
-        description: "من المدربين",
+        title: { ar: "دعم مستمر", en: "Continuous Support" },
+        description: { ar: "من المدربين", en: "From certified instructors" },
     },
     {
         id: 3,
         icon: HiOutlineAcademicCap,
-        title: "مشاريع عملية",
-        description: "تطبيقات حقيقية",
+        title: { ar: "مشاريع عملية", en: "Hands-on Projects" },
+        description: { ar: "تطبيقات حقيقية", en: "Real-world applications" },
     },
     {
         id: 4,
         icon: HiOutlineShieldCheck,
-        title: "شهادة معتمدة",
-        description: "عند إتمام الدورة",
+        title: { ar: "شهادة معتمدة", en: "Certified Completion" },
+        description: { ar: "عند إتمام الدورة", en: "Upon course completion" },
     },
 ];

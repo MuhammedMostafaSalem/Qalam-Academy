@@ -1,6 +1,10 @@
+"use client";
+
 import { cardAnimation } from "@/lib/animation/cardAnimation";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const StatItem = ({ value, label, isLast, index }) => {
+    const { localize } = useLanguage();
     
     return (
         <div
@@ -36,7 +40,7 @@ const StatItem = ({ value, label, isLast, index }) => {
                         text-text-secondary
                     "
                 >
-                    {label}
+                    {localize(label)}
                 </p>
             </div>
             {!isLast && (
@@ -48,7 +52,7 @@ const StatItem = ({ value, label, isLast, index }) => {
                         h-1/2
                         w-px
                         -translate-y-1/2
-                        bg-white/10
+                        bg-card-hover
                     "
                 />
             )}

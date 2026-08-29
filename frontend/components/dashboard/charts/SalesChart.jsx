@@ -13,15 +13,18 @@ import {
     YAxis,
 } from "recharts";
 import CustomTooltip from "./CustomTooltip";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const SalesChart = ({ data = [] }) => {
+    const { language } = useLanguage();
+    const isEnglish = language === "en";
     return (
         <DashboardCard className="h-full">
             <CardHeader
-                title="المبيعات"
-                subtitle="عدد الطلبات الشهرية"
+                title={isEnglish ? "Sales" : "المبيعات"}
+                subtitle={isEnglish ? "Monthly order count" : "عدد الطلبات الشهري"}
                 filter
-                filterLabel="هذا العام"
+                filterLabel={isEnglish ? "This Year" : "هذا العام"}
             />
 
             <div className="h-[340px]">
@@ -63,14 +66,14 @@ const SalesChart = ({ data = [] }) => {
 
                         <Tooltip
                             cursor={false}
-                            content={<CustomTooltip suffix=" طلب" prefix="" />}
+                            content={<CustomTooltip suffix={isEnglish ? " orders" : " طلب"} prefix="" />}
                         />
 
                         <Bar
                             dataKey="sales"
                             radius={[10, 10, 0, 0]}
                             barSize={22}
-                            fill="#4F46E5"
+                            fill="var(--color-primary)"
                         />
                     </BarChart>
                 </ResponsiveContainer>

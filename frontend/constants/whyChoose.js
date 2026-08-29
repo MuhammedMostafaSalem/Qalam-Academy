@@ -8,26 +8,50 @@ import {
 export const whyChoose = [
     {
         id: 1,
-        title: "جودة عالية",
-        description: "نلتزم بأعلى معايير الجودة في جميع خدماتنا.",
+        title: {
+            ar: "جودة عالية",
+            en: "High Quality",
+        },
+        description: {
+            ar: "نلتزم بأعلى معايير الجودة في جميع خدماتنا.",
+            en: "We adhere to the highest quality standards in all our services.",
+        },
         icon: HiOutlineShieldCheck,
     },
     {
         id: 2,
-        title: "فريق محترف",
-        description: "خبرات عملية في تطوير البرمجيات والتعليم.",
+        title: {
+            ar: "فريق محترف",
+            en: "Professional Team",
+        },
+        description: {
+            ar: "خبرات عملية في تطوير البرمجيات والتعليم.",
+            en: "Hands-on experience in software development and education.",
+        },
         icon: HiOutlineUsers,
     },
     {
         id: 3,
-        title: "الالتزام بالمواعيد",
-        description: "نسلم المشاريع والدورات في الوقت المحدد.",
+        title: {
+            ar: "الالتزام بالمواعيد",
+            en: "Punctuality",
+        },
+        description: {
+            ar: "نسلم المشاريع والدورات في الوقت المحدد.",
+            en: "We deliver projects and courses right on schedule.",
+        },
         icon: HiOutlineClock,
     },
     {
         id: 4,
-        title: "دعم مستمر",
-        description: "فريق دعم جاهز لمساعدتك في أي وقت.",
+        title: {
+            ar: "دعم مستمر",
+            en: "Continuous Support",
+        },
+        description: {
+            ar: "فريق دعم جاهز لمساعدتك في أي وقت.",
+            en: "A dedicated support team ready to assist you anytime.",
+        },
         icon: HiOutlineLifebuoy,
     },
 ];

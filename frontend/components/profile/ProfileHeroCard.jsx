@@ -9,18 +9,21 @@ import {
 import { LuShieldCheck } from "react-icons/lu";
 import Section from "../sections/Section";
 import { useAuth } from "@/providers/AuthProvider";
+import { useLanguage } from "@/providers/LanguageProvider";
 import userIcon from '@/public/assets/user-icon.png';
-
-const roleLabels = {
-    admin: "مدير النظام",
-    instructor: "مدرس",
-    student: "طالب",
-};
 
 const ProfileHeroCard = () => {
     const { user } = useAuth();
+    const { language } = useLanguage();
+    const isEn = language === "en";
 
     if (!user) return null;
+
+    const roleLabels = {
+        admin: isEn ? "Super Admin" : "مدير النظام",
+        instructor: isEn ? "Instructor" : "مدرس",
+        student: isEn ? "Student" : "طالب",
+    };
 
     const roleLabel = roleLabels[user.role] || user.role;
     const isActive = user.isActive !== false;
@@ -68,12 +71,12 @@ const ProfileHeroCard = () => {
                                     text-sm
                                     font-medium
                                     ${isActive
-                                        ? "bg-green-500/10 text-green-500"
-                                        : "bg-red-500/10 text-red-500"
+                                        ? "bg-success/10 text-success"
+                                        : "bg-error/10 text-error"
                                     }
                                 `}
                             >
-                                {isActive ? "نشط" : "معطل"}
+                                {isActive ? (isEn ? "Active" : "نشط") : (isEn ? "Inactive" : "معطل")}
                             </span>
 
                         </div>
@@ -130,7 +133,7 @@ const ProfileHeroCard = () => {
                 <div>
 
                     <p className="text-sm text-text-secondary">
-                        الدور
+                        {isEn ? "Role" : "الدور"}
                     </p>
 
                     <h3 className="mt-1 font-semibold">
@@ -143,12 +146,12 @@ const ProfileHeroCard = () => {
 
                     <p className="flex items-center gap-2 text-sm text-text-secondary">
                         <HiOutlineCalendarDays />
-                        تاريخ الانضمام
+                        {isEn ? "Join Date" : "تاريخ الانضمام"}
                     </p>
 
                     <h3 className="mt-1 font-semibold">
                         {user.createdAt
-                            ? new Date(user.createdAt).toLocaleDateString("ar-EG", {
+                            ? new Date(user.createdAt).toLocaleDateString(isEn ? "en-US" : "ar-EG", {
                                   day: "numeric",
                                   month: "short",
                                   year: "numeric",
@@ -162,12 +165,12 @@ const ProfileHeroCard = () => {
 
                     <p className="flex items-center gap-2 text-sm text-text-secondary">
                         <HiOutlineClock />
-                        آخر دخول
+                        {isEn ? "Last Active" : "آخر دخول"}
                     </p>
 
                     <h3 className="mt-1 font-semibold">
                         {user.updatedAt
-                            ? new Date(user.updatedAt).toLocaleDateString("ar-EG", {
+                            ? new Date(user.updatedAt).toLocaleDateString(isEn ? "en-US" : "ar-EG", {
                                   day: "numeric",
                                   month: "short",
                                   year: "numeric",

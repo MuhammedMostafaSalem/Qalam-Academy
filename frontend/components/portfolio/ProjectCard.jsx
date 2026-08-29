@@ -1,33 +1,23 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
-import { HiArrowLeft, HiTag } from "react-icons/hi";
+import { HiArrowLeft, HiArrowRight, HiTag } from "react-icons/hi";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const ProjectCard = ({ project }) => {
+    const { language, isRtl, localize } = useLanguage();
     const rawImage = project?.image;
     const imageUrl = (typeof rawImage === "string" && rawImage.trim() !== "")
         ? (rawImage.startsWith("http") ? rawImage : `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:5000'}${rawImage}`)
         : (rawImage || '/assets/img-card.jpg');
 
-    const rawTitle = project?.title?.ar || project?.title?.en || project?.title;
-    const title = typeof rawTitle === "string" && rawTitle.trim() !== ""
-        ? rawTitle
-        : (typeof rawTitle === "object" ? (rawTitle.ar || rawTitle.en || "مشروع") : "مشروع");
-
-    const rawDesc = project?.description?.ar || project?.description?.en || project?.description;
-    const description = typeof rawDesc === "string"
-        ? rawDesc
-        : (typeof rawDesc === "object" ? (rawDesc.ar || rawDesc.en || "") : "");
-
-    const rawCat = project?.category;
-    let category = "عام";
-    if (typeof rawCat === "string") {
-        category = rawCat;
-    } else if (typeof rawCat === "object" && rawCat !== null) {
-        category = rawCat.title?.ar || rawCat.title?.en || rawCat.title || rawCat.name?.ar || rawCat.name?.en || rawCat.name || "عام";
-        if (typeof category === "object") {
-            category = category.ar || category.en || "عام";
-        }
-    }
+    const title = localize(project?.title, language === "en" ? "Project" : "مشروع");
+    const description = localize(project?.description, "");
+    const defaultCat = language === "en" ? "General" : "عام";
+    const category = localize(project?.category?.title || project?.category?.name || project?.category, defaultCat);
+    const viewProjectText = language === "en" ? "View Project" : "عرض المشروع";
+    const projectIdentifier = project?.slug || project?._id;
 
     return (
         <article
@@ -108,7 +98,7 @@ const ProjectCard = ({ project }) => {
 
                 {/* Footer */}
                 <Link
-                    href={`/portfolio/${project?.slug || '#'}`}
+                    href={projectIdentifier ? `/portfolio/${projectIdentifier}` : "/portfolio"}
                     className="
                         flex
                         gap-3
@@ -116,8 +106,8 @@ const ProjectCard = ({ project }) => {
                         hover:text-primary
                     "
                 >
-                    <div>عرض المشروع</div>
-                    <HiArrowLeft size={22} />
+                    <div>{viewProjectText}</div>
+                    {isRtl ? <HiArrowLeft size={22} /> : <HiArrowRight size={22} />}
                 </Link>
             </div>
         </article>

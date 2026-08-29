@@ -4,17 +4,20 @@ import { useState } from "react";
 import PageHeader from "@/components/dashboard/PageHeader";
 import AddTeamModal from "@/components/ui/modal/team/AddTeamModal";
 import { useRouter } from "next/navigation";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const TeamHeader = () => {
+    const { language } = useLanguage();
+    const isEn = language === "en";
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const router = useRouter();
 
     return (
         <>
             <PageHeader
-                title="أعضاء الفريق"
-                description="ادارة وعرض جميع أعضاء الفريق"
-                button="اضافة عضو جديد"
+                title={isEn ? "Team Members" : "أعضاء الفريق"}
+                description={isEn ? "Manage and view all team members" : "ادارة وعرض جميع أعضاء الفريق"}
+                button={isEn ? "Add New Member" : "اضافة عضو جديد"}
                 onButtonClick={() => setIsAddModalOpen(true)}
             />
             <AddTeamModal
@@ -22,7 +25,10 @@ const TeamHeader = () => {
                 onClose={() => setIsAddModalOpen(false)}
                 onSuccess={() => {
                     setIsAddModalOpen(false);
-                    router.refresh(); // Refresh the page to show new team member
+                    if (typeof window !== "undefined") {
+                        window.dispatchEvent(new Event("team-updated"));
+                    }
+                    router.refresh();
                 }}
             />
         </>

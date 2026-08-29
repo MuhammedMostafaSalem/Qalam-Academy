@@ -1,12 +1,16 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { HiOutlinePlay, HiOutlineClock } from "react-icons/hi2";
 import { cardAnimation } from "@/lib/animation/cardAnimation";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const ContinueWatchingCard = ({ course, index }) => {
+    const { language, localize } = useLanguage();
     const courseData = course.course || course;
-    const rawTitle = courseData.title?.ar || courseData.title?.en || courseData.title;
-    const title = typeof rawTitle === "string" && rawTitle.trim() !== "" ? rawTitle : "دورة تعليمية";
+    const defaultTitle = language === "en" ? "Course" : "دورة تعليمية";
+    const title = localize(courseData.title, defaultTitle);
     const thumbnail = (courseData.thumbnail && typeof courseData.thumbnail === 'string' && courseData.thumbnail.trim() !== '')
         ? (courseData.thumbnail.startsWith('http')
             ? courseData.thumbnail
@@ -15,7 +19,8 @@ const ContinueWatchingCard = ({ course, index }) => {
 
     const progress = course.progress || 0;
     const lastLesson = course.lastLesson;
-    const lastLessonTitle = lastLesson?.title?.ar || lastLesson?.title?.en || lastLesson?.title || "الدرس التالي";
+    const defaultLessonTitle = language === "en" ? "Next Lesson" : "الدرس التالي";
+    const lastLessonTitle = localize(lastLesson?.title, defaultLessonTitle);
 
     return (
         <Link
@@ -115,10 +120,10 @@ const ContinueWatchingCard = ({ course, index }) => {
 
                     <div className="mt-4 flex items-center justify-between">
                         <span className="text-sm font-medium text-primary">
-                            {Math.round(progress)}% مكتمل
+                            {Math.round(progress)}% {language === "en" ? "completed" : "مكتمل"}
                         </span>
                         <span className="text-xs text-text-secondary">
-                            استمر في التعلم
+                            {language === "en" ? "Continue learning" : "استمر في التعلم"}
                         </span>
                     </div>
                 </div>

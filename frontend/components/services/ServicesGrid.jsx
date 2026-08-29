@@ -26,21 +26,24 @@ const defaultIcons = [
     GrVmMaintenance,
 ];
 
+import { useLanguage } from "@/providers/LanguageProvider";
+
 const ServicesGrid = () => {
+    const { language } = useLanguage();
     const [services, setServices] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        getServicesAction("limit=12").then((result) => {
+        getServicesAction("isActive=true&limit=12").then((result) => {
             if (result.success) setServices(result.data);
             setLoading(false);
         });
-    }, []);
+    }, [language]);
 
     if (loading) {
         return (
             <div className="py-10 text-center text-text-secondary">
-                جاري تحميل الخدمات...
+                {language === "en" ? "Loading services..." : "جاري تحميل الخدمات..."}
             </div>
         );
     }
@@ -48,7 +51,7 @@ const ServicesGrid = () => {
     if (services.length === 0) {
         return (
             <div className="py-10 text-center text-text-muted">
-                لا توجد خدمات حالياً
+                {language === "en" ? "No services available currently" : "لا توجد خدمات حالياً"}
             </div>
         );
     }
@@ -63,19 +66,24 @@ const ServicesGrid = () => {
                 xl:grid-cols-3
             "
         >
-            {services.map((service, index) => (
-                <ServiceCard
-                    index={index}
-                    key={service._id}
-                    service={{
-                        title: service.title?.ar || service.title || "",
-                        description: service.description?.ar || service.description || "",
-                        icon: defaultIcons[index % defaultIcons.length],
-                        image: service.image ? `${BASE_URL}${service.image}` : null,
-                        slug: service._id,
-                    }}
-                />
-            ))}
+            {services.map((service, index) => {
+                const serviceKey = typeof service?._id === "string" ? service._id : (service?.id || `service-${index}`);
+                const serviceSlug = service?.slug || (typeof service?._id === "string" ? service._id : `service-${index}`);
+
+                return (
+                    <ServiceCard
+                        index={index}
+                        key={serviceKey}
+                        service={{
+                            title: service.title || "",
+                            description: service.description || "",
+                            icon: defaultIcons[index % defaultIcons.length],
+                            image: service.image ? `${BASE_URL}${service.image}` : null,
+                            slug: serviceSlug,
+                        }}
+                    />
+                );
+            })}
         </div>
     );
 };

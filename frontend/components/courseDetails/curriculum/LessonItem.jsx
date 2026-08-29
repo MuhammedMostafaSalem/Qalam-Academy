@@ -1,13 +1,19 @@
+"use client";
+
 import {
     HiOutlineLockClosed,
     HiOutlinePlayCircle,
     HiOutlineClock,
 } from "react-icons/hi2";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const LessonItem = ({
     lesson,
     onclick
 }) => {
+    const { language, localize } = useLanguage();
+    const title = localize(lesson?.title, language === "en" ? "Lesson" : "درس");
+
     return (
         <div
             onClick={onclick}
@@ -20,8 +26,9 @@ const LessonItem = ({
                 px-6
                 py-5
                 last:border-none
-                hover:bg-white/5
+                hover:bg-card-hover
                 transition-colors
+                cursor-pointer
             "
         >
             <div
@@ -48,7 +55,7 @@ const LessonItem = ({
 
                 <div>
                     <h4 className="font-medium">
-                        {lesson.title}
+                        {title}
                     </h4>
 
                     {lesson.preview && (
@@ -64,7 +71,7 @@ const LessonItem = ({
                                 text-primary
                             "
                         >
-                            معاينة مجانية
+                            {language === "en" ? "Free Preview" : "معاينة مجانية"}
                         </span>
                     )}
                 </div>

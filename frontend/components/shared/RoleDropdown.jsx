@@ -3,9 +3,12 @@
 import { useState, useRef, useEffect } from "react";
 import { HiChevronDown } from "react-icons/hi";
 import { MdAdminPanelSettings, MdSchool, MdPerson } from "react-icons/md";
-import { BsCheckCircleFill, BsXCircleFill } from "react-icons/bs";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const RoleDropdown = ({ currentRole, onSelect }) => {
+    const { language } = useLanguage();
+    const isEn = language === "en";
+
     const [open, setOpen] = useState(false);
     const [openUp, setOpenUp] = useState(false);
     const menuRef = useRef(null);
@@ -37,9 +40,9 @@ const RoleDropdown = ({ currentRole, onSelect }) => {
     };
 
     const roles = [
-        { value: "student", label: "Student", icon: MdPerson },
-        { value: "instructor", label: "Instructor", icon: MdSchool },
-        { value: "admin", label: "Admin", icon: MdAdminPanelSettings },
+        { value: "student", label: isEn ? "Student" : "طالب", icon: MdPerson },
+        { value: "instructor", label: isEn ? "Instructor" : "محاضر", icon: MdSchool },
+        { value: "admin", label: isEn ? "Admin" : "مسؤول", icon: MdAdminPanelSettings },
     ];
 
     const currentItem = roles.find((r) => r.value === currentRole) || roles[0];

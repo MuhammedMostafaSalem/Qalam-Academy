@@ -5,8 +5,10 @@ import ProjectCard from "../portfolio/ProjectCard";
 import Slider from "@/components/ui/Slider";
 import { useEffect, useState } from "react";
 import { getPortfoliosAction } from "@/actions/portfolioActions";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const PortfolioSlider = () => {
+    const { language } = useLanguage();
     const [projects, setProjects] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -15,12 +17,12 @@ const PortfolioSlider = () => {
             if (result.success) setProjects(result.data);
             setLoading(false);
         });
-    }, []);
+    }, [language]);
 
     if (loading) {
         return (
             <div className="py-10 text-center text-text-secondary">
-                جاري تحميل المشاريع...
+                {language === "en" ? "Loading projects..." : "جاري تحميل المشاريع..."}
             </div>
         );
     }
@@ -28,7 +30,7 @@ const PortfolioSlider = () => {
     if (projects.length === 0) {
         return (
             <div className="py-10 text-center text-text-muted">
-                لا توجد مشاريع متاحة حالياً
+                {language === "en" ? "No projects available currently" : "لا توجد مشاريع متاحة حالياً"}
             </div>
         );
     }
@@ -52,11 +54,13 @@ const PortfolioSlider = () => {
                 <ProjectCard
                     key={portfolio._id}
                     project={{
+                        _id: portfolio._id,
+                        slug: portfolio.slug,
                         image: portfolio.image,
-                        title: portfolio.title?.ar || portfolio.title,
-                        description: portfolio.description?.ar || portfolio.description,
-                        category: portfolio.category?.title?.ar || portfolio.category?.title || "",
-                        tags: portfolio.tags || [],
+                        title: portfolio.title,
+                        description: portfolio.description,
+                        category: portfolio.category,
+                        technologies: portfolio.technologies || [],
                         projectUrl: portfolio.projectUrl || "#",
                         githubUrl: portfolio.githubUrl,
                     }}

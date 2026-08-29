@@ -1,10 +1,15 @@
+"use client";
+
 import Link from "next/link";
 import {
     HiArrowLongLeft,
     HiArrowLongRight,
 } from "react-icons/hi2";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const LessonNavigation = ({ lesson, courseSlug, courseLessons = [] }) => {
+    const { language, isRtl, localize } = useLanguage();
+
     if (!courseLessons || courseLessons.length === 0) {
         return null;
     }
@@ -23,8 +28,12 @@ const LessonNavigation = ({ lesson, courseSlug, courseLessons = [] }) => {
         return null;
     }
 
-    const getLessonTitle = (l) => l?.title?.ar || l?.title?.en || l?.title || "درس";
+    const defaultTitle = language === "en" ? "Lesson" : "درس";
+    const getLessonTitle = (l) => localize(l?.title, defaultTitle);
     const getLessonId = (l) => l?._id || l?.id;
+
+    const prevIcon = isRtl ? <HiArrowLongRight size={24} /> : <HiArrowLongLeft size={24} />;
+    const nextIcon = isRtl ? <HiArrowLongLeft size={24} /> : <HiArrowLongRight size={24} />;
 
     return (
         <div
@@ -74,12 +83,12 @@ const LessonNavigation = ({ lesson, courseSlug, courseLessons = [] }) => {
                                 group-hover:text-white
                             "
                         >
-                            <HiArrowLongRight size={24} />
+                            {prevIcon}
                         </div>
 
                         <div>
                             <p className="text-sm text-text-secondary">
-                                الدرس السابق
+                                {language === "en" ? "Previous Lesson" : "الدرس السابق"}
                             </p>
 
                             <h3 className="mt-1 font-semibold">
@@ -113,7 +122,7 @@ const LessonNavigation = ({ lesson, courseSlug, courseLessons = [] }) => {
                 >
                     <div>
                         <p className="text-sm text-text-secondary">
-                            الدرس التالي
+                            {language === "en" ? "Next Lesson" : "الدرس التالي"}
                         </p>
 
                         <h3 className="mt-1 font-semibold">
@@ -136,7 +145,7 @@ const LessonNavigation = ({ lesson, courseSlug, courseLessons = [] }) => {
                             group-hover:text-white
                         "
                     >
-                        <HiArrowLongLeft size={24} />
+                        {nextIcon}
                     </div>
                 </Link>
             )}

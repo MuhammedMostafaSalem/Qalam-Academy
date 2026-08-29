@@ -4,8 +4,10 @@ import { fadeUp } from "@/lib/animationHelpers";
 import PartnerCard from "./PartnerCard";
 import { getPartnersAction } from "@/actions/partnerActions";
 import { useEffect, useState } from "react";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const PartnersGrid = () => {
+    const { language } = useLanguage();
     const [partners, setPartners] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -14,12 +16,12 @@ const PartnersGrid = () => {
             if (result.success) setPartners(result.data);
             setLoading(false);
         });
-    }, []);
+    }, [language]);
 
     if (loading) {
         return (
             <div className="py-10 text-center text-text-secondary">
-                جاري تحميل الشركاء...
+                {language === "en" ? "Loading partners..." : "جاري تحميل الشركاء..."}
             </div>
         );
     }
@@ -27,7 +29,7 @@ const PartnersGrid = () => {
     if (partners.length === 0) {
         return (
             <div className="py-6 text-center text-text-muted">
-                لا يوجد شركاء حالياً
+                {language === "en" ? "No partners currently available" : "لا يوجد شركاء حالياً"}
             </div>
         );
     }

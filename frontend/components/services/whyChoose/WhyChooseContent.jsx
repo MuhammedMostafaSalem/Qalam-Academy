@@ -8,8 +8,11 @@ import { useRouter } from "next/navigation";
 import { ctaAnimation } from "@/lib/animation/ctaAnimation";
 import { getChooseUsAction } from "@/actions/chooseActions";
 
+import { useLanguage } from "@/providers/LanguageProvider";
+
 const WhyChooseContent = () => {
     const router = useRouter();
+    const { language, localize } = useLanguage();
     const [chooseData, setChooseData] = useState(null);
 
     useEffect(() => {
@@ -24,11 +27,18 @@ const WhyChooseContent = () => {
             }
         };
         fetchChooseData();
-    }, []);
+    }, [language]);
 
-    const title = chooseData?.title?.ar || chooseData?.title?.en || chooseData?.title || "شريكك التقني لبناء مستقبل أفضل";
-    const subtitle = chooseData?.subtitle?.ar || chooseData?.subtitle?.en || chooseData?.subtitle || "لماذا تختارنا";
-    const description = chooseData?.description?.ar || chooseData?.description?.en || chooseData?.description || "نجمع بين الخبرة التقنية والفهم العميق لاحتياجات عملائنا لنقدم حلولًا مبتكرة ذات قيمة حقيقية تساعد في نمو أعمالهم وتفوقهم على المنافسين.";
+    const defaultTitle = language === "en" ? "Your Technical Partner for a Better Future" : "شريكك التقني لبناء مستقبل أفضل";
+    const defaultSubtitle = language === "en" ? "Why Choose Us" : "لماذا تختارنا";
+    const defaultDesc = language === "en"
+        ? "We combine technical expertise and deep understanding of our clients' needs to provide innovative solutions that add real value to business growth."
+        : "نجمع بين الخبرة التقنية والفهم العميق لاحتياجات عملائنا لنقدم حلولًا مبتكرة ذات قيمة حقيقية تساعد في نمو أعمالهم وتفوقهم على المنافسين.";
+
+    const title = localize(chooseData?.title, defaultTitle);
+    const subtitle = localize(chooseData?.subtitle, defaultSubtitle);
+    const description = localize(chooseData?.description, defaultDesc);
+    const contactUsText = language === "en" ? "Contact Us" : "تواصل معنا";
 
     return (
         <div className="flex flex-col items-start gap-3">
@@ -65,7 +75,7 @@ const WhyChooseContent = () => {
                 size="lg"
                 className="gradient-button"
             >
-                تواصل معنا
+                {contactUsText}
             </Button>
         </div>
     );

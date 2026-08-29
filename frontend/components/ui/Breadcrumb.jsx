@@ -3,9 +3,32 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { HiChevronLeft } from "react-icons/hi2";
+import { useLanguage } from "@/providers/LanguageProvider";
+
+const segmentLabels = {
+    dashboard: { ar: "لوحة التحكم", en: "Dashboard" },
+    users: { ar: "المستخدمون", en: "Users" },
+    courses: { ar: "الدورات", en: "Courses" },
+    categories: { ar: "التصنيفات", en: "Categories" },
+    enrollments: { ar: "الاشتراكات", en: "Enrollments" },
+    products: { ar: "المنتجات", en: "Products" },
+    orders: { ar: "الطلبات", en: "Orders" },
+    coupons: { ar: "قسائم الخصم", en: "Coupons" },
+    services: { ar: "الخدمات", en: "Services" },
+    projects: { ar: "المشاريع", en: "Projects" },
+    team: { ar: "الفريق", en: "Team" },
+    partners: { ar: "الشركاء", en: "Partners" },
+    blog: { ar: "المقالات", en: "Blog Posts" },
+    messages: { ar: "الرسائل", en: "Messages" },
+    settings: { ar: "الإعدادات", en: "Settings" },
+    profile: { ar: "الملف الشخصي", en: "Profile" },
+    new: { ar: "جديد", en: "New" },
+    edit: { ar: "تعديل", en: "Edit" },
+};
 
 const Breadcrumb = () => {
     const pathname = usePathname();
+    const { localize, isRtl } = useLanguage();
 
     const segments = pathname.split("/").filter(Boolean);
 
@@ -13,7 +36,9 @@ const Breadcrumb = () => {
         const href = "/" + segments.slice(0, index + 1).join("/");
 
         return {
-            label: decodeURIComponent(segment),
+            label: segmentLabels[segment]
+                ? localize(segmentLabels[segment])
+                : decodeURIComponent(segment),
             href,
         };
     });
@@ -98,7 +123,7 @@ const Breadcrumb = () => {
                             )}
 
                             {!isLast && (
-                                <HiChevronLeft className="h-4 w-4 text-text-muted" />
+                                <HiChevronLeft className={`h-4 w-4 text-text-muted ${isRtl ? "" : "rotate-180"}`} />
                             )}
                         </li>
                     );

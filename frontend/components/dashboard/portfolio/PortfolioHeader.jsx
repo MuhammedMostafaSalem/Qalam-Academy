@@ -4,17 +4,20 @@ import { useState } from "react";
 import PageHeader from "@/components/dashboard/PageHeader";
 import AddPortfolioModal from "@/components/ui/modal/portfolio/AddPortfolioModal";
 import { useRouter } from "next/navigation";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const PortfolioHeader = () => {
+    const { language } = useLanguage();
+    const isEn = language === "en";
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const router = useRouter();
 
     return (
         <>
             <PageHeader
-                title="المشاريع (Portfolio)"
-                description="ادارة وعرض جميع مشاريع المعرض"
-                button="اضافة مشروع جديد"
+                title={isEn ? "Portfolio Projects" : "المشاريع (Portfolio)"}
+                description={isEn ? "Manage and view all portfolio projects" : "ادارة وعرض جميع مشاريع المعرض"}
+                button={isEn ? "Add New Project" : "اضافة مشروع جديد"}
                 onButtonClick={() => setIsAddModalOpen(true)}
             />
             <AddPortfolioModal
@@ -22,7 +25,10 @@ const PortfolioHeader = () => {
                 onClose={() => setIsAddModalOpen(false)}
                 onSuccess={() => {
                     setIsAddModalOpen(false);
-                    router.refresh(); // Refresh the page to show new project
+                    if (typeof window !== "undefined") {
+                        window.dispatchEvent(new Event("portfolio-updated"));
+                    }
+                    router.refresh();
                 }}
             />
         </>

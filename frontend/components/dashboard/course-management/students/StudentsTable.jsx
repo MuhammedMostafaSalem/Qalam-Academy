@@ -1,8 +1,11 @@
+"use client";
+
 import Section from "@/components/sections/Section";
 import ActionsTable from "@/components/shared/ActionsTable";
 import Table from "@/components/ui/Table";
 import { HiOutlineEye } from "react-icons/hi2";
 import { MdOutlineEmail } from "react-icons/md";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const students = [
     {
@@ -32,6 +35,9 @@ const students = [
 ];
 
 const StudentsTable = () => {
+    const { language } = useLanguage();
+    const isEn = language === "en";
+
     return (
         <Section
             className="
@@ -47,12 +53,12 @@ const StudentsTable = () => {
                 <Table.Head>
                     <Table.Row>
                         <Table.Th>#</Table.Th>
-                        <Table.Th>الطالب</Table.Th>
-                        <Table.Th>البريد الإلكتروني</Table.Th>
-                        <Table.Th>التقدم</Table.Th>
-                        <Table.Th>الحالة</Table.Th>
-                        <Table.Th>تاريخ الاشتراك</Table.Th>
-                        <Table.Th>الإجراءات</Table.Th>
+                        <Table.Th>{isEn ? "Student" : "الطالب"}</Table.Th>
+                        <Table.Th>{isEn ? "Email" : "البريد الإلكتروني"}</Table.Th>
+                        <Table.Th>{isEn ? "Progress" : "التقدم"}</Table.Th>
+                        <Table.Th>{isEn ? "Status" : "الحالة"}</Table.Th>
+                        <Table.Th>{isEn ? "Enrollment Date" : "تاريخ الاشتراك"}</Table.Th>
+                        <Table.Th>{isEn ? "Actions" : "الإجراءات"}</Table.Th>
                     </Table.Row>
                 </Table.Head>
 
@@ -122,12 +128,12 @@ const StudentsTable = () => {
                                         text-sm
 
                                         ${student.status === "مكتمل"
-                                            ? "bg-green-500/10 text-green-500"
+                                            ? "bg-success/10 text-success"
                                             : "bg-primary/10 text-primary"
                                         }
                                     `}
                                 >
-                                    {student.status}
+                                    {student.status === "مكتمل" ? (isEn ? "Completed" : "مكتمل") : (isEn ? "Active" : "نشط")}
                                 </span>
                             </Table.Td>
 

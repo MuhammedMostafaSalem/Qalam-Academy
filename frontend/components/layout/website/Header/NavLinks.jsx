@@ -5,9 +5,11 @@ import { usePathname } from 'next/navigation';
 import Link from "next/link";
 import MobileMenu from './MobileMenu';
 import { fadeDown } from '@/lib/animationHelpers';
+import { useLanguage } from '@/providers/LanguageProvider';
 
 const NavLinks = ({ isTop, open, onClose, isAuthenticated }) => {
     const pathname = usePathname();
+    const { localize } = useLanguage();
 
     return (
         <>
@@ -40,7 +42,7 @@ const NavLinks = ({ isTop, open, onClose, isAuthenticated }) => {
                                 }
                             `}
                         >
-                            {link.title}
+                            {localize(link.title)}
                         </Link>
 
                     </li>

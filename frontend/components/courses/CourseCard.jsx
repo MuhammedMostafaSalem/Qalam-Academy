@@ -1,6 +1,7 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
-
 import {
     HiClock,
     HiBookOpen,
@@ -8,17 +9,50 @@ import {
     HiStar,
     HiUser,
 } from "react-icons/hi";
+import { useLanguage } from "@/providers/LanguageProvider";
+import { addToCartAction } from "@/actions/cartActions";
+import useToast from "@/hooks/useToast";
+import { useState } from "react";
 
 const CourseCard = ({ course }) => {
-    const rawTitle = course?.title;
-    const title = (typeof rawTitle === "string" && rawTitle.trim() !== "")
-        ? rawTitle
-        : (typeof rawTitle === "object" ? (rawTitle.ar || rawTitle.en || "كورس") : "كورس تعليمي");
+    const { language, localize } = useLanguage();
+    const { successMessage, errorMessage } = useToast();
+    const [isAddingToCart, setIsAddingToCart] = useState(false);
 
-    const rawImage = course?.image;
+    const title = localize(course?.title, language === "en" ? "Course" : "كورس تعليمي");
+    const description = localize(course?.description);
+
+    const instructorName = typeof course?.instructor === "object"
+        ? `${course.instructor.firstName || ""} ${course.instructor.lastName || ""}`.trim()
+        : (course?.instructor || "");
+
+    const rawImage = course?.image || course?.thumbnail;
     const imageUrl = (typeof rawImage === "string" && rawImage.trim() !== "")
         ? (rawImage.startsWith('http') ? rawImage : `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:5000'}${rawImage}`)
-        : (rawImage || '/assets/img-card.jpg');
+        : '/assets/img-card.jpg';
+
+    const currencyText = language === "en" ? "EGP" : "جنيه";
+    const lessonText = language === "en" ? "lessons" : "درس";
+    const reviewsText = language === "en" ? "reviews" : "تقييم";
+
+    const handleAddToCart = async () => {
+        const courseId = course?._id || course?.id;
+        if (!courseId || isAddingToCart) return;
+
+        setIsAddingToCart(true);
+        try {
+            const result = await addToCartAction(courseId, "Course");
+            if (result.success) {
+                successMessage(result.message || (language === "en" ? "Course added to cart" : "تمت إضافة الكورس إلى السلة"));
+            } else {
+                errorMessage(result.message || (language === "en" ? "Unable to add this course to the cart" : "تعذر إضافة الكورس إلى السلة"));
+            }
+        } catch {
+            errorMessage(language === "en" ? "Please sign in before adding a course" : "يرجى تسجيل الدخول قبل إضافة الكورس");
+        } finally {
+            setIsAddingToCart(false);
+        }
+    };
 
     return (
         <article
@@ -95,7 +129,7 @@ const CourseCard = ({ course }) => {
 
                     <div className="flex items-center gap-2">
                         <HiBookOpen className="text-primary" />
-                        <span>{course.lessons || 0} درس</span>
+                        <span>{course.lessons || course.totalLessons || 0} {lessonText}</span>
                     </div>
                 </div>
 
@@ -112,20 +146,20 @@ const CourseCard = ({ course }) => {
                             group-hover:text-primary
                         "
                     >
-                        {course.title}
+                        {title}
                     </h3>
                 </Link>
 
                 {/* Instructor */}
-                {course.instructor && (
+                {instructorName && (
                     <div className="mt-2 flex items-center gap-2 text-sm text-text-secondary">
                         <HiUser className="text-primary" />
-                        <span>{course.instructor}</span>
+                        <span>{instructorName}</span>
                     </div>
                 )}
 
                 {/* Description */}
-                {course.description && (
+                {description && (
                     <p
                         className="
                             mt-3
@@ -134,7 +168,7 @@ const CourseCard = ({ course }) => {
                             text-text-secondary
                         "
                     >
-                        {course.description}
+                        {description}
                     </p>
                 )}
 
@@ -142,14 +176,14 @@ const CourseCard = ({ course }) => {
                 {course.rating > 0 && (
                     <div className="mt-3 flex items-center gap-2">
                         <div className="flex items-center gap-1">
-                            <HiStar className="text-yellow-500" />
+                            <HiStar className="text-accent" />
                             <span className="font-semibold text-text-primary">
                                 {course.rating.toFixed(1)}
                             </span>
                         </div>
                         {course.reviewsCount > 0 && (
                             <span className="text-sm text-text-secondary">
-                                ({course.reviewsCount} تقييم)
+                                ({course.reviewsCount} {reviewsText})
                             </span>
                         )}
                     </div>
@@ -173,7 +207,7 @@ const CourseCard = ({ course }) => {
                                     line-through
                                 "
                             >
-                                {course.originalPrice} جنيه
+                                {course.originalPrice} {currencyText}
                             </p>
                         )}
 
@@ -184,11 +218,14 @@ const CourseCard = ({ course }) => {
                                 text-primary
                             "
                         >
-                            {course.price || 0} جنيه
+                            {course.price || 0} {currencyText}
                         </p>
                     </div>
 
                     <button
+                        type="button"
+                        onClick={handleAddToCart}
+                        disabled={isAddingToCart || !(course?._id || course?.id)}
                         className="
                             flex
                             h-12
@@ -201,15 +238,18 @@ const CourseCard = ({ course }) => {
                             transition-all
                             duration-300
                             hover:scale-110
+                            disabled:cursor-not-allowed
+                            disabled:opacity-60
                         "
-                        aria-label="أضف إلى السلة"
+                        aria-label={language === "en" ? "Add course to cart" : "إضافة الكورس إلى السلة"}
+                        aria-busy={isAddingToCart}
                     >
-                        <HiShoppingCart size={20} />
+                        <HiShoppingCart size={20} className={isAddingToCart ? "animate-pulse" : ""} />
                     </button>
                 </div>
             </div>
         </article>
     );
-}
+};
 
-export default CourseCard
+export default CourseCard;

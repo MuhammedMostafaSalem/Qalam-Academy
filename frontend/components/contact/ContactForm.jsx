@@ -11,8 +11,12 @@ import {
 } from "react-icons/hi2";
 import { useActionState, useState } from "react";
 import { submitContactAction } from "@/actions/contactActions";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const ContactForm = () => {
+    const { language } = useLanguage();
+    const isEn = language === "en";
+
     const [state, formAction, isPending] = useActionState(submitContactAction, {
         success: false,
         message: "",
@@ -21,9 +25,7 @@ const ContactForm = () => {
 
     return (
         <div {...fadeUp(300)}>
-
             <div className="mb-8">
-
                 <h2
                     className="
                         text-3xl
@@ -31,7 +33,7 @@ const ContactForm = () => {
                         text-text-primary
                     "
                 >
-                    أرسل لنا رسالة
+                    {isEn ? "Send Us a Message" : "أرسل لنا رسالة"}
                 </h2>
 
                 <p
@@ -41,10 +43,10 @@ const ContactForm = () => {
                         leading-7
                     "
                 >
-                    املأ النموذج التالي وسيتواصل معك أحد أعضاء فريقنا
-                    في أقرب وقت.
+                    {isEn
+                        ? "Fill in the form below and a member of our team will get back to you shortly."
+                        : "املأ النموذج التالي وسيتواصل معك أحد أعضاء فريقنا في أقرب وقت."}
                 </p>
-
             </div>
 
             {/* Success message */}
@@ -63,12 +65,9 @@ const ContactForm = () => {
 
             <form
                 action={formAction}
-                className="
-                    space-y-6
-                "
+                className="space-y-6"
             >
                 {/* Name & Email */}
-
                 <div
                     className="
                         grid
@@ -77,9 +76,7 @@ const ContactForm = () => {
                     "
                 >
                     {/* Name */}
-
                     <div>
-
                         <label
                             htmlFor="name"
                             className="
@@ -89,15 +86,15 @@ const ContactForm = () => {
                                 text-text-primary
                             "
                         >
-                            الاسم بالكامل
+                            {isEn ? "Full Name" : "الاسم بالكامل"}
                         </label>
 
                         <div className="relative">
-
                             <HiOutlineUser
                                 className="
                                     absolute
-                                    right-4
+                                    rtl:right-4 rtl:left-auto
+                                    ltr:left-4 ltr:right-auto
                                     top-1/2
                                     h-5
                                     w-5
@@ -110,7 +107,7 @@ const ContactForm = () => {
                                 id="name"
                                 name="name"
                                 type="text"
-                                placeholder="أدخل اسمك"
+                                placeholder={isEn ? "Enter your name" : "أدخل اسمك"}
                                 required
                                 className="
                                     h-14
@@ -119,8 +116,8 @@ const ContactForm = () => {
                                     border
                                     border-border
                                     bg-background-alt
-                                    pr-12
-                                    pl-4
+                                    rtl:pr-12 rtl:pl-4
+                                    ltr:pl-12 ltr:pr-4
                                     outline-none
                                     transition-all
                                     duration-300
@@ -129,18 +126,14 @@ const ContactForm = () => {
                                     focus:ring-primary/10
                                 "
                             />
-
                         </div>
                         {state.fieldErrors?.name && (
                             <p className="mt-1 text-sm text-error">{state.fieldErrors.name}</p>
                         )}
-
                     </div>
 
                     {/* Email */}
-
                     <div>
-
                         <label
                             htmlFor="email"
                             className="
@@ -150,15 +143,15 @@ const ContactForm = () => {
                                 text-text-primary
                             "
                         >
-                            البريد الإلكتروني
+                            {isEn ? "Email Address" : "البريد الإلكتروني"}
                         </label>
 
                         <div className="relative">
-
                             <HiOutlineEnvelope
                                 className="
                                     absolute
-                                    right-4
+                                    rtl:right-4 rtl:left-auto
+                                    ltr:left-4 ltr:right-auto
                                     top-1/2
                                     h-5
                                     w-5
@@ -180,8 +173,8 @@ const ContactForm = () => {
                                     border
                                     border-border
                                     bg-background-alt
-                                    pr-12
-                                    pl-4
+                                    rtl:pr-12 rtl:pl-4
+                                    ltr:pl-12 ltr:pr-4
                                     outline-none
                                     transition-all
                                     duration-300
@@ -190,20 +183,15 @@ const ContactForm = () => {
                                     focus:ring-primary/10
                                 "
                             />
-
                         </div>
                         {state.fieldErrors?.email && (
                             <p className="mt-1 text-sm text-error">{state.fieldErrors.email}</p>
                         )}
-
                     </div>
-
                 </div>
 
                 {/* Phone */}
-
                 <div>
-
                     <label
                         htmlFor="phone"
                         className="
@@ -213,15 +201,15 @@ const ContactForm = () => {
                             text-text-primary
                         "
                     >
-                        رقم الهاتف (اختياري)
+                        {isEn ? "Phone Number (Optional)" : "رقم الهاتف (اختياري)"}
                     </label>
 
                     <div className="relative">
-
                         <HiOutlinePhone
                             className="
                                 absolute
-                                right-4
+                                rtl:right-4 rtl:left-auto
+                                ltr:left-4 ltr:right-auto
                                 top-1/2
                                 h-5
                                 w-5
@@ -242,8 +230,8 @@ const ContactForm = () => {
                                 border
                                 border-border
                                 bg-background-alt
-                                pr-12
-                                pl-4
+                                rtl:pr-12 rtl:pl-4
+                                ltr:pl-12 ltr:pr-4
                                 outline-none
                                 transition-all
                                 duration-300
@@ -252,15 +240,11 @@ const ContactForm = () => {
                                 focus:ring-primary/10
                             "
                         />
-
                     </div>
-
                 </div>
 
                 {/* Subject */}
-
                 <div>
-
                     <label
                         htmlFor="subject"
                         className="
@@ -270,15 +254,15 @@ const ContactForm = () => {
                             text-text-primary
                         "
                     >
-                        موضوع الرسالة
+                        {isEn ? "Subject" : "موضوع الرسالة"}
                     </label>
 
                     <div className="relative">
-
                         <HiOutlineChatBubbleLeftRight
                             className="
                                 absolute
-                                right-4
+                                rtl:right-4 rtl:left-auto
+                                ltr:left-4 ltr:right-auto
                                 top-1/2
                                 h-5
                                 w-5
@@ -291,7 +275,7 @@ const ContactForm = () => {
                             id="subject"
                             name="subject"
                             type="text"
-                            placeholder="عنوان مختصر للرسالة"
+                            placeholder={isEn ? "Brief subject of your message" : "عنوان مختصر للرسالة"}
                             required
                             className="
                                 h-14
@@ -300,8 +284,8 @@ const ContactForm = () => {
                                 border
                                 border-border
                                 bg-background-alt
-                                pr-12
-                                pl-4
+                                rtl:pr-12 rtl:pl-4
+                                ltr:pl-12 ltr:pr-4
                                 outline-none
                                 transition-all
                                 duration-300
@@ -310,18 +294,14 @@ const ContactForm = () => {
                                 focus:ring-primary/10
                             "
                         />
-
                     </div>
                     {state.fieldErrors?.subject && (
                         <p className="mt-1 text-sm text-error">{state.fieldErrors.subject}</p>
                     )}
-
                 </div>
 
                 {/* Message */}
-
                 <div>
-
                     <label
                         htmlFor="message"
                         className="
@@ -331,14 +311,14 @@ const ContactForm = () => {
                             text-text-primary
                         "
                     >
-                        الرسالة
+                        {isEn ? "Message" : "الرسالة"}
                     </label>
 
                     <textarea
                         id="message"
                         name="message"
                         rows={6}
-                        placeholder="اكتب رسالتك هنا..."
+                        placeholder={isEn ? "Type your message here..." : "اكتب رسالتك هنا..."}
                         required
                         className="
                             w-full
@@ -360,24 +340,20 @@ const ContactForm = () => {
                     {state.fieldErrors?.message && (
                         <p className="mt-1 text-sm text-error">{state.fieldErrors.message}</p>
                     )}
-
                 </div>
 
                 {/* Submit */}
-
                 <Button
                     type="submit"
                     size="lg"
-                    className="w-full md:w-auto"
+                    className="w-full md:w-auto flex items-center justify-center gap-2"
                     disabled={isPending}
                 >
-                    {isPending ? "جاري الإرسال..." : "إرسال الرسالة"}
+                    <span>{isPending ? (isEn ? "Sending..." : "جاري الإرسال...") : (isEn ? "Send Message" : "إرسال الرسالة")}</span>
 
                     <HiOutlinePaperAirplane className="h-5 w-5" />
                 </Button>
-
             </form>
-
         </div>
     );
 };

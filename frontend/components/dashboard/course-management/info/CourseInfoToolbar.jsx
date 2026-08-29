@@ -1,7 +1,13 @@
+"use client";
+
 import Section from "@/components/sections/Section";
 import { HiOutlineInformationCircle } from "react-icons/hi2";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const CourseInfoToolbar = () => {
+    const { language } = useLanguage();
+    const isEn = language === "en";
+
     return (
         <Section
             className="
@@ -42,7 +48,7 @@ const CourseInfoToolbar = () => {
                             font-bold
                         "
                     >
-                        معلومات الكورس
+                        {isEn ? "Course Information" : "معلومات الكورس"}
                     </h2>
                 </div>
 
@@ -53,7 +59,7 @@ const CourseInfoToolbar = () => {
                         text-text-secondary
                     "
                 >
-                    تعديل بيانات الكورس الأساسية وإعداداته.
+                    {isEn ? "Edit course basic details and configuration." : "تعديل بيانات الكورس الأساسية وإعداداته."}
                 </p>
             </div>
         </Section>

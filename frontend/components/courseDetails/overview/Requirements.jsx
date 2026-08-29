@@ -1,23 +1,20 @@
+"use client";
+
 import {
     HiOutlineInformationCircle,
 } from "react-icons/hi2";
-
-const defaultRequirements = [
-    "امتلاك جهاز كمبيوتر أو Laptop.",
-    "لا تحتاج لأي خبرة برمجية سابقة.",
-    "اتصال جيد بالإنترنت.",
-    "الرغبة في التعلم والتطبيق العملي.",
-];
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const Requirements = ({ requirements: reqProp }) => {
-    const reqList = (reqProp && reqProp.length > 0)
-        ? reqProp
-        : defaultRequirements;
+    const { language, localize } = useLanguage();
+    const reqList = Array.isArray(reqProp) ? reqProp.filter(Boolean) : [];
+
+    if (reqList.length === 0) return null;
 
     return (
         <section className="mt-14">
             <h2 className="text-2xl font-bold">
-                متطلبات الكورس
+                {language === "en" ? "Course Requirements" : "متطلبات الكورس"}
             </h2>
 
             <div
@@ -50,7 +47,7 @@ const Requirements = ({ requirements: reqProp }) => {
                             />
 
                             <span className="text-text-secondary">
-                                {item}
+                                {localize(item)}
                             </span>
 
                         </li>

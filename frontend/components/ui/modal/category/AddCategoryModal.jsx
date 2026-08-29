@@ -4,12 +4,16 @@ import { useEffect, useState } from "react";
 import { HiXMark } from "react-icons/hi2";
 import Image from "next/image";
 import useAddCategory from "@/hooks/category/useAddCategory";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const AddCategoryModal = ({
     isOpen,
     onClose,
     onSuccess,
 }) => {
+    const { language } = useLanguage();
+    const isEn = language === "en";
+
     const {
         titleAr,
         titleEn,
@@ -33,7 +37,6 @@ const AddCategoryModal = ({
 
     if (!isOpen) return null;
 
-
     return (
         <div
             onClick={onClose}
@@ -47,14 +50,14 @@ const AddCategoryModal = ({
                 <button
                     type="button"
                     onClick={onClose}
-                    className="absolute left-6 top-6 text-text-secondary hover:text-text-primary transition p-1 rounded-xl hover:bg-background"
+                    className="absolute rtl:left-6 rtl:right-auto ltr:right-6 ltr:left-auto top-6 text-text-secondary hover:text-text-primary transition p-1 rounded-xl hover:bg-background"
                 >
                     <HiXMark size={24} />
                 </button>
 
                 {/* Title */}
                 <h2 className="text-xl font-bold mb-6 text-text-primary">
-                    إضافة تصنيف جديد
+                    {isEn ? "Add New Category" : "إضافة تصنيف جديد"}
                 </h2>
 
                 <form
@@ -65,7 +68,7 @@ const AddCategoryModal = ({
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label className="block text-sm text-text-secondary mb-1">
-                                العنوان بالعربية
+                                {isEn ? "Title (Arabic)" : "العنوان بالعربية"}
                             </label>
 
                             <input
@@ -74,8 +77,7 @@ const AddCategoryModal = ({
                                 value={titleAr}
                                 onChange={(e) => setTitleAr(e.target.value)}
                                 required
-                                // disabled={isPending}
-                                placeholder="أدخل العنوان بالعربية"
+                                placeholder={isEn ? "Arabic title" : "أدخل العنوان بالعربية"}
                                 className={`
                                     w-full h-12
                                     rounded-xl border
@@ -101,7 +103,7 @@ const AddCategoryModal = ({
 
                         <div>
                             <label className="block text-sm text-text-secondary mb-1">
-                                العنوان بالإنجليزية
+                                {isEn ? "Title (English)" : "العنوان بالإنجليزية"}
                             </label>
 
                             <input
@@ -110,8 +112,7 @@ const AddCategoryModal = ({
                                 value={titleEn}
                                 onChange={(e) => setTitleEn(e.target.value)}
                                 required
-                                // disabled={isPending}
-                                placeholder="Enter category title"
+                                placeholder={isEn ? "English title" : "Enter category title"}
                                 className={`
                                     w-full h-12
                                     rounded-xl border
@@ -140,15 +141,14 @@ const AddCategoryModal = ({
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label className="block text-sm text-text-secondary mb-1">
-                                الوصف بالعربية
+                                {isEn ? "Description (Arabic)" : "الوصف بالعربية"}
                             </label>
 
                             <textarea
                                 name="descriptionAr"
                                 value={descAr}
                                 onChange={(e) => setDescAr(e.target.value)}
-                                // disabled={isPending}
-                                placeholder="أدخل وصف التصنيف بالعربية"
+                                placeholder={isEn ? "Arabic description" : "أدخل وصف التصنيف بالعربية"}
                                 rows={3}
                                 className={`
                                     w-full
@@ -177,15 +177,14 @@ const AddCategoryModal = ({
 
                         <div>
                             <label className="block text-sm text-text-secondary mb-1">
-                                الوصف بالإنجليزية
+                                {isEn ? "Description (English)" : "الوصف بالإنجليزية"}
                             </label>
 
                             <textarea
                                 name="descriptionEn"
                                 value={descEn}
                                 onChange={(e) => setDescEn(e.target.value)}
-                                // disabled={isPending}
-                                placeholder="Enter category description"
+                                placeholder={isEn ? "English description" : "Enter category description"}
                                 rows={3}
                                 className={`
                                     w-full
@@ -216,7 +215,7 @@ const AddCategoryModal = ({
                     {/* Type */}
                     <div>
                         <label className="block text-sm text-text-secondary mb-1">
-                            نوع التصنيف
+                            {isEn ? "Category Type" : "نوع التصنيف"}
                         </label>
 
                         <select
@@ -239,12 +238,12 @@ const AddCategoryModal = ({
                                 }
                             `}
                         >
-                            <option value="" disabled>اختر نوع التصنيف</option>
-                            <option value="course">كورس (Course)</option>
-                            <option value="product">منتج (Product)</option>
-                            <option value="portfolio">معرض أعمال (Portfolio)</option>
-                            <option value="service">خدمة (Service)</option>
-                            <option value="blog">مدونة (Blog)</option>
+                            <option value="" disabled>{isEn ? "Select Category Type" : "اختر نوع التصنيف"}</option>
+                            <option value="course">{isEn ? "Course" : "كورس (Course)"}</option>
+                            <option value="product">{isEn ? "Product" : "منتج (Product)"}</option>
+                            <option value="portfolio">{isEn ? "Portfolio" : "معرض أعمال (Portfolio)"}</option>
+                            <option value="service">{isEn ? "Service" : "خدمة (Service)"}</option>
+                            <option value="blog">{isEn ? "Blog" : "مدونة (Blog)"}</option>
                         </select>
 
                         {state?.errors?.type && (
@@ -257,7 +256,7 @@ const AddCategoryModal = ({
                     {/* Image */}
                     <div>
                         <label className="block text-sm text-text-secondary mb-1">
-                            صورة التصنيف
+                            {isEn ? "Category Image" : "صورة التصنيف"}
                         </label>
 
                         <input
@@ -288,7 +287,7 @@ const AddCategoryModal = ({
                     {imagePreview && (
                         <div className="flex items-center gap-4 mt-2 bg-background/50 p-3 rounded-2xl border border-border">
                             <span className="text-sm text-text-secondary font-medium">
-                                معاينة الصورة:
+                                {isEn ? "Image Preview:" : "معاينة الصورة:"}
                             </span>
 
                             <div className="relative w-16 h-16 rounded-xl overflow-hidden border border-border shadow-sm">
@@ -310,7 +309,7 @@ const AddCategoryModal = ({
                             disabled={isPending}
                             className="px-5 py-2.5 rounded-xl border border-border text-text-primary hover:bg-background transition font-medium"
                         >
-                            إلغاء
+                            {isEn ? "Cancel" : "إلغاء"}
                         </button>
 
                         <button
@@ -320,15 +319,15 @@ const AddCategoryModal = ({
                         >
                             {
                                 isPending
-                                ? "جاري الإضافة..."
-                                : "إضافة"
+                                ? (isEn ? "Adding..." : "جاري الإضافة...")
+                                : (isEn ? "Add Category" : "إضافة")
                             }
                         </button>
                     </div>
                 </form>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default AddCategoryModal
+export default AddCategoryModal;

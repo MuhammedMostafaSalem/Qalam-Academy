@@ -1,12 +1,16 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Select from "@/components/ui/Select"
-import Toolbar from "@/components/ui/Toolbar"
+import Select from "@/components/ui/Select";
+import Toolbar from "@/components/ui/Toolbar";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { MdClose } from "react-icons/md";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const CouponsToolbar = () => {
+    const { language } = useLanguage();
+    const isEn = language === "en";
+
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
@@ -33,12 +37,12 @@ const CouponsToolbar = () => {
     const handleClearFilters = () => {
         setSearchQuery("");
         setStatusFilter("");
-    }
+    };
 
     const statusOptions = [
-        { value: "", label: "كل الحالات" },
-        { value: "active", label: "نشط" },
-        { value: "expired", label: "منتهي" },
+        { value: "", label: isEn ? "All Statuses" : "كل الحالات" },
+        { value: "active", label: isEn ? "Active" : "نشط" },
+        { value: "expired", label: isEn ? "Expired" : "منتهي" },
     ];
 
     return (
@@ -46,16 +50,13 @@ const CouponsToolbar = () => {
             <Toolbar
                 searchQuery={searchQuery}
                 setSearchQuery={setSearchQuery}
-                inputPlaceholder="ابحث عن كوبون..."
+                inputPlaceholder={isEn ? "Search coupons..." : "ابحث عن كوبون..."}
                 filters={
                     <>
                         <Select
                             options={statusOptions}
                             value={statusFilter}
-                            onChange={(e) => {
-                                console.log("Selected status:", e.target.value);
-                                setStatusFilter(e.target.value)
-                            }}
+                            onChange={(e) => setStatusFilter(e.target.value)}
                         />
                     </>
                 }
@@ -75,14 +76,14 @@ const CouponsToolbar = () => {
                                 "
                             >
                                 <MdClose size={16} />
-                                <span>مسح الفلاتر</span>
+                                <span>{isEn ? "Clear Filters" : "مسح الفلاتر"}</span>
                             </button>
                         )}
                     </>
                 }
             />
         </div>
-    )
-}
+    );
+};
 
-export default CouponsToolbar
+export default CouponsToolbar;

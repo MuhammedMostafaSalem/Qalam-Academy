@@ -1,38 +1,44 @@
+"use client";
+
 import {
     HiOutlineDocumentText,
     HiOutlineUserGroup,
     HiOutlineEye,
     HiOutlineStar,
 } from "react-icons/hi2";
-
-const stats = [
-    {
-        id: 1,
-        icon: HiOutlineDocumentText,
-        value: "150+",
-        label: "مقال",
-    },
-    {
-        id: 2,
-        icon: HiOutlineUserGroup,
-        value: "15+",
-        label: "كاتب",
-    },
-    {
-        id: 3,
-        icon: HiOutlineEye,
-        value: "100K+",
-        label: "قراءة",
-    },
-    {
-        id: 4,
-        icon: HiOutlineStar,
-        value: "4.9",
-        label: "متوسط التقييم",
-    },
-];
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const HeroStats = () => {
+    const { language } = useLanguage();
+    const isEn = language === "en";
+
+    const stats = [
+        {
+            id: 1,
+            icon: HiOutlineDocumentText,
+            value: "150+",
+            label: isEn ? "Articles" : "مقال",
+        },
+        {
+            id: 2,
+            icon: HiOutlineUserGroup,
+            value: "15+",
+            label: isEn ? "Writers" : "كاتب",
+        },
+        {
+            id: 3,
+            icon: HiOutlineEye,
+            value: "100K+",
+            label: isEn ? "Reads" : "قراءة",
+        },
+        {
+            id: 4,
+            icon: HiOutlineStar,
+            value: "4.9",
+            label: isEn ? "Average Rating" : "متوسط التقييم",
+        },
+    ];
+
     return (
         <div
             className="
@@ -40,7 +46,6 @@ const HeroStats = () => {
                 grid
                 w-full
                 gap-6
-
                 grid-cols-2
                 md:grid-cols-4
             "

@@ -6,9 +6,12 @@ import { addToCartAction } from "@/actions/cartActions";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import useToast from "@/hooks/useToast";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const CourseActions = ({ course }) => {
     const router = useRouter();
+    const { language } = useLanguage();
+    const isEn = language === "en";
     const { successMessage, errorMessage } = useToast();
     const [isInWishlist, setIsInWishlist] = useState(course?.isInWishlist || false);
     const [isLoading, setIsLoading] = useState(false);
@@ -24,7 +27,7 @@ const CourseActions = ({ course }) => {
                 const result = await removeFromWishlistAction(course._id);
                 if (result.success) {
                     setIsInWishlist(false);
-                    successMessage(result.message || "تم إزالة الكورس من المفضلة");
+                    successMessage(result.message || (isEn ? "Course removed from wishlist" : "تم إزالة الكورس من المفضلة"));
                 } else {
                     errorMessage(result.message);
                 }
@@ -32,14 +35,14 @@ const CourseActions = ({ course }) => {
                 const result = await addToWishlistAction(course._id);
                 if (result.success) {
                     setIsInWishlist(true);
-                    successMessage(result.message || "تمت إضافة الكورس إلى المفضلة");
+                    successMessage(result.message || (isEn ? "Course added to wishlist" : "تمت إضافة الكورس إلى المفضلة"));
                 } else {
                     errorMessage(result.message);
                 }
             }
         } catch (error) {
             console.error("Wishlist error:", error);
-            errorMessage("حدث خطأ أثناء تعديل المفضلة");
+            errorMessage(isEn ? "An error occurred while updating wishlist" : "حدث خطأ أثناء تعديل المفضلة");
         } finally {
             setIsLoading(false);
         }
@@ -51,7 +54,7 @@ const CourseActions = ({ course }) => {
         try {
             const result = await addToCartAction(course._id, "Course");
             if (result.success) {
-                successMessage(result.message || "تمت الإضافة إلى السلة");
+                successMessage(result.message || (isEn ? "Added to cart" : "تمت الإضافة إلى السلة"));
                 if (redirectToCart) {
                     router.push("/cart");
                 }
@@ -59,7 +62,7 @@ const CourseActions = ({ course }) => {
                 errorMessage(result.message);
             }
         } catch (error) {
-            errorMessage("يرجى تسجيل الدخول أولاً لإضافة الكورس للسلة");
+            errorMessage(isEn ? "Please login first to add course to cart" : "يرجى تسجيل الدخول أولاً لإضافة الكورس للسلة");
         } finally {
             setIsAddingCart(false);
         }
@@ -72,7 +75,7 @@ const CourseActions = ({ course }) => {
                     className="gradient-button w-full"
                     onClick={() => router.push(`/courses/${course.slug}/lesson/${course.lessons?.[0]?._id}`)}
                 >
-                    متابعة التعلم
+                    {isEn ? "Continue Learning" : "متابعة التعلم"}
                 </Button>
             </div>
         );
@@ -85,16 +88,18 @@ const CourseActions = ({ course }) => {
                 onClick={() => handleAddToCart(true)}
                 disabled={isAddingCart}
             >
-                {isAddingCart ? "جاري الإضافة..." : "اشترك الآن"}
+                {isAddingCart
+                    ? (isEn ? "Adding..." : "جاري الإضافة...")
+                    : (isEn ? "Enroll Now" : "اشترك الآن")}
             </Button>
 
             <Button
                 variant="outline"
-                className="w-full text-white border-white/20 hover:border-primary"
+                className="w-full text-text-primary border-border hover:border-primary"
                 onClick={() => handleAddToCart(false)}
                 disabled={isAddingCart}
             >
-                إضافة إلى السلة
+                {isEn ? "Add to Cart" : "إضافة إلى السلة"}
             </Button>
 
             <Button
@@ -103,11 +108,11 @@ const CourseActions = ({ course }) => {
                 onClick={handleWishlistToggle}
                 disabled={isLoading}
             >
-                {isLoading 
-                    ? "جاري التحميل..." 
-                    : isInWishlist 
-                        ? "إزالة من المفضلة" 
-                        : "إضافة إلى المفضلة"
+                {isLoading
+                    ? (isEn ? "Loading..." : "جاري التحميل...")
+                    : isInWishlist
+                        ? (isEn ? "Remove from Wishlist" : "إزالة من المفضلة")
+                        : (isEn ? "Add to Wishlist" : "إضافة إلى المفضلة")
                 }
             </Button>
         </div>

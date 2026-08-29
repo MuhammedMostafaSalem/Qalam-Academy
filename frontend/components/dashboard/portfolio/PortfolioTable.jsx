@@ -11,14 +11,37 @@ import { deletePortfolioAction } from "@/actions/portfolioActions";
 import useToast from "@/hooks/useToast";
 import UpdatePortfolioModal from "@/components/ui/modal/portfolio/UpdatePortfolioModal";
 
+import { useLanguage } from "@/providers/LanguageProvider";
+import { useEffect } from "react";
+import { useSearchParams } from "next/navigation";
+
 const PortfolioTable = () => {
-    const { portfolios, loading, error, meta, refetch } = usePortfolios();
+    const { language, localize } = useLanguage();
+    const isEn = language === "en";
+    const searchParams = useSearchParams();
+    const { portfolios, loading, error, meta, refetch } = usePortfolios(searchParams.toString());
     const { successMessage, errorMessage } = useToast();
     const [deletingId, setDeletingId] = useState(null);
     const [editingPortfolio, setEditingPortfolio] = useState(null);
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
 
-    const titleHead = [
+    useEffect(() => {
+        const handlePortfolioUpdated = () => {
+            refetch();
+        };
+        window.addEventListener("portfolio-updated", handlePortfolioUpdated);
+        return () => {
+            window.removeEventListener("portfolio-updated", handlePortfolioUpdated);
+        };
+    }, [refetch]);
+
+    const titleHead = isEn ? [
+        "Project",
+        "Category",
+        "Project URL",
+        "Creation Date",
+        "Actions",
+    ] : [
         "المشروع",
         "التصنيف",
         "رابط المشروع",
@@ -27,16 +50,16 @@ const PortfolioTable = () => {
     ];
 
     const handleDelete = async (portfolioId) => {
-        if (!confirm("هل أنت متأكد من حذف هذا المشروع؟")) return;
+        if (!confirm(language === "en" ? "Are you sure you want to delete this project?" : "هل أنت متأكد من حذف هذا المشروع؟")) return;
 
         setDeletingId(portfolioId);
         const result = await deletePortfolioAction(portfolioId);
 
         if (result.success) {
-            successMessage(result.message || "تم حذف المشروع بنجاح");
+            successMessage(result.message || (language === "en" ? "Project deleted successfully" : "تم حذف المشروع بنجاح"));
             refetch();
         } else {
-            errorMessage(result.message || "فشل حذف المشروع");
+            errorMessage(result.message || (language === "en" ? "Failed to delete project" : "فشل حذف المشروع"));
         }
 
         setDeletingId(null);
@@ -50,7 +73,9 @@ const PortfolioTable = () => {
     if (loading) {
         return (
             <div className="mt-[20px] text-center py-10">
-                <p className="text-text-secondary">جاري التحميل...</p>
+                <p className="text-text-secondary">
+                    {language === "en" ? "Loading..." : "جاري التحميل..."}
+                </p>
             </div>
         );
     }
@@ -66,7 +91,9 @@ const PortfolioTable = () => {
     if (!portfolios || portfolios.length === 0) {
         return (
             <div className="mt-[20px] text-center py-10">
-                <div className="text-center py-6 text-text-muted">لا يوجد بيانات متاحة</div>
+                <div className="text-center py-6 text-text-muted">
+                    {language === "en" ? "No data available" : "لا يوجد بيانات متاحة"}
+                </div>
             </div>
         );
     }
@@ -91,14 +118,14 @@ const PortfolioTable = () => {
                                         data={{
                                             id: portfolio._id,
                                             image: portfolio.image,
-                                            name: portfolio.title?.ar || portfolio.title,
-                                            description: portfolio.description?.ar || portfolio.description,
+                                            name: localize(portfolio.title),
+                                            description: localize(portfolio.description),
                                         }}
                                     />
                                 </Table.Td>
 
                                 <Table.Td>
-                                    {portfolio.category?.title?.ar || portfolio.category?.title || portfolio.category || "غير مصنف"}
+                                    {localize(portfolio.category?.title || portfolio.category?.name || portfolio.category, language === "en" ? "Uncategorized" : "غير مصنف")}
                                 </Table.Td>
 
                                 <Table.Td>
@@ -109,7 +136,7 @@ const PortfolioTable = () => {
                                             rel="noopener noreferrer"
                                             className="text-primary hover:underline"
                                         >
-                                            عرض المشروع
+                                            {language === "en" ? "View Project" : "عرض المشروع"}
                                         </a>
                                     ) : (
                                         "—"
@@ -118,7 +145,7 @@ const PortfolioTable = () => {
 
                                 <Table.Td>
                                     {portfolio.createdAt
-                                        ? new Date(portfolio.createdAt).toLocaleDateString("ar-EG")
+                                        ? new Date(portfolio.createdAt).toLocaleDateString(language === "en" ? "en-US" : "ar-EG")
                                         : "—"}
                                 </Table.Td>
 

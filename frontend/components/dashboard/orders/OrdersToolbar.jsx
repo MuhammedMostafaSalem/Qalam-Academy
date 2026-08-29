@@ -1,12 +1,16 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Select from "@/components/ui/Select"
-import Toolbar from "@/components/ui/Toolbar"
+import Select from "@/components/ui/Select";
+import Toolbar from "@/components/ui/Toolbar";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { MdClose } from "react-icons/md";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const OrdersToolbar = () => {
+    const { language } = useLanguage();
+    const isEn = language === "en";
+
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
@@ -36,22 +40,22 @@ const OrdersToolbar = () => {
         setSearchQuery("");
         setMethodFilter("");
         setStatusFilter("");
-    }
+    };
 
     const paymentOptions = [
-        { value: "", label: "كل الطرق" },
-        { value: "card", label: "بطاقة ائتمان" },
-        { value: "wallet", label: "محفظة إلكترونية" },
-        { value: "fawry", label: "فوري" },
-        { value: "cash", label: "نقدي" },
+        { value: "", label: isEn ? "All Methods" : "كل الطرق" },
+        { value: "card", label: isEn ? "Credit / Debit Card" : "بطاقة ائتمان" },
+        { value: "wallet", label: isEn ? "E-Wallet" : "محفظة إلكترونية" },
+        { value: "fawry", label: isEn ? "Fawry" : "فوري" },
+        { value: "cash", label: isEn ? "Cash" : "نقدي" },
         { value: "paypal", label: "PayPal" },
     ];
 
     const statusOptions = [
-        { value: "", label: "كل الحالات" },
-        { value: "pending", label: "قيد الانتظار" },
-        { value: "paid", label: "مدفوع" },
-        { value: "cancelled", label: "ملغى" },
+        { value: "", label: isEn ? "All Statuses" : "كل الحالات" },
+        { value: "pending", label: isEn ? "Pending" : "قيد الانتظار" },
+        { value: "paid", label: isEn ? "Paid" : "مدفوع" },
+        { value: "cancelled", label: isEn ? "Cancelled" : "ملغى" },
     ];
 
     return (
@@ -59,7 +63,7 @@ const OrdersToolbar = () => {
             <Toolbar
                 searchQuery={searchQuery}
                 setSearchQuery={setSearchQuery}
-                inputPlaceholder="ابحث عن طلب..."
+                inputPlaceholder={isEn ? "Search orders..." : "ابحث عن طلب..."}
                 filters={
                     <>
                         <Select
@@ -90,14 +94,14 @@ const OrdersToolbar = () => {
                                 "
                             >
                                 <MdClose size={16} />
-                                <span>مسح الفلاتر</span>
+                                <span>{isEn ? "Clear Filters" : "مسح الفلاتر"}</span>
                             </button>
                         )}
                     </>
                 }
             />
         </div>
-    )
-}
+    );
+};
 
-export default OrdersToolbar
+export default OrdersToolbar;

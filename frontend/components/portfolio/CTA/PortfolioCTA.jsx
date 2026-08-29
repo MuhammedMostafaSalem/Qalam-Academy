@@ -1,10 +1,16 @@
+"use client";
+
 import Container from "@/components/ui/Container";
 import Section from "@/components/sections/Section";
 import CTAButtons from "./CTAButtons";
 import { heroAnimation } from "@/lib/animation/heroAnimation";
 import { animations } from "@/lib/animations";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const PortfolioCTA = () => {
+    const { language } = useLanguage();
+    const isEn = language === "en";
+
     return (
         <Section>
             <Container>
@@ -30,7 +36,7 @@ const PortfolioCTA = () => {
                             ${animations.transition}
                         `}
                     >
-                        هل لديك فكرة مشروع؟
+                        {isEn ? "Have a project in mind?" : "هل لديك فكرة مشروع؟"}
                     </h2>
 
                     <p
@@ -44,7 +50,9 @@ const PortfolioCTA = () => {
                             ${animations.transition}
                         `}
                     >
-                        فريقنا جاهز لتحويل فكرتك إلى منتج رقمي احترافي باستخدام أحدث التقنيات وأفضل الممارسات.
+                        {isEn
+                            ? "Our engineering team is ready to transform your vision into an impactful, modern digital product using industry-leading technologies."
+                            : "فريقنا جاهز لتحويل فكرتك إلى منتج رقمي احترافي باستخدام أحدث التقنيات وأفضل الممارسات."}
                     </p>
 
                     <CTAButtons />

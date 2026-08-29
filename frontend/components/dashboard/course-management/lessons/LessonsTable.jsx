@@ -7,15 +7,16 @@ import Table from "@/components/ui/Table";
 import { useParams, useRouter } from "next/navigation";
 import {
     HiOutlineEye,
-    HiOutlinePencilSquare,
-    HiOutlineTrash,
     HiOutlineBars3,
 } from "react-icons/hi2";
 import { MdOutlineDelete, MdOutlineEdit } from "react-icons/md";
 import { getLessonsAction, deleteLessonAction } from "@/actions/lessonActions";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 
 const LessonsTable = ({ courseId }) => {
+    const { language, localize } = useLanguage();
+    const isEn = language === "en";
     const router = useRouter();
     const [lessons, setLessons] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -32,9 +33,10 @@ const LessonsTable = ({ courseId }) => {
 
     useEffect(() => {
         fetchLessons();
-    }, [courseId]);
+    }, [courseId, language]);
 
     const handleDelete = async (id) => {
+        if (!confirm(isEn ? "Are you sure you want to delete this lesson?" : "هل أنت متأكد من حذف هذا الدرس؟")) return;
         const result = await deleteLessonAction(id);
         if (result.success) {
             fetchLessons();
@@ -60,7 +62,7 @@ const LessonsTable = ({ courseId }) => {
         return (
             <Section className="overflow-x-auto">
                 <div className="p-8 text-center text-text-secondary">
-                    لا توجد دروس لهذا الكورس بعد.
+                    {isEn ? "No lessons available for this course yet." : "لا توجد دروس لهذا الكورس بعد."}
                 </div>
             </Section>
         );
@@ -84,22 +86,22 @@ const LessonsTable = ({ courseId }) => {
                             #
                         </Table.Th>
                         <Table.Th className="px-4 py-4">
-                            الدرس
+                            {isEn ? "Lesson" : "الدرس"}
                         </Table.Th>
                         <Table.Th className="px-4 py-4">
-                            النوع
+                            {isEn ? "Type" : "النوع"}
                         </Table.Th>
                         <Table.Th className="px-4 py-4">
-                            المدة
+                            {isEn ? "Duration" : "المدة"}
                         </Table.Th>
                         <Table.Th className="px-4 py-4">
-                            الحالة
+                            {isEn ? "Status" : "الحالة"}
                         </Table.Th>
                         <Table.Th className="px-4 py-4">
-                            الترتيب
+                            {isEn ? "Order" : "الترتيب"}
                         </Table.Th>
                         <Table.Th className="px-4 py-4">
-                            الإجراءات
+                            {isEn ? "Actions" : "الإجراءات"}
                         </Table.Th>
                     </Table.Row>
                 </Table.Head>
@@ -135,7 +137,7 @@ const LessonsTable = ({ courseId }) => {
 
                                 {/* Title */}
                                 <Table.Td>
-                                    {lesson.title?.ar || lesson.title}
+                                    {localize(lesson.title, isEn ? "Untitled Lesson" : "درس بدون عنوان")}
                                 </Table.Td>
 
                                 {/* Type */}
@@ -174,13 +176,13 @@ const LessonsTable = ({ courseId }) => {
 
                                             ${lesson.isPublished
                                                 ?
-                                                "bg-green-500/10 text-green-500"
+                                                "bg-success/10 text-success"
                                                 :
-                                                "bg-yellow-500/10 text-yellow-500"
+                                                "bg-warning/10 text-warning"
                                             }
                                         `}
                                     >
-                                        {lesson.isPublished ? "Published" : "Draft"}
+                                        {lesson.isPublished ? (isEn ? "Published" : "منشور") : (isEn ? "Draft" : "مسودة")}
                                     </span>
                                 </Table.Td>
 
@@ -196,15 +198,18 @@ const LessonsTable = ({ courseId }) => {
                                             <div className="flex gap-3 justify-center items-center text-[20px]">
                                                 <HiOutlineEye
                                                     onClick={() => router.push(`/dashboard/courses/${courseId}/lessons/${lesson._id}`)}
-                                                    className="text-primary cursor-pointer"
+                                                    className="text-primary cursor-pointer hover:opacity-80 transition"
+                                                    title={isEn ? "View Lesson" : "عرض الدرس"}
                                                 />
                                                 <MdOutlineEdit
                                                     onClick={() => router.push(`/dashboard/courses/${courseId}/lessons/${lesson._id}/edit`)}
-                                                    className="text-primary cursor-pointer"
+                                                    className="text-primary cursor-pointer hover:opacity-80 transition"
+                                                    title={isEn ? "Edit Lesson" : "تعديل الدرس"}
                                                 />
                                                 <MdOutlineDelete
                                                     onClick={() => handleDelete(lesson._id)}
-                                                    className="text-error cursor-pointer"
+                                                    className="text-error cursor-pointer hover:opacity-80 transition"
+                                                    title={isEn ? "Delete Lesson" : "حذف الدرس"}
                                                 />
                                             </div>
                                         }

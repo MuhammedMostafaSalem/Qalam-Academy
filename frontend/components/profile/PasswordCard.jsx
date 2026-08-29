@@ -6,9 +6,12 @@ import {
 } from "react-icons/hi2";
 import Section from "../sections/Section";
 import useProfile from "@/hooks/profile/useProfile";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const PasswordCard = () => {
     const { loadingPassword, handleChangePassword } = useProfile();
+    const { language } = useLanguage();
+    const isEn = language === "en";
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -44,7 +47,7 @@ const PasswordCard = () => {
                 >
                     <HiOutlineKey size={24} />
 
-                    تغيير كلمة المرور
+                    {isEn ? "Change Password" : "تغيير كلمة المرور"}
                 </h2>
 
 
@@ -54,7 +57,7 @@ const PasswordCard = () => {
                         text-text-secondary
                     "
                 >
-                    قم بتحديث كلمة المرور الخاصة بحسابك.
+                    {isEn ? "Update your account password." : "قم بتحديث كلمة المرور الخاصة بحسابك."}
                 </p>
 
             </div>
@@ -72,7 +75,7 @@ const PasswordCard = () => {
                             font-medium
                         "
                     >
-                        كلمة المرور الحالية
+                        {isEn ? "Current Password" : "كلمة المرور الحالية"}
                     </label>
 
 
@@ -115,7 +118,7 @@ const PasswordCard = () => {
                             font-medium
                         "
                     >
-                        كلمة المرور الجديدة
+                        {isEn ? "New Password" : "كلمة المرور الجديدة"}
                     </label>
 
 
@@ -158,7 +161,7 @@ const PasswordCard = () => {
                             font-medium
                         "
                     >
-                        تأكيد كلمة المرور الجديدة
+                        {isEn ? "Confirm New Password" : "تأكيد كلمة المرور الجديدة"}
                     </label>
 
 
@@ -214,8 +217,9 @@ const PasswordCard = () => {
                     />
 
                     <p>
-                        يجب أن تحتوي كلمة المرور على 8 أحرف على الأقل،
-                        ويفضل استخدام حروف كبيرة وصغيرة وأرقام ورموز.
+                        {isEn
+                            ? "Password must be at least 8 characters long, and should contain uppercase, lowercase, numbers, and symbols."
+                            : "يجب أن تحتوي كلمة المرور على 8 أحرف على الأقل، ويفضل استخدام حروف كبيرة وصغيرة وأرقام ورموز."}
                     </p>
 
                 </div>
@@ -251,7 +255,7 @@ const PasswordCard = () => {
                             disabled:cursor-not-allowed
                         "
                     >
-                        {loadingPassword ? "جاري التحديث..." : "تغيير كلمة المرور"}
+                        {loadingPassword ? (isEn ? "Updating..." : "جاري التحديث...") : (isEn ? "Change Password" : "تغيير كلمة المرور")}
                     </button>
 
                 </div>

@@ -7,9 +7,11 @@ import CourseCard from "@/components/courses/CourseCard";
 import { getCoursesAction } from "@/actions/courseActions";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const RelatedCourses = ({ excludeSlug }) => {
     const router = useRouter();
+    const { language } = useLanguage();
     const [relatedCourses, setRelatedCourses] = useState([]);
 
     useEffect(() => {
@@ -21,9 +23,16 @@ const RelatedCourses = ({ excludeSlug }) => {
                 setRelatedCourses(filtered);
             }
         });
-    }, [excludeSlug]);
+    }, [excludeSlug, language]);
 
     if (relatedCourses.length === 0) return null;
+
+    const heading = language === "en" ? "Courses You Might Like" : "كورسات قد تعجبك";
+    const subtext = language === "en"
+        ? "Explore more courses designed to help you build professional skills and real-world projects."
+        : "استكشف المزيد من الكورسات المصممة لمساعدتك على تطوير مهاراتك البرمجية وبناء مشاريع احترافية.";
+    const viewAllBtn = language === "en" ? "View All Courses" : "عرض جميع الكورسات";
+    const discountBadge = language === "en" ? "Sale" : "خصم";
 
     return (
         <Section>
@@ -41,7 +50,7 @@ const RelatedCourses = ({ excludeSlug }) => {
                 >
                     <div>
                         <h2 className="text-3xl font-bold">
-                            كورسات قد تعجبك
+                            {heading}
                         </h2>
 
                         <p
@@ -52,9 +61,7 @@ const RelatedCourses = ({ excludeSlug }) => {
                                 text-text-secondary
                             "
                         >
-                            استكشف المزيد من الكورسات المصممة لمساعدتك
-                            على تطوير مهاراتك البرمجية وبناء مشاريع
-                            احترافية.
+                            {subtext}
                         </p>
                     </div>
 
@@ -62,7 +69,7 @@ const RelatedCourses = ({ excludeSlug }) => {
                         onClick={() => router.push("/courses")}
                         className="gradient-button"
                     >
-                        عرض جميع الكورسات
+                        {viewAllBtn}
                     </Button>
                 </div>
 
@@ -78,19 +85,21 @@ const RelatedCourses = ({ excludeSlug }) => {
                         <CourseCard
                             key={course._id}
                             course={{
+                                _id: course._id,
                                 image: course.thumbnail,
-                                title: course.title?.ar || course.title,
+                                title: course.title,
+                                description: course.description,
                                 slug: course.slug,
                                 duration: course.duration || "—",
                                 lessons: course.totalLessons || course.lessonsCount || 0,
                                 price: course.discountPrice || course.price || 0,
                                 originalPrice: course.discountPrice ? course.price : null,
-                                badge: course.discountPrice ? "خصم" : null,
+                                badge: course.discountPrice ? discountBadge : null,
                                 instructor: course.instructor
                                     ? `${course.instructor.firstName || ""} ${course.instructor.lastName || ""}`.trim()
                                     : "—",
                                 rating: course.averageRating || 0,
-                                reviewsCount: course.reviewsCount || 0,
+                                reviewsCount: course.totalReviews || 0,
                             }}
                         />
                     ))}

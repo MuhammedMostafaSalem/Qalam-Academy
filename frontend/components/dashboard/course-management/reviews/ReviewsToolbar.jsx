@@ -1,7 +1,13 @@
+"use client";
+
 import Section from "@/components/sections/Section";
 import { HiOutlineMagnifyingGlass } from "react-icons/hi2";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const ReviewsToolbar = () => {
+    const { language } = useLanguage();
+    const isEn = language === "en";
+
     return (
         <Section
             className="
@@ -30,26 +36,8 @@ const ReviewsToolbar = () => {
                             font-bold
                         "
                     >
-                        تقييمات الكورس
+                        {isEn ? "Course Reviews" : "تقييمات الكورس"}
                     </h2>
-
-                    <span
-                        className="
-                            rounded-full
-
-                            bg-primary/10
-
-                            px-3
-                            py-1
-
-                            text-sm
-                            font-medium
-
-                            text-primary
-                        "
-                    >
-                        84 تقييم
-                    </span>
                 </div>
 
                 <p
@@ -61,7 +49,7 @@ const ReviewsToolbar = () => {
                         text-text-secondary
                     "
                 >
-                    جميع تقييمات وآراء الطلاب حول الكورس.
+                    {isEn ? "All student ratings and feedback for this course." : "جميع تقييمات وآراء الطلاب حول الكورس."}
                 </p>
             </div>
 
@@ -90,7 +78,7 @@ const ReviewsToolbar = () => {
 
                     <input
                         type="text"
-                        placeholder="ابحث عن طالب..."
+                        placeholder={isEn ? "Search student..." : "ابحث عن طالب..."}
                         className="
                             h-12
 
@@ -135,12 +123,12 @@ const ReviewsToolbar = () => {
                         focus:border-primary
                     "
                 >
-                    <option>جميع التقييمات</option>
-                    <option>5 نجوم</option>
-                    <option>4 نجوم</option>
-                    <option>3 نجوم</option>
-                    <option>2 نجوم</option>
-                    <option>1 نجمة</option>
+                    <option value="">{isEn ? "All Reviews" : "جميع التقييمات"}</option>
+                    <option value="5">{isEn ? "5 Stars" : "5 نجوم"}</option>
+                    <option value="4">{isEn ? "4 Stars" : "4 نجوم"}</option>
+                    <option value="3">{isEn ? "3 Stars" : "3 نجوم"}</option>
+                    <option value="2">{isEn ? "2 Stars" : "2 نجوم"}</option>
+                    <option value="1">{isEn ? "1 Star" : "1 نجمة"}</option>
                 </select>
             </div>
         </Section>

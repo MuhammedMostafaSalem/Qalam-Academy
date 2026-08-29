@@ -10,8 +10,11 @@ import { useRouter } from "next/navigation";
 import { heroAnimation } from "@/lib/animation/heroAnimation";
 import { getHeroByPageAction } from "@/actions/heroActions";
 
+import { useLanguage } from "@/providers/LanguageProvider";
+
 const AboutHeroContent = () => {
     const router = useRouter();
+    const { language, localize } = useLanguage();
     const [hero, setHero] = useState(null);
 
     useEffect(() => {
@@ -28,9 +31,15 @@ const AboutHeroContent = () => {
         fetchHero();
     }, []);
 
-    const title = hero?.title?.ar || hero?.title?.en || hero?.title;
-    const subtitle = hero?.subtitle?.ar || hero?.subtitle?.en || hero?.subtitle || "من نحن";
-    const description = hero?.description?.ar || hero?.description?.en || hero?.description;
+    const title = localize(hero?.title);
+    const subtitle = localize(hero?.subtitle, language === "en" ? "About Us" : "من نحن");
+    const description = localize(hero?.description);
+
+    const defaultTitlePart1 = language === "en" ? "Transforming Ideas Into" : "نحوّل الأفكار إلى";
+    const defaultTitlePart2 = language === "en" ? "Integrated Software Solutions" : "حلول برمجية متكاملة";
+    const defaultDescription = language === "en"
+        ? "Qalam Academy specializes in innovative digital solutions that help companies and learners grow and thrive in a rapidly changing world."
+        : "قلم أكاديمي هي شركة متخصصة في تقديم حلول رقمية مبتكرة تساعد الشركات والأفراد على النمو والتطور في عالم يتغير بسرعة";
 
     return (
         <div
@@ -63,9 +72,9 @@ const AboutHeroContent = () => {
                         <div>{title}</div>
                     ) : (
                         <>
-                            <div>نحوّل الأفكار إلى</div>
+                            <div>{defaultTitlePart1}</div>
                             <div className="gradient-text">
-                                حلول برمجية متكاملة
+                                {defaultTitlePart2}
                             </div>
                         </>
                     )}
@@ -73,7 +82,7 @@ const AboutHeroContent = () => {
             </SectionTitle>
 
             <SectionDescription className="max-w-lg">
-                {description || "قلم أكاديمي هي شركة متخصصة في تقديم حلول رقمية مبتكرة تساعد الشركات والأفراد على النمو والتطور في عالم يتغير بسرعة"}
+                {description || defaultDescription}
             </SectionDescription>
 
             <div
@@ -99,7 +108,7 @@ const AboutHeroContent = () => {
                     onClick={() => router.push("/contact")}
                 >
                     <HiArrowRight className="h-5 w-5" />
-                    <span>اعرف المزيد عن رحلتنا</span>
+                    <span>{language === "en" ? "Learn more about our journey" : "اعرف المزيد عن رحلتنا"}</span>
                 </Button>
 
                 <Button
@@ -112,7 +121,7 @@ const AboutHeroContent = () => {
                         className="glass border-text-secondary rounded-full w-[30px] p-[5px]"
                     />
 
-                    <span>شاهد فيديو تعريفي</span>
+                    <span>{language === "en" ? "Watch intro video" : "شاهد فيديو تعريفي"}</span>
                 </Button>
             </div>
         </div>

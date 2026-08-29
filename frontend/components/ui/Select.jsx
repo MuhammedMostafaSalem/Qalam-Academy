@@ -19,7 +19,8 @@ const Select = ({ value, onChange, values = [], options, children, className = "
                     border
                     border-border
                     bg-card
-                    px-5
+                    rtl:pl-10 rtl:pr-4
+                    ltr:pr-10 ltr:pl-4
                     text-text-primary
                     outline-none
                     transition-all
@@ -35,7 +36,7 @@ const Select = ({ value, onChange, values = [], options, children, className = "
                     const optionLabel = typeof item === "object" ? (item.label ?? item.name ?? item.value) : item;
 
                     return (
-                        <option key={index} value={optionValue} className="bg-background-alt text-white">
+                        <option key={index} value={optionValue} className="bg-background-alt text-text-primary">
                             {optionLabel}
                         </option>
                     );
@@ -46,7 +47,8 @@ const Select = ({ value, onChange, values = [], options, children, className = "
                 className="
                     pointer-events-none
                     absolute
-                    left-4
+                    rtl:left-4 rtl:right-auto
+                    ltr:right-4 ltr:left-auto
                     top-1/2
                     -translate-y-1/2
                     text-text-secondary

@@ -5,11 +5,19 @@ import CardTable from "@/components/shared/CardTable";
 import ActionsTable from "@/components/shared/ActionsTable";
 import LoadMore from "@/components/shared/LoadMore";
 import useEnrollments from "@/hooks/enrollments/useEnrollments";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const EnrollmentsTable = () => {
+    const { localize, language } = useLanguage();
+    const isEn = language === "en";
     const { enrollments, loading, error, meta } = useEnrollments();
 
-    const titleHead = [
+    const titleHead = isEn ? [
+        "Subscriber",
+        "Course",
+        "Enrollment Date",
+        "Actions",
+    ] : [
         "المشترك",
         "الكورس",
         "تاريخ الاشتراك",
@@ -19,7 +27,7 @@ const EnrollmentsTable = () => {
     if (loading) {
         return (
             <div className="mt-[20px] text-center py-10">
-                <p className="text-text-secondary">جاري التحميل...</p>
+                <p className="text-text-secondary">{isEn ? "Loading enrollments..." : "جاري التحميل..."}</p>
             </div>
         );
     }
@@ -48,7 +56,9 @@ const EnrollmentsTable = () => {
                         {!enrollments || enrollments.length === 0 ? (
                             <Table.Row>
                                 <Table.Td colSpan={4}>
-                                    <div className="text-center py-6 text-text-muted">لا يوجد بيانات متاحة</div>
+                                    <div className="text-center py-6 text-text-muted">
+                                        {isEn ? "No enrollments available" : "لا يوجد بيانات متاحة"}
+                                    </div>
                                 </Table.Td>
                             </Table.Row>
                         ) : (
@@ -61,19 +71,19 @@ const EnrollmentsTable = () => {
                                                 image: enrollment.user?.avatar,
                                                 name: enrollment.user?.firstName
                                                     ? `${enrollment.user.firstName} ${enrollment.user.lastName || ""}`.trim()
-                                                    : enrollment.user?.email || "غير محدد",
+                                                    : enrollment.user?.email || (isEn ? "Unspecified" : "غير محدد"),
                                                 description: enrollment.user?.email,
                                             }}
                                         />
                                     </Table.Td>
 
                                     <Table.Td>
-                                        {enrollment.course?.title?.ar || enrollment.course?.title || "غير محدد"}
+                                        {localize(enrollment.course?.title, isEn ? "Unspecified" : "غير محدد")}
                                     </Table.Td>
 
                                     <Table.Td>
                                         {enrollment.createdAt
-                                            ? new Date(enrollment.createdAt).toLocaleDateString("ar-EG")
+                                            ? new Date(enrollment.createdAt).toLocaleDateString(language === "en" ? "en-US" : "ar-EG")
                                             : "—"}
                                     </Table.Td>
 

@@ -105,7 +105,7 @@ const LessonForm = ({
                     </label>
                     <input
                         name="titleAr"
-                        defaultValue={lesson?.title?.ar || lesson?.title}
+                        defaultValue={lesson?._translations?.title?.ar || lesson?.title?.ar || (typeof lesson?.title === "string" ? lesson?.title : "")}
                         placeholder="مثال: مقدمة في React"
                         className="
                             input-style
@@ -126,7 +126,7 @@ const LessonForm = ({
                     </label>
                     <input
                         name="titleEn"
-                        defaultValue={lesson?.title?.en}
+                        defaultValue={lesson?._translations?.title?.en || lesson?.title?.en || ""}
                         placeholder="Example: Introduction to React"
                         className="
                             input-style
@@ -148,7 +148,7 @@ const LessonForm = ({
                     <textarea
                         name="descriptionAr"
                         rows={5}
-                        defaultValue={lesson?.description?.ar || lesson?.description}
+                        defaultValue={lesson?._translations?.description?.ar || lesson?.description?.ar || (typeof lesson?.description === "string" ? lesson?.description : "")}
                         placeholder="اكتب وصف مختصر للدرس..."
                         className="
                             input-style
@@ -171,7 +171,7 @@ const LessonForm = ({
                     <textarea
                         name="descriptionEn"
                         rows={5}
-                        defaultValue={lesson?.description?.en}
+                        defaultValue={lesson?._translations?.description?.en || lesson?.description?.en || ""}
                         placeholder="Write a brief description of the lesson..."
                         className="
                             input-style

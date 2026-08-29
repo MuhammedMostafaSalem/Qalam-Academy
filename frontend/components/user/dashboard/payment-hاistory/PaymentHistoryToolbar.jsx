@@ -5,8 +5,11 @@ import Toolbar from "@/components/ui/Toolbar";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import { MdClose } from "react-icons/md";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const PaymentHistoryToolbar = () => {
+    const { language } = useLanguage();
+    const isEn = language === "en";
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
@@ -39,22 +42,22 @@ const PaymentHistoryToolbar = () => {
     };
 
     const methodOptions = [
-        { value: "all", label: "جميع وسائل الدفع" },
-        { value: "paymob", label: "بطاقة ائتمان (Paymob)" },
-        { value: "paypal", label: "بايبال (PayPal)" },
-        { value: "cash", label: "الدفع عند الاستلام (Cash)" },
+        { value: "all", label: isEn ? "All Payment Methods" : "جميع وسائل الدفع" },
+        { value: "paymob", label: isEn ? "Credit Card (Paymob)" : "بطاقة ائتمان (Paymob)" },
+        { value: "paypal", label: isEn ? "PayPal" : "بايبال (PayPal)" },
+        { value: "cash", label: isEn ? "Cash on Delivery" : "الدفع عند الاستلام (Cash)" },
     ];
 
     const statusOptions = [
-        { value: "all", label: "جميع الحالات" },
-        { value: "paid", label: "ناجحة" },
-        { value: "pending", label: "قيد المعالجة" },
-        { value: "cancelled", label: "ملغاة" },
+        { value: "all", label: isEn ? "All Statuses" : "جميع الحالات" },
+        { value: "paid", label: isEn ? "Successful" : "ناجحة" },
+        { value: "pending", label: isEn ? "Pending" : "قيد المعالجة" },
+        { value: "cancelled", label: isEn ? "Cancelled" : "ملغاة" },
     ];
 
     return (
         <Toolbar
-            inputPlaceholder="ابحث برقم العملية أو الطلب..."
+            inputPlaceholder={isEn ? "Search by transaction or order number..." : "ابحث برقم العملية أو الطلب..."}
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
             filters={
@@ -87,7 +90,7 @@ const PaymentHistoryToolbar = () => {
                         "
                     >
                         <MdClose size={16} />
-                        <span>مسح الفلاتر</span>
+                        <span>{isEn ? "Clear Filters" : "مسح الفلاتر"}</span>
                     </button>
                 )
             }

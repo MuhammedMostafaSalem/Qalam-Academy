@@ -4,30 +4,41 @@ import Select from "@/components/ui/Select";
 import Toolbar from "@/components/ui/Toolbar";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
-import useCourses from "@/hooks/courses/useCourses";
+import { getCategoriesAction } from "@/actions/categoryActions";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const CoursesToolbar = () => {
+    const { language, localize } = useLanguage();
+    const isEn = language === "en";
+
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
-    const { courses } = useCourses();
+    const [categories, setCategories] = useState([]);
     
     const [searchQuery, setSearchQuery] = useState(searchParams.get("search") || "");
     const [categoryFilter, setCategoryFilter] = useState(searchParams.get("category") || "");
     const [levelFilter, setLevelFilter] = useState(searchParams.get("level") || "");
 
     const categoryOptions = [
-        { value: "", label: "كل التصنيفات" },
-        ...Array.from(new Set(courses.map((c) => c.category?.title?.ar || c.category)))
-            .filter(Boolean)
-            .map((cat, i) => ({ value: cat, label: cat })),
+        { value: "", label: isEn ? "All Categories" : "كل التصنيفات" },
+        ...categories.map((category) => ({
+            value: category._id,
+            label: localize(category.title, isEn ? "Category" : "تصنيف"),
+        })),
     ];
 
+    useEffect(() => {
+        getCategoriesAction("type=course&limit=100").then((result) => {
+            if (result.success && Array.isArray(result.data)) setCategories(result.data);
+        });
+    }, [language]);
+
     const levelOptions = [
-        { value: "", label: "كل المستويات" },
-        { value: "beginner", label: "مبتدئ" },
-        { value: "intermediate", label: "متوسط" },
-        { value: "advanced", label: "متقدم" },
+        { value: "", label: isEn ? "All Levels" : "كل المستويات" },
+        { value: "beginner", label: isEn ? "Beginner" : "مبتدئ" },
+        { value: "intermediate", label: isEn ? "Intermediate" : "متوسط" },
+        { value: "advanced", label: isEn ? "Advanced" : "متقدم" },
     ];
 
     useEffect(() => {
@@ -51,7 +62,7 @@ const CoursesToolbar = () => {
             <Toolbar
                 searchQuery={searchQuery}
                 setSearchQuery={setSearchQuery}
-                inputPlaceholder="ابحث عن كورس..."
+                inputPlaceholder={isEn ? "Search courses..." : "ابحث عن كورس..."}
                 filters={
                     <>
                         <Select

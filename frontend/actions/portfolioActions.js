@@ -62,8 +62,8 @@ export async function createPortfolioAction(prevState, formData) {
         const githubUrl = formData.get("githubUrl");
         if (githubUrl) body.append("githubUrl", githubUrl);
 
-        const tags = formData.get("tags");
-        if (tags) body.append("tags", tags);
+        const technologies = formData.get("technologies");
+        if (technologies) body.append("technologies", technologies);
 
         const image = formData.get("image");
         if (image instanceof File && image.size > 0) {
@@ -118,8 +118,8 @@ export async function updatePortfolioAction(id, prevState, formData) {
         const githubUrl = formData.get("githubUrl");
         if (githubUrl) body.append("githubUrl", githubUrl);
 
-        const tags = formData.get("tags");
-        if (tags) body.append("tags", tags);
+        const technologies = formData.get("technologies");
+        if (technologies) body.append("technologies", technologies);
 
         const image = formData.get("image");
         if (image instanceof File && image.size > 0) {

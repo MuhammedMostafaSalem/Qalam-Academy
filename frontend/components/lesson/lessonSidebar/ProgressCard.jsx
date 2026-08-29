@@ -1,4 +1,11 @@
+"use client";
+
+import { useLanguage } from "@/providers/LanguageProvider";
+
 const ProgressCard = ({ courseProgress }) => {
+    const { language } = useLanguage();
+    const isEn = language === "en";
+
     const completedLessons = courseProgress?.completedLessons || 0;
     const totalLessons = courseProgress?.totalLessons || 0;
     const progressPercent = courseProgress?.progressPercent || 0;
@@ -21,7 +28,7 @@ const ProgressCard = ({ courseProgress }) => {
                 "
             >
                 <h3 className="font-semibold">
-                    تقدمك
+                    {isEn ? "Your Progress" : "تقدمك"}
                 </h3>
 
                 <span className="text-primary font-bold">
@@ -60,7 +67,7 @@ const ProgressCard = ({ courseProgress }) => {
                 </span>
 
                 <span>
-                    درس مكتمل
+                    {isEn ? "Lessons completed" : "درس مكتمل"}
                 </span>
             </div>
         </div>

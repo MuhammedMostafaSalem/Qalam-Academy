@@ -19,7 +19,10 @@ const Input = ({
                     rounded-input
                     border
                     border-border
+                    bg-background
                     px-4
+                    text-text-primary
+                    placeholder:text-text-muted
                     outline-none
                     transition
                     focus:border-primary

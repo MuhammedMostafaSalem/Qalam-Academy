@@ -1,40 +1,49 @@
+"use client";
+
 import {
     HiOutlineClock,
     HiOutlineAcademicCap,
     HiOutlinePlayCircle,
 } from "react-icons/hi2";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const CourseIncludes = ({ course }) => {
-    const duration = course?.duration
-        ? `${course.duration} دقيقة`
-        : "40 ساعة";
+    const { language } = useLanguage();
+    const isEn = language === "en";
 
-    const lessonsCount = (course?.totalLessons ?? course?.lessonsCount ?? course?.lessons?.length) !== undefined
-        ? `${course?.totalLessons ?? course?.lessonsCount ?? course?.lessons?.length ?? 0} درس`
+    const duration = course?.duration
+        ? (typeof course.duration === "number"
+            ? `${course.duration} ${isEn ? "mins" : "دقيقة"}`
+            : course.duration)
+        : "—";
+
+    const countVal = course?.totalLessons ?? course?.lessonsCount ?? course?.lessons?.length;
+    const lessonsCount = countVal !== undefined
+        ? `${countVal} ${isEn ? "lessons" : "درس"}`
         : "—";
 
     const levelText = course?.level === "beginner"
-        ? "مبتدئ"
+        ? (isEn ? "Beginner" : "مبتدئ")
         : course?.level === "intermediate"
-            ? "متوسط"
+            ? (isEn ? "Intermediate" : "متوسط")
             : course?.level === "advanced"
-                ? "متقدم"
-                : course?.level || "مبتدئ → متقدم";
+                ? (isEn ? "Advanced" : "متقدم")
+                : course?.level || (isEn ? "All Levels" : "مبتدئ → متقدم");
 
     const includes = [
         {
             icon: HiOutlineClock,
-            title: "مدة الكورس",
+            title: isEn ? "Course Duration" : "مدة الكورس",
             value: duration,
         },
         {
             icon: HiOutlinePlayCircle,
-            title: "الفيديوهات",
+            title: isEn ? "Lessons / Videos" : "الفيديوهات",
             value: lessonsCount,
         },
         {
             icon: HiOutlineAcademicCap,
-            title: "المستوى",
+            title: isEn ? "Skill Level" : "المستوى",
             value: levelText,
         },
     ];
@@ -50,7 +59,7 @@ const CourseIncludes = ({ course }) => {
             "
         >
             <h3 className="text-xl font-bold">
-                يتضمن الكورس
+                {isEn ? "Course Includes" : "يتضمن الكورس"}
             </h3>
 
             <div className="mt-7 space-y-5">
@@ -86,7 +95,6 @@ const CourseIncludes = ({ course }) => {
                             <span className="text-text-secondary">
                                 {item.value}
                             </span>
-
                         </div>
                     );
                 })}

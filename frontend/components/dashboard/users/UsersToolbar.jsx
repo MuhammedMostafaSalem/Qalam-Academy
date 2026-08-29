@@ -1,6 +1,9 @@
-import Select from "@/components/ui/Select"
-import Toolbar from "@/components/ui/Toolbar"
+"use client";
+
+import Select from "@/components/ui/Select";
+import Toolbar from "@/components/ui/Toolbar";
 import { MdClose } from "react-icons/md";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const UsersToolbar = ({
     roleFilter,
@@ -11,6 +14,9 @@ const UsersToolbar = ({
     setSearchQuery,
     onClear
 }) => {
+    const { language } = useLanguage();
+    const isEn = language === "en";
+
     // التحقق هل فيه أي فلتر شغال؟
     const hasFilters = searchQuery || roleFilter || statusFilter;
 
@@ -19,7 +25,7 @@ const UsersToolbar = ({
             <Toolbar
                 searchQuery={searchQuery}
                 setSearchQuery={setSearchQuery}
-                inputPlaceholder="ابحث بالاسم أو البريد الإلكتروني..."
+                inputPlaceholder={isEn ? "Search by name or email..." : "ابحث بالاسم أو البريد الإلكتروني..."}
                 filters={
                     <>
                         {/* فلتر الـ Role */}
@@ -28,10 +34,10 @@ const UsersToolbar = ({
                             onChange={(e) => setRoleFilter(e.target.value)}
                             values={
                                 [
-                                    { value: "", name: "كل الأدوار" },
-                                    { value: "admin", name: "Admin" },
-                                    { value: "instructor", name: "Instructor" },
-                                    { value: "student", name: "Student" }
+                                    { value: "", name: isEn ? "All Roles" : "كل الأدوار" },
+                                    { value: "admin", name: isEn ? "Admin" : "مسؤول" },
+                                    { value: "instructor", name: isEn ? "Instructor" : "محاضر" },
+                                    { value: "student", name: isEn ? "Student" : "طالب" }
                                 ]
                             }
                         />
@@ -42,9 +48,9 @@ const UsersToolbar = ({
                             onChange={(e) => setStatusFilter(e.target.value)}
                             values={
                                 [
-                                    { value: "", name: "كل الحالات" },
-                                    { value: "true", name: "نشط" },
-                                    { value: "false", name: "معطل" }
+                                    { value: "", name: isEn ? "All Statuses" : "كل الحالات" },
+                                    { value: "true", name: isEn ? "Active" : "نشط" },
+                                    { value: "false", name: isEn ? "Inactive" : "معطل" }
                                 ]
                             }
                         />
@@ -65,13 +71,13 @@ const UsersToolbar = ({
                             "
                         >
                             <MdClose size={16} />
-                            <span>مسح الفلاتر</span>
+                            <span>{isEn ? "Clear Filters" : "مسح الفلاتر"}</span>
                         </button>
                     )
                 }
             />
         </div>
-    )
-}
+    );
+};
 
-export default UsersToolbar
+export default UsersToolbar;

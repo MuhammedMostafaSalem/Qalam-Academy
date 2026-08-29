@@ -5,13 +5,14 @@ import { useParams, useRouter } from "next/navigation";
 import {
     HiOutlineMagnifyingGlass,
     HiOutlinePlus,
-    HiOutlineBars3BottomLeft,
 } from "react-icons/hi2";
-
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const LessonToolbar = () => {
     const { courseId } = useParams();
     const router = useRouter();
+    const { language } = useLanguage();
+    const isEn = language === "en";
 
     return (
         <Section
@@ -41,26 +42,8 @@ const LessonToolbar = () => {
                             font-bold
                         "
                     >
-                        الدروس
+                        {isEn ? "Lessons" : "الدروس"}
                     </h2>
-                    <span
-                        className="
-                            rounded-full
-
-                            bg-primary/10
-
-                            px-3
-                            py-1
-
-                            text-sm
-
-                            font-medium
-
-                            text-primary
-                        "
-                    >
-                        24 درس
-                    </span>
                 </div>
 
                 <p
@@ -72,7 +55,7 @@ const LessonToolbar = () => {
                         text-text-secondary
                     "
                 >
-                    إدارة وترتيب محتوى الكورس.
+                    {isEn ? "Manage and organize course curriculum." : "إدارة وترتيب محتوى الكورس."}
                 </p>
             </div>
 
@@ -106,7 +89,7 @@ const LessonToolbar = () => {
 
                     <input
                         type="text"
-                        placeholder="البحث عن درس..."
+                        placeholder={isEn ? "Search lessons..." : "البحث عن درس..."}
                         className="
                             h-12
 
@@ -151,22 +134,21 @@ const LessonToolbar = () => {
                         focus:border-primary
                     "
                 >
-                    <option>
-                        كل الدروس
+                    <option value="">
+                        {isEn ? "All Lessons" : "كل الدروس"}
                     </option>
 
-                    <option>
-                        فيديو
+                    <option value="video">
+                        {isEn ? "Video" : "فيديو"}
                     </option>
 
-                    <option>
-                        ملف
+                    <option value="file">
+                        {isEn ? "File / PDF" : "ملف"}
                     </option>
 
-                    <option>
-                        نص
+                    <option value="text">
+                        {isEn ? "Article / Text" : "نص"}
                     </option>
-
                 </select>
 
                 {/* Add */}
@@ -195,12 +177,11 @@ const LessonToolbar = () => {
                     "
                 >
                     <HiOutlinePlus size={20} />
-                    إضافة درس
+                    {isEn ? "Add Lesson" : "إضافة درس"}
                 </button>
             </div>
         </Section>
     );
 };
-
 
 export default LessonToolbar;

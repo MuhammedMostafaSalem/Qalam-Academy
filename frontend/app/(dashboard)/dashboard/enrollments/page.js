@@ -1,8 +1,14 @@
+"use client";
+
 import EnrollmentsTable from "@/components/dashboard/enrollments/EnrollmentsTable";
 import EnrollmentsToolbar from "@/components/dashboard/enrollments/EnrollmentsToolbar";
 import PageHeader from "@/components/dashboard/PageHeader";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 export default function AdminEnrollments() {
+    const { language } = useLanguage();
+    const isEn = language === "en";
+
     return (
         <div
             className="
@@ -15,11 +21,11 @@ export default function AdminEnrollments() {
             "
         >
             <PageHeader
-                title="الاشتراكات"
-                description="ادارة جميع الاشتراكات"
+                title={isEn ? "Enrollments" : "الاشتراكات"}
+                description={isEn ? "Manage and monitor all course enrollments" : "ادارة جميع الاشتراكات"}
             />
             <EnrollmentsToolbar />
             <EnrollmentsTable />
         </div>
-    )
+    );
 }

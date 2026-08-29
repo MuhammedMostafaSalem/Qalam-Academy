@@ -1,34 +1,43 @@
+"use client";
+
 import {
     HiOutlineAcademicCap,
     HiOutlineUsers,
     HiOutlineStar,
     HiOutlineBriefcase,
 } from "react-icons/hi2";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const InstructorStats = ({ instructor }) => {
-    const bio = instructor?.bio ||
-        "مهندس برمجيات متخصص في تطوير التطبيقات بخبرة واسعة في بناء الحلول البرمجية الحديثة. قام بتدريب آلاف الطلاب وساعد الكثير منهم في الحصول على أول وظيفة في مجال البرمجة.";
+    const { language, localize } = useLanguage();
+    const isEn = language === "en";
+
+    const defaultBio = isEn
+        ? "Software engineer specializing in modern application development with extensive expertise building enterprise-grade architectures. Has mentored thousands of students to start their professional coding journeys."
+        : "مهندس برمجيات متخصص في تطوير التطبيقات بخبرة واسعة في بناء الحلول البرمجية الحديثة. قام بتدريب آلاف الطلاب وساعد الكثير منهم في الحصول على أول وظيفة في مجال البرمجة.";
+
+    const bio = instructor?.bio ? localize(instructor.bio) : defaultBio;
 
     const stats = [
         {
             icon: HiOutlineBriefcase,
-            value: instructor?.experience || "+5 سنوات",
-            label: "الخبرة",
+            value: instructor?.experience || (isEn ? "+5 Years" : "+5 سنوات"),
+            label: isEn ? "Experience" : "الخبرة",
         },
         {
             icon: HiOutlineUsers,
             value: instructor?.students || "+1,000",
-            label: "طالب",
+            label: isEn ? "Students" : "طالب",
         },
         {
             icon: HiOutlineAcademicCap,
             value: instructor?.courses || "10+",
-            label: "كورس",
+            label: isEn ? "Courses" : "كورس",
         },
         {
             icon: HiOutlineStar,
             value: instructor?.rating || "4.9",
-            label: "التقييم",
+            label: isEn ? "Rating" : "التقييم",
         },
     ];
 

@@ -1,11 +1,15 @@
+"use client";
+
 import { cardAnimation } from "@/lib/animation/cardAnimation";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const ValueCard = ({ value, index }) => {
+    const { localize } = useLanguage();
     const Icon = value.icon;
 
     return (
         <article
-        {...cardAnimation(index)}
+            {...cardAnimation(index)}
             className="
                 relative
                 overflow-hidden
@@ -28,7 +32,6 @@ const ValueCard = ({ value, index }) => {
             "
         >
             {/* Icon */}
-
             <div
                 className="
                     flex
@@ -48,7 +51,6 @@ const ValueCard = ({ value, index }) => {
             </div>
 
             {/* Content */}
-
             <h3
                 className="
                     text-lg
@@ -56,7 +58,7 @@ const ValueCard = ({ value, index }) => {
                     text-text-primary
                 "
             >
-                {value.title}
+                {localize(value.title)}
             </h3>
 
             <p
@@ -66,10 +68,10 @@ const ValueCard = ({ value, index }) => {
                     text-sm
                 "
             >
-                {value.description}
+                {localize(value.description)}
             </p>
         </article>
-    )
-}
+    );
+};
 
-export default ValueCard
+export default ValueCard;

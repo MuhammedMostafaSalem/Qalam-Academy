@@ -1,12 +1,33 @@
 "use client";
 
 import { HiOutlineArrowPath } from "react-icons/hi2";
+import { useLanguage } from "@/providers/LanguageProvider";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-const LoadMore = ({ onClick, loading = false }) => {
+const LoadMore = ({ onClick, loading = false, pageSize = 10 }) => {
+    const { language } = useLanguage();
+    const router = useRouter();
+    const pathname = usePathname();
+    const searchParams = useSearchParams();
+    const isEn = language === "en";
+
+    const handleClick = () => {
+        if (onClick) {
+            onClick();
+            return;
+        }
+
+        const params = new URLSearchParams(searchParams.toString());
+        const currentLimit = Number(params.get("limit")) || pageSize;
+        params.set("limit", String(currentLimit + pageSize));
+        router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+    };
+
     return (
         <div className="mt-5 flex justify-center">
             <button
-                onClick={onClick}
+                type="button"
+                onClick={handleClick}
                 disabled={loading}
                 className="
                     gradient-button
@@ -23,7 +44,7 @@ const LoadMore = ({ onClick, loading = false }) => {
             >
                 <HiOutlineArrowPath size={22} className={loading ? "animate-spin" : ""} />
 
-                {loading ? "جاري التحميل..." : "عرض المزيد"}
+                <span>{loading ? (isEn ? "Loading..." : "جاري التحميل...") : (isEn ? "Load More" : "عرض المزيد")}</span>
             </button>
         </div>
     );

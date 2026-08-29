@@ -5,11 +5,11 @@ import { HiOutlineMagnifyingGlass } from "react-icons/hi2";
 const SearchInput = ({ inputPlaceholder, value, onChange = () => {} }) => {
     return (
         <div className="relative w-full">
-
             <HiOutlineMagnifyingGlass
                 className="
                     absolute
-                    right-4
+                    rtl:right-4 rtl:left-auto
+                    ltr:left-4 ltr:right-auto
                     top-1/2
                     -translate-y-1/2
                     text-text-secondary
@@ -29,14 +29,13 @@ const SearchInput = ({ inputPlaceholder, value, onChange = () => {} }) => {
                     border
                     border-border
                     bg-card
-                    pr-12
-                    pl-4
+                    rtl:pr-12 rtl:pl-4
+                    ltr:pl-12 ltr:pr-4
                     outline-none
                     transition
                     focus:border-primary
                 "
             />
-
         </div>
     );
 };

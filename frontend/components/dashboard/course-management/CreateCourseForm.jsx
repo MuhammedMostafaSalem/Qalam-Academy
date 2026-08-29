@@ -7,6 +7,7 @@ import { getCategoriesAction } from "@/actions/categoryActions";
 import { getInstructorsAction } from "@/actions/userActions";
 import { useAuth } from "@/providers/AuthProvider";
 import useToast from "@/hooks/useToast";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const inputClass = `
     w-full
@@ -24,6 +25,9 @@ const inputClass = `
 const labelClass = "mb-2 block font-medium text-text-secondary text-sm";
 
 const CreateCourseForm = () => {
+    const { language, localize } = useLanguage();
+    const isEn = language === "en";
+
     const router = useRouter();
     const { user } = useAuth();
     const { successMessage, errorMessage } = useToast();
@@ -44,7 +48,7 @@ const CreateCourseForm = () => {
         let mounted = true;
 
         Promise.all([
-            getCategoriesAction("limit=100"),
+            getCategoriesAction("type=course&limit=100"),
             getInstructorsAction("limit=100"),
         ]).then(([categoriesRes, instructorsRes]) => {
             if (!mounted) return;
@@ -70,9 +74,9 @@ const CreateCourseForm = () => {
     useEffect(() => {
         if (!state.success || !state.course) return;
 
-        successMessage(state.message || "تم إنشاء الكورس بنجاح");
+        successMessage(state.message || (isEn ? "Course created successfully" : "تم إنشاء الكورس بنجاح"));
         router.replace(`/dashboard/courses/${state.course._id}`);
-    }, [state, router, successMessage]);
+    }, [state, router, successMessage, isEn]);
 
     useEffect(() => {
         if (state.success || !state.message) return;
@@ -81,7 +85,7 @@ const CreateCourseForm = () => {
     }, [state, errorMessage]);
 
     if (loadingOptions) {
-        return <p className="text-text-secondary py-6">جاري تحميل البيانات...</p>;
+        return <p className="text-text-secondary py-6">{isEn ? "Loading options..." : "جاري تحميل البيانات..."}</p>;
     }
 
     return (
@@ -89,53 +93,53 @@ const CreateCourseForm = () => {
             action={formAction}
             className="grid gap-6"
         >
-            {/* الأخطاء */}
+            {/* Errors */}
             {!state.success && state.message && (
                 <div className="p-4 rounded-xl bg-error/10 border border-error/20 text-error">
                     {state.message}
                 </div>
             )}
 
-            {/* الاسم */}
+            {/* Title */}
             <div className="grid gap-6 md:grid-cols-2">
                 <div>
-                    <label className={labelClass}>اسم الكورس (عربي)</label>
+                    <label className={labelClass}>{isEn ? "Course Title (Arabic)" : "اسم الكورس (عربي)"}</label>
                     <input name="titleAr" type="text" required className={inputClass} />
                 </div>
                 <div>
-                    <label className={labelClass}>اسم الكورس (إنجليزي)</label>
+                    <label className={labelClass}>{isEn ? "Course Title (English)" : "اسم الكورس (إنجليزي)"}</label>
                     <input name="titleEn" type="text" required className={inputClass} />
                 </div>
             </div>
 
-            {/* الوصف */}
+            {/* Description */}
             <div className="grid gap-6 md:grid-cols-2">
                 <div>
-                    <label className={labelClass}>وصف الكورس (عربي)</label>
+                    <label className={labelClass}>{isEn ? "Course Description (Arabic)" : "وصف الكورس (عربي)"}</label>
                     <textarea name="descriptionAr" rows={5} required className={`${inputClass} resize-none`} />
                 </div>
                 <div>
-                    <label className={labelClass}>وصف الكورس (إنجليزي)</label>
+                    <label className={labelClass}>{isEn ? "Course Description (English)" : "وصف الكورس (إنجليزي)"}</label>
                     <textarea name="descriptionEn" rows={5} required className={`${inputClass} resize-none`} />
                 </div>
             </div>
 
-            {/* التصنيف والمدرب */}
+            {/* Category & Instructor */}
             <div className="grid gap-6 md:grid-cols-2">
                 <div>
-                    <label className={labelClass}>التصنيف</label>
+                    <label className={labelClass}>{isEn ? "Category" : "التصنيف"}</label>
                     <select name="category" required className={inputClass} defaultValue="">
-                        <option value="" disabled>اختر التصنيف</option>
+                        <option value="" disabled>{isEn ? "Select category" : "اختر التصنيف"}</option>
                         {categories.map((category) => (
                             <option key={category._id} value={category._id}>
-                                {category.title?.ar || category.title?.en || category.title}
+                                {localize(category.title)}
                             </option>
                         ))}
                     </select>
                 </div>
                 {isInstructor ? (
                     <div>
-                        <label className={labelClass}>المدرب</label>
+                        <label className={labelClass}>{isEn ? "Instructor" : "المدرب"}</label>
                         <input
                             type="text"
                             disabled
@@ -146,9 +150,9 @@ const CreateCourseForm = () => {
                     </div>
                 ) : (
                     <div>
-                        <label className={labelClass}>المدرب</label>
+                        <label className={labelClass}>{isEn ? "Instructor" : "المدرب"}</label>
                         <select name="instructor" required className={inputClass} defaultValue="">
-                            <option value="" disabled>اختر المدرب</option>
+                            <option value="" disabled>{isEn ? "Select instructor" : "اختر المدرب"}</option>
                             {instructors.map((instructor) => (
                                 <option key={instructor._id} value={instructor._id}>
                                     {instructor.firstName} {instructor.lastName}
@@ -159,79 +163,79 @@ const CreateCourseForm = () => {
                 )}
             </div>
 
-            {/* المستوى واللغة */}
+            {/* Level & Language */}
             <div className="grid gap-6 md:grid-cols-2">
                 <div>
-                    <label className={labelClass}>المستوى</label>
+                    <label className={labelClass}>{isEn ? "Level" : "المستوى"}</label>
                     <select name="level" defaultValue="beginner" className={inputClass}>
-                        <option value="beginner">مبتدئ</option>
-                        <option value="intermediate">متوسط</option>
-                        <option value="advanced">متقدم</option>
+                        <option value="beginner">{isEn ? "Beginner" : "مبتدئ"}</option>
+                        <option value="intermediate">{isEn ? "Intermediate" : "متوسط"}</option>
+                        <option value="advanced">{isEn ? "Advanced" : "متقدم"}</option>
                     </select>
                 </div>
                 <div>
-                    <label className={labelClass}>لغة الكورس</label>
+                    <label className={labelClass}>{isEn ? "Course Language" : "لغة الكورس"}</label>
                     <select name="language" defaultValue="arabic" className={inputClass}>
-                        <option value="arabic">العربية</option>
-                        <option value="english">English</option>
+                        <option value="arabic">{isEn ? "Arabic" : "العربية"}</option>
+                        <option value="english">{isEn ? "English" : "English"}</option>
                     </select>
                 </div>
             </div>
 
-            {/* السعر */}
+            {/* Price & Duration */}
             <div className="grid gap-6 md:grid-cols-3">
                 <div>
-                    <label className={labelClass}>السعر</label>
+                    <label className={labelClass}>{isEn ? "Price (EGP)" : "السعر"}</label>
                     <input name="price" type="number" min="0" required className={inputClass} />
                 </div>
                 <div>
-                    <label className={labelClass}>السعر بعد الخصم</label>
+                    <label className={labelClass}>{isEn ? "Discount Price (EGP)" : "السعر بعد الخصم"}</label>
                     <input name="discountPrice" type="number" min="0" className={inputClass} />
                 </div>
                 <div>
-                    <label className={labelClass}>المدة (بالدقائق)</label>
+                    <label className={labelClass}>{isEn ? "Duration (Minutes)" : "المدة (بالدقائق)"}</label>
                     <input name="duration" type="number" min="0" className={inputClass} />
                 </div>
             </div>
 
-            {/* المتطلبات والأهداف والكلمات المفتاحية */}
+            {/* Requirements & Objectives */}
             <div className="grid gap-6 md:grid-cols-2">
                 <div>
-                    <label className={labelClass}>المتطلبات (افصل بينها بفاصلة ,)</label>
+                    <label className={labelClass}>{isEn ? "Requirements (comma separated ,)" : "المتطلبات (افصل بينها بفاصلة ,)"}</label>
                     <textarea name="requirements" rows={3} required className={`${inputClass} resize-none`} />
                 </div>
                 <div>
-                    <label className={labelClass}>الأهداف (افصل بينها بفاصلة ,)</label>
+                    <label className={labelClass}>{isEn ? "Objectives (comma separated ,)" : "الأهداف (افصل بينها بفاصلة ,)"}</label>
                     <textarea name="objectives" rows={3} required className={`${inputClass} resize-none`} />
                 </div>
             </div>
 
             <div>
-                <label className={labelClass}>الكلمات المفتاحية / Tags (افصل بينها بفاصلة ,)</label>
+                <label className={labelClass}>{isEn ? "Tags / Keywords (comma separated ,)" : "الكلمات المفتاحية / Tags (افصل بينها بفاصلة ,)"}</label>
                 <textarea name="tags" rows={2} required className={`${inputClass} resize-none`} />
             </div>
 
-            {/* صورة الكورس */}
+            {/* Thumbnail */}
             <div>
-                <label className={labelClass}>صورة الكورس (Thumbnail)</label>
+                <label className={labelClass}>{isEn ? "Course Thumbnail" : "صورة الكورس (Thumbnail)"}</label>
                 <input name="thumbnail" type="file" accept="image/*" className={inputClass} />
             </div>
 
-            {/* زر الحفظ */}
+            {/* Actions */}
             <div className="flex justify-end gap-3">
                 <button
                     type="button"
                     onClick={() => router.push("/dashboard/courses")}
                     className="rounded-2xl border border-border px-6 py-3 transition hover:bg-background"
                 >
-                    إلغاء
+                    {isEn ? "Cancel" : "إلغاء"}
                 </button>
                 <button
                     type="submit"
                     disabled={isPending}
                     className="gradient-button rounded-2xl px-6 py-3 text-white transition hover:opacity-90 disabled:opacity-60"
                 >
-                    {isPending ? "جاري الإنشاء..." : "إنشاء الكورس"}
+                    {isPending ? (isEn ? "Creating..." : "جاري الإنشاء...") : (isEn ? "Create Course" : "إنشاء الكورس")}
                 </button>
             </div>
         </form>

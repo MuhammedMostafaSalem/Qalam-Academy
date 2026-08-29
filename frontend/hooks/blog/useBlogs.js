@@ -2,8 +2,10 @@
 
 import { getBlogsAction } from "@/actions/blogActions";
 import { useCallback, useEffect, useState } from "react";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const useBlogs = (queryString = "") => {
+    const { language } = useLanguage();
     const [blogs, setBlogs] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -27,7 +29,7 @@ const useBlogs = (queryString = "") => {
         } finally {
             setLoading(false);
         }
-    }, [queryString]);
+    }, [queryString, language]);
 
     useEffect(() => {
         fetchBlogs();

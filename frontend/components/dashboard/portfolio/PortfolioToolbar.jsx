@@ -2,20 +2,24 @@
 
 import Toolbar from '@/components/ui/Toolbar';
 import Select from '@/components/ui/Select';
+import { useLanguage } from '@/providers/LanguageProvider';
 
 const PortfolioToolbar = ({ searchQuery, setSearchQuery, selectedCategory, setSelectedCategory, categories = [] }) => {
+    const { language, localize } = useLanguage();
+    const isEn = language === "en";
+
     const categoryOptions = [
-        { value: "all", label: "جميع التصنيفات" },
+        { value: "all", label: isEn ? "All Categories" : "جميع التصنيفات" },
         ...categories.map((cat) => ({
             value: cat._id || cat.name,
-            label: cat.title?.ar || cat.name?.ar || cat.name || cat.title || "تصنيف",
+            label: localize(cat.title || cat.name, isEn ? "Category" : "تصنيف"),
         })),
     ];
 
     return (
         <div className="mt-[20px]">
             <Toolbar
-                inputPlaceholder="ابحث عن مشروع..."
+                inputPlaceholder={isEn ? "Search projects..." : "ابحث عن مشروع..."}
                 searchQuery={searchQuery}
                 setSearchQuery={setSearchQuery}
                 filters={

@@ -9,9 +9,12 @@ import LanguageSwitcher from "./LanguageSwitcher";
 import { fadeDown } from "@/lib/animationHelpers";
 import UserMenu from "@/components/shared/UserMenu";
 import { useAuth } from "@/providers/AuthProvider";
+import { useLanguage } from "@/providers/LanguageProvider";
+import ThemeToggle from "@/components/shared/ThemeToggle";
 
 const Navbar = ({ isTop, openMenu, setOpenMenu }) => {
     const { user, loading } = useAuth();
+    const { language } = useLanguage();
 
     return (
         <nav
@@ -48,17 +51,20 @@ const Navbar = ({ isTop, openMenu, setOpenMenu }) => {
                 <div className="flex items-center gap-3">
                     <Link
                         href="/cart"
-                        className="flex h-11 w-11 items-center justify-center rounded-full glass text-white hover:text-primary transition"
-                        title="سلة الشراء"
+                        className="flex h-11 w-11 items-center justify-center rounded-full glass text-text-primary hover:text-primary transition"
+                        title={language === "en" ? "Shopping Cart" : "سلة الشراء"}
+                        aria-label={language === "en" ? "Shopping Cart" : "سلة الشراء"}
                     >
                         <HiOutlineShoppingBag size={22} />
                     </Link>
 
                     <LanguageSwitcher />
 
+                    <ThemeToggle compact />
+
                     {
                         loading ? (
-                            <div className="w-10 h-10 rounded-full animate-pulse bg-white/10" />
+                            <div className="w-10 h-10 rounded-full animate-pulse bg-card-hover" />
                         ) : user ? (
                             <UserMenu />
                         ) : (

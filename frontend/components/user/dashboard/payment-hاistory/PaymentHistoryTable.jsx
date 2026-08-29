@@ -3,31 +3,39 @@
 import Table from "@/components/ui/Table";
 import useOrders from "@/hooks/orders/useOrders";
 import { useSearchParams } from "next/navigation";
-import {
-    HiOutlineBanknotes,
-    HiOutlineEye
-} from "react-icons/hi2";
-
-const mapPaymentMethod = (method) => {
-    switch (method) {
-        case "cash":
-            return "الدفع عند الاستلام";
-        case "paymob":
-            return "بطاقة ائتمان (Paymob)";
-        case "paypal":
-            return "حساب بايبال (PayPal)";
-        default:
-            return method || "وسيلة إلكترونية";
-    }
-};
-
-const mapPaymentStatus = (isPaid, status) => {
-    if (isPaid || status === "paid") return { label: "ناجحة", color: "bg-green-500/10 text-green-600" };
-    if (status === "cancelled") return { label: "ملغاة", color: "bg-red-500/10 text-red-600" };
-    return { label: "قيد المعالجة", color: "bg-yellow-500/10 text-yellow-600" };
-};
+import { HiOutlineBanknotes } from "react-icons/hi2";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const PaymentHistoryTable = () => {
+    const { language } = useLanguage();
+    const isEn = language === "en";
+
+    const mapPaymentMethod = (method) => {
+        switch (method) {
+            case "cash":
+                return isEn ? "Cash on Delivery" : "الدفع عند الاستلام";
+            case "paymob":
+                return isEn ? "Credit Card (Paymob)" : "بطاقة ائتمان (Paymob)";
+            case "paypal":
+                return isEn ? "PayPal Account" : "حساب بايبال (PayPal)";
+            default:
+                return method || (isEn ? "Electronic Gateway" : "وسيلة إلكترونية");
+        }
+    };
+
+    const mapPaymentStatus = (isPaid, status) => {
+        if (isPaid || status === "paid") {
+            return { label: isEn ? "Successful" : "ناجحة", color: "bg-success/10 text-success" };
+        }
+        if (status === "cancelled") {
+            return { label: isEn ? "Cancelled" : "ملغاة", color: "bg-error/10 text-error" };
+        }
+        if (status === "refunded") {
+            return { label: isEn ? "Refunded" : "مستردة", color: "bg-card-hover text-text-secondary" };
+        }
+        return { label: isEn ? "Pending" : "قيد المعالجة", color: "bg-warning/10 text-warning" };
+    };
+
     const { orders, loading, error } = useOrders();
     const searchParams = useSearchParams();
 
@@ -38,7 +46,7 @@ const PaymentHistoryTable = () => {
     if (loading) {
         return (
             <div className="py-12 text-center text-text-secondary">
-                جاري تحميل سجل المدفوعات...
+                {isEn ? "Loading payment history..." : "جاري تحميل سجل المدفوعات..."}
             </div>
         );
     }
@@ -54,7 +62,7 @@ const PaymentHistoryTable = () => {
     if (!orders || orders.length === 0) {
         return (
             <div className="py-12 text-center text-text-muted">
-                لا توجد مدفوعات مسجلة حتى الآن
+                {isEn ? "No recorded payments yet" : "لا توجد مدفوعات مسجلة حتى الآن"}
             </div>
         );
     }
@@ -84,7 +92,7 @@ const PaymentHistoryTable = () => {
     if (filteredOrders.length === 0) {
         return (
             <div className="py-12 text-center text-text-muted">
-                لا توجد نتائج مدفوعات تطابق خيارات التصفية والبحث المختارة
+                {isEn ? "No payment records match your filters" : "لا توجد نتائج مدفوعات تطابق خيارات التصفية والبحث المختارة"}
             </div>
         );
     }
@@ -93,13 +101,12 @@ const PaymentHistoryTable = () => {
         <Table>
             <Table.Head>
                 <Table.Row>
-                    <Table.Th>رقم العملية / المعاملة</Table.Th>
-                    <Table.Th>رقم الطلب</Table.Th>
-                    <Table.Th>وسيلة الدفع</Table.Th>
-                    <Table.Th>المبلغ</Table.Th>
-                    <Table.Th>التاريخ</Table.Th>
-                    <Table.Th>الحالة</Table.Th>
-                    <Table.Th>الإجراء</Table.Th>
+                    <Table.Th>{isEn ? "Transaction ID" : "رقم العملية / المعاملة"}</Table.Th>
+                    <Table.Th>{isEn ? "Order Number" : "رقم الطلب"}</Table.Th>
+                    <Table.Th>{isEn ? "Payment Method" : "وسيلة الدفع"}</Table.Th>
+                    <Table.Th>{isEn ? "Amount" : "المبلغ"}</Table.Th>
+                    <Table.Th>{isEn ? "Date" : "التاريخ"}</Table.Th>
+                    <Table.Th>{isEn ? "Status" : "الحالة"}</Table.Th>
                 </Table.Row>
             </Table.Head>
 
@@ -110,7 +117,7 @@ const PaymentHistoryTable = () => {
                     const txnId = order.paymentIntentId || order.transactionId || `TXN-${order._id?.slice(-8).toUpperCase()}`;
                     const orderNum = `#ORD-${order._id?.slice(-6).toUpperCase()}`;
                     const dateStr = order.createdAt
-                        ? new Date(order.createdAt).toLocaleDateString("ar-EG")
+                        ? new Date(order.createdAt).toLocaleDateString(isEn ? "en-US" : "ar-EG")
                         : "—";
 
                     return (
@@ -133,7 +140,7 @@ const PaymentHistoryTable = () => {
                             </Table.Td>
 
                             <Table.Td className="font-bold text-primary">
-                                {order.totalOrderPrice} ج.م
+                                {order.totalOrderPrice} {isEn ? "EGP" : "ج.م"}
                             </Table.Td>
 
                             <Table.Td>
@@ -146,13 +153,6 @@ const PaymentHistoryTable = () => {
                                 </span>
                             </Table.Td>
 
-                            <Table.Td>
-                                <div className="flex justify-center">
-                                    <button className="p-2 text-white/70 hover:text-white transition" title="عرض التفاصيل">
-                                        <HiOutlineEye size={18} />
-                                    </button>
-                                </div>
-                            </Table.Td>
                         </Table.Row>
                     );
                 })}

@@ -5,8 +5,11 @@ import Toolbar from "@/components/ui/Toolbar";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import { MdClose } from "react-icons/md";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const OrdersToolbar = () => {
+    const { language } = useLanguage();
+    const isEn = language === "en";
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
@@ -39,22 +42,22 @@ const OrdersToolbar = () => {
     };
 
     const typeOptions = [
-        { value: "all", label: "جميع الأنواع" },
-        { value: "course", label: "كورسات" },
-        { value: "product", label: "منتجات رقمية" },
-        { value: "mixed", label: "طلبات مختلطة" },
+        { value: "all", label: isEn ? "All Types" : "جميع الأنواع" },
+        { value: "course", label: isEn ? "Courses" : "كورسات" },
+        { value: "product", label: isEn ? "Digital Products" : "منتجات رقمية" },
+        { value: "mixed", label: isEn ? "Mixed Orders" : "طلبات مختلطة" },
     ];
 
     const statusOptions = [
-        { value: "all", label: "جميع الحالات" },
-        { value: "paid", label: "مكتملة (مدفوعة)" },
-        { value: "pending", label: "قيد المعالجة" },
-        { value: "cancelled", label: "ملغاة" },
+        { value: "all", label: isEn ? "All Statuses" : "جميع الحالات" },
+        { value: "paid", label: isEn ? "Completed (Paid)" : "مكتملة (مدفوعة)" },
+        { value: "pending", label: isEn ? "Pending" : "قيد المعالجة" },
+        { value: "cancelled", label: isEn ? "Cancelled" : "ملغاة" },
     ];
 
     return (
         <Toolbar
-            inputPlaceholder="ابحث برقم الطلب..."
+            inputPlaceholder={isEn ? "Search by order number..." : "ابحث برقم الطلب..."}
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
             filters={
@@ -87,7 +90,7 @@ const OrdersToolbar = () => {
                         "
                     >
                         <MdClose size={16} />
-                        <span>مسح الفلاتر</span>
+                        <span>{isEn ? "Clear Filters" : "مسح الفلاتر"}</span>
                     </button>
                 )
             }

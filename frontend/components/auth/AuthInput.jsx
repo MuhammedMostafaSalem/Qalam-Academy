@@ -38,7 +38,7 @@ const AuthInput = ({
                     // value={value}
                     onChange={onChange}
                     placeholder={placeholder}
-                    className="
+                    className={`
                         h-14
                         w-full
                         rounded-2xl
@@ -46,13 +46,14 @@ const AuthInput = ({
                         border-border
                         bg-background-alt
                         px-5
+                        ${type === "password" ? "rtl:pl-12 ltr:pr-12" : ""}
                         outline-none
                         transition-all
                         duration-300
                         focus:border-primary
                         focus:ring-2
                         focus:ring-primary/20
-                    "
+                    `}
                 />
 
                 {type === "password" && (
@@ -63,7 +64,8 @@ const AuthInput = ({
                         }
                         className="
                             absolute
-                            left-5
+                            rtl:left-5 rtl:right-auto
+                            ltr:right-5 ltr:left-auto
                             top-1/2
                             -translate-y-1/2
                             text-text-secondary
@@ -80,7 +82,7 @@ const AuthInput = ({
             </div>
 
             {error && (
-                <p className="text-sm text-red-500">
+                <p className="text-sm text-error">
                     {error}
                 </p>
             )}

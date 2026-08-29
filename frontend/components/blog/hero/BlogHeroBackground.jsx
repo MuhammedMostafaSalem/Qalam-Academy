@@ -7,7 +7,7 @@ const BlogHeroBackground = () => {
                     absolute
                     inset-0
                     -z-20
-                    bg-[radial-gradient(circle_at_top,#2563EB10,#070B17_65%)]
+                    theme-hero-background
                 "
             />
 

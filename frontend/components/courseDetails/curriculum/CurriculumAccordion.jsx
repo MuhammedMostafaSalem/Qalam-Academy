@@ -7,13 +7,13 @@ import {
 } from "react-icons/hi2";
 import LessonItem from "./LessonItem";
 import { useRouter } from "next/navigation";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const CurriculumAccordion = ({ course }) => {
     const router = useRouter();
+    const { language, localize } = useLanguage();
     const [openModule, setOpenModule] = useState(0);
 
-    // Group lessons (if they come as a flat array, display them in one section)
-    // If the API provides lessons array directly in course
     const lessons = course?.lessons || [];
 
     const toggleModule = (index) => {
@@ -24,25 +24,24 @@ const CurriculumAccordion = ({ course }) => {
         );
     };
 
-    // If there are no lessons, show a message
     if (!lessons || lessons.length === 0) {
         return (
             <div className="py-16 text-center text-text-secondary">
-                لا توجد دروس متاحة حالياً
+                {language === "en" ? "No lessons available currently" : "لا توجد دروس متاحة حالياً"}
             </div>
         );
     }
 
-    // For now, display all lessons in a single module
-    // You can enhance this later to group by sections/modules
     const curriculum = [
         {
             id: 1,
-            title: "دروس الكورس",
+            title: language === "en" ? "Course Lessons" : "دروس الكورس",
             lessons: lessons,
             duration: course?.duration || "—",
         }
     ];
+
+    const lessonsLabel = language === "en" ? "lessons" : "دروس";
 
     return (
         <div className="space-y-5">
@@ -68,7 +67,7 @@ const CurriculumAccordion = ({ course }) => {
                                 items-center
                                 justify-between
                                 p-6
-                                text-right
+                                text-start
                             "
                         >
                             <div>
@@ -77,7 +76,7 @@ const CurriculumAccordion = ({ course }) => {
                                 </h3>
 
                                 <p className="mt-2 text-sm text-text-secondary">
-                                    {module.lessons.length} دروس
+                                    {module.lessons.length} {lessonsLabel}
                                     • {module.duration}
                                 </p>
                             </div>
@@ -95,7 +94,7 @@ const CurriculumAccordion = ({ course }) => {
                                         key={lesson._id}
                                         lesson={{
                                             id: lesson._id,
-                                            title: lesson.title?.ar || lesson.title?.en || lesson.title,
+                                            title: lesson.title,
                                             duration: lesson.duration || "—",
                                             preview: lesson.isPreview || false,
                                         }}

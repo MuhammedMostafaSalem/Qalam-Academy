@@ -6,8 +6,11 @@ import Section from "@/components/sections/Section";
 import { HiOutlinePlayCircle } from "react-icons/hi2";
 import { useEffect, useState } from "react";
 import { getContinueWatchingAction } from "@/actions/progressActions";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const ContinueLearning = () => {
+    const { language, localize } = useLanguage();
+    const isEn = language === "en";
     const [continueWatching, setContinueWatching] = useState(null);
     const [loading, setLoading] = useState(true);
 
@@ -35,8 +38,9 @@ const ContinueLearning = () => {
     }
 
     const courseData = continueWatching.course;
-    const rawTitle = courseData?.title?.ar || courseData?.title?.en || courseData?.title;
-    const title = typeof rawTitle === "string" && rawTitle.trim() !== "" ? rawTitle : "دورة تعليمية";
+    const defaultCourseTitle = isEn ? "Course" : "دورة تعليمية";
+    const title = localize(courseData?.title, defaultCourseTitle);
+
     const thumbnail = (courseData?.thumbnail && typeof courseData.thumbnail === 'string' && courseData.thumbnail.trim() !== '')
         ? (courseData.thumbnail.startsWith('http')
             ? courseData.thumbnail
@@ -45,7 +49,8 @@ const ContinueLearning = () => {
 
     const progress = continueWatching.progress || 0;
     const lastLesson = continueWatching.lastLesson;
-    const lastLessonTitle = lastLesson?.title?.ar || lastLesson?.title?.en || lastLesson?.title || "الدرس التالي";
+    const defaultLessonTitle = isEn ? "Next Lesson" : "الدرس التالي";
+    const lastLessonTitle = localize(lastLesson?.title, defaultLessonTitle);
     
     const continueUrl = lastLesson
         ? `/courses/${courseData.slug}/lesson/${lastLesson._id}`
@@ -73,11 +78,11 @@ const ContinueLearning = () => {
             >
                 <div>
                     <h2 className="text-xl font-bold">
-                        أكمل تعلمك
+                        {isEn ? "Continue Learning" : "أكمل تعلمك"}
                     </h2>
 
                     <p className="mt-1 text-sm text-text-secondary">
-                        تابع من حيث توقفت
+                        {isEn ? "Resume from where you left off" : "تابع من حيث توقفت"}
                     </p>
                 </div>
             </div>
@@ -133,7 +138,7 @@ const ContinueLearning = () => {
                                 text-sm
                             "
                         >
-                            <span>التقدم</span>
+                            <span>{isEn ? "Progress" : "التقدم"}</span>
 
                             <span className="font-medium">
                                 {Math.round(progress)}%
@@ -184,7 +189,7 @@ const ContinueLearning = () => {
                         "
                     >
                         <HiOutlinePlayCircle size={20} />
-                        متابعة التعلم
+                        {isEn ? "Continue Learning" : "متابعة التعلم"}
                     </Link>
                 </div>
             </div>

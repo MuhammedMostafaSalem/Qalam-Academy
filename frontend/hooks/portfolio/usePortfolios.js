@@ -2,8 +2,10 @@
 
 import { getPortfoliosAction } from "@/actions/portfolioActions";
 import { useCallback, useEffect, useState } from "react";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const usePortfolios = (queryString = "") => {
+    const { language } = useLanguage();
     const [portfolios, setPortfolios] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -27,7 +29,7 @@ const usePortfolios = (queryString = "") => {
         } finally {
             setLoading(false);
         }
-    }, [queryString]);
+    }, [queryString, language]);
 
     useEffect(() => {
         fetchPortfolios();

@@ -5,8 +5,10 @@ import DashboardHeader from "@/components/dashboard/header/DashboardHeader";
 import Sidebar from "@/components/shared/Sidebar/Sidebar";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import { menu } from "./menu";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const UserDashboardLayout = ({ children }) => {
+    const { isRtl } = useLanguage();
     const [collapsed, setCollapsed] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -21,6 +23,7 @@ const UserDashboardLayout = ({ children }) => {
                     setCollapsed={setCollapsed}
                     mobileOpen={mobileOpen}
                     setMobileOpen={setMobileOpen}
+                    isRtl={isRtl}
                 />
 
                 <div className="flex min-w-0 flex-1 flex-col">

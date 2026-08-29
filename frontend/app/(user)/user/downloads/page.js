@@ -1,8 +1,14 @@
+"use client";
+
 import PageHeader from "@/components/dashboard/PageHeader";
 import DownloadsTable from "@/components/user/dashboard/downloads/DownloadsTable";
 import DownloadsToolbar from "@/components/user/dashboard/downloads/DownloadsToolbar";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 export default function DownloadsPage() {
+    const { language } = useLanguage();
+    const isEn = language === "en";
+
     return (
         <div
             className="
@@ -16,8 +22,8 @@ export default function DownloadsPage() {
             "
         >
             <PageHeader
-                title="التنزيلات"
-                description="جميع الملفات التي يمكنك تنزيلها من الكورسات الخاصة بك"
+                title={isEn ? "Downloads" : "التنزيلات"}
+                description={isEn ? "All downloadable files, attachments, and resources from your courses" : "جميع الملفات التي يمكنك تنزيلها من الكورسات الخاصة بك"}
             />
 
             <DownloadsToolbar />

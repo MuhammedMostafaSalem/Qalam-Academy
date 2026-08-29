@@ -1,17 +1,23 @@
+"use client";
+
 import {
     HiCheckCircle,
     HiLockClosed,
     HiPlayCircle,
 } from "react-icons/hi2";
 import Link from "next/link";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const LessonItem = ({ lesson, currentLessonId, courseSlug }) => {
+    const { language, localize } = useLanguage();
     const lessonId = lesson?._id || lesson?.id;
     const isCompleted = lesson?.isCompleted || false;
     const isActive = String(lessonId) === String(currentLessonId);
     const isLocked = lesson?.canAccess === false;
-    const title = lesson?.title?.ar || lesson?.title?.en || lesson?.title || "درس";
-    const duration = lesson?.duration ? `${lesson.duration} دقيقة` : "—";
+    const defaultTitle = language === "en" ? "Lesson" : "درس";
+    const title = localize(lesson?.title, defaultTitle);
+    const minText = language === "en" ? "min" : "دقيقة";
+    const duration = lesson?.duration ? `${lesson.duration} ${minText}` : "—";
 
     return (
         <Link
@@ -47,7 +53,7 @@ const LessonItem = ({ lesson, currentLessonId, courseSlug }) => {
             >
                 {isCompleted ? (
                     <HiCheckCircle
-                        className="text-green-500 shrink-0"
+                        className="text-success shrink-0"
                         size={22}
                     />
                 ) : isLocked ? (

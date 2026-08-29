@@ -1,8 +1,11 @@
-import Select from "@/components/ui/Select"
-import Toolbar from "@/components/ui/Toolbar"
-import { MdClose } from "react-icons/md"
-import { useState, useEffect } from "react"
-import { getCategoriesAction } from "@/actions/categoryActions"
+"use client";
+
+import Select from "@/components/ui/Select";
+import Toolbar from "@/components/ui/Toolbar";
+import { MdClose } from "react-icons/md";
+import { useState, useEffect } from "react";
+import { getCategoriesAction } from "@/actions/categoryActions";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const CategoriesToolbar = ({
     typeFilter,
@@ -13,6 +16,9 @@ const CategoriesToolbar = ({
     setSearchQuery,
     onClear
 }) => {
+    const { language } = useLanguage();
+    const isEn = language === "en";
+
     const hasFilters = searchQuery || typeFilter || statusFilter;
     const [dynamicTypes, setDynamicTypes] = useState([]);
 
@@ -29,12 +35,17 @@ const CategoriesToolbar = ({
     }, []);
 
     const typeOptions = [
-        { value: "", name: "كل الانواع" },
+        { value: "", name: isEn ? "All Types" : "كل الانواع" },
         ...dynamicTypes.map((type) => ({
             value: type,
-            // capitalize first letter for display
             name: type.charAt(0).toUpperCase() + type.slice(1)
         }))
+    ];
+
+    const statusOptions = [
+        { value: "", name: isEn ? "All Statuses" : "كل الحالات" },
+        { value: "true", name: isEn ? "Active" : "نشط" },
+        { value: "false", name: isEn ? "Inactive" : "معطل" }
     ];
 
     return (
@@ -42,7 +53,7 @@ const CategoriesToolbar = ({
             <Toolbar
                 searchQuery={searchQuery}
                 setSearchQuery={setSearchQuery}
-                inputPlaceholder="ابحث عن تصنيف..."
+                inputPlaceholder={isEn ? "Search categories..." : "ابحث عن تصنيف..."}
                 filters={
                     <>
                         <Select
@@ -54,13 +65,7 @@ const CategoriesToolbar = ({
                         <Select
                             value={statusFilter}
                             onChange={(e) => setStatusFilter(e.target.value)}
-                            values={
-                                [
-                                    { value: "", name: "كل الحالات" },
-                                    { value: "true", name: "نشط" },
-                                    { value: "false", name: "معطل" }
-                                ]
-                            }
+                            values={statusOptions}
                         />
                     </>
                 }
@@ -79,13 +84,13 @@ const CategoriesToolbar = ({
                             "
                         >
                             <MdClose size={16} />
-                            <span>مسح الفلاتر</span>
+                            <span>{isEn ? "Clear Filters" : "مسح الفلاتر"}</span>
                         </button>
                     )
                 }
             />
         </div>
-    )
-}
+    );
+};
 
-export default CategoriesToolbar
+export default CategoriesToolbar;

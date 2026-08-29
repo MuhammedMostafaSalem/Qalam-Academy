@@ -1,13 +1,15 @@
+"use client";
+
 import { cardAnimation } from "@/lib/animation/cardAnimation";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const ProcessCard = ({ step, index }) => {
+    const { localize } = useLanguage();
     const Icon = step.icon;
 
     return (
         <article {...cardAnimation(index)} className="relative text-center">
-
             {/* Timeline Circle */}
-
             <div
                 className="
                     relative
@@ -28,7 +30,6 @@ const ProcessCard = ({ step, index }) => {
             </div>
 
             {/* Card */}
-
             <div
                 className="
                     mt-8
@@ -62,7 +63,7 @@ const ProcessCard = ({ step, index }) => {
                         text-text-primary
                     "
                 >
-                    {step.title}
+                    {localize(step.title)}
                 </h3>
 
                 <p
@@ -72,12 +73,11 @@ const ProcessCard = ({ step, index }) => {
                         text-text-secondary
                     "
                 >
-                    {step.description}
+                    {localize(step.description)}
                 </p>
             </div>
-
         </article>
-    )
-}
+    );
+};
 
-export default ProcessCard
+export default ProcessCard;

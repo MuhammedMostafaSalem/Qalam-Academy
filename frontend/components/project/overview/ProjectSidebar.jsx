@@ -1,45 +1,24 @@
+"use client";
+
 import Link from "next/link";
 import {
     HiOutlineCalendar,
-    HiOutlineBuildingOffice2,
-    HiOutlineClock,
     HiOutlineGlobeAlt,
     HiOutlineCodeBracket,
 } from "react-icons/hi2";
+import { useLanguage } from "@/providers/LanguageProvider";
 
-const technologies = [
-    "Next.js",
-    "React",
-    "Node.js",
-    "Express",
-    "MongoDB",
-    "Tailwind CSS",
-];
-
-const projectInfo = [
-    {
-        icon: HiOutlineBuildingOffice2,
-        label: "العميل",
-        value: "Qalam Academy",
-    },
-    {
-        icon: HiOutlineCalendar,
-        label: "السنة",
-        value: "2026",
-    },
-    {
-        icon: HiOutlineClock,
-        label: "مدة التنفيذ",
-        value: "4 أشهر",
-    },
-    {
-        icon: HiOutlineGlobeAlt,
-        label: "نوع المشروع",
-        value: "منصة تعليم إلكتروني",
-    },
-];
-
-const ProjectSidebar = () => {
+const ProjectSidebar = ({ project }) => {
+    const { language, localize } = useLanguage();
+    const technologies = Array.isArray(project?.technologies) ? project.technologies : [];
+    const category = localize(project?.category?.title, language === "en" ? "General" : "عام");
+    const createdAt = project?.createdAt
+        ? new Date(project.createdAt).toLocaleDateString(language === "en" ? "en-US" : "ar-EG")
+        : "—";
+    const projectInfo = [
+        { icon: HiOutlineCalendar, label: language === "en" ? "Added" : "تاريخ الإضافة", value: createdAt },
+        { icon: HiOutlineGlobeAlt, label: language === "en" ? "Category" : "نوع المشروع", value: category },
+    ];
     return (
         <aside
             className="
@@ -56,7 +35,7 @@ const ProjectSidebar = () => {
             {/* Project Info */}
             <div>
                 <h3 className="mb-6 text-xl font-bold">
-                    معلومات المشروع
+                    {language === "en" ? "Project information" : "معلومات المشروع"}
                 </h3>
 
                 <div className="space-y-6">
@@ -99,9 +78,8 @@ const ProjectSidebar = () => {
             </div>
 
             {/* Divider */}
+            {technologies.length > 0 && <>
             <div className="my-8 border-t border-border" />
-
-            {/* Tech Stack */}
             <div>
                 <div className="mb-5 flex items-center gap-2">
                     <HiOutlineCodeBracket
@@ -110,7 +88,7 @@ const ProjectSidebar = () => {
                     />
 
                     <h3 className="text-xl font-bold">
-                        التقنيات المستخدمة
+                        {language === "en" ? "Technologies" : "التقنيات المستخدمة"}
                     </h3>
                 </div>
 
@@ -133,14 +111,16 @@ const ProjectSidebar = () => {
                     ))}
                 </div>
             </div>
+            </>}
 
-            {/* Divider */}
+            {(project?.projectUrl || project?.githubUrl) && <>
             <div className="my-8 border-t border-border" />
-
-            {/* Links */}
             <div className="space-y-4">
+                {project?.projectUrl && (
                 <Link
-                    href="#"
+                    href={project.projectUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="
                         flex
                         justify-center
@@ -150,11 +130,14 @@ const ProjectSidebar = () => {
                         py-3
                     "
                 >
-                    مشاهدة المشروع
+                    {language === "en" ? "View project" : "مشاهدة المشروع"}
                 </Link>
-
+                )}
+                {project?.githubUrl && (
                 <Link
-                    href="#"
+                    href={project.githubUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="
                         flex
                         justify-center
@@ -169,8 +152,9 @@ const ProjectSidebar = () => {
                 >
                     GitHub Repository
                 </Link>
-
+                )}
             </div>
+            </>}
         </aside>
     );
 };

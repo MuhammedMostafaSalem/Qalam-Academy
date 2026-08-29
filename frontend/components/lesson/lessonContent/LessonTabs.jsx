@@ -3,20 +3,23 @@
 import { useState } from "react";
 import ResourcesTab from "./ResourcesTab";
 import OverviewTab from "./OverviewTab";
-
-const tabs = [
-    {
-        id: "overview",
-        label: "نظرة عامة",
-    },
-    {
-        id: "resources",
-        label: "المرفقات",
-    },
-];
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const LessonTabs = ({ lesson }) => {
+    const { language } = useLanguage();
+    const isEn = language === "en";
     const [activeTab, setActiveTab] = useState("overview");
+
+    const tabs = [
+        {
+            id: "overview",
+            label: isEn ? "Overview" : "نظرة عامة",
+        },
+        {
+            id: "resources",
+            label: isEn ? "Resources & Files" : "المرفقات",
+        },
+    ];
 
     const renderTab = () => {
         switch (activeTab) {

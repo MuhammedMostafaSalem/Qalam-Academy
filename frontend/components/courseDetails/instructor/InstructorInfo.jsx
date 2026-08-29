@@ -1,20 +1,31 @@
+"use client";
+
 import Image from "next/image";
 import { HiOutlineEnvelope } from "react-icons/hi2";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const InstructorInfo = ({ instructor }) => {
+    const { language, localize } = useLanguage();
+    const isEn = language === "en";
+
     if (!instructor) return null;
 
     const name = (instructor.firstName || instructor.lastName)
         ? `${instructor.firstName || ""} ${instructor.lastName || ""}`.trim()
-        : instructor.name || "المدرب";
+        : instructor.name || (isEn ? "Instructor" : "المدرب");
 
-    const role = instructor.role === "instructor" 
-        ? "مدرب معتمد" 
-        : instructor.role || "محاضر ومطور برمجيات";
+    const role = instructor.role === "instructor"
+        ? (isEn ? "Certified Instructor" : "مدرب معتمد")
+        : (instructor.role ? localize(instructor.role) : (isEn ? "Instructor & Software Engineer" : "محاضر ومطور برمجيات"));
 
     const avatarSrc = instructor.avatar || instructor.image || "/assets/user-icon.png";
     const email = instructor.email;
-    const skills = instructor.skills || ["تطوير البرمجيات", "حل المشكلات", "تطبيقات الويب"];
+    const defaultSkills = isEn
+        ? ["Software Development", "Problem Solving", "Web Applications"]
+        : ["تطوير البرمجيات", "حل المشكلات", "تطبيقات الويب"];
+    const skills = (Array.isArray(instructor.skills) && instructor.skills.length > 0)
+        ? instructor.skills.map((s) => localize(s))
+        : defaultSkills;
 
     return (
         <div
@@ -81,9 +92,9 @@ const InstructorInfo = ({ instructor }) => {
                         gap-2
                     "
                 >
-                    {skills.map((skill) => (
+                    {skills.map((skill, index) => (
                         <span
-                            key={skill}
+                            key={index}
                             className="
                                 rounded-full
                                 bg-primary/10

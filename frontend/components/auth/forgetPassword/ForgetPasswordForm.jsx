@@ -8,10 +8,13 @@ import AuthInput from "../AuthInput";
 import Button from "@/components/ui/Button";
 import SectionTitle from "@/components/sections/SectionTitle";
 import SectionDescription from "@/components/sections/SectionDescription";
-
 import useForgotPasswordForm from "@/hooks/auth/useForgotPasswordForm";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const ForgetPasswordForm = () => {
+    const { language } = useLanguage();
+    const isEn = language === "en";
+
     const {
         formAction,
         loading,
@@ -27,11 +30,13 @@ const ForgetPasswordForm = () => {
             {/* Header */}
             <div className="mb-8 flex flex-col items-center gap-2 text-center">
                 <SectionTitle className="text-2xl sm:text-3xl font-bold">
-                    نسيت كلمة المرور؟
+                    {isEn ? "Forgot Password?" : "نسيت كلمة المرور؟"}
                 </SectionTitle>
 
                 <SectionDescription className="text-sm text-text-secondary">
-                    أدخل بريدك الإلكتروني وسنرسل لك رمز التحقق لإعادة تعيين كلمة المرور.
+                    {isEn
+                        ? "Enter your email and we will send you a verification code to reset your password."
+                        : "أدخل بريدك الإلكتروني وسنرسل لك رمز التحقق لإعادة تعيين كلمة المرور."}
                 </SectionDescription>
             </div>
 
@@ -43,7 +48,7 @@ const ForgetPasswordForm = () => {
                 <AuthInput
                     type="email"
                     name="email"
-                    label="البريد الإلكتروني"
+                    label={isEn ? "Email Address" : "البريد الإلكتروني"}
                     placeholder="example@email.com"
                     onChange={handleInputChange}
                     error={errorMessage}
@@ -59,21 +64,21 @@ const ForgetPasswordForm = () => {
 
                     <span>
                         {loading
-                            ? "جارٍ إرسال الرمز..."
-                            : "إرسال رمز التحقق"}
+                            ? (isEn ? "Sending code..." : "جارٍ إرسال الرمز...")
+                            : (isEn ? "Send Verification Code" : "إرسال رمز التحقق")}
                     </span>
                 </Button>
             </form>
 
             {/* Footer */}
             <p className="mt-6 text-center text-sm text-text-secondary">
-                تذكرت كلمة المرور؟
+                {isEn ? "Remembered your password?" : "تذكرت كلمة المرور؟"}
 
                 <Link
                     href="/login"
-                    className="mr-2 font-semibold text-primary hover:underline"
+                    className="mx-2 font-semibold text-primary hover:underline"
                 >
-                    تسجيل الدخول
+                    {isEn ? "Sign in" : "تسجيل الدخول"}
                 </Link>
             </p>
         </AuthCard>

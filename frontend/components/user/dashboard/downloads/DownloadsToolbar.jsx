@@ -5,8 +5,11 @@ import Toolbar from "@/components/ui/Toolbar";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import { MdClose } from "react-icons/md";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const DownloadsToolbar = () => {
+    const { language } = useLanguage();
+    const isEn = language === "en";
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
@@ -36,14 +39,14 @@ const DownloadsToolbar = () => {
     };
 
     const typeOptions = [
-        { value: "all", label: "جميع الملفات" },
-        { value: "PDF", label: "ملفات PDF" },
-        { value: "ZIP", label: "أرشيف ZIP" },
+        { value: "all", label: isEn ? "All Files" : "جميع الملفات" },
+        { value: "PDF", label: isEn ? "PDF Files" : "ملفات PDF" },
+        { value: "ZIP", label: isEn ? "ZIP Archives" : "أرشيف ZIP" },
     ];
 
     return (
         <Toolbar
-            inputPlaceholder="ابحث عن ملف..."
+            inputPlaceholder={isEn ? "Search files..." : "ابحث عن ملف..."}
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
             filters={
@@ -68,7 +71,7 @@ const DownloadsToolbar = () => {
                         "
                     >
                         <MdClose size={16} />
-                        <span>مسح الفلاتر</span>
+                        <span>{isEn ? "Clear Filters" : "مسح الفلاتر"}</span>
                     </button>
                 )
             }

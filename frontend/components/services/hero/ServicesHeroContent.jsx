@@ -1,40 +1,46 @@
+"use client";
+
 import {
     HiOutlineCheckBadge,
     HiOutlineCog6Tooth,
     HiOutlineUserGroup,
 } from "react-icons/hi2";
 
-import SectionBadge from "@/components/sections/SectionBadge"
+import SectionBadge from "@/components/sections/SectionBadge";
 import { heroAnimation } from "@/lib/animation/heroAnimation";
 import { cardAnimation } from "@/lib/animation/cardAnimation";
 import { animations } from "@/lib/animations";
-
-const features = [
-    {
-        id: 1,
-        icon: HiOutlineCheckBadge,
-        title: "جودة عالية",
-        description: "نلتزم بأعلى معايير الجودة",
-    },
-    {
-        id: 2,
-        icon: HiOutlineUserGroup,
-        title: "فريق محترف",
-        description: "خبراء في أحدث التقنيات",
-    },
-    {
-        id: 3,
-        icon: HiOutlineCog6Tooth,
-        title: "دعم مستمر",
-        description: "نحن معك في كل خطوة",
-    },
-];
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const ServicesHeroContent = () => {
+    const { language, localize } = useLanguage();
+    const isEn = language === "en";
+
+    const features = [
+        {
+            id: 1,
+            icon: HiOutlineCheckBadge,
+            title: isEn ? "High Quality" : "جودة عالية",
+            description: isEn ? "We adhere to the highest quality standards" : "نلتزم بأعلى معايير الجودة",
+        },
+        {
+            id: 2,
+            icon: HiOutlineUserGroup,
+            title: isEn ? "Expert Team" : "فريق محترف",
+            description: isEn ? "Specialists in the latest modern technologies" : "خبراء في أحدث التقنيات",
+        },
+        {
+            id: 3,
+            icon: HiOutlineCog6Tooth,
+            title: isEn ? "Continuous Support" : "دعم مستمر",
+            description: isEn ? "We stand with you at every single step" : "نحن معك في كل خطوة",
+        },
+    ];
+
     return (
         <div className="flex flex-col gap-6">
             <SectionBadge>
-                خدماتنا
+                {isEn ? "Our Services" : "خدماتنا"}
             </SectionBadge>
 
             <h1
@@ -43,12 +49,23 @@ const ServicesHeroContent = () => {
                     text-3xl leading-[1.5] md:text-[40px]
                 "
             >
-                حلول برمجية متكاملة
-                <br />
-
-                <span className="gradient-text">
-                    لتنمية أعمالك
-                </span>
+                {isEn ? (
+                    <>
+                        Integrated Software Solutions
+                        <br />
+                        <span className="gradient-text">
+                            To Grow Your Business
+                        </span>
+                    </>
+                ) : (
+                    <>
+                        حلول برمجية متكاملة
+                        <br />
+                        <span className="gradient-text">
+                            لتنمية أعمالك
+                        </span>
+                    </>
+                )}
             </h1>
 
             <p
@@ -60,13 +77,12 @@ const ServicesHeroContent = () => {
                     text-text-secondary
                 "
             >
-                نقدم مجموعة شاملة من الخدمات البرمجية
-                المصممة خصيصًا لمساعدة الشركات والأفراد
-                على التحول الرقمي وتحقيق أهدافهم بكفاءة.
+                {isEn
+                    ? "We deliver a comprehensive suite of software services engineered to help companies and individuals digitally transform and achieve their goals efficiently."
+                    : "نقدم مجموعة شاملة من الخدمات البرمجية المصممة خصيصًا لمساعدة الشركات والأفراد على التحول الرقمي وتحقيق أهدافهم بكفاءة."}
             </p>
 
             {/* Features */}
-
             <div
                 className="
                     grid
@@ -99,7 +115,6 @@ const ServicesHeroContent = () => {
                             </div>
 
                             <div>
-
                                 <h3
                                     {...heroAnimation.title}
                                     className="
@@ -121,15 +136,13 @@ const ServicesHeroContent = () => {
                                 >
                                     {feature.description}
                                 </p>
-
                             </div>
                         </div>
                     );
                 })}
             </div>
-
         </div>
-    )
-}
+    );
+};
 
-export default ServicesHeroContent
+export default ServicesHeroContent;

@@ -6,31 +6,35 @@ import {
     HiOutlineUsers,
     HiOutlineStar,
 } from "react-icons/hi2";
-
-const tabs = [
-    {
-        key: "lessons",
-        title: "الدروس",
-        icon: HiOutlineVideoCamera,
-    },
-    {
-        key: "info",
-        title: "معلومات الكورس",
-        icon: HiOutlineInformationCircle,
-    },
-    {
-        key: "students",
-        title: "الطلاب",
-        icon: HiOutlineUsers,
-    },
-    {
-        key: "reviews",
-        title: "التقييمات",
-        icon: HiOutlineStar,
-    },
-];
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const CourseTabs = ({ activeTab, setActiveTab }) => {
+    const { language } = useLanguage();
+    const isEn = language === "en";
+
+    const tabs = [
+        {
+            key: "lessons",
+            title: isEn ? "Lessons" : "الدروس",
+            icon: HiOutlineVideoCamera,
+        },
+        {
+            key: "info",
+            title: isEn ? "Course Info" : "معلومات الكورس",
+            icon: HiOutlineInformationCircle,
+        },
+        {
+            key: "students",
+            title: isEn ? "Students" : "الطلاب",
+            icon: HiOutlineUsers,
+        },
+        {
+            key: "reviews",
+            title: isEn ? "Reviews" : "التقييمات",
+            icon: HiOutlineStar,
+        },
+    ];
+
     return (
         <div
             className="

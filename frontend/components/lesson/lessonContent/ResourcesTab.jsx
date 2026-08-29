@@ -1,10 +1,16 @@
+"use client";
+
 import {
     HiArrowDownTray,
     HiDocumentText,
     HiOutlineFolderOpen,
 } from "react-icons/hi2";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const ResourcesTab = ({ lesson }) => {
+    const { language } = useLanguage();
+    const isEn = language === "en";
+
     const attachment = lesson?.attachment;
     const attachmentUrl = attachment?.startsWith("http")
         ? attachment
@@ -15,7 +21,7 @@ const ResourcesTab = ({ lesson }) => {
     return (
         <div>
             <h2 className="mb-6 text-xl font-bold">
-                ملفات الدرس
+                {isEn ? "Lesson Files & Attachments" : "ملفات الدرس"}
             </h2>
 
             {attachmentUrl ? (
@@ -45,11 +51,11 @@ const ResourcesTab = ({ lesson }) => {
 
                             <div>
                                 <h3 className="font-medium">
-                                    مرفق الدرس (PDF)
+                                    {isEn ? "Lesson Attachment (PDF)" : "مرفق الدرس (PDF)"}
                                 </h3>
 
                                 <p className="text-sm text-text-secondary">
-                                    ملف مرفق
+                                    {isEn ? "Downloadable file" : "ملف مرفق"}
                                 </p>
                             </div>
                         </div>
@@ -81,10 +87,10 @@ const ResourcesTab = ({ lesson }) => {
                         <HiOutlineFolderOpen size={32} />
                     </div>
                     <h3 className="text-lg font-semibold text-text-primary">
-                        لا توجد مرفقات
+                        {isEn ? "No Attachments Available" : "لا توجد مرفقات"}
                     </h3>
                     <p className="mt-1 text-sm text-text-secondary">
-                        لا توجد ملفات أو مرفقات مضافة لهذا الدرس.
+                        {isEn ? "No downloadable files attached to this lesson." : "لا توجد ملفات أو مرفقات مضافة لهذا الدرس."}
                     </p>
                 </div>
             )}

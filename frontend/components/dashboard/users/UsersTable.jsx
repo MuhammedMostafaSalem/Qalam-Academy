@@ -1,3 +1,5 @@
+"use client";
+
 import Table from "@/components/ui/Table";
 import CardTable from "@/components/shared/CardTable";
 import ActionsTable from "@/components/shared/ActionsTable";
@@ -8,21 +10,31 @@ import RoleDropdown from "@/components/shared/RoleDropdown";
 import StatusDropdown from "@/components/shared/StatusDropdown";
 import DeleteModal from "@/components/ui/modal/DeleteModal";
 import useUserActions from "@/hooks/users/useUserActions";
+import { useLanguage } from "@/providers/LanguageProvider";
 
-const UsersTable = ({ users = [], refetch }) => {
+const UsersTable = ({ users = [], refetch, hasMore = false, onLoadMore, loadingMore = false }) => {
+    const { language } = useLanguage();
+    const isEn = language === "en";
+
     const {
         handleUpdateField,
         handleDelete,
         handleDeleteRequest
     } = useUserActions(refetch);
 
-    const titleHead = [
+    const titleHead = isEn ? [
+        "User",
+        "Role",
+        "Status",
+        "Creation Date",
+        "Actions",
+    ] : [
         "المستخدم",
         "الدور",
         "الحالة",
         "تاريخ الإنشاء",
         "الإجراءات",
-    ]
+    ];
 
     return (
         <div className="mt-[20px]">
@@ -41,7 +53,7 @@ const UsersTable = ({ users = [], refetch }) => {
                             <Table.Row>
                                 <Table.Td colSpan={5}>
                                     <div className="text-center py-6 text-text-muted">
-                                        لا يوجد مستخدمين متاحين
+                                        {isEn ? "No users available" : "لا يوجد مستخدمين متاحين"}
                                     </div>
                                 </Table.Td>
                             </Table.Row>
@@ -73,7 +85,9 @@ const UsersTable = ({ users = [], refetch }) => {
                                     </Table.Td>
 
                                     <Table.Td>
-                                        {new Date(user.createdAt).toLocaleDateString("ar-EG")}
+                                        {user.createdAt
+                                            ? new Date(user.createdAt).toLocaleDateString(isEn ? "en-US" : "ar-EG")
+                                            : "—"}
                                     </Table.Td>
 
                                     <Table.Td>
@@ -83,7 +97,7 @@ const UsersTable = ({ users = [], refetch }) => {
                                                     <div
                                                         onClick={() => handleDeleteRequest(user)}
                                                         className="text-error cursor-pointer hover:opacity-80 transition"
-                                                        title="حذف المستخدم"
+                                                        title={isEn ? "Delete User" : "حذف المستخدم"}
                                                     >
                                                         <MdOutlineDelete />
                                                     </div>
@@ -99,14 +113,10 @@ const UsersTable = ({ users = [], refetch }) => {
                 </Table>
                 <DeleteModal onConfirmAction={handleDelete} />
 
-                {
-                    users.length >= 4 ?
-                        <LoadMore />
-                    : null
-                }
+                {hasMore && <LoadMore onClick={onLoadMore} loading={loadingMore} />}
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default UsersTable
+export default UsersTable;

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { MdOutlineDelete, MdOutlineEdit } from "react-icons/md";
 
 import Table from "@/components/ui/Table";
@@ -12,15 +12,36 @@ import useToast from "@/hooks/useToast";
 import { deleteTeamMemberAction } from "@/actions/teamActions";
 import userIcon from "@/public/assets/user-icon.png";
 import UpdateTeamModal from "@/components/ui/modal/team/UpdateTeamModal";
+import { useLanguage } from "@/providers/LanguageProvider";
+import { useSearchParams } from "next/navigation";
 
 const TeamTable = () => {
-    const { team, loading, error, refetch } = useTeam();
+    const { language } = useLanguage();
+    const isEn = language === "en";
+
+    const searchParams = useSearchParams();
+    const { team, loading, error, meta, refetch } = useTeam(searchParams.toString());
     const { successMessage, errorMessage } = useToast();
     const [deletingId, setDeletingId] = useState(null);
     const [editingTeamMember, setEditingTeamMember] = useState(null);
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
 
-    const titleHead = [
+    useEffect(() => {
+        const handleTeamUpdated = () => {
+            refetch();
+        };
+        window.addEventListener("team-updated", handleTeamUpdated);
+        return () => {
+            window.removeEventListener("team-updated", handleTeamUpdated);
+        };
+    }, [refetch]);
+
+    const titleHead = isEn ? [
+        "Member",
+        "Position",
+        "Creation Date",
+        "Actions",
+    ] : [
         "العضو",
         "المنصب",
         "تاريخ الإنشاء",
@@ -28,16 +49,16 @@ const TeamTable = () => {
     ];
 
     const handleDelete = async (memberId) => {
-        if (!confirm("هل أنت متأكد من حذف هذا العضو من الفريق؟")) return;
+        if (!confirm(isEn ? "Are you sure you want to delete this team member?" : "هل أنت متأكد من حذف هذا العضو من الفريق؟")) return;
 
         setDeletingId(memberId);
         const result = await deleteTeamMemberAction(memberId);
 
         if (result.success) {
-            successMessage(result.message || "تم حذف العضو بنجاح");
+            successMessage(result.message || (isEn ? "Team member deleted successfully" : "تم حذف العضو بنجاح"));
             refetch();
         } else {
-            errorMessage(result.message || "فشل حذف العضو");
+            errorMessage(result.message || (isEn ? "Failed to delete team member" : "فشل حذف العضو"));
         }
 
         setDeletingId(null);
@@ -51,7 +72,7 @@ const TeamTable = () => {
     if (loading) {
         return (
             <div className="mt-[20px] text-center py-10">
-                <p className="text-text-secondary">جاري تحميل أعضاء الفريق...</p>
+                <p className="text-text-secondary">{isEn ? "Loading team members..." : "جاري تحميل أعضاء الفريق..."}</p>
             </div>
         );
     }
@@ -68,7 +89,7 @@ const TeamTable = () => {
         <div className="mt-[20px]">
             {team.length === 0 ? (
                 <div className="text-center py-6 text-text-muted">
-                    لا يوجد أعضاء فريق متاحون
+                    {isEn ? "No team members available" : "لا يوجد أعضاء فريق متاحون"}
                 </div>
             ) : (
                 <div className="overflow-x-auto overflow-y-hidden">
@@ -99,7 +120,9 @@ const TeamTable = () => {
                                         <Table.Td>{member.position || "—"}</Table.Td>
 
                                         <Table.Td>
-                                            {new Date(member.createdAt).toLocaleDateString("ar-EG")}
+                                            {member.createdAt
+                                                ? new Date(member.createdAt).toLocaleDateString(isEn ? "en-US" : "ar-EG")
+                                                : "—"}
                                         </Table.Td>
 
                                         <Table.Td>
@@ -110,16 +133,18 @@ const TeamTable = () => {
                                                             className="text-primary cursor-pointer" 
                                                             onClick={() => handleEditClick(member)}
                                                         />
-                                                        <div
+                                                        <button
+                                                            type="button"
                                                             className="text-error cursor-pointer"
                                                             onClick={() => handleDelete(member._id)}
+                                                            disabled={deletingId === member._id}
                                                         >
                                                             {deletingId === member._id ? (
                                                                 <span className="text-sm">...</span>
                                                             ) : (
                                                                 <MdOutlineDelete />
                                                             )}
-                                                        </div>
+                                                        </button>
                                                     </div>
                                                 }
                                             />
@@ -130,7 +155,7 @@ const TeamTable = () => {
                         </Table.Body>
                     </Table>
 
-                    <LoadMore />
+                    {meta?.hasMore && <LoadMore />}
 
                     <UpdateTeamModal
                         isOpen={isUpdateModalOpen}

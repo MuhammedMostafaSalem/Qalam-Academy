@@ -3,7 +3,7 @@ import Container from "@/components/ui/Container";
 import ProjectContent from "./ProjectContent";
 import ProjectSidebar from "./ProjectSidebar";
 
-const ProjectOverview = () => {
+const ProjectOverview = ({ project }) => {
     return (
         <Section >
             <Container>
@@ -14,9 +14,9 @@ const ProjectOverview = () => {
                         lg:grid-cols-[1fr_350px]
                     "
                 >
-                    <ProjectContent />
+                    <ProjectContent project={project} />
 
-                    <ProjectSidebar />
+                    <ProjectSidebar project={project} />
                 </div>
             </Container>
         </Section>

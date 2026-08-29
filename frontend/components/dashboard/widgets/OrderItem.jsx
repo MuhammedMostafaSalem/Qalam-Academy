@@ -1,12 +1,12 @@
 const statusStyles = {
-    "مكتمل":
-        "bg-emerald-500/10 text-emerald-500",
+    paid:
+        "bg-success/10 text-success",
 
-    "قيد الانتظار":
-        "bg-amber-500/10 text-amber-500",
+    pending:
+        "bg-warning/10 text-warning",
 
-    "ملغى":
-        "bg-red-500/10 text-red-500",
+    cancelled:
+        "bg-error/10 text-error",
 };
 
 const OrderItem = ({
@@ -14,6 +14,7 @@ const OrderItem = ({
     customer,
     amount,
     status,
+    statusLabel,
     date,
 }) => {
     return (
@@ -65,10 +66,10 @@ const OrderItem = ({
                         text-xs
                         font-medium
 
-                        ${statusStyles[status] || "bg-gray-500/10 text-gray-500"}
+                        ${statusStyles[status] || "bg-card-hover text-text-secondary"}
                     `}
                 >
-                    {status}
+                    {statusLabel}
                 </span>
 
                 <p className="mt-2 text-xs text-text-secondary">

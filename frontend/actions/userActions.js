@@ -2,6 +2,7 @@
 
 import { authApi } from "@/services/authService";
 import { revalidatePath } from "next/cache";
+import { getThemeModeAction, setThemeModeAction } from "@/actions/themeActions";
 
 export async function getUsersAction(queryString = "") {
     try {
@@ -190,35 +191,9 @@ export async function changePasswordAction(userId, formData) {
 }
 
 export async function getThemeAction() {
-    try {
-        const response = await authApi("/users/theme", {
-            method: "GET",
-        });
-        return {
-            success: true,
-            data: response.data,
-        };
-    } catch (error) {
-        return {
-            success: false,
-            message: error.message || "فشل جلب الثيم",
-        };
-    }
+    return getThemeModeAction();
 }
 
-export async function toggleThemeAction() {
-    try {
-        const response = await authApi("/users/theme/toggle", {
-            method: "PATCH",
-        });
-        return {
-            success: true,
-            data: response.data,
-        };
-    } catch (error) {
-        return {
-            success: false,
-            message: error.message || "فشل تغيير الثيم",
-        };
-    }
+export async function toggleThemeAction(themeMode) {
+    return setThemeModeAction(themeMode);
 }

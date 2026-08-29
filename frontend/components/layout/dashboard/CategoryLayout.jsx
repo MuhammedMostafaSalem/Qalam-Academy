@@ -11,8 +11,12 @@ import useGetCategories from '@/hooks/category/useGetCategories';
 import { closeCategoryModal, openCategoryModal } from '@/store/slices/categorySlice';
 import { showToast } from '@/store/slices/toastSlice';
 import { useDispatch, useSelector } from 'react-redux';
+import { useLanguage } from '@/providers/LanguageProvider';
 
 const CategoryLayout = () => {
+    const { language } = useLanguage();
+    const isEn = language === "en";
+
     const {
         categories,
         loading,
@@ -45,11 +49,11 @@ const CategoryLayout = () => {
                 category: null,
             })
         );
-    }
+    };
 
     const handleCloseModal = () => {
         dispatch(closeCategoryModal());
-    }
+    };
 
     const handleCategorySuccess = async (category) => {
         dispatch(closeCategoryModal());
@@ -58,11 +62,11 @@ const CategoryLayout = () => {
 
         dispatch(
             showToast({
-                message: "تم إضافة التصنيف بنجاح",
+                message: isEn ? "Category added successfully" : "تم إضافة التصنيف بنجاح",
                 type: "success",
             })
         );
-    }
+    };
 
     return (
         <ProtectedRoute allowedRoles={["admin"]}>
@@ -77,9 +81,9 @@ const CategoryLayout = () => {
                 "
             >
             <PageHeader
-                title="تصنيفات الكورسات"
-                description="ادارة جميع تصنيفات كورسات المنصة"
-                button="اضافة تصنيف جديدة"
+                title={isEn ? "Course & Entity Categories" : "تصنيفات المنصة"}
+                description={isEn ? "Manage all platform categories" : "ادارة جميع تصنيفات المنصة"}
+                button={isEn ? "Add New Category" : "اضافة تصنيف جديد"}
                 onButtonClick={handleOpenCreateModal}
             />
 
@@ -129,16 +133,6 @@ const CategoryLayout = () => {
                     onSuccess={handleCategorySuccess}
                 />
             )}
-
-            {/* Edit Modal */}
-            {/* {categoryModalMode === "edit" && (
-                <UpdateCategoryModal
-                    isOpen={isCategoryModalOpen}
-                    onClose={handleCloseModal}
-                    category={selectedCategory}
-                    onSuccess={handleCategorySuccess}
-                />
-            )} */}
             </div>
         </ProtectedRoute>
     );

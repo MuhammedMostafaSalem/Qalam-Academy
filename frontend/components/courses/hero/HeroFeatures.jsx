@@ -1,8 +1,13 @@
+"use client";
+
 import { fadeUp } from "@/lib/animationHelpers";
 import { heroCoursesFeatures } from "./heroCoursesFeatures";
 import { cardAnimation } from "@/lib/animation/cardAnimation";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const HeroFeatures = () => {
+    const { localize } = useLanguage();
+
     return (
         <div
             {...fadeUp()}
@@ -44,7 +49,7 @@ const HeroFeatures = () => {
 
                         <div>
                             <h3 className="font-semibold">
-                                {feature.title}
+                                {localize(feature.title)}
                             </h3>
 
                             <p
@@ -53,14 +58,14 @@ const HeroFeatures = () => {
                                     text-text-secondary
                                 "
                             >
-                                {feature.description}
+                                {localize(feature.description)}
                             </p>
                         </div>
                     </div>
                 );
             })}
         </div>
-    )
-}
+    );
+};
 
-export default HeroFeatures
+export default HeroFeatures;

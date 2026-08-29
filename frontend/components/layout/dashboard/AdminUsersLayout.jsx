@@ -1,16 +1,22 @@
-"use client"
+"use client";
 
-import PageHeader from "@/components/dashboard/PageHeader"
-import UsersTable from "@/components/dashboard/users/UsersTable"
-import UsersToolbar from "@/components/dashboard/users/UsersToolbar"
+import PageHeader from "@/components/dashboard/PageHeader";
+import UsersTable from "@/components/dashboard/users/UsersTable";
+import UsersToolbar from "@/components/dashboard/users/UsersToolbar";
 import FullPageLoader from "@/components/ui/FullPageLoader";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import useAdminUsers from "@/hooks/users/useAdminUsers";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const AdminUsersLayout = () => {
+    const { language } = useLanguage();
+    const isEn = language === "en";
+
     const {
         users,
         loading,
+        loadingMore,
+        hasMore,
         searchQuery,
         setSearchQuery,
         roleFilter,
@@ -18,6 +24,7 @@ const AdminUsersLayout = () => {
         statusFilter,
         setStatusFilter,
         fetchUsers,
+        loadMore,
         handleClearFilters,
     } = useAdminUsers();
 
@@ -34,8 +41,8 @@ const AdminUsersLayout = () => {
                 "
             >
                 <PageHeader
-                    title="المستخدمين"
-                    description="ادارة جميع المستخدمين الذين لديهم صلاحية الوصول الى لوحة التحكم"
+                    title={isEn ? "Users" : "المستخدمين"}
+                    description={isEn ? "Manage all users with dashboard access and roles" : "ادارة جميع المستخدمين الذين لديهم صلاحية الوصول الى لوحة التحكم"}
                 />
 
                 <UsersToolbar
@@ -55,12 +62,15 @@ const AdminUsersLayout = () => {
                         <UsersTable
                             users={users}
                             refetch={fetchUsers}
+                            hasMore={hasMore}
+                            onLoadMore={loadMore}
+                            loadingMore={loadingMore}
                         />
                     )
                 }
             </div>
         </ProtectedRoute>
-    )
-}
+    );
+};
 
-export default AdminUsersLayout
+export default AdminUsersLayout;

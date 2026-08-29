@@ -3,6 +3,7 @@
 import Section from "@/components/sections/Section";
 import ActionsTable from "@/components/shared/ActionsTable";
 import Table from "@/components/ui/Table";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 import {
     HiOutlineEye,
@@ -35,6 +36,9 @@ const reviews = [
 ];
 
 const ReviewsTable = () => {
+    const { language } = useLanguage();
+    const isEn = language === "en";
+
     return (
         <Section
             className="
@@ -50,11 +54,11 @@ const ReviewsTable = () => {
                 <Table.Head>
                     <Table.Row>
                         <Table.Th>#</Table.Th>
-                        <Table.Th>الطالب</Table.Th>
-                        <Table.Th>التقييم</Table.Th>
-                        <Table.Th>التعليق</Table.Th>
-                        <Table.Th>التاريخ</Table.Th>
-                        <Table.Th>الإجراءات</Table.Th>
+                        <Table.Th>{isEn ? "Student" : "الطالب"}</Table.Th>
+                        <Table.Th>{isEn ? "Rating" : "التقييم"}</Table.Th>
+                        <Table.Th>{isEn ? "Comment" : "التعليق"}</Table.Th>
+                        <Table.Th>{isEn ? "Date" : "التاريخ"}</Table.Th>
+                        <Table.Th>{isEn ? "Actions" : "الإجراءات"}</Table.Th>
                     </Table.Row>
                 </Table.Head>
 
@@ -90,7 +94,7 @@ const ReviewsTable = () => {
                                         items-center
                                         gap-1
 
-                                        text-yellow-500
+                                        text-accent
                                     "
                                 >
                                     {Array.from({

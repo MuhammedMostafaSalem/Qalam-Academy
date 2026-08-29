@@ -1,7 +1,11 @@
+"use client";
+
 import { fadeUp } from '@/lib/animationHelpers';
 import { animations } from '@/lib/animations'
+import { useLanguage } from '@/providers/LanguageProvider';
 
 const HeroPartners = () => {
+    const { language } = useLanguage();
     const partners = [
         {
             id: 1,
@@ -37,21 +41,21 @@ const HeroPartners = () => {
         >
             <div className="px-8 pb-8">
                 <div className="mb-8 flex items-center">
-                    <div className="h-px flex-1 bg-white/10" />
+                    <div className="h-px flex-1 bg-border" />
 
                     <span
                         className="
                             px-4
                             text-sm
                             font-medium
-                            text-white/60
+                            text-text-secondary
                             whitespace-nowrap
                         "
                     >
-                        نثق برفقة عملائنا
+                        {language === "en" ? "Trusted by our clients" : "موضع ثقة عملائنا"}
                     </span>
 
-                    <div className="h-px flex-1 bg-white/10" />
+                    <div className="h-px flex-1 bg-border" />
                 </div>
 
                 <div
@@ -72,7 +76,7 @@ const HeroPartners = () => {
                                 justify-center
                                 text-lg
                                 font-semibold
-                                text-white/50
+                                text-text-muted
 
                                 ${animations.transition}
                                 hover:text-primary

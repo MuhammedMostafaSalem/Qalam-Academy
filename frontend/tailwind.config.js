@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+  darkMode: "class",
   content: [
     './app/**/*.{js,ts,jsx,tsx,mdx}',
     './pages/**/*.{js,ts,jsx,tsx,mdx}',
@@ -19,11 +20,15 @@ module.exports = {
 
         error: "var(--color-error)",
 
+        danger: "var(--color-danger)",
+
         warning: "var(--color-warning)",
 
         background: "var(--color-background)",
 
         "background-alt": "var(--color-background-alt)",
+
+        surface: "var(--color-surface)",
 
         card: "var(--color-card)",
 

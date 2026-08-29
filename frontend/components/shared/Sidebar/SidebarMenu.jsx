@@ -1,11 +1,15 @@
+"use client";
+
 import SidebarItem from "./SidebarItem";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const SidebarMenu = ({ menu, collapsed }) => {
+    const { localize } = useLanguage();
 
     return (
         <nav className="space-y-6">
-            {menu.map((group) => (
-                <div key={group.section}>
+            {menu.map((group, idx) => (
+                <div key={idx}>
                     {!collapsed && (
                         <h3
                             className="
@@ -16,7 +20,7 @@ const SidebarMenu = ({ menu, collapsed }) => {
                                 text-text-secondary
                             "
                         >
-                            {group.section}
+                            {localize(group.section)}
                         </h3>
                     )}
 

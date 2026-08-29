@@ -7,45 +7,14 @@ import {
     HiOutlineAcademicCap,
     HiOutlineShoppingBag,
     HiOutlineSquares2X2,
-    HiOutlineEye,
 } from "react-icons/hi2";
-
-const typeConfig = {
-    course: {
-        label: "كورسات",
-        icon: HiOutlineAcademicCap,
-        color: "bg-blue-500/10 text-blue-500",
-    },
-    product: {
-        label: "منتجات",
-        icon: HiOutlineShoppingBag,
-        color: "bg-green-500/10 text-green-500",
-    },
-    mixed: {
-        label: "مختلط",
-        icon: HiOutlineSquares2X2,
-        color: "bg-purple-500/10 text-purple-500",
-    },
-};
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const statusColors = {
-    "مكتمل": "bg-green-500/10 text-green-600",
-    "قيد المعالجة": "bg-yellow-500/10 text-yellow-600",
-    "ملغى": "bg-red-500/10 text-red-600",
-    "مسترد": "bg-gray-500/10 text-gray-600",
-};
-
-const mapPaymentStatus = (status) => {
-    switch (status) {
-        case "pending":
-            return "قيد المعالجة";
-        case "paid":
-            return "مكتمل";
-        case "cancelled":
-            return "ملغى";
-        default:
-            return status || "—";
-    }
+    "paid": "bg-success/10 text-success",
+    "pending": "bg-warning/10 text-warning",
+    "cancelled": "bg-error/10 text-error",
+    "refunded": "bg-card-hover text-text-secondary",
 };
 
 const getOrderType = (cartItems = []) => {
@@ -58,6 +27,42 @@ const getOrderType = (cartItems = []) => {
 };
 
 const OrdersTable = () => {
+    const { language } = useLanguage();
+    const isEn = language === "en";
+
+    const typeConfig = {
+        course: {
+            label: isEn ? "Courses" : "كورسات",
+            icon: HiOutlineAcademicCap,
+            color: "bg-primary/10 text-primary",
+        },
+        product: {
+            label: isEn ? "Products" : "منتجات",
+            icon: HiOutlineShoppingBag,
+            color: "bg-success/10 text-success",
+        },
+        mixed: {
+            label: isEn ? "Mixed" : "مختلط",
+            icon: HiOutlineSquares2X2,
+            color: "bg-secondary/10 text-secondary",
+        },
+    };
+
+    const mapPaymentStatus = (status) => {
+        switch (status) {
+            case "pending":
+                return isEn ? "Pending" : "قيد المعالجة";
+            case "paid":
+                return isEn ? "Completed" : "مكتمل";
+            case "cancelled":
+                return isEn ? "Cancelled" : "ملغى";
+            case "refunded":
+                return isEn ? "Refunded" : "مسترجع";
+            default:
+                return status || "—";
+        }
+    };
+
     const { orders, loading, error } = useOrders();
     const searchParams = useSearchParams();
 
@@ -67,15 +72,15 @@ const OrdersTable = () => {
 
     if (loading) {
         return (
-            <div className="py-10 text-center text-gray-500">
-                جاري تحميل الطلبات...
+            <div className="py-10 text-center text-text-secondary">
+                {isEn ? "Loading orders..." : "جاري تحميل الطلبات..."}
             </div>
         );
     }
 
     if (error) {
         return (
-            <div className="py-10 text-center text-red-500">
+            <div className="py-10 text-center text-error">
                 {error}
             </div>
         );
@@ -83,8 +88,8 @@ const OrdersTable = () => {
 
     if (!orders || orders.length === 0) {
         return (
-            <div className="py-10 text-center text-gray-500">
-                لا يوجد طلبات متاحة
+            <div className="py-10 text-center text-text-secondary">
+                {isEn ? "No orders available" : "لا يوجد طلبات متاحة"}
             </div>
         );
     }
@@ -111,8 +116,8 @@ const OrdersTable = () => {
 
     if (filteredOrders.length === 0) {
         return (
-            <div className="py-10 text-center text-gray-500">
-                لا توجد طلبات تطابق خيارات التصفية والبحث المختارة
+        <div className="py-10 text-center text-text-secondary">
+                {isEn ? "No orders matched your search and filter criteria" : "لا توجد طلبات تطابق خيارات التصفية والبحث المختارة"}
             </div>
         );
     }
@@ -121,13 +126,12 @@ const OrdersTable = () => {
         <Table>
             <Table.Head>
                 <Table.Row>
-                    <Table.Th>رقم الطلب</Table.Th>
-                    <Table.Th>النوع</Table.Th>
-                    <Table.Th>عدد العناصر</Table.Th>
-                    <Table.Th>الإجمالي</Table.Th>
-                    <Table.Th>التاريخ</Table.Th>
-                    <Table.Th>الحالة</Table.Th>
-                    <Table.Th>الإجراءات</Table.Th>
+                    <Table.Th>{isEn ? "Order ID" : "رقم الطلب"}</Table.Th>
+                    <Table.Th>{isEn ? "Type" : "النوع"}</Table.Th>
+                    <Table.Th>{isEn ? "Items Count" : "عدد العناصر"}</Table.Th>
+                    <Table.Th>{isEn ? "Total" : "الإجمالي"}</Table.Th>
+                    <Table.Th>{isEn ? "Date" : "التاريخ"}</Table.Th>
+                    <Table.Th>{isEn ? "Status" : "الحالة"}</Table.Th>
                 </Table.Row>
             </Table.Head>
 
@@ -136,6 +140,7 @@ const OrdersTable = () => {
                     const typeKey = getOrderType(order.cartItems);
                     const Type = typeConfig[typeKey];
                     const statusLabel = mapPaymentStatus(order.paymentStatus);
+                    const statusClass = statusColors[order.paymentStatus] || "bg-card-hover text-text-secondary";
 
                     return (
                         <Table.Row
@@ -159,26 +164,19 @@ const OrdersTable = () => {
                             </Table.Td>
 
                             <Table.Td>
-                                {order.totalOrderPrice} ج.م
+                                {order.totalOrderPrice} {isEn ? "EGP" : "ج.م"}
                             </Table.Td>
 
                             <Table.Td>
-                                {new Date(order.createdAt).toLocaleDateString("ar-EG")}
+                                {new Date(order.createdAt).toLocaleDateString(isEn ? "en-US" : "ar-EG")}
                             </Table.Td>
 
                             <Table.Td>
-                                <span className={`rounded-full px-3 py-1 text-xs font-medium ${statusColors[statusLabel]}`}>
+                                <span className={`rounded-full px-3 py-1 text-xs font-medium ${statusClass}`}>
                                     {statusLabel}
                                 </span>
                             </Table.Td>
 
-                            <Table.Td>
-                                <div className="flex justify-center">
-                                    <button className="flex items-center gap-2" title="عرض الطلب">
-                                        <HiOutlineEye size={18} />
-                                    </button>
-                                </div>
-                            </Table.Td>
                         </Table.Row>
                     );
                 })}

@@ -3,6 +3,7 @@
 import { useEffect, useState, useActionState } from "react";
 import { getCourseByIdAction, updateCourseAction } from "@/actions/courseActions";
 import useToast from "@/hooks/useToast";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const inputClass = `
     w-full
@@ -18,6 +19,9 @@ const inputClass = `
 `;
 
 const CourseInfoForm = ({ courseId }) => {
+    const { language } = useLanguage();
+    const isEn = language === "en";
+
     const [course, setCourse] = useState(null);
     const [loadingCourse, setLoadingCourse] = useState(true);
     const { successMessage, errorMessage } = useToast();
@@ -40,15 +44,15 @@ const CourseInfoForm = ({ courseId }) => {
     useEffect(() => {
         if (state.message) {
             if (state.success) {
-                successMessage(state.message);
+                successMessage(state.message || (isEn ? "Course updated successfully" : "تم تحديث الكورس بنجاح"));
             } else {
-                errorMessage(state.message);
+                errorMessage(state.message || (isEn ? "Failed to update course" : "فشل تحديث الكورس"));
             }
         }
-    }, [state]);
+    }, [state, isEn]);
 
     if (loadingCourse) {
-        return <p className="text-text-secondary py-6">جاري تحميل بيانات الكورس...</p>;
+        return <p className="text-text-secondary py-6">{isEn ? "Loading course information..." : "جاري تحميل بيانات الكورس..."}</p>;
     }
 
     return (
@@ -69,12 +73,12 @@ const CourseInfoForm = ({ courseId }) => {
             {/* اسم الكورس (عربي) */}
             <div>
                 <label className="mb-2 block font-medium">
-                    اسم الكورس (عربي)
+                    {isEn ? "Course Title (Arabic)" : "اسم الكورس (عربي)"}
                 </label>
                 <input
                     name="titleAr"
                     type="text"
-                    defaultValue={course?.title?.ar || course?.title}
+                    defaultValue={course?._translations?.title?.ar || course?.title?.ar || (typeof course?.title === "string" ? course?.title : "")}
                     className={inputClass}
                 />
             </div>
@@ -82,12 +86,12 @@ const CourseInfoForm = ({ courseId }) => {
             {/* اسم الكورس (إنجليزي) */}
             <div>
                 <label className="mb-2 block font-medium">
-                    اسم الكورس (إنجليزي)
+                    {isEn ? "Course Title (English)" : "اسم الكورس (إنجليزي)"}
                 </label>
                 <input
                     name="titleEn"
                     type="text"
-                    defaultValue={course?.title?.en}
+                    defaultValue={course?._translations?.title?.en || course?.title?.en || ""}
                     className={inputClass}
                 />
             </div>
@@ -95,12 +99,12 @@ const CourseInfoForm = ({ courseId }) => {
             {/* الوصف (عربي) */}
             <div>
                 <label className="mb-2 block font-medium">
-                    وصف الكورس (عربي)
+                    {isEn ? "Course Description (Arabic)" : "وصف الكورس (عربي)"}
                 </label>
                 <textarea
                     name="descriptionAr"
                     rows={6}
-                    defaultValue={course?.description?.ar || course?.description}
+                    defaultValue={course?._translations?.description?.ar || course?.description?.ar || (typeof course?.description === "string" ? course?.description : "")}
                     className={`${inputClass} resize-none`}
                 />
             </div>
@@ -108,12 +112,12 @@ const CourseInfoForm = ({ courseId }) => {
             {/* الوصف (إنجليزي) */}
             <div>
                 <label className="mb-2 block font-medium">
-                    وصف الكورس (إنجليزي)
+                    {isEn ? "Course Description (English)" : "وصف الكورس (إنجليزي)"}
                 </label>
                 <textarea
                     name="descriptionEn"
                     rows={6}
-                    defaultValue={course?.description?.en}
+                    defaultValue={course?._translations?.description?.en || course?.description?.en || ""}
                     className={`${inputClass} resize-none`}
                 />
             </div>
@@ -128,7 +132,7 @@ const CourseInfoForm = ({ courseId }) => {
             >
                 <div>
                     <label className="mb-2 block font-medium">
-                        السعر
+                        {isEn ? "Price (EGP)" : "السعر"}
                     </label>
                     <input
                         name="price"
@@ -140,7 +144,7 @@ const CourseInfoForm = ({ courseId }) => {
 
                 <div>
                     <label className="mb-2 block font-medium">
-                        السعر بعد الخصم
+                        {isEn ? "Discount Price (EGP)" : "السعر بعد الخصم"}
                     </label>
                     <input
                         name="discountPrice"
@@ -161,27 +165,27 @@ const CourseInfoForm = ({ courseId }) => {
             >
                 <div>
                     <label className="mb-2 block font-medium">
-                        المستوى
+                        {isEn ? "Level" : "المستوى"}
                     </label>
                     <select
                         name="level"
                         defaultValue={course?.level || "beginner"}
                         className={inputClass}
                     >
-                        <option value="beginner">مبتدئ</option>
-                        <option value="intermediate">متوسط</option>
-                        <option value="advanced">متقدم</option>
+                        <option value="beginner">{isEn ? "Beginner" : "مبتدئ"}</option>
+                        <option value="intermediate">{isEn ? "Intermediate" : "متوسط"}</option>
+                        <option value="advanced">{isEn ? "Advanced" : "متقدم"}</option>
                     </select>
                 </div>
 
                 <div>
                     <label className="mb-2 block font-medium">
-                        مدة الكورس
+                        {isEn ? "Course Duration" : "مدة الكورس"}
                     </label>
                     <input
                         name="duration"
                         defaultValue={course?.duration}
-                        placeholder="مثال: 28 ساعة"
+                        placeholder={isEn ? "e.g. 28 hours" : "مثال: 28 ساعة"}
                         className={inputClass}
                     />
                 </div>
@@ -190,7 +194,7 @@ const CourseInfoForm = ({ courseId }) => {
             {/* صورة الكورس */}
             <div>
                 <label className="mb-2 block font-medium">
-                    صورة الكورس (Thumbnail)
+                    {isEn ? "Course Thumbnail" : "صورة الكورس (Thumbnail)"}
                 </label>
                 <input
                     name="thumbnail"
@@ -210,7 +214,7 @@ const CourseInfoForm = ({ courseId }) => {
             {/* فيديو المعاينة */}
             <div>
                 <label className="mb-2 block font-medium">
-                    رابط فيديو المعاينة
+                    {isEn ? "Preview Video URL" : "رابط فيديو المعاينة"}
                 </label>
                 <input
                     name="previewVideo"
@@ -236,7 +240,7 @@ const CourseInfoForm = ({ courseId }) => {
                     className="h-5 w-5"
                 />
                 <span>
-                    نشر الكورس
+                    {isEn ? "Publish Course" : "نشر الكورس"}
                 </span>
             </div>
 
@@ -256,7 +260,7 @@ const CourseInfoForm = ({ courseId }) => {
                         disabled:opacity-60
                     "
                 >
-                    {isPending ? "جاري الحفظ..." : "حفظ التعديلات"}
+                    {isPending ? (isEn ? "Saving..." : "جاري الحفظ...") : (isEn ? "Save Changes" : "حفظ التعديلات")}
                 </button>
             </div>
         </form>

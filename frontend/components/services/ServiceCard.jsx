@@ -1,9 +1,17 @@
+"use client";
+
 import { cardAnimation } from "@/lib/animation/cardAnimation";
 import Link from "next/link";
 import { HiArrowRight } from "react-icons/hi";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const ServiceCard = ({ service, botton, index }) => {
     const Icon = service.icon;
+    const { language, localize } = useLanguage();
+
+    const title = localize(service.title);
+    const description = localize(service.description);
+    const learnMoreText = language === "en" ? "Learn More" : "أعرف المزيد";
 
     return (
         <article
@@ -31,7 +39,7 @@ const ServiceCard = ({ service, botton, index }) => {
                     w-16
                     items-center
                     justify-center
-                    text-white
+                    text-primary
                 `}
             >
                 <Icon size={30} />
@@ -48,7 +56,7 @@ const ServiceCard = ({ service, botton, index }) => {
                         text-text-primary
                     "
                 >
-                    {service.title}
+                    {title}
                 </h3>
 
                 <p
@@ -57,7 +65,7 @@ const ServiceCard = ({ service, botton, index }) => {
                         text-text-secondary
                     "
                 >
-                    {service.description}
+                    {description}
                 </p>
 
             </div>
@@ -80,7 +88,7 @@ const ServiceCard = ({ service, botton, index }) => {
                             group-hover:gap-4
                         "
                     >
-                        أعرف المزيد
+                        {learnMoreText}
 
                         <HiArrowRight
                             className="
@@ -96,6 +104,6 @@ const ServiceCard = ({ service, botton, index }) => {
 
         </article>
     );
-}
+};
 
-export default ServiceCard
+export default ServiceCard;
