@@ -76,6 +76,15 @@ exports.updateUser = updateOne(User, {
     fileFields: ["avatar"],
 });
 
+// A profile update (including avatar uploads) must only target the logged-in user.
+exports.authorizeOwnProfile = (req, res, next) => {
+    if (req.user._id.toString() !== req.params.id) {
+        return next(new ApiError(req.t("user.notAllowed"), StatusCodes.FORBIDDEN));
+    }
+
+    next();
+};
+
 // Change Password
 exports.changePassword = catchAsync(async (req, res, next) => {
     // Extract currentPassword, newPassword and confirm password from request body

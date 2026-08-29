@@ -12,6 +12,7 @@ const {
     getThemeMode,
     toggleThemeMode,
     getCurrentUser,
+    authorizeOwnProfile,
     updateUserByAdmin,
     getAllUsersByAdmin
 } = require("./user.controller");
@@ -74,10 +75,12 @@ router
     )
     .patch(
         isAuthenticatedUser,
+        authorizeOwnProfile,
         uploadSingle({
             fieldName: "avatar",
             folder: "users",
             fileType: "image",
+            maxSize: 5 * 1024 * 1024,
         }),
         validate(updateUserSchema),
         updateUser
