@@ -33,7 +33,7 @@ const CertificatesGrid = () => {
 
     if (completedCourses.length === 0) {
         return (
-            <div className="py-12 text-center text-text-muted glass rounded-2xl p-8 max-w-md mx-auto">
+            <div className="py-12 text-center text-text-muted p-8 max-w-md mx-auto">
                 <p className="text-lg font-bold text-text-primary mb-2">
                     {language === "en" ? "No certificates available yet" : "لا توجد شهادات متاحة حالياً"}
                 </p>
