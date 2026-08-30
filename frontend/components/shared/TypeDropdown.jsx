@@ -3,7 +3,10 @@
 import { useState, useRef, useEffect } from "react";
 import { HiChevronDown } from "react-icons/hi";
 import { LiaDiscourse } from "react-icons/lia";
+import { AiOutlineProduct } from "react-icons/ai";
 import { RiProjectorLine } from "react-icons/ri";
+import { MdOutlineHomeRepairService } from "react-icons/md";
+import { RiBloggerLine } from "react-icons/ri";
 
 const TypeDropdown = ({ currentType, onSelect }) => {
     const [open, setOpen] = useState(false);
@@ -38,8 +41,9 @@ const TypeDropdown = ({ currentType, onSelect }) => {
     const types = [
         { value: "course", label: "Course", icon: LiaDiscourse },
         { value: "portfolio", label: "Portfolio", icon: RiProjectorLine },
-        { value: "service", label: "Portfolio", icon: RiProjectorLine },
-        { value: "product", label: "Portfolio", icon: RiProjectorLine },
+        { value: "service", label: "Service", icon: MdOutlineHomeRepairService },
+        { value: "product", label: "Product", icon: AiOutlineProduct },
+        { value: "blog", label: "Blog", icon: RiBloggerLine },
     ]
 
     const currentItem = types.find((r) => r.value === currentType) || types[0];
