@@ -48,7 +48,7 @@ const DashboardHeader = ({
 
     const handleAccount = () => {
         setOpen(false);
-        router.push(user?.role === "student" ? "/user/profile" : "/dashboard/profile");
+        router.push("/profile");
     };
 
     const handleLogout = async () => {
@@ -187,7 +187,7 @@ const DashboardHeader = ({
                             duration-200
                             origin-top
                             ${open
-                                ? "opacity-100 scale-100 translate-y-0"
+                                ? " scale-100 translate-y-0"
                                 : "pointer-events-none opacity-0 scale-95 -translate-y-2"
                             }
                         `}
