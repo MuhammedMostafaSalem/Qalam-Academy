@@ -49,7 +49,7 @@ const OrdersTable = () => {
         "Payment Method",
         "Status",
         "Order Date",
-        ...(isInstructor ? [] : ["Actions"]),
+        // ...(isInstructor ? [] : ["Actions"]),
     ] : [
         "رقم الطلب",
         "العميل",
@@ -57,7 +57,7 @@ const OrdersTable = () => {
         "طريقة الدفع",
         "الحالة",
         "تاريخ الطلب",
-        ...(isInstructor ? [] : ["الإجراءات"]),
+        // ...(isInstructor ? [] : ["الإجراءات"]),
     ];
 
     const handleCancel = async (orderId) => {
@@ -152,7 +152,7 @@ const OrdersTable = () => {
                                                 : "—"}
                                         </Table.Td>
 
-                                        {!isInstructor && (
+                                        {/* {!isInstructor && (
                                             <Table.Td>
                                                 <ActionsTable
                                                     actions={
@@ -173,7 +173,7 @@ const OrdersTable = () => {
                                                     }
                                                 />
                                             </Table.Td>
-                                        )}
+                                        )} */}
                                     </Table.Row>
                                 );
                             })}
