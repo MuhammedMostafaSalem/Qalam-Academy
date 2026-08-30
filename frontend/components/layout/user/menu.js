@@ -63,14 +63,14 @@ export const menu = [
         ],
     },
 
-    {
-        section: { ar: "الحساب", en: "Account" },
-        items: [
-            {
-                title: { ar: "الملف الشخصي", en: "Profile" },
-                href: "/user/profile",
-                icon: HiOutlineUserCircle,
-            },
-        ],
-    },
+    // {
+    //     section: { ar: "الحساب", en: "Account" },
+    //     items: [
+    //         {
+    //             title: { ar: "الملف الشخصي", en: "Profile" },
+    //             href: "/user/profile",
+    //             icon: HiOutlineUserCircle,
+    //         },
+    //     ],
+    // },
 ];
