@@ -9,8 +9,15 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL
     ? `${process.env.NEXT_PUBLIC_BASE_URL}/api`
     : "http://localhost:5000/api";
 
+const getAuthLanguage = async () => {
+    const cookieStore = await cookies();
+    return cookieStore.get("NEXT_LOCALE")?.value || cookieStore.get("NEXT_LANG")?.value || "ar";
+};
+
 // 1. Signup Action
 export async function signupAction(prevState, formData) {
+    const lang = await getAuthLanguage();
+
     try {
         const firstName = formData.get("firstName");
         const lastName = formData.get("lastName");
@@ -37,14 +44,14 @@ export async function signupAction(prevState, formData) {
 
         return {
             success: true,
-            message: response.message,
+            message: response.message || (lang === "en" ? "Account created successfully" : "تم إنشاء الحساب بنجاح"),
             email,
             fieldErrors: {}
         };
     } catch (error) {
         return {
             success: false,
-            message: error.message || "حدث خطأ ما أثناء إنشاء الحساب",
+            message: error.message || (lang === "en" ? "An error occurred while creating your account" : "حدث خطأ ما أثناء إنشاء الحساب"),
             fieldErrors: error.errors || {}
         };
     }
@@ -105,11 +112,13 @@ export async function resendOtpAction(prevState, formData) {
 
 // 4. Login Action
 export async function loginAction(prevState, formData) {
+    let lang = "ar";
+
     try {
         const email = formData.get("email");
         const password = formData.get("password");
         const cookieStore = await cookies();
-        const lang = cookieStore.get("NEXT_LOCALE")?.value || cookieStore.get("NEXT_LANG")?.value || "ar";
+        lang = cookieStore.get("NEXT_LOCALE")?.value || cookieStore.get("NEXT_LANG")?.value || "ar";
 
         const res = await fetch(`${BASE_URL}/auth/login`, {
             method: "POST",
@@ -128,7 +137,7 @@ export async function loginAction(prevState, formData) {
         const response = await res.json();
 
         if (!res.ok) {
-            const error = new Error(response.message || "بيانات الدخول غير صحيحة");
+            const error = new Error(response.message || (lang === "en" ? "Invalid login credentials" : "بيانات الدخول غير صحيحة"));
 
             error.statusCode = res.status;
             error.errors = response.errors || {};
@@ -144,7 +153,7 @@ export async function loginAction(prevState, formData) {
         const token = match?.[1];
 
         if (!token) {
-            throw new Error("لم يتم استلام authentication cookie من السيرفر");
+            throw new Error(lang === "en" ? "The authentication cookie was not received from the server" : "لم يتم استلام ملف تعريف الارتباط الخاص بالمصادقة من الخادم");
         }
 
         const sessionExpiresAt = response.data.sessionExpiresAt;
@@ -162,7 +171,7 @@ export async function loginAction(prevState, formData) {
 
         return {
             success: true,
-            message: response.message || "تم تسجيل الدخول بنجاح",
+            message: response.message || (lang === "en" ? "Logged in successfully" : "تم تسجيل الدخول بنجاح"),
             data: response.data,
             sessionExpiresAt: response.data.sessionExpiresAt,
             fieldErrors: {},
@@ -170,7 +179,7 @@ export async function loginAction(prevState, formData) {
     } catch (error) {
         return {
             success: false,
-            message: error.message || "بيانات الدخول غير صحيحة",
+            message: error.message || (lang === "en" ? "Invalid login credentials" : "بيانات الدخول غير صحيحة"),
             fieldErrors: error.errors || {}
         };
     }

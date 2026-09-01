@@ -22,6 +22,32 @@ export async function getUsersAction(queryString = "") {
     }
 }
 
+export async function createUserByAdminAction(userData) {
+    try {
+        const response = await authApi("/users/admin", {
+            method: "POST",
+            body: JSON.stringify(userData),
+        });
+
+        revalidatePath("/dashboard/users");
+        revalidatePath("/dashboard/students");
+
+        return {
+            success: true,
+            message: response.message || "تم إنشاء المستخدم بنجاح",
+            data: response.data,
+            errors: null,
+        };
+    } catch (error) {
+        return {
+            success: false,
+            message: error.message || "فشل إنشاء المستخدم",
+            data: null,
+            errors: error.errors || null,
+        };
+    }
+}
+
 export async function getStudentsAction(queryString = "") {
     try {
         const response = await authApi(`/users?role=student&${queryString}`, {

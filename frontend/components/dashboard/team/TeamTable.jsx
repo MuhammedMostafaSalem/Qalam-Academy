@@ -14,6 +14,8 @@ import userIcon from "@/public/assets/user-icon.png";
 import UpdateTeamModal from "@/components/ui/modal/team/UpdateTeamModal";
 import { useLanguage } from "@/providers/LanguageProvider";
 import { useSearchParams } from "next/navigation";
+import DeleteModal from "@/components/ui/modal/DeleteModal";
+import useDeleteModal from "@/hooks/useDeleteModal";
 
 const TeamTable = () => {
     const { language } = useLanguage();
@@ -25,6 +27,7 @@ const TeamTable = () => {
     const [deletingId, setDeletingId] = useState(null);
     const [editingTeamMember, setEditingTeamMember] = useState(null);
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+    const { requestDelete } = useDeleteModal();
 
     useEffect(() => {
         const handleTeamUpdated = () => {
@@ -49,8 +52,6 @@ const TeamTable = () => {
     ];
 
     const handleDelete = async (memberId) => {
-        if (!confirm(isEn ? "Are you sure you want to delete this team member?" : "هل أنت متأكد من حذف هذا العضو من الفريق؟")) return;
-
         setDeletingId(memberId);
         const result = await deleteTeamMemberAction(memberId);
 
@@ -62,6 +63,14 @@ const TeamTable = () => {
         }
 
         setDeletingId(null);
+    };
+
+    const handleDeleteRequest = (memberId) => {
+        requestDelete({
+            itemId: memberId,
+            title: isEn ? "Delete Team Member" : "حذف عضو الفريق",
+            message: isEn ? "Are you sure you want to delete this team member? This action cannot be undone." : "هل أنت متأكد من حذف هذا العضو من الفريق؟ لا يمكن التراجع عن هذا الإجراء.",
+        });
     };
 
     const handleEditClick = (member) => {
@@ -136,7 +145,7 @@ const TeamTable = () => {
                                                         <button
                                                             type="button"
                                                             className="text-error cursor-pointer"
-                                                            onClick={() => handleDelete(member._id)}
+                                                            onClick={() => handleDeleteRequest(member._id)}
                                                             disabled={deletingId === member._id}
                                                         >
                                                             {deletingId === member._id ? (
@@ -170,6 +179,7 @@ const TeamTable = () => {
                             refetch();
                         }}
                     />
+                    <DeleteModal onConfirmAction={handleDelete} />
                 </div>
             )}
         </div>

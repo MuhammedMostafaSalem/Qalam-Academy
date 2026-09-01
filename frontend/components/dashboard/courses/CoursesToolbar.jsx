@@ -19,6 +19,8 @@ const CoursesToolbar = () => {
     const [searchQuery, setSearchQuery] = useState(searchParams.get("search") || "");
     const [categoryFilter, setCategoryFilter] = useState(searchParams.get("category") || "");
     const [levelFilter, setLevelFilter] = useState(searchParams.get("level") || "");
+    const [publishedFilter, setPublishedFilter] = useState(searchParams.get("isPublished") || "");
+    const [featuredFilter, setFeaturedFilter] = useState(searchParams.get("isFeatured") || "");
 
     const categoryOptions = [
         { value: "", label: isEn ? "All Categories" : "كل التصنيفات" },
@@ -41,12 +43,26 @@ const CoursesToolbar = () => {
         { value: "advanced", label: isEn ? "Advanced" : "متقدم" },
     ];
 
+    const publishedOptions = [
+        { value: "", label: isEn ? "All Status" : "كل الحالات" },
+        { value: "true", label: isEn ? "Published" : "منشور" },
+        { value: "false", label: isEn ? "Draft" : "مسودة" },
+    ];
+
+    const featuredOptions = [
+        { value: "", label: isEn ? "All (Featured/Standard)" : "الكل (مميز/عادي)" },
+        { value: "true", label: isEn ? "Featured" : "مميز" },
+        { value: "false", label: isEn ? "Standard" : "عادي" },
+    ];
+
     useEffect(() => {
         const params = new URLSearchParams();
 
         if (searchQuery) params.set("search", searchQuery);
         if (categoryFilter) params.set("category", categoryFilter);
         if (levelFilter) params.set("level", levelFilter);
+        if (publishedFilter) params.set("isPublished", publishedFilter);
+        if (featuredFilter) params.set("isFeatured", featuredFilter);
 
         const queryString = params.toString();
         const target = `${pathname}${queryString ? `?${queryString}` : ""}`;
@@ -55,7 +71,7 @@ const CoursesToolbar = () => {
         if (`${window.location.pathname}${window.location.search}` !== target) {
             router.push(target, { scroll: false });
         }
-    }, [searchQuery, categoryFilter, levelFilter, pathname, router]);
+    }, [searchQuery, categoryFilter, levelFilter, publishedFilter, featuredFilter, pathname, router]);
 
     return (
         <div className="mt-[20px]">
@@ -74,6 +90,16 @@ const CoursesToolbar = () => {
                             options={levelOptions}
                             value={levelFilter}
                             onChange={(e) => setLevelFilter(e.target.value)}
+                        />
+                        <Select
+                            options={publishedOptions}
+                            value={publishedFilter}
+                            onChange={(e) => setPublishedFilter(e.target.value)}
+                        />
+                        <Select
+                            options={featuredOptions}
+                            value={featuredFilter}
+                            onChange={(e) => setFeaturedFilter(e.target.value)}
                         />
                     </>
                 }

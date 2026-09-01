@@ -1,21 +1,50 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { createPortal } from "react-dom";
+import { useCallback, useRef, useEffect, useState } from "react";
 import { BsCheckCircleFill, BsXCircleFill } from "react-icons/bs";
 import { HiChevronDown } from "react-icons/hi";
 import { useLanguage } from "@/providers/LanguageProvider";
 
-const StatusDropdown = ({ isActive, onSelect }) => {
+const StatusDropdown = ({ isActive, onSelect, activeLabel, inactiveLabel, disabled = false }) => {
     const { language } = useLanguage();
     const isEn = language === "en";
 
     const [open, setOpen] = useState(false);
     const [openUp, setOpenUp] = useState(false);
+    const [menuPosition, setMenuPosition] = useState(null);
     const menuRef = useRef(null);
+    const menuPortalRef = useRef(null);
+
+    const updateMenuPosition = useCallback(() => {
+        const triggerEl = menuRef.current?.firstElementChild;
+        if (!triggerEl) return;
+
+        const rect = triggerEl.getBoundingClientRect();
+        const menuWidth = 144;
+        const menuHeight = 160;
+        const viewportPadding = 8;
+        const shouldOpenUp = rect.bottom + menuHeight + viewportPadding > window.innerHeight;
+        const left = Math.min(
+            Math.max(viewportPadding, rect.right - menuWidth),
+            window.innerWidth - menuWidth - viewportPadding
+        );
+
+        setOpenUp(shouldOpenUp);
+        setMenuPosition({
+            left,
+            top: shouldOpenUp
+                ? Math.max(viewportPadding, rect.top - menuHeight - viewportPadding)
+                : rect.bottom + viewportPadding,
+        });
+    }, []);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
-            if (menuRef.current && !menuRef.current.contains(event.target)) {
+            const clickedTrigger = menuRef.current?.contains(event.target);
+            const clickedMenu = menuPortalRef.current?.contains(event.target);
+
+            if (!clickedTrigger && !clickedMenu) {
                 setOpen(false);
             }
         };
@@ -23,16 +52,30 @@ const StatusDropdown = ({ isActive, onSelect }) => {
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
+    useEffect(() => {
+        if (!open) return;
+
+        updateMenuPosition();
+
+        window.addEventListener("resize", updateMenuPosition);
+        window.addEventListener("scroll", updateMenuPosition, true);
+
+        return () => {
+            window.removeEventListener("resize", updateMenuPosition);
+            window.removeEventListener("scroll", updateMenuPosition, true);
+        };
+    }, [open, updateMenuPosition]);
+
     const statuses = [
         {
             value: true,
-            label: isEn ? "Active" : "نشط",
+            label: activeLabel || (isEn ? "Active" : "نشط"),
             icon: BsCheckCircleFill,
             color: "text-success bg-success/10 border-success/20"
         },
         {
             value: false,
-            label: isEn ? "Inactive" : "معطل",
+            label: inactiveLabel || (isEn ? "Inactive" : "معطل"),
             icon: BsXCircleFill,
             color: "text-error bg-error/10 border-error/20"
         },
@@ -42,24 +85,21 @@ const StatusDropdown = ({ isActive, onSelect }) => {
     const CurrentIcon = currentItem.icon;
 
     const toggleMenu = () => {
-        if (!open) {
-            const triggerEl = menuRef.current?.firstElementChild;
-            const rect = triggerEl?.getBoundingClientRect();
-
-            setOpenUp(
-                rect
-                    ? rect.bottom + 160 > window.innerHeight
-                    : false
-            );
+        if (open) {
+            setOpen(false);
+            return;
         }
 
-        setOpen((prev) => !prev);
+        updateMenuPosition();
+        setOpen(true);
     };
 
     return (
         <div className="relative inline-block text-right" ref={menuRef}>
             <button
+                type="button"
                 onClick={toggleMenu}
+                disabled={disabled}
                 className={`
                     flex
                     items-center
@@ -71,6 +111,8 @@ const StatusDropdown = ({ isActive, onSelect }) => {
                     text-sm
                     transition
                     cursor-pointer
+                    disabled:cursor-not-allowed
+                    disabled:opacity-50
                     w-[110px]
                     ${currentItem.color}
                 `}
@@ -83,61 +125,60 @@ const StatusDropdown = ({ isActive, onSelect }) => {
             </button>
 
             {/* Dropdown Menu */}
-            <div
-                className={`absolute
-                right-0
-                rtl:right-0
-                rtl:left-auto
-                w-36
-                overflow-hidden
-                rounded-2xl
-                border
-                border-border
-                bg-card
-                shadow-xl
-                transition-all
-                duration-200
-                origin-top
-                z-20
-                ${
-                    openUp
-                        ? "bottom-full mb-2 origin-bottom"
-                        : "top-full mt-2"
-                }
-                ${
-                    open ? "translate-y-0 scale-100 opacity-100" : "pointer-events-none -translate-y-2 scale-95 opacity-0"
-                }
-                    `}
-            >
-                {statuses.map((status) => {
-                    const Icon = status.icon;
-                    return (
-                        <button
-                            key={String(status.value)}
-                            onClick={() => {
-                                onSelect(status.value);
-                                setOpen(false);
-                            }}
-                            className={`
-                                flex
-                                w-full
-                                items-center
-                                gap-3
-                                px-4 py-3
-                                text-sm
-                                transition
-                                hover:bg-primary/10
-                                ${
-                                    isActive === status.value ? "font-semibold bg-primary/5 text-primary" : "text-text-primary"
-                                }
-                            `}
-                        >
-                            <Icon className={`text-sm ${status.value ? "text-success" : "text-error"}`} />
-                            <span>{status.label}</span>
-                        </button>
-                    );
-                })}
-            </div>
+            {open && menuPosition && typeof document !== "undefined"
+                ? createPortal(
+                    <div
+                        ref={menuPortalRef}
+                        style={{ left: menuPosition.left, top: menuPosition.top, width: 144 }}
+                        className={`fixed
+                            overflow-hidden
+                            rounded-2xl
+                            border
+                            border-border
+                            bg-card
+                            shadow-xl
+                            transition-all
+                            duration-200
+                            origin-top
+                            z-[100]
+                            ${openUp ? "origin-bottom" : "origin-top"}
+                            translate-y-0 scale-100 opacity-100
+                        `}
+                    >
+                        {statuses.map((status) => {
+                            const Icon = status.icon;
+                            return (
+                                <button
+                                    key={String(status.value)}
+                                    type="button"
+                                    disabled={disabled}
+                                    onClick={() => {
+                                        onSelect(status.value);
+                                        setOpen(false);
+                                    }}
+                                    className={`
+                                        flex
+                                        w-full
+                                        items-center
+                                        gap-3
+                                        px-4 py-3
+                                        text-sm
+                                        transition
+                                        hover:bg-primary/10
+                                        ${
+                                            isActive === status.value ? "font-semibold bg-primary/5 text-primary" : "text-text-primary"
+                                        }
+                                    `}
+                                >
+                                    <Icon className={`text-sm ${status.value ? "text-success" : "text-error"}`} />
+                                    <span>{status.label}</span>
+                                </button>
+                            );
+                        })}
+                    </div>,
+                    document.body
+                )
+                : null}
         </div>
     )
 }

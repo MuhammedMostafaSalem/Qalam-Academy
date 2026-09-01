@@ -1,24 +1,17 @@
-'use client'
-import { useState } from "react";   
-import MessagesTable from "@/components/dashboard/messages/MessagesTable";
-import MessagesToolbar from "@/components/dashboard/messages/MessagesToolbar";
+import AdminMessagesClientView from "@/components/dashboard/messages/AdminMessagesClientView";
+import { generateSEOMetadata } from "@/utils/seo";
 
-export default function MessagesPage() {
-    const [messagesLength, setMessagesLength] = useState(0);
-    return (
-        <div
-            className="
-                glass
-                rounded-3xl
-                border
-                border-border
-                p-6
-                shadow-sm
-            "
-        >
-            <MessagesToolbar messagesLength={messagesLength} />
+export async function generateMetadata() {
+    return generateSEOMetadata({
+        path: "/dashboard/messages",
+        title: {
+            ar: "الرسائل والتواصل",
+            en: "Messages & Inquiries",
+        },
+        noIndex: true,
+    });
+}
 
-            <MessagesTable setMessagesLength={setMessagesLength} />
-        </div>
-    );
+export default function AdminMessagesPage() {
+    return <AdminMessagesClientView />;
 }

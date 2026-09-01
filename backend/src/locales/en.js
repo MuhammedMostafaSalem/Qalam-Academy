@@ -119,6 +119,7 @@ module.exports = {
 
     user: {
         fetched: "User fetched successfully",
+        created: "User created successfully",
         updated: "User updated successfully",
         deleted: "User deleted successfully",
         notFound: "User not found",
@@ -154,6 +155,8 @@ module.exports = {
 
     enrollment: {
         fetched: "Enrollment fetched successfully",
+        downloadNotAllowed: "You do not have access to download this product",
+        fileNotFound: "The downloadable file could not be found",
         updated: "Enrollment updated successfully",
         deleted: "Enrollment deleted successfully",
         notFound: "Enrollment not found",

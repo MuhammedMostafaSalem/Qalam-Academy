@@ -11,6 +11,26 @@ const User = require("./user.model");
 const sendResponse = require("../../utils/sendResponse");
 const ApiFeatures = require("../../utils/ApiFeatures");
 
+// Admin: Create a verified user with an explicitly selected role
+exports.createUserByAdmin = catchAsync(async (req, res) => {
+    const user = await User.create({
+        ...req.body,
+        isVerified: true,
+    });
+    const safeUser = await User.findById(user._id).select(
+        "firstName lastName slug email phone country city address avatar role isVerified isActive createdAt"
+    );
+
+    return sendResponse(res, {
+        statusCode: StatusCodes.CREATED,
+        success: true,
+        message: req.t("user.created"),
+        data: {
+            user: safeUser,
+        },
+    });
+});
+
 // Public: Get all users
 exports.getUsers = getAll(User, {
     modelName: "user",

@@ -126,6 +126,31 @@ export async function updateServiceAction(id, prevState, formData) {
     }
 }
 
+// Update a single service field (used by inline dashboard controls)
+export async function updateServiceFieldAction(id, updateData) {
+    try {
+        const response = await authApi(`/services/${id}`, {
+            method: "PATCH",
+            body: JSON.stringify(updateData),
+        });
+
+        revalidatePath("/dashboard/services");
+        revalidatePath("/services");
+
+        return {
+            success: true,
+            data: response.data,
+            message: response.message || "تم تعديل الخدمة بنجاح",
+        };
+    } catch (error) {
+        return {
+            success: false,
+            message: error?.message || "فشل تعديل الخدمة",
+            errors: error?.errors || null,
+        };
+    }
+}
+
 // Delete Service
 export async function deleteServiceAction(id) {
     try {

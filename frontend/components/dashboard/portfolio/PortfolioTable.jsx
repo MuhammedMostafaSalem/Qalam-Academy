@@ -14,6 +14,8 @@ import UpdatePortfolioModal from "@/components/ui/modal/portfolio/UpdatePortfoli
 import { useLanguage } from "@/providers/LanguageProvider";
 import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
+import DeleteModal from "@/components/ui/modal/DeleteModal";
+import useDeleteModal from "@/hooks/useDeleteModal";
 
 const PortfolioTable = () => {
     const { language, localize } = useLanguage();
@@ -24,6 +26,7 @@ const PortfolioTable = () => {
     const [deletingId, setDeletingId] = useState(null);
     const [editingPortfolio, setEditingPortfolio] = useState(null);
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+    const { requestDelete } = useDeleteModal();
 
     useEffect(() => {
         const handlePortfolioUpdated = () => {
@@ -50,8 +53,6 @@ const PortfolioTable = () => {
     ];
 
     const handleDelete = async (portfolioId) => {
-        if (!confirm(language === "en" ? "Are you sure you want to delete this project?" : "هل أنت متأكد من حذف هذا المشروع؟")) return;
-
         setDeletingId(portfolioId);
         const result = await deletePortfolioAction(portfolioId);
 
@@ -63,6 +64,14 @@ const PortfolioTable = () => {
         }
 
         setDeletingId(null);
+    };
+
+    const handleDeleteRequest = (portfolioId) => {
+        requestDelete({
+            itemId: portfolioId,
+            title: isEn ? "Delete Project" : "حذف المشروع",
+            message: isEn ? "Are you sure you want to delete this project? This action cannot be undone." : "هل أنت متأكد من حذف هذا المشروع؟ لا يمكن التراجع عن هذا الإجراء.",
+        });
     };
 
     const handleEditClick = (portfolio) => {
@@ -158,7 +167,7 @@ const PortfolioTable = () => {
                                                     onClick={() => handleEditClick(portfolio)}
                                                 />
                                                 <button
-                                                    onClick={() => handleDelete(portfolio._id)}
+                                                    onClick={() => handleDeleteRequest(portfolio._id)}
                                                     disabled={deletingId === portfolio._id}
                                                     className="text-error cursor-pointer disabled:opacity-50"
                                                     type="button"
@@ -190,6 +199,7 @@ const PortfolioTable = () => {
                     refetch();
                 }}
             />
+            <DeleteModal onConfirmAction={handleDelete} />
         </div>
     );
 };

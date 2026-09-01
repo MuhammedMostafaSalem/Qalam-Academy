@@ -7,11 +7,14 @@ import { MdOutlineDelete, MdOutlineEdit } from "react-icons/md";
 import LoadMore from "@/components/shared/LoadMore";
 import useProducts from "@/hooks/products/useProducts";
 import useToast from "@/hooks/useToast";
-import { deleteProductAction } from "@/actions/productActions";
+import { deleteProductAction, updateProductFieldAction } from "@/actions/productActions";
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import UpdateProductModal from "@/components/ui/modal/product/UpdateProductModal";
 import { useLanguage } from "@/providers/LanguageProvider";
+import DeleteModal from "@/components/ui/modal/DeleteModal";
+import useDeleteModal from "@/hooks/useDeleteModal";
+import StatusDropdown from "@/components/shared/StatusDropdown";
 
 const ProductsTable = () => {
     const { language, localize } = useLanguage();
@@ -24,6 +27,8 @@ const ProductsTable = () => {
     const [deletingId, setDeletingId] = useState(null);
     const [editingProduct, setEditingProduct] = useState(null);
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+    const [updatingStatusId, setUpdatingStatusId] = useState(null);
+    const { requestDelete } = useDeleteModal();
 
     useEffect(() => {
         const handleProductUpdated = () => {
@@ -41,6 +46,7 @@ const ProductsTable = () => {
         "Category",
         "Sales",
         "Stock",
+        "Status",
         "Creation Date",
         "Actions",
     ] : [
@@ -49,13 +55,12 @@ const ProductsTable = () => {
         "التصنيف",
         "المبيعات",
         "المخزون",
+        "الحالة",
         "تاريخ الإنشاء",
         "الإجراءات",
     ];
 
     const handleDelete = async (productId) => {
-        if (!confirm(isEn ? "Are you sure you want to delete this product?" : "هل أنت متأكد من حذف هذا المنتج؟")) return;
-
         setDeletingId(productId);
         const result = await deleteProductAction(productId);
 
@@ -69,9 +74,31 @@ const ProductsTable = () => {
         setDeletingId(null);
     };
 
+    const handleDeleteRequest = (productId) => {
+        requestDelete({
+            itemId: productId,
+            title: isEn ? "Delete Product" : "حذف المنتج",
+            message: isEn ? "Are you sure you want to delete this product? This action cannot be undone." : "هل أنت متأكد من حذف هذا المنتج؟ لا يمكن التراجع عن هذا الإجراء.",
+        });
+    };
+
     const handleEditClick = (product) => {
         setEditingProduct(product);
         setIsUpdateModalOpen(true);
+    };
+
+    const handleUpdateStatus = async (productId, isPublished) => {
+        setUpdatingStatusId(productId);
+        const result = await updateProductFieldAction(productId, { isPublished });
+
+        if (result.success) {
+            successMessage(result.message || (isEn ? "Product status updated successfully" : "تم تحديث حالة المنتج بنجاح"));
+            await refetch();
+        } else {
+            errorMessage(result.message || (isEn ? "Failed to update product status" : "فشل تحديث حالة المنتج"));
+        }
+
+        setUpdatingStatusId(null);
     };
 
     if (loading) {
@@ -140,6 +167,16 @@ const ProductsTable = () => {
                                         <Table.Td>{product.stock}</Table.Td>
 
                                         <Table.Td>
+                                            <StatusDropdown
+                                                isActive={product.isPublished}
+                                                activeLabel={isEn ? "Published" : "منشور"}
+                                                inactiveLabel={isEn ? "Draft" : "مسودة"}
+                                                disabled={updatingStatusId === product._id}
+                                                onSelect={(newStatus) => handleUpdateStatus(product._id, newStatus)}
+                                            />
+                                        </Table.Td>
+
+                                        <Table.Td>
                                             {product.createdAt
                                                 ? new Date(product.createdAt).toLocaleDateString(isEn ? "en-US" : "ar-EG")
                                                 : "—"}
@@ -156,7 +193,7 @@ const ProductsTable = () => {
                                                         <button
                                                             type="button"
                                                             className="text-error cursor-pointer"
-                                                            onClick={() => handleDelete(product._id)}
+                                                            onClick={() => handleDeleteRequest(product._id)}
                                                             disabled={deletingId === product._id}
                                                         >
                                                             {deletingId === product._id ? (
@@ -192,6 +229,7 @@ const ProductsTable = () => {
                     refetch();
                 }}
             />
+            <DeleteModal onConfirmAction={handleDelete} />
         </div>
     );
 };

@@ -75,7 +75,7 @@ const CreateCourseForm = () => {
         if (!state.success || !state.course) return;
 
         successMessage(state.message || (isEn ? "Course created successfully" : "تم إنشاء الكورس بنجاح"));
-        router.replace(`/dashboard/courses/${state.course._id}`);
+        router.replace(`/dashboard/courses/${state.course.slug || state.course._id}`);
     }, [state, router, successMessage, isEn]);
 
     useEffect(() => {
@@ -193,8 +193,8 @@ const CreateCourseForm = () => {
                     <input name="discountPrice" type="number" min="0" className={inputClass} />
                 </div>
                 <div>
-                    <label className={labelClass}>{isEn ? "Duration (Minutes)" : "المدة (بالدقائق)"}</label>
-                    <input name="duration" type="number" min="0" className={inputClass} />
+                    <label className={labelClass}>{isEn ? "Duration (Hours)" : "المدة (بالساعات)"}</label>
+                    <input name="duration" type="number" min="0" step="any" placeholder={isEn ? "e.g. 24" : "مثال: 24"} className={inputClass} />
                 </div>
             </div>
 

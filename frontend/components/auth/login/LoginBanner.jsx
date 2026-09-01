@@ -1,11 +1,17 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import logo from "@/public/assets/logos/logo-white.png";
 import loginIllustration from "@/public/assets/images/login-illustration.png";
 import { heroAnimation } from "@/lib/animation/heroAnimation";
 import { animations } from "@/lib/animations";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const LoginBanner = () => {
+    const { language } = useLanguage();
+    const isEn = language === "en";
+
     return (
         <div
             {...heroAnimation.image}
@@ -41,7 +47,7 @@ const LoginBanner = () => {
 
                 <div>
                     <h2 className="text-2xl font-bold">
-                        قلم أكاديمي
+                        {isEn ? "Qalam Academy" : "قلم أكاديمي"}
                     </h2>
 
                     <p className="text-sm text-text-secondary">
@@ -62,7 +68,7 @@ const LoginBanner = () => {
             >
                 <Image
                     src={loginIllustration}
-                    alt="Login Illustration"
+                    alt={isEn ? "Login illustration" : "صورة توضيحية لتسجيل الدخول"}
                     width={160}
                     height={160}
                     priority
@@ -93,7 +99,7 @@ const LoginBanner = () => {
                         leading-tight
                     "
                 >
-                    مرحبًا بك في
+                    {isEn ? "Welcome to" : "مرحبًا بك في"}
                 </h2>
 
                 <h3
@@ -113,8 +119,9 @@ const LoginBanner = () => {
                         text-text-secondary
                     "
                 >
-                    قم بتسجيل الدخول للوصول إلى لوحة التحكم
-                    وإدارة الكورسات والطلاب والمحتوى بكل سهولة.
+                    {isEn
+                        ? "Sign in to access your dashboard and manage courses, students, and content with ease."
+                        : "قم بتسجيل الدخول للوصول إلى لوحة التحكم وإدارة الكورسات والطلاب والمحتوى بكل سهولة."}
                 </p>
 
                 <p
@@ -124,7 +131,7 @@ const LoginBanner = () => {
                         text-text-muted
                     "
                 >
-                    © 2026 Qalam Academy. جميع الحقوق محفوظة.
+                    © 2026 Qalam Academy. {isEn ? "All rights reserved." : "جميع الحقوق محفوظة."}
                 </p>
             </div>
 

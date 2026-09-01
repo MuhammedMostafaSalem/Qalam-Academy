@@ -9,6 +9,7 @@ import LoadMore from "@/components/shared/LoadMore";
 import userIcon from '@/public/assets/user-icon.png';
 import useUserActions from "@/hooks/users/useUserActions";
 import { useLanguage } from "@/providers/LanguageProvider";
+import DeleteModal from "@/components/ui/modal/DeleteModal";
 
 const StudentsTable = ({ students = [], refetch, hasMore = false, onLoadMore, loadingMore = false }) => {
     const { language } = useLanguage();
@@ -96,6 +97,7 @@ const StudentsTable = ({ students = [], refetch, hasMore = false, onLoadMore, lo
                     </Table>
 
                     {hasMore && <LoadMore onClick={onLoadMore} loading={loadingMore} />}
+                    <DeleteModal onConfirmAction={handleDelete} />
                 </div>
             )}
         </div>

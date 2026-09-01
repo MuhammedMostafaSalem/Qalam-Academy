@@ -158,6 +158,31 @@ export async function updateProductAction(id, prevState, formData) {
     }
 }
 
+// Update a single product field (used by inline dashboard controls)
+export async function updateProductFieldAction(id, updateData) {
+    try {
+        const response = await authApi(`/products/${id}`, {
+            method: "PATCH",
+            body: JSON.stringify(updateData),
+        });
+
+        revalidatePath("/dashboard/products");
+        revalidatePath("/store");
+
+        return {
+            success: true,
+            data: response.data,
+            message: response.message || "تم تعديل المنتج بنجاح",
+        };
+    } catch (error) {
+        return {
+            success: false,
+            message: error?.message || "فشل تعديل المنتج",
+            errors: error?.errors || null,
+        };
+    }
+}
+
 // Delete Product
 export async function deleteProductAction(id) {
     try {

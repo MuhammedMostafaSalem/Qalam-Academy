@@ -1,5 +1,17 @@
 import { verifyPaypalPaymentAction } from "@/actions/orderActions";
 import PaymentResultCard from "@/components/payment/PaymentResultCard";
+import { generateSEOMetadata } from "@/utils/seo";
+
+export async function generateMetadata() {
+    return generateSEOMetadata({
+        path: "/payment/success",
+        title: {
+            ar: "تمت عملية الدفع بنجاح",
+            en: "Payment Successful",
+        },
+        noIndex: true,
+    });
+}
 
 export default async function PayPalSuccessPage({ searchParams }) {
     const params = await searchParams;

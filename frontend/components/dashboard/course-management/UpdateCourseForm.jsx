@@ -205,8 +205,8 @@ const UpdateCourseForm = ({ courseId }) => {
                     <input name="discountPrice" type="number" min="0" defaultValue={courseData.discountPrice || 0} className={inputClass} />
                 </div>
                 <div>
-                    <label className={labelClass}>{isEn ? "Duration (Minutes)" : "المدة (بالدقائق)"}</label>
-                    <input name="duration" type="number" min="0" defaultValue={courseData.duration || 0} className={inputClass} />
+                    <label className={labelClass}>{isEn ? "Duration (Hours)" : "المدة (بالساعات)"}</label>
+                    <input name="duration" type="number" min="0" step="any" defaultValue={courseData.duration || 0} className={inputClass} />
                 </div>
             </div>
 

@@ -2,9 +2,12 @@ import { deleteCategoryAction, updateCategoryFieldAction } from "@/actions/categ
 import { openModalDelete } from "@/store/slices/modalDeleteSlice";
 import { showToast } from "@/store/slices/toastSlice";
 import { useDispatch } from "react-redux";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const useCategoryActions = (refetch) => {
     const dispatch = useDispatch();
+    const { language, localize } = useLanguage();
+    const isEn = language === "en";
 
     const handleUpdateField = async (userId, field, value) => {
         const res = await updateCategoryFieldAction(userId, { [field]: value });
@@ -42,9 +45,12 @@ const useCategoryActions = (refetch) => {
     }
 
     const handleDeleteRequest = (category) => {
+        const categoryName = localize(category.title, isEn ? "this category" : "هذا التصنيف");
         dispatch(openModalDelete({
-            title: "حذف المستخدم",
-            message: `هل أنت متأكد من حذف ${category.title} ؟ لا يمكن التراجع عن هذا الإجراء`,
+            title: isEn ? "Delete Category" : "حذف التصنيف",
+            message: isEn
+                ? `Are you sure you want to delete ${categoryName}? This action cannot be undone.`
+                : `هل أنت متأكد من حذف ${categoryName}؟ لا يمكن التراجع عن هذا الإجراء.`,
             itemId: category._id,
         }));
     }

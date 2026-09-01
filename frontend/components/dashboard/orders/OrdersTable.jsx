@@ -13,6 +13,8 @@ import userIcon from "@/public/assets/user-icon.png";
 import { useSearchParams } from "next/navigation";
 import { useAuth } from "@/providers/AuthProvider";
 import { useLanguage } from "@/providers/LanguageProvider";
+import DeleteModal from "@/components/ui/modal/DeleteModal";
+import useDeleteModal from "@/hooks/useDeleteModal";
 
 const OrdersTable = () => {
     const { language } = useLanguage();
@@ -41,6 +43,7 @@ const OrdersTable = () => {
     const isInstructor = currentUser?.role === "instructor";
     const { successMessage, errorMessage } = useToast();
     const [cancellingId, setCancellingId] = useState(null);
+    const { requestDelete } = useDeleteModal();
 
     const titleHead = isEn ? [
         "Order #",
@@ -61,8 +64,6 @@ const OrdersTable = () => {
     ];
 
     const handleCancel = async (orderId) => {
-        if (!confirm(isEn ? "Are you sure you want to cancel this order?" : "هل أنت متأكد من إلغاء هذا الطلب؟")) return;
-
         setCancellingId(orderId);
         const result = await cancelOrderAction(orderId);
 
@@ -74,6 +75,15 @@ const OrdersTable = () => {
         }
 
         setCancellingId(null);
+    };
+
+    const handleCancelRequest = (orderId) => {
+        requestDelete({
+            itemId: orderId,
+            title: isEn ? "Cancel Order" : "إلغاء الطلب",
+            message: isEn ? "Are you sure you want to cancel this order?" : "هل أنت متأكد من إلغاء هذا الطلب؟",
+            confirmLabel: isEn ? "Cancel Order" : "تأكيد الإلغاء",
+        });
     };
 
     if (loading) {
@@ -160,7 +170,7 @@ const OrdersTable = () => {
                                                             {order.status !== "paid" && (
                                                                 <div
                                                                     className="text-error cursor-pointer"
-                                                                    onClick={() => handleCancel(order._id)}
+                                                                    onClick={() => handleCancelRequest(order._id)}
                                                                 >
                                                                     {cancellingId === order._id ? (
                                                                         <span className="text-sm">...</span>
@@ -181,6 +191,7 @@ const OrdersTable = () => {
                     </Table>
 
                     {meta?.hasMore && <LoadMore />}
+                    <DeleteModal onConfirmAction={handleCancel} />
                 </div>
             )}
         </div>

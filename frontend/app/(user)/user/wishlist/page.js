@@ -1,31 +1,21 @@
-"use client";
+import WishlistClientView from "@/components/user/dashboard/wishlist/WishlistClientView";
+import { generateSEOMetadata } from "@/utils/seo";
 
-import PageHeader from "@/components/dashboard/PageHeader";
-import WishlistGrid from "@/components/user/dashboard/wishlist/WishlistGrid";
-import { useLanguage } from "@/providers/LanguageProvider";
+export async function generateMetadata() {
+    return generateSEOMetadata({
+        path: "/user/wishlist",
+        title: {
+            ar: "قائمة المفضلة",
+            en: "My Wishlist",
+        },
+        description: {
+            ar: "استعرض الكورسات والمنتجات المحفوظة في قائمة أمنياتك في أكاديمية قلم.",
+            en: "View saved courses and resources in your Qalam Academy wishlist.",
+        },
+        noIndex: true,
+    });
+}
 
 export default function WishlistPage() {
-    const { language } = useLanguage();
-    const isEn = language === "en";
-
-    return (
-        <div
-            className="
-                glass 
-                rounded-3xl
-                border
-                border-border
-                p-6
-                shadow-sm
-                space-y-6
-            "
-        >
-            <PageHeader
-                title={isEn ? "Wishlist" : "المفضلة"}
-                description={isEn ? "Courses and items you saved to review or purchase later" : "الكورسات التي حفظتها للعودة إليها لاحقاً"}
-            />
-
-            <WishlistGrid />
-        </div>
-    );
+    return <WishlistClientView />;
 }

@@ -2,6 +2,18 @@ import { Suspense } from "react";
 import CouponsTable from "@/components/dashboard/coupons/CouponsTable";
 import CouponsToolbar from "@/components/dashboard/coupons/CouponsToolbar";
 import CouponsHeader from "@/components/dashboard/coupons/CouponsHeader";
+import { generateSEOMetadata } from "@/utils/seo";
+
+export async function generateMetadata() {
+    return generateSEOMetadata({
+        path: "/dashboard/coupons",
+        title: {
+            ar: "إدارة كوبونات الخصم",
+            en: "Manage Coupons",
+        },
+        noIndex: true,
+    });
+}
 
 export default function AdminCoupons () {
     return (

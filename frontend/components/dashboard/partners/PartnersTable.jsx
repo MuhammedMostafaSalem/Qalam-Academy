@@ -12,6 +12,8 @@ import useToast from "@/hooks/useToast";
 import UpdatePartnerModal from "@/components/ui/modal/partner/UpdatePartnerModal";
 import { useLanguage } from "@/providers/LanguageProvider";
 import { useSearchParams } from "next/navigation";
+import DeleteModal from "@/components/ui/modal/DeleteModal";
+import useDeleteModal from "@/hooks/useDeleteModal";
 
 const PartnersTable = () => {
   const { language } = useLanguage();
@@ -23,6 +25,7 @@ const PartnersTable = () => {
   const [deletingId, setDeletingId] = useState(null);
   const [editingPartner, setEditingPartner] = useState(null);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+  const { requestDelete } = useDeleteModal();
 
   useEffect(() => {
     const handlePartnerUpdated = () => {
@@ -39,8 +42,6 @@ const PartnersTable = () => {
     : ["الشريك", "الرابط", "تاريخ الاضافة", "الإجراءات"];
 
   const handleDelete = async (partnerId) => {
-    if (!confirm(isEn ? "Are you sure you want to delete this partner?" : "هل أنت متأكد من حذف هذا الشريك؟")) return;
-
     setDeletingId(partnerId);
     const result = await deletePartnerAction(partnerId);
 
@@ -52,6 +53,14 @@ const PartnersTable = () => {
     }
 
     setDeletingId(null);
+  };
+
+  const handleDeleteRequest = (partnerId) => {
+    requestDelete({
+      itemId: partnerId,
+      title: isEn ? "Delete Partner" : "حذف الشريك",
+      message: isEn ? "Are you sure you want to delete this partner? This action cannot be undone." : "هل أنت متأكد من حذف هذا الشريك؟ لا يمكن التراجع عن هذا الإجراء.",
+    });
   };
 
   const handleEditClick = (partner) => {
@@ -140,7 +149,7 @@ const PartnersTable = () => {
                           onClick={() => handleEditClick(partner)}
                         />
                         <button
-                          onClick={() => handleDelete(partner._id)}
+                          onClick={() => handleDeleteRequest(partner._id)}
                           disabled={deletingId === partner._id}
                           className="text-error cursor-pointer disabled:opacity-50"
                           type="button"
@@ -172,6 +181,7 @@ const PartnersTable = () => {
           refetch();
         }}
       />
+      <DeleteModal onConfirmAction={handleDelete} />
     </div>
   );
 };

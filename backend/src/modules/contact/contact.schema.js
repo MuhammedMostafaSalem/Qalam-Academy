@@ -20,12 +20,12 @@ const contactBaseObject = {
         .email("Invalid email address"),
 
     phone: z
-        .string({
-            required_error: "Phone number is required",
-        })
+        .string()
         .trim()
         .min(8, "Phone number is too short")
-        .max(20, "Phone number is too long"),
+        .max(20, "Phone number is too long")
+        .optional()
+        .or(z.literal("")),
 
     subject: z
         .string({

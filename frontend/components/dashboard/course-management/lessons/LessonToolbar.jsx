@@ -1,15 +1,14 @@
 "use client";
 
 import Section from "@/components/sections/Section";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import {
     HiOutlineMagnifyingGlass,
     HiOutlinePlus,
 } from "react-icons/hi2";
 import { useLanguage } from "@/providers/LanguageProvider";
 
-const LessonToolbar = () => {
-    const { courseId } = useParams();
+const LessonToolbar = ({ courseSlug }) => {
     const router = useRouter();
     const { language } = useLanguage();
     const isEn = language === "en";
@@ -153,7 +152,7 @@ const LessonToolbar = () => {
 
                 {/* Add */}
                 <button
-                    onClick={() => router.push(`/dashboard/courses/${courseId}/lessons/create`)}
+                    onClick={() => router.push(`/dashboard/courses/${courseSlug}/lessons/create`)}
                     className="
                         flex
                         h-12

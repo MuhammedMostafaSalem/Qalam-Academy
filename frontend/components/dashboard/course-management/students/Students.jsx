@@ -1,11 +1,11 @@
 import StudentsTable from "./StudentsTable"
 import StudentsToolbar from "./StudentsToolbar"
 
-const Students = () => {
+const Students = ({ courseId }) => {
     return (
         <>
             <StudentsToolbar />
-            <StudentsTable />
+            <StudentsTable courseId={courseId} />
         </>
     )
 }

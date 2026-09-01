@@ -1,31 +1,17 @@
-"use client";
+import AdminEnrollmentsClientView from "@/components/dashboard/enrollments/AdminEnrollmentsClientView";
+import { generateSEOMetadata } from "@/utils/seo";
 
-import EnrollmentsTable from "@/components/dashboard/enrollments/EnrollmentsTable";
-import EnrollmentsToolbar from "@/components/dashboard/enrollments/EnrollmentsToolbar";
-import PageHeader from "@/components/dashboard/PageHeader";
-import { useLanguage } from "@/providers/LanguageProvider";
+export async function generateMetadata() {
+    return generateSEOMetadata({
+        path: "/dashboard/enrollments",
+        title: {
+            ar: "إدارة الاشتراكات والتسجيلات",
+            en: "Manage Enrollments",
+        },
+        noIndex: true,
+    });
+}
 
-export default function AdminEnrollments() {
-    const { language } = useLanguage();
-    const isEn = language === "en";
-
-    return (
-        <div
-            className="
-                glass 
-                rounded-3xl
-                border
-                border-border
-                p-6
-                shadow-sm
-            "
-        >
-            <PageHeader
-                title={isEn ? "Enrollments" : "الاشتراكات"}
-                description={isEn ? "Manage and monitor all course enrollments" : "ادارة جميع الاشتراكات"}
-            />
-            <EnrollmentsToolbar />
-            <EnrollmentsTable />
-        </div>
-    );
+export default function AdminEnrollmentsPage() {
+    return <AdminEnrollmentsClientView />;
 }

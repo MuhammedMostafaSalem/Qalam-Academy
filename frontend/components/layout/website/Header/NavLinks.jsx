@@ -18,7 +18,7 @@ const NavLinks = ({ isTop, open, onClose, isAuthenticated }) => {
                 className={`hidden
                 lg:flex
                 items-center
-                gap-8
+                gap-5 xl:gap-7
                 ${!isTop ? "glass rounded-full" : ""}
                 px-6 py-2`}
             >

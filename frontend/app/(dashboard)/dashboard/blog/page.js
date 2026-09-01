@@ -2,6 +2,18 @@ import BlogTable from "@/components/dashboard/blog/BlogTable";
 import BlogToolbar from "@/components/dashboard/blog/BlogToolbar";
 import BlogHeader from "@/components/dashboard/blog/BlogHeader";
 import { Suspense } from "react";
+import { generateSEOMetadata } from "@/utils/seo";
+
+export async function generateMetadata() {
+    return generateSEOMetadata({
+        path: "/dashboard/blog",
+        title: {
+            ar: "إدارة المدونة والمقالات",
+            en: "Manage Blog",
+        },
+        noIndex: true,
+    });
+}
 
 export default function AdminBlog () {
     return (

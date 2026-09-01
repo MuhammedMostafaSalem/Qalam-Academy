@@ -8,12 +8,15 @@ import LoadMore from "@/components/shared/LoadMore";
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import useServices from "@/hooks/services/useServices";
-import { deleteServiceAction } from "@/actions/serviceActions";
+import { deleteServiceAction, updateServiceFieldAction } from "@/actions/serviceActions";
 import useToast from "@/hooks/useToast";
 import UpdateServiceModal from "@/components/ui/modal/service/UpdateServiceModal";
 
 import { useLanguage } from "@/providers/LanguageProvider";
 import { useEffect } from "react";
+import DeleteModal from "@/components/ui/modal/DeleteModal";
+import useDeleteModal from "@/hooks/useDeleteModal";
+import StatusDropdown from "@/components/shared/StatusDropdown";
 
 const ServicesTable = () => {
     const { language, localize } = useLanguage();
@@ -25,6 +28,7 @@ const ServicesTable = () => {
     const [deletingId, setDeletingId] = useState(null);
     const [editingService, setEditingService] = useState(null);
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+    const { requestDelete } = useDeleteModal();
 
     useEffect(() => {
         const handleServiceUpdated = () => {
@@ -51,8 +55,6 @@ const ServicesTable = () => {
     ];
 
     const handleDelete = async (serviceId) => {
-        if (!confirm(language === "en" ? "Are you sure you want to delete this service?" : "هل أنت متأكد من حذف هذه الخدمة؟")) return;
-
         setDeletingId(serviceId);
         const result = await deleteServiceAction(serviceId);
 
@@ -64,6 +66,25 @@ const ServicesTable = () => {
         }
 
         setDeletingId(null);
+    };
+
+    const handleDeleteRequest = (serviceId) => {
+        requestDelete({
+            itemId: serviceId,
+            title: isEn ? "Delete Service" : "حذف الخدمة",
+            message: isEn ? "Are you sure you want to delete this service? This action cannot be undone." : "هل أنت متأكد من حذف هذه الخدمة؟ لا يمكن التراجع عن هذا الإجراء.",
+        });
+    };
+
+    const handleUpdateStatus = async (serviceId, isActive) => {
+        const result = await updateServiceFieldAction(serviceId, { isActive });
+
+        if (result.success) {
+            successMessage(result.message || (isEn ? "Service status updated successfully" : "تم تحديث حالة الخدمة بنجاح"));
+            refetch();
+        } else {
+            errorMessage(result.message || (isEn ? "Failed to update service status" : "فشل تحديث حالة الخدمة"));
+        }
     };
 
     const handleEditClick = (service) => {
@@ -135,17 +156,10 @@ const ServicesTable = () => {
                                     </Table.Td>
 
                                     <Table.Td>
-                                        <span
-                                            className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                                                service.isActive
-                                                    ? "bg-success/20 text-success"
-                                                    : "bg-error/20 text-error"
-                                            }`}
-                                        >
-                                            {service.isActive
-                                                ? (language === "en" ? "Active" : "نشط")
-                                                : (language === "en" ? "Inactive" : "غير نشط")}
-                                        </span>
+                                        <StatusDropdown
+                                            isActive={service.isActive}
+                                            onSelect={(newStatus) => handleUpdateStatus(service._id, newStatus)}
+                                        />
                                     </Table.Td>
 
                                     <Table.Td>
@@ -163,7 +177,7 @@ const ServicesTable = () => {
                                                     onClick={() => handleEditClick(service)}
                                                 />
                                                 <button
-                                                    onClick={() => handleDelete(service._id)}
+                                                    onClick={() => handleDeleteRequest(service._id)}
                                                     disabled={deletingId === service._id}
                                                     className="text-error cursor-pointer disabled:opacity-50"
                                                     type="button"
@@ -196,6 +210,7 @@ const ServicesTable = () => {
                     refetch();
                 }}
             />
+            <DeleteModal onConfirmAction={handleDelete} />
         </div>
     );
 };

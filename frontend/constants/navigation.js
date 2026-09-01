@@ -48,4 +48,11 @@ export const navigation = [
         },
         href: "/blog",
     },
+    {
+        title: {
+            ar: "تواصل معنا",
+            en: "Contact",
+        },
+        href: "/contact",
+    },
 ];

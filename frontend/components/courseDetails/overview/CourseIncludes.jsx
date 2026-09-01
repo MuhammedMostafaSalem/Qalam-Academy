@@ -13,7 +13,7 @@ const CourseIncludes = ({ course }) => {
 
     const duration = course?.duration
         ? (typeof course.duration === "number"
-            ? `${course.duration} ${isEn ? "mins" : "دقيقة"}`
+            ? `${course.duration} ${isEn ? "hours" : "ساعة"}`
             : course.duration)
         : "—";
 

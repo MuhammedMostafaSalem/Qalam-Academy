@@ -1,34 +1,21 @@
-"use client";
+import MyCoursesClientView from "@/components/user/dashboard/courses/MyCoursesClientView";
+import { generateSEOMetadata } from "@/utils/seo";
 
-import PageHeader from "@/components/dashboard/PageHeader";
-import CoursesToolbar from "@/components/user/dashboard/courses/CoursesToolbar";
-import MyCoursesGrid from "@/components/user/dashboard/courses/MyCoursesGrid";
-import { useLanguage } from "@/providers/LanguageProvider";
+export async function generateMetadata() {
+    return generateSEOMetadata({
+        path: "/user/my-courses",
+        title: {
+            ar: "دوراتي التعليمية",
+            en: "My Courses",
+        },
+        description: {
+            ar: "استعرض وتابع تقدمك في جميع الكورسات التي اشتركت بها في أكاديمية قلم.",
+            en: "View and track progress across all your enrolled courses on Qalam Academy.",
+        },
+        noIndex: true,
+    });
+}
 
 export default function MyCoursesPage() {
-    const { language } = useLanguage();
-    const isEn = language === "en";
-
-    return (
-        <div
-            className="
-                glass 
-                rounded-3xl
-                border
-                border-border
-                p-6
-                shadow-sm
-                space-y-6
-            "
-        >
-            <PageHeader
-                title={isEn ? "My Courses" : "كورساتي"}
-                description={isEn ? "All courses you are enrolled in with real-time progress tracking" : "جميع الكورسات التي اشتركت بها وتستطيع متابعة تقدمك فيها"}
-            />
-
-            <CoursesToolbar />
-
-            <MyCoursesGrid />
-        </div>
-    );
+    return <MyCoursesClientView />;
 }

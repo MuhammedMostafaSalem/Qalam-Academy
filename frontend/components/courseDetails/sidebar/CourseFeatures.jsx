@@ -13,7 +13,7 @@ const CourseFeatures = ({ course }) => {
     const isEn = language === "en";
 
     const duration = course?.duration
-        ? (typeof course.duration === "number" ? `${course.duration} ${isEn ? "mins" : "دقيقة"}` : course.duration)
+        ? (typeof course.duration === "number" ? `${course.duration} ${isEn ? "hours" : "ساعة"}` : course.duration)
         : "—";
 
     const countVal = course?.totalLessons ?? course?.lessonsCount ?? course?.lessons?.length;

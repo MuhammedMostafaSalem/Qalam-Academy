@@ -2,9 +2,12 @@ import { deleteUserAction, updateUserByAdminAction } from "@/actions/userActions
 import { openModalDelete } from "@/store/slices/modalDeleteSlice";
 import { showToast } from "@/store/slices/toastSlice";
 import { useDispatch } from "react-redux";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const useUserActions = (refetch) => {
     const dispatch = useDispatch();
+    const { language } = useLanguage();
+    const isEn = language === "en";
 
     const handleUpdateField = async (userId, field, value) => {
         const res = await updateUserByAdminAction(userId, { [field]: value });
@@ -43,8 +46,10 @@ const useUserActions = (refetch) => {
 
     const handleDeleteRequest = (user) => {
         dispatch(openModalDelete({
-            title: "حذف المستخدم",
-            message: `هل أنت متأكد من حذف ${user.firstName} ${user.lastName}؟ لا يمكن التراجع عن هذا الإجراء.`,
+            title: isEn ? "Delete User" : "حذف المستخدم",
+            message: isEn
+                ? `Are you sure you want to delete ${user.firstName} ${user.lastName}? This action cannot be undone.`
+                : `هل أنت متأكد من حذف ${user.firstName} ${user.lastName}؟ لا يمكن التراجع عن هذا الإجراء.`,
             itemId: user._id,
         }));
     }

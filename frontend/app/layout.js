@@ -29,16 +29,11 @@ const inter = Inter({
   variable: "--font-inter",
 });
 
-export async function generateMetadata() {
-  const settingsResult = await getSettingsAction();
-  const settings = settingsResult?.success ? settingsResult.data : {};
+import { generateSEOMetadata, generateOrganizationJsonLd, generateWebSiteJsonLd } from "@/utils/seo";
+import JsonLd from "@/components/shared/JsonLd";
 
-  return {
-    title: settings?.seoTitle || settings?.siteName || "Qalam Academy",
-    description: settings?.seoDescription || settings?.siteDescription || "Educational Platform",
-    keywords: settings?.seoKeywords || [],
-    icons: settings?.favicon ? { icon: settings.favicon } : undefined,
-  };
+export async function generateMetadata() {
+  return generateSEOMetadata({ isRoot: true });
 }
 
 export default async function RootLayout({ children }) {
@@ -80,6 +75,8 @@ export default async function RootLayout({ children }) {
       }}
     >
       <body className={`${cairo.variable} ${inter.variable}`}>
+        <JsonLd data={generateOrganizationJsonLd(settingsResult?.data, lang)} />
+        <JsonLd data={generateWebSiteJsonLd(settingsResult?.data, lang)} />
         <StoreProvider>
           <LanguageProvider initialLang={lang}>
             <SettingsProvider initialSettings={settingsResult?.success ? settingsResult.data : null}>

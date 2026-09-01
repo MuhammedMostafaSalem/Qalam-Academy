@@ -7,6 +7,7 @@ const modalSlice = createSlice({
         title: "",
         message: "",
         itemId: null,
+        confirmLabel: "",
     },
     reducers: {
         openModalDelete: (state, action) => {
@@ -14,12 +15,14 @@ const modalSlice = createSlice({
             state.title = action.payload.title;
             state.message = action.payload.message;
             state.itemId = action.payload.itemId;
+            state.confirmLabel = action.payload.confirmLabel || "";
         },
         closeModalDelete: (state) => {
             state.isOpen = false;
             state.title = "";
             state.message = "";
             state.itemId = null;
+            state.confirmLabel = "";
         },
     },
 });

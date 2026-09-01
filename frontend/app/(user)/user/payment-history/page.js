@@ -1,34 +1,21 @@
-"use client";
+import PaymentHistoryClientView from "@/components/user/dashboard/payment-hاistory/PaymentHistoryClientView";
+import { generateSEOMetadata } from "@/utils/seo";
 
-import PageHeader from "@/components/dashboard/PageHeader";
-import PaymentHistoryTable from "@/components/user/dashboard/payment-hاistory/PaymentHistoryTable";
-import PaymentHistoryToolbar from "@/components/user/dashboard/payment-hاistory/PaymentHistoryToolbar";
-import { useLanguage } from "@/providers/LanguageProvider";
+export async function generateMetadata() {
+    return generateSEOMetadata({
+        path: "/user/payment-history",
+        title: {
+            ar: "سجل المدفوعات",
+            en: "Payment History",
+        },
+        description: {
+            ar: "سجل بجميع العمليات المالية والمدفوعات الخاصة بحسابك في أكاديمية قلم.",
+            en: "Review all transactions, invoices, and payment logs on Qalam Academy.",
+        },
+        noIndex: true,
+    });
+}
 
 export default function PaymentHistoryPage() {
-    const { language } = useLanguage();
-    const isEn = language === "en";
-
-    return (
-        <div
-            className="
-                glass 
-                rounded-3xl
-                border
-                border-border
-                p-6
-                shadow-sm
-                space-y-6
-            "
-        >
-            <PageHeader
-                title={isEn ? "Payment History" : "سجل المدفوعات"}
-                description={isEn ? "View all your payment transactions, invoice amounts, and payment methods" : "استعرض جميع عمليات الدفع، حالتها، ووسائل الدفع المستخدمة"}
-            />
-
-            <PaymentHistoryToolbar />
-
-            <PaymentHistoryTable />
-        </div>
-    );
+    return <PaymentHistoryClientView />;
 }

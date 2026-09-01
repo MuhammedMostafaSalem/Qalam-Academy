@@ -12,14 +12,17 @@ import {
 import { MdOutlineDelete, MdOutlineEdit } from "react-icons/md";
 import { getLessonsAction, deleteLessonAction } from "@/actions/lessonActions";
 import { useLanguage } from "@/providers/LanguageProvider";
+import DeleteModal from "@/components/ui/modal/DeleteModal";
+import useDeleteModal from "@/hooks/useDeleteModal";
 
 
-const LessonsTable = ({ courseId }) => {
+const LessonsTable = ({ courseId, courseSlug }) => {
     const { language, localize } = useLanguage();
     const isEn = language === "en";
     const router = useRouter();
     const [lessons, setLessons] = useState([]);
     const [loading, setLoading] = useState(true);
+    const { requestDelete } = useDeleteModal();
 
     const fetchLessons = async () => {
         if (!courseId) return;
@@ -36,11 +39,18 @@ const LessonsTable = ({ courseId }) => {
     }, [courseId, language]);
 
     const handleDelete = async (id) => {
-        if (!confirm(isEn ? "Are you sure you want to delete this lesson?" : "هل أنت متأكد من حذف هذا الدرس؟")) return;
         const result = await deleteLessonAction(id);
         if (result.success) {
             fetchLessons();
         }
+    };
+
+    const handleDeleteRequest = (id) => {
+        requestDelete({
+            itemId: id,
+            title: isEn ? "Delete Lesson" : "حذف الدرس",
+            message: isEn ? "Are you sure you want to delete this lesson? This action cannot be undone." : "هل أنت متأكد من حذف هذا الدرس؟ لا يمكن التراجع عن هذا الإجراء.",
+        });
     };
 
     if (loading) {
@@ -197,17 +207,17 @@ const LessonsTable = ({ courseId }) => {
                                         actions={
                                             <div className="flex gap-3 justify-center items-center text-[20px]">
                                                 <HiOutlineEye
-                                                    onClick={() => router.push(`/dashboard/courses/${courseId}/lessons/${lesson._id}`)}
+                                                    onClick={() => router.push(`/dashboard/courses/${courseSlug}/lessons/${lesson._id}`)}
                                                     className="text-primary cursor-pointer hover:opacity-80 transition"
                                                     title={isEn ? "View Lesson" : "عرض الدرس"}
                                                 />
                                                 <MdOutlineEdit
-                                                    onClick={() => router.push(`/dashboard/courses/${courseId}/lessons/${lesson._id}/edit`)}
+                                                    onClick={() => router.push(`/dashboard/courses/${courseSlug}/lessons/${lesson._id}/edit`)}
                                                     className="text-primary cursor-pointer hover:opacity-80 transition"
                                                     title={isEn ? "Edit Lesson" : "تعديل الدرس"}
                                                 />
                                                 <MdOutlineDelete
-                                                    onClick={() => handleDelete(lesson._id)}
+                                                    onClick={() => handleDeleteRequest(lesson._id)}
                                                     className="text-error cursor-pointer hover:opacity-80 transition"
                                                     title={isEn ? "Delete Lesson" : "حذف الدرس"}
                                                 />
@@ -220,6 +230,7 @@ const LessonsTable = ({ courseId }) => {
                     }
                 </Table.Body>
             </Table>
+            <DeleteModal onConfirmAction={handleDelete} />
         </Section>
     );
 };

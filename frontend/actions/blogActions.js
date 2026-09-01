@@ -155,6 +155,31 @@ export async function updateBlogAction(id, prevState, formData) {
     }
 }
 
+// Update a single blog field (used by inline dashboard controls)
+export async function updateBlogFieldAction(id, updateData) {
+    try {
+        const response = await authApi(`/blogs/${id}`, {
+            method: "PATCH",
+            body: JSON.stringify(updateData),
+        });
+
+        revalidatePath("/dashboard/blog");
+        revalidatePath("/blog");
+
+        return {
+            success: true,
+            data: response.data,
+            message: response.message || "تم تعديل المقال بنجاح",
+        };
+    } catch (error) {
+        return {
+            success: false,
+            message: error?.message || "فشل تعديل المقال",
+            errors: error?.errors || null,
+        };
+    }
+}
+
 // Delete Blog Post
 export async function deleteBlogAction(id) {
     try {

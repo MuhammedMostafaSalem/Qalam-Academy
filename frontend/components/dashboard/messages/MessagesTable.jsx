@@ -9,6 +9,8 @@ import useMessages from "@/hooks/messages/useMessages";
 import { deleteMessageAction } from "@/actions/contactActions";
 import useToast from "@/hooks/useToast";
 import { useLanguage } from "@/providers/LanguageProvider";
+import DeleteModal from "@/components/ui/modal/DeleteModal";
+import useDeleteModal from "@/hooks/useDeleteModal";
 
 const MessagesTable = ({ setMessagesLength }) => {
     const { language } = useLanguage();
@@ -17,6 +19,7 @@ const MessagesTable = ({ setMessagesLength }) => {
     const { messages, loading, error, refetch } = useMessages();
     const { successMessage, errorMessage } = useToast();
     const [deletingId, setDeletingId] = useState(null);
+    const { requestDelete } = useDeleteModal();
 
     useEffect(() => {
         if (messages) {
@@ -27,8 +30,6 @@ const MessagesTable = ({ setMessagesLength }) => {
     }, [messages, setMessagesLength]);
 
     const handleDelete = async (messageId) => {
-        if (!confirm(isEn ? "Are you sure you want to delete this message?" : "هل أنت متأكد من حذف هذه الرسالة؟")) return;
-
         setDeletingId(messageId);
         const result = await deleteMessageAction(messageId);
 
@@ -40,6 +41,14 @@ const MessagesTable = ({ setMessagesLength }) => {
         }
 
         setDeletingId(null);
+    };
+
+    const handleDeleteRequest = (messageId) => {
+        requestDelete({
+            itemId: messageId,
+            title: isEn ? "Delete Message" : "حذف الرسالة",
+            message: isEn ? "Are you sure you want to delete this message? This action cannot be undone." : "هل أنت متأكد من حذف هذه الرسالة؟ لا يمكن التراجع عن هذا الإجراء.",
+        });
     };
 
     if (loading) {
@@ -86,7 +95,7 @@ const MessagesTable = ({ setMessagesLength }) => {
                     <Table.Body>
                         {messages.map((message) => (
                             <Table.Row key={message._id}>
-                                <Table.Td>{message.name || "—"}</Table.Td>
+                                <Table.Td>{message.fullName || message.name || "—"}</Table.Td>
 
                                 <Table.Td>{message.email || "—"}</Table.Td>
 
@@ -113,7 +122,7 @@ const MessagesTable = ({ setMessagesLength }) => {
                                         actions={
                                             <div className="flex justify-center items-center gap-4 text-[20px]">
                                                 <button
-                                                    onClick={() => handleDelete(message._id)}
+                                                    onClick={() => handleDeleteRequest(message._id)}
                                                     disabled={deletingId === message._id}
                                                     className="cursor-pointer text-error disabled:opacity-50"
                                                     type="button"
@@ -129,6 +138,7 @@ const MessagesTable = ({ setMessagesLength }) => {
                     </Table.Body>
                 </Table>
             </div>
+            <DeleteModal onConfirmAction={handleDelete} />
         </Section>
     );
 };

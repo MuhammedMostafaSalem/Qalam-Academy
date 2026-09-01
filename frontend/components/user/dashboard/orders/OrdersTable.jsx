@@ -17,14 +17,33 @@ const statusColors = {
     "refunded": "bg-card-hover text-text-secondary",
 };
 
+const normalizeItemType = (itemType) => String(itemType || "").trim().toLowerCase();
+
 const getOrderType = (cartItems = []) => {
-    const hasCourse = cartItems.some((item) => item.itemType === "course");
-    const hasProduct = cartItems.some((item) => item.itemType === "product");
+    const itemTypes = cartItems.map((item) => normalizeItemType(item.itemType));
+    const hasCourse = itemTypes.includes("course");
+    const hasProduct = itemTypes.includes("product");
     if (hasCourse && hasProduct) return "mixed";
     if (hasCourse) return "course";
     if (hasProduct) return "product";
-    return "product";
+    return "unknown";
 };
+
+const getItemsCount = (cartItems = []) =>
+    cartItems.reduce((total, item) => total + (Number(item.count) || 1), 0);
+
+const expandOrdersToRows = (orders = []) =>
+    orders.flatMap((order) => {
+        if (!Array.isArray(order.cartItems) || order.cartItems.length === 0) {
+            return [{ order, cartItem: null, itemIndex: 0 }];
+        }
+
+        return order.cartItems.map((cartItem, itemIndex) => ({
+            order,
+            cartItem,
+            itemIndex,
+        }));
+    });
 
 const OrdersTable = () => {
     const { language } = useLanguage();
@@ -45,6 +64,11 @@ const OrdersTable = () => {
             label: isEn ? "Mixed" : "مختلط",
             icon: HiOutlineSquares2X2,
             color: "bg-secondary/10 text-secondary",
+        },
+        unknown: {
+            label: isEn ? "Unknown" : "غير معروف",
+            icon: HiOutlineSquares2X2,
+            color: "bg-card-hover text-text-secondary",
         },
     };
 
@@ -95,26 +119,28 @@ const OrdersTable = () => {
     }
 
     // Filter orders based on URL searchParams
-    const filteredOrders = orders.filter((order) => {
+    const orderRows = expandOrdersToRows(orders);
+    const filteredRows = orderRows.filter(({ order, cartItem }) => {
         const orderIdStr = (order._id || "").toLowerCase();
         const matchesSearch = !searchQuery || orderIdStr.includes(searchQuery);
 
-        const orderType = getOrderType(order.cartItems);
+        const orderType = getOrderType(cartItem ? [cartItem] : order.cartItems);
         const matchesType = typeFilter === "all" || orderType === typeFilter;
 
         let matchesStatus = true;
+        const orderStatus = order.status || order.paymentStatus;
         if (statusFilter === "paid") {
-            matchesStatus = order.isPaid || order.paymentStatus === "paid";
+            matchesStatus = order.isPaid || orderStatus === "paid";
         } else if (statusFilter === "pending") {
-            matchesStatus = !order.isPaid && order.paymentStatus === "pending";
+            matchesStatus = !order.isPaid && orderStatus === "pending";
         } else if (statusFilter === "cancelled") {
-            matchesStatus = order.paymentStatus === "cancelled";
+            matchesStatus = orderStatus === "cancelled";
         }
 
         return matchesSearch && matchesType && matchesStatus;
     });
 
-    if (filteredOrders.length === 0) {
+    if (filteredRows.length === 0) {
         return (
         <div className="py-10 text-center text-text-secondary">
                 {isEn ? "No orders matched your search and filter criteria" : "لا توجد طلبات تطابق خيارات التصفية والبحث المختارة"}
@@ -136,15 +162,20 @@ const OrdersTable = () => {
             </Table.Head>
 
             <Table.Body>
-                {filteredOrders.map((order, index) => {
-                    const typeKey = getOrderType(order.cartItems);
-                    const Type = typeConfig[typeKey];
-                    const statusLabel = mapPaymentStatus(order.paymentStatus);
-                    const statusClass = statusColors[order.paymentStatus] || "bg-card-hover text-text-secondary";
+                {filteredRows.map(({ order, cartItem, itemIndex }, index) => {
+                    const typeKey = getOrderType(cartItem ? [cartItem] : order.cartItems);
+                    const Type = typeConfig[typeKey] || typeConfig.unknown;
+                    const orderStatus = order.status || order.paymentStatus;
+                    const statusLabel = mapPaymentStatus(orderStatus);
+                    const statusClass = statusColors[orderStatus] || "bg-card-hover text-text-secondary";
+                    const itemCount = getItemsCount(cartItem ? [cartItem] : []);
+                    const rowTotal = cartItem
+                        ? (Number(cartItem.price) || 0) * itemCount
+                        : order.totalOrderPrice;
 
                     return (
                         <Table.Row
-                            key={order._id || index}
+                            key={`${order._id || index}-${itemIndex}`}
                         >
                             <Table.Td>
                                 #{order._id?.slice(-6).toUpperCase()}
@@ -160,11 +191,11 @@ const OrdersTable = () => {
                             </Table.Td>
 
                             <Table.Td>
-                                {order.cartItems?.length ?? 0}
+                                {itemCount}
                             </Table.Td>
 
                             <Table.Td>
-                                {order.totalOrderPrice} {isEn ? "EGP" : "ج.م"}
+                                {rowTotal} {isEn ? "EGP" : "ج.م"}
                             </Table.Td>
 
                             <Table.Td>

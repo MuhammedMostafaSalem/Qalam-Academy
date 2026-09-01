@@ -180,12 +180,15 @@ const CourseInfoForm = ({ courseId }) => {
 
                 <div>
                     <label className="mb-2 block font-medium">
-                        {isEn ? "Course Duration" : "مدة الكورس"}
+                        {isEn ? "Course Duration (Hours)" : "مدة الكورس (بالساعات)"}
                     </label>
                     <input
                         name="duration"
+                        type="number"
+                        min="0"
+                        step="any"
                         defaultValue={course?.duration}
-                        placeholder={isEn ? "e.g. 28 hours" : "مثال: 28 ساعة"}
+                        placeholder={isEn ? "e.g. 28" : "مثال: 28"}
                         className={inputClass}
                     />
                 </div>

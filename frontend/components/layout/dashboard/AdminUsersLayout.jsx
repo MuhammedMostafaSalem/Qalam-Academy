@@ -7,10 +7,13 @@ import FullPageLoader from "@/components/ui/FullPageLoader";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import useAdminUsers from "@/hooks/users/useAdminUsers";
 import { useLanguage } from "@/providers/LanguageProvider";
+import AddUserModal from "@/components/ui/modal/user/AddUserModal";
+import { useState } from "react";
 
 const AdminUsersLayout = () => {
     const { language } = useLanguage();
     const isEn = language === "en";
+    const [isAddUserOpen, setIsAddUserOpen] = useState(false);
 
     const {
         users,
@@ -43,6 +46,8 @@ const AdminUsersLayout = () => {
                 <PageHeader
                     title={isEn ? "Users" : "المستخدمين"}
                     description={isEn ? "Manage all users with dashboard access and roles" : "ادارة جميع المستخدمين الذين لديهم صلاحية الوصول الى لوحة التحكم"}
+                    button={isEn ? "Add User" : "إضافة مستخدم"}
+                    onButtonClick={() => setIsAddUserOpen(true)}
                 />
 
                 <UsersToolbar
@@ -68,6 +73,12 @@ const AdminUsersLayout = () => {
                         />
                     )
                 }
+
+                <AddUserModal
+                    isOpen={isAddUserOpen}
+                    onClose={() => setIsAddUserOpen(false)}
+                    onSuccess={fetchUsers}
+                />
             </div>
         </ProtectedRoute>
     );

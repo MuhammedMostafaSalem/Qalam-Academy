@@ -2,6 +2,35 @@ import LessonLayout from "@/components/lesson/LessonLayout";
 import { getLessonByIdAction, getCourseDetailsAction } from "@/actions/lessonActions";
 import { getCourseProgressAction } from "@/actions/progressActions";
 import { notFound } from "next/navigation";
+import { generateSEOMetadata } from "@/utils/seo";
+
+export async function generateMetadata({ params }) {
+    const resolvedParams = await params;
+    const { slug, lessonId } = resolvedParams || {};
+
+    if (!lessonId) {
+        return generateSEOMetadata({ noIndex: true });
+    }
+
+    try {
+        const [lessonResult, courseResult] = await Promise.all([
+            getLessonByIdAction(lessonId),
+            slug ? getCourseDetailsAction(slug) : Promise.resolve(null),
+        ]);
+        const lesson = lessonResult?.success ? lessonResult.data : null;
+        const course = courseResult?.success ? (courseResult.data?.course || courseResult.data) : null;
+
+        const lessonTitle = lesson?.title || "الدرس";
+        const courseTitle = course?.title ? ` - ${typeof course.title === "object" ? (course.title.ar || course.title.en) : course.title}` : "";
+
+        return generateSEOMetadata({
+            title: `${lessonTitle}${courseTitle}`,
+            noIndex: true,
+        });
+    } catch {
+        return generateSEOMetadata({ noIndex: true });
+    }
+}
 
 export default async function LessonPage({ params }) {
     const resolvedParams = await params;

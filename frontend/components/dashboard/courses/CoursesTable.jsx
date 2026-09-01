@@ -5,25 +5,31 @@ import { MdOutlineDelete, MdOutlineEdit } from "react-icons/md";
 import ActionsTable from "@/components/shared/ActionsTable";
 import LoadMore from "@/components/shared/LoadMore";
 import CardTable from "@/components/shared/CardTable";
+import StatusDropdown from "@/components/shared/StatusDropdown";
 import Link from "next/link";
 import useCourses from "@/hooks/courses/useCourses";
 import { useState } from "react";
-import { deleteCourseAction } from "@/actions/courseActions";
+import { deleteCourseAction, updateCourseFieldAction } from "@/actions/courseActions";
 import useToast from "@/hooks/useToast";
 import { useSearchParams } from "next/navigation";
 
 import { useAuth } from "@/providers/AuthProvider";
 
 import { useLanguage } from "@/providers/LanguageProvider";
+import DeleteModal from "@/components/ui/modal/DeleteModal";
+import useDeleteModal from "@/hooks/useDeleteModal";
 
 const CoursesTable = () => {
     const { language, localize } = useLanguage();
+    const isEn = language === "en";
     const searchParams = useSearchParams();
     const queryString = searchParams.toString();
     const { courses, loading, error, meta, refetch } = useCourses(queryString);
     const { user } = useAuth();
     const { successMessage, errorMessage } = useToast();
     const [deletingId, setDeletingId] = useState(null);
+    const [updatingId, setUpdatingId] = useState(null);
+    const { requestDelete } = useDeleteModal();
 
     const isInstructor = user?.role === "instructor";
     const filteredCourses = isInstructor && user?._id
@@ -34,12 +40,14 @@ const CoursesTable = () => {
           )
         : courses;
 
-    const titleHead = language === "en" ? [
+    const titleHead = isEn ? [
         "Course",
         "Instructor",
         "Category",
         "Level",
         "Price",
+        "Status",
+        "Featured",
         "Date Added",
         "Actions",
     ] : [
@@ -48,31 +56,56 @@ const CoursesTable = () => {
         "التصنيف",
         "المستوى",
         "السعر",
+        "الحالة",
+        "مميز",
         "تاريخ الاضافة",
         "الإجراءات",
     ];
 
     const handleDelete = async (courseId) => {
-        if (!confirm(language === "en" ? "Are you sure you want to delete this course?" : "هل أنت متأكد من حذف هذا الكورس؟")) return;
-
         setDeletingId(courseId);
         const result = await deleteCourseAction(courseId);
 
         if (result.success) {
-            successMessage(result.message || (language === "en" ? "Course deleted successfully" : "تم حذف الكورس بنجاح"));
+            successMessage(result.message || (isEn ? "Course deleted successfully" : "تم حذف الكورس بنجاح"));
             refetch();
         } else {
-            errorMessage(result.message || (language === "en" ? "Failed to delete course" : "فشل حذف الكورس"));
+            errorMessage(result.message || (isEn ? "Failed to delete course" : "فشل حذف الكورس"));
         }
 
         setDeletingId(null);
+    };
+
+    const handleDeleteRequest = (courseId) => {
+        requestDelete({
+            itemId: courseId,
+            title: isEn ? "Delete Course" : "حذف الكورس",
+            message: isEn ? "Are you sure you want to delete this course? This action cannot be undone." : "هل أنت متأكد من حذف هذا الكورس؟ لا يمكن التراجع عن هذا الإجراء.",
+        });
+    };
+
+    const handleUpdateField = async (courseId, field, value) => {
+        setUpdatingId(`${courseId}-${field}`);
+        const result = await updateCourseFieldAction(courseId, { [field]: value });
+
+        if (result.success) {
+            const fieldLabel = field === "isPublished"
+                ? (isEn ? "Course publish status" : "حالة نشر الكورس")
+                : (isEn ? "Course featured status" : "حالة تمييز الكورس");
+            successMessage(result.message || (isEn ? `${fieldLabel} updated successfully` : `تم تحديث ${fieldLabel} بنجاح`));
+            refetch();
+        } else {
+            errorMessage(result.message || (isEn ? "Failed to update course" : "فشل تحديث الكورس"));
+        }
+
+        setUpdatingId(null);
     };
 
     if (loading) {
         return (
             <div className="mt-[20px] text-center py-10">
                 <p className="text-text-secondary">
-                    {language === "en" ? "Loading courses..." : "جاري تحميل الكورسات..."}
+                    {isEn ? "Loading courses..." : "جاري تحميل الكورسات..."}
                 </p>
             </div>
         );
@@ -90,104 +123,127 @@ const CoursesTable = () => {
         return (
             <div className="mt-[20px] text-center py-10">
                 <p className="text-text-secondary">
-                    {language === "en" ? "No courses available" : "لا توجد كورسات متاحة"}
+                    {isEn ? "No courses available" : "لا توجد كورسات متاحة"}
                 </p>
             </div>
         );
     }
 
-    const currencyText = language === "en" ? "EGP" : "ج.م";
+    const currencyText = isEn ? "EGP" : "ج.م";
 
     return (
         <div className="mt-[20px]">
-            <Table>
-                <Table.Head>
-                    <Table.Row>
-                        {titleHead.map((title, index) => (
-                            <Table.Th key={index}>{title}</Table.Th>
-                        ))}
-                    </Table.Row>
-                </Table.Head>
-
-                <Table.Body>
-                    {filteredCourses.map((course) => (
-                        <Table.Row key={course._id}>
-                            <Table.Td>
-                                <Link href={`/dashboard/courses/${course._id}`}>
-                                    <CardTable
-                                        data={{
-                                            id: course._id,
-                                            image: course.thumbnail,
-                                            name: localize(course.title),
-                                            description: localize(course.description),
-                                        }}
-                                    />
-                                </Link>
-                            </Table.Td>
-
-                            <Table.Td>
-                                {course.instructor?.firstName
-                                    ? `${course.instructor.firstName || ""} ${course.instructor.lastName || ""}`.trim()
-                                    : (language === "en" ? "Unassigned" : "غير محدد")}
-                            </Table.Td>
-
-                            <Table.Td>
-                                {localize(course.category?.title || course.category?.name || course.category, language === "en" ? "Uncategorized" : "غير مصنف")}
-                            </Table.Td>
-
-                            <Table.Td>
-                                {course.level === "beginner" && (language === "en" ? "Beginner" : "مبتدئ")}
-                                {course.level === "intermediate" && (language === "en" ? "Intermediate" : "متوسط")}
-                                {course.level === "advanced" && (language === "en" ? "Advanced" : "متقدم")}
-                            </Table.Td>
-
-                            <Table.Td>
-                                {course.discountPrice > 0 ? (
-                                    <div className="flex flex-col">
-                                        <span className="text-primary font-bold">
-                                            {course.discountPrice} {currencyText}
-                                        </span>
-                                        <span className="text-text-muted text-sm line-through">
-                                            {course.price} {currencyText}
-                                        </span>
-                                    </div>
-                                ) : (
-                                    <span>{course.price} {currencyText}</span>
-                                )}
-                            </Table.Td>
-
-                            <Table.Td>
-                                {new Date(course.createdAt).toLocaleDateString(language === "en" ? "en-US" : "ar-EG")}
-                            </Table.Td>
-
-                            <Table.Td>
-                                <ActionsTable
-                                    actions={
-                                        <div className="flex gap-3 justify-center items-center text-[20px]">
-                                            <Link
-                                                href={`/dashboard/courses/edit/${course._id}`}
-                                                className="text-primary cursor-pointer"
-                                            >
-                                                <MdOutlineEdit />
-                                            </Link>
-                                            <button
-                                                onClick={() => handleDelete(course._id)}
-                                                disabled={deletingId === course._id}
-                                                className="text-error cursor-pointer disabled:opacity-50"
-                                                type="button"
-                                            >
-                                                <MdOutlineDelete />
-                                            </button>
-                                        </div>
-                                    }
-                                />
-                            </Table.Td>
+            <div className="overflow-x-auto overflow-y-hidden">
+                <Table>
+                    <Table.Head>
+                        <Table.Row>
+                            {titleHead.map((title, index) => (
+                                <Table.Th key={index}>{title}</Table.Th>
+                            ))}
                         </Table.Row>
-                    ))}
-                </Table.Body>
-            </Table>
+                    </Table.Head>
+
+                    <Table.Body>
+                        {filteredCourses.map((course) => (
+                            <Table.Row key={course._id}>
+                                <Table.Td>
+                                    <Link href={`/dashboard/courses/${course.slug || course._id}`}>
+                                        <CardTable
+                                            data={{
+                                                id: course._id,
+                                                image: course.thumbnail,
+                                                name: localize(course.title),
+                                                description: localize(course.description),
+                                            }}
+                                        />
+                                    </Link>
+                                </Table.Td>
+
+                                <Table.Td>
+                                    {course.instructor?.firstName
+                                        ? `${course.instructor.firstName || ""} ${course.instructor.lastName || ""}`.trim()
+                                        : (isEn ? "Unassigned" : "غير محدد")}
+                                </Table.Td>
+
+                                <Table.Td>
+                                    {localize(course.category?.title || course.category?.name || course.category, isEn ? "Uncategorized" : "غير مصنف")}
+                                </Table.Td>
+
+                                <Table.Td>
+                                    {course.level === "beginner" && (isEn ? "Beginner" : "مبتدئ")}
+                                    {course.level === "intermediate" && (isEn ? "Intermediate" : "متوسط")}
+                                    {course.level === "advanced" && (isEn ? "Advanced" : "متقدم")}
+                                </Table.Td>
+
+                                <Table.Td>
+                                    {course.discountPrice > 0 ? (
+                                        <div className="flex flex-col">
+                                            <span className="text-primary font-bold">
+                                                {course.discountPrice} {currencyText}
+                                            </span>
+                                            <span className="text-text-muted text-sm line-through">
+                                                {course.price} {currencyText}
+                                            </span>
+                                        </div>
+                                    ) : (
+                                        <span>{course.price} {currencyText}</span>
+                                    )}
+                                </Table.Td>
+
+                                <Table.Td>
+                                    <StatusDropdown
+                                        isActive={Boolean(course.isPublished)}
+                                        activeLabel={isEn ? "Published" : "منشور"}
+                                        inactiveLabel={isEn ? "Draft" : "مسودة"}
+                                        onSelect={(newStatus) => handleUpdateField(course._id, "isPublished", newStatus)}
+                                        disabled={updatingId === `${course._id}-isPublished`}
+                                    />
+                                </Table.Td>
+
+                                <Table.Td>
+                                    <StatusDropdown
+                                        isActive={Boolean(course.isFeatured)}
+                                        activeLabel={isEn ? "Featured" : "مميز"}
+                                        inactiveLabel={isEn ? "Standard" : "عادي"}
+                                        onSelect={(newStatus) => handleUpdateField(course._id, "isFeatured", newStatus)}
+                                        disabled={updatingId === `${course._id}-isFeatured`}
+                                    />
+                                </Table.Td>
+
+                                <Table.Td>
+                                    {new Date(course.createdAt).toLocaleDateString(isEn ? "en-US" : "ar-EG")}
+                                </Table.Td>
+
+                                <Table.Td>
+                                    <ActionsTable
+                                        actions={
+                                            <div className="flex gap-3 justify-center items-center text-[20px]">
+                                                <Link
+                                                    href={`/dashboard/courses/edit/${course.slug || course._id}`}
+                                                    className="text-primary cursor-pointer"
+                                                >
+                                                    <MdOutlineEdit />
+                                                </Link>
+                                                <button
+                                                    onClick={() => handleDeleteRequest(course._id)}
+                                                    disabled={deletingId === course._id}
+                                                    className="text-error cursor-pointer disabled:opacity-50"
+                                                    type="button"
+                                                >
+                                                    <MdOutlineDelete />
+                                                </button>
+                                            </div>
+                                        }
+                                    />
+                                </Table.Td>
+                            </Table.Row>
+                        ))}
+                    </Table.Body>
+                </Table>
+            </div>
 
             {meta && meta.hasMore && <LoadMore />}
+            <DeleteModal onConfirmAction={handleDelete} />
         </div>
     );
 };

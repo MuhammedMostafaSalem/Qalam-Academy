@@ -2,6 +2,39 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import Container from "@/components/ui/Container";
 import { getBlogByIdAction } from "@/actions/blogActions";
+import { generateSEOMetadata, generateBlogPostingJsonLd } from "@/utils/seo";
+import JsonLd from "@/components/shared/JsonLd";
+
+export async function generateMetadata({ params }) {
+    const { slug } = await params;
+    if (!slug) return generateSEOMetadata();
+
+    const result = await getBlogByIdAction(slug);
+    const blog = result?.success ? result.data : null;
+
+    if (!blog || !blog.isPublished) {
+        return generateSEOMetadata({
+            title: { ar: "المقال غير موجود", en: "Article Not Found" },
+            noIndex: true,
+        });
+    }
+
+    const authorName = typeof blog.author === "object"
+        ? `${blog.author?.firstName || ""} ${blog.author?.lastName || ""}`.trim()
+        : blog.author;
+
+    return generateSEOMetadata({
+        path: `/blog/${slug}`,
+        title: blog.title,
+        description: blog.excerpt || blog.content?.slice(0, 160),
+        image: blog.featuredImage,
+        type: "article",
+        publishedTime: blog.createdAt,
+        modifiedTime: blog.updatedAt,
+        authors: authorName ? [authorName] : undefined,
+        tags: Array.isArray(blog.tags) ? blog.tags : undefined,
+    });
+}
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:5000";
 
@@ -18,6 +51,7 @@ export default async function BlogDetailsPage({ params }) {
 
     return (
         <article className="pb-24 pt-36">
+            <JsonLd data={generateBlogPostingJsonLd(blog)} />
             <Container>
                 <div className="mx-auto max-w-4xl">
                     {blog.category?.title && <p className="text-primary">{blog.category.title}</p>}

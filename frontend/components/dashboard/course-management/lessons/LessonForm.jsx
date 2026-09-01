@@ -15,6 +15,7 @@ const LessonForm = ({
     mode = "create",
     lesson,
     courseId,
+    courseSlug,
 }) => {
     const router = useRouter();
     const { successMessage, errorMessage } = useToast();
@@ -34,7 +35,7 @@ const LessonForm = ({
     // On success, redirect back to the course page
     if (state.success && state.message) {
         successMessage(state.message);
-        router.push(`/dashboard/courses/${courseId}`);
+        router.push(`/dashboard/courses/${courseSlug || courseId}`);
     }
 
     return (

@@ -17,7 +17,7 @@ import { useLanguage } from "@/providers/LanguageProvider";
 
 const FALLBACK_IMAGE = "https://images.unsplash.com/photo-1516321318423-f06f85e504b3";
 
-const CourseHeader = ({ courseId }) => {
+const CourseHeader = ({ courseId, courseSlug }) => {
     const { language, localize } = useLanguage();
     const isEn = language === "en";
 
@@ -240,7 +240,7 @@ const CourseHeader = ({ courseId }) => {
                 {/* Actions */}
                 <div>
                     <Link
-                        href={`/dashboard/courses/edit/${courseId}`}
+                        href={`/dashboard/courses/edit/${courseSlug || courseId}`}
                         className="
                             flex
                             items-center

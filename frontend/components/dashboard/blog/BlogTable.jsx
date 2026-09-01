@@ -10,6 +10,10 @@ import useBlogs from "@/hooks/blog/useBlogs";
 import { deleteBlogAction } from "@/actions/blogActions";
 import useToast from "@/hooks/useToast";
 import UpdateBlogModal from "@/components/ui/modal/blog/UpdateBlogModal";
+import DeleteModal from "@/components/ui/modal/DeleteModal";
+import useDeleteModal from "@/hooks/useDeleteModal";
+import { updateBlogFieldAction } from "@/actions/blogActions";
+import StatusDropdown from "@/components/shared/StatusDropdown";
 import { useSearchParams } from "next/navigation";
 
 import { useLanguage } from "@/providers/LanguageProvider";
@@ -26,6 +30,7 @@ const BlogTable = () => {
     const [deletingId, setDeletingId] = useState(null);
     const [editingBlog, setEditingBlog] = useState(null);
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+    const { requestDelete } = useDeleteModal();
 
     useEffect(() => {
         const handleBlogUpdated = () => {
@@ -52,8 +57,6 @@ const BlogTable = () => {
     ];
 
     const handleDelete = async (blogId) => {
-        if (!confirm(language === "en" ? "Are you sure you want to delete this article?" : "هل أنت متأكد من حذف هذا المقال؟")) return;
-
         setDeletingId(blogId);
         const result = await deleteBlogAction(blogId);
 
@@ -65,6 +68,25 @@ const BlogTable = () => {
         }
 
         setDeletingId(null);
+    };
+
+    const handleDeleteRequest = (blogId) => {
+        requestDelete({
+            itemId: blogId,
+            title: isEn ? "Delete Article" : "حذف المقالة",
+            message: isEn ? "Are you sure you want to delete this article? This action cannot be undone." : "هل أنت متأكد من حذف هذه المقالة؟ لا يمكن التراجع عن هذا الإجراء.",
+        });
+    };
+
+    const handleUpdateStatus = async (blogId, isPublished) => {
+        const result = await updateBlogFieldAction(blogId, { isPublished });
+
+        if (result.success) {
+            successMessage(result.message || (isEn ? "Article status updated successfully" : "تم تحديث حالة المقال بنجاح"));
+            refetch();
+        } else {
+            errorMessage(result.message || (isEn ? "Failed to update article status" : "فشل تحديث حالة المقال"));
+        }
     };
 
     const handleEditClick = (blog) => {
@@ -131,17 +153,12 @@ const BlogTable = () => {
                                 </Table.Td>
 
                                 <Table.Td>
-                                    <span
-                                        className={`rounded-full px-3 py-1 text-sm ${
-                                            blog.isPublished
-                                                ? "bg-success/10 text-success"
-                                                : "bg-error/10 text-error"
-                                        }`}
-                                    >
-                                        {blog.isPublished
-                                            ? (language === "en" ? "Published" : "منشور")
-                                            : (language === "en" ? "Draft" : "مسودة")}
-                                    </span>
+                                    <StatusDropdown
+                                        isActive={blog.isPublished}
+                                        activeLabel={isEn ? "Published" : "منشور"}
+                                        inactiveLabel={isEn ? "Draft" : "مسودة"}
+                                        onSelect={(newStatus) => handleUpdateStatus(blog._id, newStatus)}
+                                    />
                                 </Table.Td>
 
                                 <Table.Td>
@@ -159,7 +176,7 @@ const BlogTable = () => {
                                                     onClick={() => handleEditClick(blog)}
                                                 />
                                                 <button
-                                                    onClick={() => handleDelete(blog._id)}
+                                                    onClick={() => handleDeleteRequest(blog._id)}
                                                     disabled={deletingId === blog._id}
                                                     className="text-error cursor-pointer disabled:opacity-50"
                                                     type="button"
@@ -191,6 +208,7 @@ const BlogTable = () => {
                     refetch();
                 }}
             />
+            <DeleteModal onConfirmAction={handleDelete} />
         </div>
     );
 };

@@ -6,12 +6,17 @@ import LoadMore from "@/components/shared/LoadMore";
 import ActionsTable from "@/components/shared/ActionsTable";
 import useCoupons from "@/hooks/coupons/useCoupons";
 import useToast from "@/hooks/useToast";
-import { deleteCouponAction } from "@/actions/couponActions";
+import { deleteCouponAction, updateCouponAction } from "@/actions/couponActions";
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { useAuth } from "@/providers/AuthProvider";
 import UpdateCouponModal from "@/components/ui/modal/coupon/UpdateCouponModal";
 import { useLanguage } from "@/providers/LanguageProvider";
+import DeleteModal from "@/components/ui/modal/DeleteModal";
+import useDeleteModal from "@/hooks/useDeleteModal";
+import StatusDropdown from "@/components/shared/StatusDropdown";
+
+const ACTIVE_COUPON_EXTENSION_DAYS = 30;
 
 const CouponsTable = () => {
     const { language } = useLanguage();
@@ -32,6 +37,8 @@ const CouponsTable = () => {
     const [deletingId, setDeletingId] = useState(null);
     const [editingCoupon, setEditingCoupon] = useState(null);
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+    const [updatingStatusId, setUpdatingStatusId] = useState(null);
+    const { requestDelete } = useDeleteModal();
 
     useEffect(() => {
         const handleCouponUpdated = () => {
@@ -44,9 +51,8 @@ const CouponsTable = () => {
     }, [refetch]);
 
     const isExpired = (expireDate) => {
-        const expiration = new Date(expireDate);
-        const now = new Date();
-        return expiration.getTime() < now.getTime();
+        const expiration = new Date(expireDate).getTime();
+        return !Number.isFinite(expiration) || expiration <= Date.now();
     };
 
     const statusFilter = searchParams.get("status");
@@ -79,8 +85,6 @@ const CouponsTable = () => {
     ];
 
     const handleDelete = async (couponId) => {
-        if (!confirm(isEn ? "Are you sure you want to delete this coupon?" : "هل أنت متأكد من حذف هذا الكوبون؟")) return;
-
         setDeletingId(couponId);
         const result = await deleteCouponAction(couponId);
 
@@ -92,6 +96,36 @@ const CouponsTable = () => {
         }
 
         setDeletingId(null);
+    };
+
+    const handleDeleteRequest = (couponId) => {
+        requestDelete({
+            itemId: couponId,
+            title: isEn ? "Delete Coupon" : "حذف الكوبون",
+            message: isEn ? "Are you sure you want to delete this coupon? This action cannot be undone." : "هل أنت متأكد من حذف هذا الكوبون؟ لا يمكن التراجع عن هذا الإجراء.",
+        });
+    };
+
+    const handleStatusChange = async (coupon, isActive) => {
+        const currentlyActive = !isExpired(coupon.expire);
+        if (currentlyActive === isActive) return;
+
+        setUpdatingStatusId(coupon._id);
+
+        const expire = isActive
+            ? new Date(Date.now() + ACTIVE_COUPON_EXTENSION_DAYS * 24 * 60 * 60 * 1000).toISOString()
+            : new Date(Date.now() - 1000).toISOString();
+
+        const result = await updateCouponAction(coupon._id, { expire });
+
+        if (result.success) {
+            successMessage(result.message || (isEn ? "Coupon status updated successfully" : "تم تحديث حالة الكوبون بنجاح"));
+            await refetch();
+        } else {
+            errorMessage(result.message || (isEn ? "Failed to update coupon status" : "فشل تحديث حالة الكوبون"));
+        }
+
+        setUpdatingStatusId(null);
     };
 
     const handleEditClick = (coupon) => {
@@ -150,15 +184,13 @@ const CouponsTable = () => {
                                     </Table.Td>
 
                                     <Table.Td>
-                                        <span
-                                            className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                                                isExpired(coupon.expire)
-                                                    ? "bg-error/20 text-error"
-                                                    : "bg-success/20 text-success"
-                                            }`}
-                                        >
-                                            {isExpired(coupon.expire) ? (isEn ? "Expired" : "منتهي") : (isEn ? "Active" : "نشط")}
-                                        </span>
+                                        <StatusDropdown
+                                            isActive={!isExpired(coupon.expire)}
+                                            activeLabel={isEn ? "Active" : "نشط"}
+                                            inactiveLabel={isEn ? "Expired" : "منتهي"}
+                                            disabled={updatingStatusId === coupon._id}
+                                            onSelect={(newStatus) => handleStatusChange(coupon, newStatus)}
+                                        />
                                     </Table.Td>
 
                                     <Table.Td>
@@ -172,7 +204,7 @@ const CouponsTable = () => {
                                                     <button
                                                         type="button"
                                                         className="text-error cursor-pointer"
-                                                        onClick={() => handleDelete(coupon._id)}
+                                                        onClick={() => handleDeleteRequest(coupon._id)}
                                                         disabled={deletingId === coupon._id}
                                                     >
                                                         {deletingId === coupon._id ? (
@@ -207,6 +239,7 @@ const CouponsTable = () => {
                     refetch();
                 }}
             />
+            <DeleteModal onConfirmAction={handleDelete} />
         </div>
     );
 };

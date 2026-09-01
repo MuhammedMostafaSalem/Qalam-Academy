@@ -1,32 +1,17 @@
-"use client";
+import AdminProductsClientView from "@/components/dashboard/products/AdminProductsClientView";
+import { generateSEOMetadata } from "@/utils/seo";
 
-import { Suspense } from "react";
-import ProductsHeader from "@/components/dashboard/products/ProductsHeader";
-import ProductsTable from "@/components/dashboard/products/ProductsTable";
-import ProductsToolbar from "@/components/dashboard/products/ProductsToolbar";
-import ProtectedRoute from "@/components/auth/ProtectedRoute";
+export async function generateMetadata() {
+    return generateSEOMetadata({
+        path: "/dashboard/products",
+        title: {
+            ar: "إدارة المنتجات الرقمية",
+            en: "Manage Products",
+        },
+        noIndex: true,
+    });
+}
 
-export default function AdminProducts () {
-    return (
-        <ProtectedRoute allowedRoles={["admin"]}>
-            <div
-                className="
-                    glass
-                    rounded-3xl
-                    border
-                    border-border
-                    p-6
-                    shadow-sm
-                "
-            >
-                <ProductsHeader />
-                <Suspense fallback={<div className="mt-[20px] h-12 w-full animate-pulse rounded-2xl bg-card" />}>
-                    <ProductsToolbar />
-                </Suspense>
-                <Suspense fallback={<div className="mt-[20px] h-64 w-full animate-pulse rounded-2xl bg-card" />}>
-                    <ProductsTable />
-                </Suspense>
-            </div>
-        </ProtectedRoute>
-    );
+export default function AdminProducts() {
+    return <AdminProductsClientView />;
 }

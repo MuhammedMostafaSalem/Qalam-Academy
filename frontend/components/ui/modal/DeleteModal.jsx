@@ -3,15 +3,20 @@
 import { useDispatch, useSelector } from "react-redux";
 import { MdWarningAmber } from "react-icons/md";
 import { closeModalDelete } from "@/store/slices/modalDeleteSlice";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const DeleteModal = ({ onConfirmAction }) => {
     const dispatch = useDispatch();
-    const { isOpen, title, message, itemId } = useSelector((state) => state.modalDelete);
+    const { language } = useLanguage();
+    const { isOpen, title, message, itemId, confirmLabel } = useSelector((state) => state.modalDelete);
+    const isEn = language === "en";
 
     if (!isOpen) return null;
 
     return (
-        <div className="
+        <div
+            role="presentation"
+            className="
             fixed
             inset-0
             z-50
@@ -21,7 +26,11 @@ const DeleteModal = ({ onConfirmAction }) => {
             bg-black/50
             backdrop-blur-sm
         ">
-            <div className="
+            <div
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="delete-modal-title"
+                className="
                 w-[400px]
                 rounded-3xl
                 bg-card
@@ -36,12 +45,13 @@ const DeleteModal = ({ onConfirmAction }) => {
             ">
                 <div className="flex flex-col items-center text-center">
                     <MdWarningAmber className="text-5xl text-error mb-4" />
-                    <h2 className="text-xl font-bold text-text-primary">{title}</h2>
+                    <h2 id="delete-modal-title" className="text-xl font-bold text-text-primary">{title}</h2>
                     <p className="text-text-secondary mt-2">{message}</p>
                 </div>
 
                 <div className="mt-8 flex gap-3">
                     <button
+                        type="button"
                         onClick={() => dispatch(closeModalDelete())}
                         className="
                             flex-1
@@ -54,17 +64,18 @@ const DeleteModal = ({ onConfirmAction }) => {
                             transition
                         "
                     >
-                        إلغاء
+                        {isEn ? "Cancel" : "إلغاء"}
                     </button>
                     <button
-                        onClick={() => {
-                            if (itemId) {
-                                onConfirmAction(itemId); // تنفيذ دالة الحذف وإرسال الـ ID
-                            }
-
-                            setTimeout(() => {
+                        type="button"
+                        onClick={async () => {
+                            try {
+                                if (itemId) {
+                                    await onConfirmAction(itemId);
+                                }
+                            } finally {
                                 dispatch(closeModalDelete());
-                            }, 500);
+                            }
                         }}
                         className="
                             flex-1
@@ -77,7 +88,7 @@ const DeleteModal = ({ onConfirmAction }) => {
                             transition
                         "
                     >
-                        تأكيد الحذف
+                        {confirmLabel || (isEn ? "Confirm Delete" : "تأكيد الحذف")}
                     </button>
                 </div>
             </div>

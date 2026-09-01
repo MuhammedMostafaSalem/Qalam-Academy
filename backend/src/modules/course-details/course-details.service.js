@@ -8,7 +8,7 @@ const { StatusCodes } = require("http-status-codes");
 const translateDocument = require("../../utils/translateDocument");
 
 // Get Course Details
-exports.getCourseDetails = async (slug, userId = null, language = "ar") => {
+exports.getCourseDetails = async (req, slug, userId = null, language = "ar") => {
     const isId = mongoose.Types.ObjectId.isValid(slug);
     const query = isId ? { $or: [{ slug }, { _id: slug }] } : { slug };
 

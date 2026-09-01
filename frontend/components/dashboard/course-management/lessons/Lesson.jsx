@@ -1,12 +1,12 @@
 import LessonsTable from "./LessonsTable"
 import LessonToolbar from "./LessonToolbar"
 
-const Lesson = ({ courseId }) => {
+const Lesson = ({ courseId, courseSlug }) => {
     return (
         <>
-            <LessonToolbar courseId={courseId} />
+            <LessonToolbar courseSlug={courseSlug} />
 
-            <LessonsTable courseId={courseId} />
+            <LessonsTable courseId={courseId} courseSlug={courseSlug} />
         </>
     )
 }

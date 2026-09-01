@@ -13,6 +13,7 @@ const {
     toggleThemeMode,
     getCurrentUser,
     authorizeOwnProfile,
+    createUserByAdmin,
     updateUserByAdmin,
     getAllUsersByAdmin
 } = require("./user.controller");
@@ -20,7 +21,10 @@ const uploadSingle = require("../../middlewares/uploadSingle");
 const validate = require("../../middlewares/validate");
 const { updateUserSchema } = require("./validators/user.schema");
 const { changePasswordSchema } = require("./validators/changePassword.schema");
-const { updateUserAdminSchema } = require("./validators/adminUser.schema");
+const {
+    createUserAdminSchema,
+    updateUserAdminSchema,
+} = require("./validators/adminUser.schema");
 const { updateThemeModeSchema } = require("./validators/theme.schema");
 
 const router = express.Router();
@@ -62,6 +66,12 @@ router
         isAuthenticatedUser,
         authorizeRoles("admin"),
         getAllUsersByAdmin
+    )
+    .post(
+        isAuthenticatedUser,
+        authorizeRoles("admin"),
+        validate(createUserAdminSchema),
+        createUserByAdmin
     );
 
 // Get one user

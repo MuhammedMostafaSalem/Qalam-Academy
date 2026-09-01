@@ -269,3 +269,32 @@ export async function getCourseByIdAction(id) {
         };
     }
 }
+
+// Update single course field (e.g. isPublished, isFeatured)
+export async function updateCourseFieldAction(id, updateData) {
+    try {
+        const response = await authApi(`/courses/${id}`, {
+            method: "PATCH",
+            body: JSON.stringify(updateData),
+        });
+
+        revalidatePath("/dashboard/courses");
+        revalidatePath(`/dashboard/courses/${id}`);
+        revalidatePath("/courses");
+
+        return {
+            success: true,
+            data: response.data,
+            message: response.message || "تم تعديل الكورس بنجاح",
+        };
+    } catch (error) {
+        console.error("Update course field error:", error);
+
+        return {
+            success: false,
+            message: error?.message || "فشل تعديل الكورس",
+            errors: error?.errors || null,
+        };
+    }
+}
+

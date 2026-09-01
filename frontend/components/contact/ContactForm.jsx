@@ -78,7 +78,7 @@ const ContactForm = () => {
                     {/* Name */}
                     <div>
                         <label
-                            htmlFor="name"
+                            htmlFor="fullName"
                             className="
                                 mb-2
                                 block
@@ -104,8 +104,8 @@ const ContactForm = () => {
                             />
 
                             <input
-                                id="name"
-                                name="name"
+                                id="fullName"
+                                name="fullName"
                                 type="text"
                                 placeholder={isEn ? "Enter your name" : "أدخل اسمك"}
                                 required
@@ -127,8 +127,8 @@ const ContactForm = () => {
                                 "
                             />
                         </div>
-                        {state.fieldErrors?.name && (
-                            <p className="mt-1 text-sm text-error">{state.fieldErrors.name}</p>
+                        {(state.fieldErrors?.fullName || state.fieldErrors?.name) && (
+                            <p className="mt-1 text-sm text-error">{state.fieldErrors.fullName || state.fieldErrors.name}</p>
                         )}
                     </div>
 
@@ -241,6 +241,9 @@ const ContactForm = () => {
                             "
                         />
                     </div>
+                    {state.fieldErrors?.phone && (
+                        <p className="mt-1 text-sm text-error">{state.fieldErrors.phone}</p>
+                    )}
                 </div>
 
                 {/* Subject */}

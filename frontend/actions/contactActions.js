@@ -46,15 +46,15 @@ export async function getMessageByIdAction(id) {
 // Submit Contact Form (Public)
 export async function submitContactAction(prevState, formData) {
     try {
-        const name = formData.get("name");
-        const email = formData.get("email");
-        const phone = formData.get("phone");
-        const subject = formData.get("subject");
-        const message = formData.get("message");
+        const fullName = (formData.get("fullName") || formData.get("name") || "").toString().trim();
+        const email = (formData.get("email") || "").toString().trim();
+        const phone = (formData.get("phone") || "").toString().trim();
+        const subject = (formData.get("subject") || "").toString().trim();
+        const message = (formData.get("message") || "").toString().trim();
 
         const response = await authApi("/contact", {
             method: "POST",
-            body: JSON.stringify({ name, email, phone, subject, message }),
+            body: JSON.stringify({ fullName, email, phone, subject, message }),
         });
 
         return {

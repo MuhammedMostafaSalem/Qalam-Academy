@@ -1,32 +1,17 @@
-"use client";
+import AdminSettingsClientView from "@/components/dashboard/settings/AdminSettingsClientView";
+import { generateSEOMetadata } from "@/utils/seo";
 
-import PageHeader from "@/components/dashboard/PageHeader";
-import SettingsForm from "@/components/dashboard/settings/SettingsForm";
-import ThemeSettingsForm from "@/components/dashboard/settings/ThemeSettingsForm";
-import { useLanguage } from "@/providers/LanguageProvider";
+export async function generateMetadata() {
+    return generateSEOMetadata({
+        path: "/dashboard/settings",
+        title: {
+            ar: "إعدادات المنصة وSEO",
+            en: "Platform & SEO Settings",
+        },
+        noIndex: true,
+    });
+}
 
-export default function AdminSettings() {
-    const { language } = useLanguage();
-    const isEn = language === "en";
-
-    return (
-        <div
-            className="
-                glass 
-                rounded-3xl
-                border
-                border-border
-                p-6
-                shadow-sm
-            "
-        >
-            <PageHeader
-                title={isEn ? "Platform Settings" : "إعدادات المنصة"}
-                description={isEn ? "Manage general platform details and configuration" : "إدارة جميع المعلومات الأساسية للمنصة"}
-            />
-            
-            <SettingsForm />
-            <ThemeSettingsForm />
-        </div>
-    );
+export default function AdminSettingsPage() {
+    return <AdminSettingsClientView />;
 }

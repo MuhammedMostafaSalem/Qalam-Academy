@@ -45,7 +45,6 @@ const OrdersToolbar = () => {
         { value: "all", label: isEn ? "All Types" : "جميع الأنواع" },
         { value: "course", label: isEn ? "Courses" : "كورسات" },
         { value: "product", label: isEn ? "Digital Products" : "منتجات رقمية" },
-        { value: "mixed", label: isEn ? "Mixed Orders" : "طلبات مختلطة" },
     ];
 
     const statusOptions = [

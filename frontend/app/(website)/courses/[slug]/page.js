@@ -8,6 +8,39 @@ import Section from "@/components/sections/Section";
 import Container from "@/components/ui/Container";
 import { getCourseDetailsAction } from "@/actions/lessonActions";
 import { notFound } from "next/navigation";
+import { generateSEOMetadata, generateCourseJsonLd } from "@/utils/seo";
+import JsonLd from "@/components/shared/JsonLd";
+
+export async function generateMetadata({ params }) {
+    const resolvedParams = await params;
+    const slug = resolvedParams?.slug;
+    if (!slug) return generateSEOMetadata();
+
+    const result = await getCourseDetailsAction(slug);
+    const courseDetails = result?.success ? result.data : null;
+    const course = courseDetails?.course || courseDetails;
+
+    if (!course) {
+        return generateSEOMetadata({
+            title: { ar: "الكورس غير موجود", en: "Course Not Found" },
+            noIndex: true,
+        });
+    }
+
+    const instructorName = typeof course.instructor === "object"
+        ? `${course.instructor?.firstName || ""} ${course.instructor?.lastName || ""}`.trim() || course.instructor?.name
+        : course.instructor;
+
+    return generateSEOMetadata({
+        path: `/courses/${slug}`,
+        title: course.title,
+        description: course.description,
+        image: course.thumbnail,
+        type: "article",
+        authors: instructorName ? [instructorName] : undefined,
+        tags: Array.isArray(course.tags) ? course.tags : undefined,
+    });
+}
 
 export default async function CourseDetailsPage({ params }) {
     const resolvedParams = await params;
@@ -39,6 +72,7 @@ export default async function CourseDetailsPage({ params }) {
 
     return (
         <>
+            <JsonLd data={generateCourseJsonLd(fullCourseData)} />
             <CourseDetailsHero course={fullCourseData} />
 
             <Section className="pb-24">

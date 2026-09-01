@@ -11,7 +11,7 @@ const CourseCurriculum = ({ course }) => {
 
     const lessonsCount = course?.totalLessons ?? course?.lessonsCount ?? course?.lessons?.length ?? 0;
     const duration = course?.duration
-        ? (typeof course.duration === "number" ? `${course.duration} ${isEn ? "mins" : "دقيقة"}` : course.duration)
+        ? (typeof course.duration === "number" ? `${course.duration} ${isEn ? "hours" : "ساعة"}` : course.duration)
         : "—";
 
     return (

@@ -1,43 +1,25 @@
 "use client";
 
 import Section from "@/components/sections/Section";
-import ActionsTable from "@/components/shared/ActionsTable";
 import Table from "@/components/ui/Table";
-import { HiOutlineEye } from "react-icons/hi2";
 import { MdOutlineEmail } from "react-icons/md";
 import { useLanguage } from "@/providers/LanguageProvider";
-import { DEFAULT_AVATAR_URL } from "@/constants/avatar";
+import { resolveAvatarUrl } from "@/constants/avatar";
+import useEnrollments from "@/hooks/enrollments/useEnrollments";
 
-const students = [
-    {
-        id: 1,
-        name: "Ahmed Mohamed",
-        email: "ahmed@gmail.com",
-        progress: 85,
-        status: "نشط",
-        enrolledAt: "15 Jan 2025",
-    },
-    {
-        id: 2,
-        name: "Sara Ali",
-        email: "sara@gmail.com",
-        progress: 45,
-        status: "نشط",
-        enrolledAt: "20 Jan 2025",
-    },
-    {
-        id: 3,
-        name: "Omar Hassan",
-        email: "omar@gmail.com",
-        progress: 100,
-        status: "مكتمل",
-        enrolledAt: "10 Jan 2025",
-    },
-];
-
-const StudentsTable = () => {
+const StudentsTable = ({ courseId }) => {
     const { language } = useLanguage();
     const isEn = language === "en";
+    const queryString = courseId ? `course=${encodeURIComponent(courseId)}` : "";
+    const { enrollments, loading, error } = useEnrollments(queryString);
+
+    if (loading) {
+        return <div className="py-10 text-center text-text-secondary">{isEn ? "Loading students..." : "جاري تحميل الطلاب..."}</div>;
+    }
+
+    if (error) {
+        return <div className="py-10 text-center text-error">{error}</div>;
+    }
 
     return (
         <Section
@@ -64,17 +46,33 @@ const StudentsTable = () => {
                 </Table.Head>
 
                 <Table.Body>
-                    {students.map((student) => (
-                        <Table.Row key={student.id}>
+                    {enrollments.length === 0 ? (
+                        <Table.Row>
+                            <Table.Td colSpan={7}>
+                                <div className="py-8 text-center text-text-muted">
+                                    {isEn ? "No students are enrolled in this course." : "لا يوجد طلاب مسجلون في هذا الكورس."}
+                                </div>
+                            </Table.Td>
+                        </Table.Row>
+                    ) : enrollments.map((enrollment, index) => {
+                        const student = enrollment.user || {};
+                        const progress = enrollment.progress || 0;
+                        const isCompleted = enrollment.isCompleted || progress >= 100;
+                        const studentName = student.firstName
+                            ? `${student.firstName} ${student.lastName || ""}`.trim()
+                            : student.email || (isEn ? "Unknown student" : "طالب غير معروف");
+
+                        return (
+                        <Table.Row key={enrollment._id}>
                             <Table.Td>
-                                {student.id}
+                                {index + 1}
                             </Table.Td>
 
                             <Table.Td>
                                 <div className="flex items-center gap-3">
                                     <img
-                                        src={DEFAULT_AVATAR_URL}
-                                        alt={student.name}
+                                        src={resolveAvatarUrl(student.avatar)}
+                                        alt={studentName}
                                         className="
                                             h-10
                                             w-10
@@ -83,13 +81,13 @@ const StudentsTable = () => {
                                     />
 
                                     <span>
-                                        {student.name}
+                                        {studentName}
                                     </span>
                                 </div>
                             </Table.Td>
 
                             <Table.Td>
-                                {student.email}
+                                {student.email || "—"}
                             </Table.Td>
 
                             <Table.Td>
@@ -105,7 +103,7 @@ const StudentsTable = () => {
                                     >
                                         <div
                                             style={{
-                                                width: `${student.progress}%`,
+                                                width: `${progress}%`,
                                             }}
                                             className="
                                                 h-full
@@ -115,7 +113,7 @@ const StudentsTable = () => {
                                     </div>
 
                                     <span>
-                                        {student.progress}%
+                                        {progress}%
                                     </span>
                                 </div>
                             </Table.Td>
@@ -128,43 +126,32 @@ const StudentsTable = () => {
                                         py-1
                                         text-sm
 
-                                        ${student.status === "مكتمل"
+                                        ${isCompleted
                                             ? "bg-success/10 text-success"
                                             : "bg-primary/10 text-primary"
                                         }
                                     `}
                                 >
-                                    {student.status === "مكتمل" ? (isEn ? "Completed" : "مكتمل") : (isEn ? "Active" : "نشط")}
+                                    {isCompleted ? (isEn ? "Completed" : "مكتمل") : (isEn ? "In Progress" : "قيد الدراسة")}
                                 </span>
                             </Table.Td>
 
                             <Table.Td>
-                                {student.enrolledAt}
+                                {enrollment.createdAt
+                                    ? new Date(enrollment.createdAt).toLocaleDateString(isEn ? "en-US" : "ar-EG")
+                                    : "—"}
                             </Table.Td>
 
                             <Table.Td>
-                                <ActionsTable
-                                    actions={
-                                        <div className="flex items-center justify-center gap-4 text-[20px]">
-                                            <HiOutlineEye
-                                                className="
-                                                    cursor-pointer
-                                                    text-primary
-                                                "
-                                            />
-
-                                            <MdOutlineEmail
-                                                className="
-                                                    cursor-pointer
-                                                    text-primary
-                                                "
-                                            />
-                                        </div>
-                                    }
-                                />
+                                {student.email ? (
+                                    <a href={`mailto:${student.email}`} className="inline-flex text-[20px] text-primary" title={isEn ? "Email student" : "مراسلة الطالب"}>
+                                        <MdOutlineEmail />
+                                    </a>
+                                ) : "—"}
                             </Table.Td>
                         </Table.Row>
-                    ))}
+                        );
+                    })}
                 </Table.Body>
             </Table>
         </Section>

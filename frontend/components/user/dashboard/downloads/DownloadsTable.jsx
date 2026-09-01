@@ -13,7 +13,6 @@ import {
     HiOutlineFilm,
     HiOutlineCodeBracket,
 } from "react-icons/hi2";
-import useToast from "@/hooks/useToast";
 
 const getIcon = (type) => {
     switch (type) {
@@ -35,39 +34,10 @@ const DownloadsTable = () => {
     const [enrollments, setEnrollments] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [downloadingKey, setDownloadingKey] = useState(null);
-    const { successMessage, errorMessage } = useToast();
     const searchParams = useSearchParams();
 
     const searchQuery = (searchParams.get("search") || "").toLowerCase().trim();
     const typeFilter = searchParams.get("type") || "all";
-
-    const handleDownload = async (url, fileName, key) => {
-        if (!url || downloadingKey) return;
-
-        setDownloadingKey(key);
-        try {
-            const response = await fetch(url, { credentials: "include" });
-            if (!response.ok) throw new Error(`Download failed (${response.status})`);
-
-            const blob = await response.blob();
-            const objectUrl = URL.createObjectURL(blob);
-            const anchor = document.createElement("a");
-            const safeName = fileName.replace(/[\\/:*?"<>|]+/g, "-").trim() || "download";
-
-            anchor.href = objectUrl;
-            anchor.download = safeName.toLowerCase().endsWith(".pdf") ? safeName : `${safeName}.pdf`;
-            document.body.appendChild(anchor);
-            anchor.click();
-            anchor.remove();
-            URL.revokeObjectURL(objectUrl);
-            successMessage(language === "en" ? "Download started" : "بدأ تحميل الملف");
-        } catch {
-            errorMessage(language === "en" ? "Unable to download this file" : "تعذر تحميل هذا الملف");
-        } finally {
-            setDownloadingKey(null);
-        }
-    };
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -155,9 +125,9 @@ const DownloadsTable = () => {
                         const fileName = localize(enrollment.product?.title, "—");
 
                         const rawPdf = enrollment.product?.pdf;
-                        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:5000";
-                        const downloadUrl = rawPdf
-                            ? (rawPdf.startsWith("http") ? rawPdf : `${baseUrl}${rawPdf}`)
+                        const productId = enrollment.product?._id;
+                        const downloadUrl = rawPdf && productId
+                            ? `/api/downloads/products/${encodeURIComponent(productId)}`
                             : null;
 
                         const dateLocale = language === "en" ? "en-US" : "ar-EG";
@@ -199,15 +169,14 @@ const DownloadsTable = () => {
                                         actions={
                                             <div className="flex gap-3 justify-center items-center text-[20px]">
                                                 {downloadUrl ? (
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => handleDownload(downloadUrl, fileName, uniqueKey)}
-                                                        disabled={downloadingKey === uniqueKey}
+                                                    <a
+                                                        href={downloadUrl}
+                                                        download
                                                         title={language === "en" ? "Download File" : "تحميل الملف"}
-                                                        className="text-primary transition hover:text-primary-hover disabled:cursor-wait disabled:opacity-50"
+                                                        className="inline-flex text-primary transition hover:text-primary-hover"
                                                     >
-                                                        <HiOutlineArrowDownTray size={18} className={downloadingKey === uniqueKey ? "animate-bounce" : ""} />
-                                                    </button>
+                                                        <HiOutlineArrowDownTray size={18} />
+                                                    </a>
                                                 ) : (
                                                     <span className="opacity-40 cursor-not-allowed">
                                                         <HiOutlineArrowDownTray size={18} />

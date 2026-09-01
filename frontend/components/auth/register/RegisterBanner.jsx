@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 
@@ -5,8 +7,12 @@ import logo from "@/public/assets/logos/logo-white.png";
 import registerIllustration from "@/public/assets/images/register-illustration.png";
 import { heroAnimation } from "@/lib/animation/heroAnimation";
 import { animations } from "@/lib/animations";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const RegisterBanner = () => {
+    const { language } = useLanguage();
+    const isEn = language === "en";
+
     return (
         <div
             {...heroAnimation.image}
@@ -42,7 +48,7 @@ const RegisterBanner = () => {
 
                 <div>
                     <h2 className="text-2xl font-bold">
-                        قلم أكاديمي
+                        {isEn ? "Qalam Academy" : "قلم أكاديمي"}
                     </h2>
 
                     <p className="text-sm text-text-secondary">
@@ -65,7 +71,7 @@ const RegisterBanner = () => {
             >
                 <Image
                     src={registerIllustration}
-                    alt="Register Illustration"
+                    alt={isEn ? "Create account illustration" : "صورة توضيحية لإنشاء الحساب"}
                     width={160}
                     height={160}
                     priority
@@ -96,7 +102,11 @@ const RegisterBanner = () => {
                         leading-tight
                     "
                 >
-                    أنشئ <span className="text-primary">حسابك</span> الآن
+                    {isEn ? (
+                        <>Create your <span className="text-primary">account</span> now</>
+                    ) : (
+                        <>أنشئ <span className="text-primary">حسابك</span> الآن</>
+                    )}
                 </h2>
 
                 <p
@@ -106,7 +116,9 @@ const RegisterBanner = () => {
                         text-text-secondary
                     "
                 >
-                    انضم الى Qalam Academy وابدأ في ادارة موقعك ومحتواك بكل احترافية.
+                    {isEn
+                        ? "Join Qalam Academy and start managing your learning experience professionally."
+                        : "انضم إلى Qalam Academy وابدأ في إدارة تجربتك التعليمية بكل احترافية."}
                 </p>
 
                 <p
@@ -116,7 +128,7 @@ const RegisterBanner = () => {
                         text-text-muted
                     "
                 >
-                    © 2026 Qalam Academy. جميع الحقوق محفوظة.
+                    © 2026 Qalam Academy. {isEn ? "All rights reserved." : "جميع الحقوق محفوظة."}
                 </p>
             </div>
 

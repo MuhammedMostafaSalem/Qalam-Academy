@@ -1,9 +1,18 @@
 import CreateCourseForm from "@/components/dashboard/course-management/CreateCourseForm";
 import PageHeader from "@/components/dashboard/PageHeader";
 
-export const metadata = {
-    title: "إنشاء كورس جديد",
-};
+import { generateSEOMetadata } from "@/utils/seo";
+
+export async function generateMetadata() {
+    return generateSEOMetadata({
+        path: "/dashboard/courses/new",
+        title: {
+            ar: "إضافة كورس جديد",
+            en: "Create New Course",
+        },
+        noIndex: true,
+    });
+}
 
 export default function CreateCoursePage() {
     return (

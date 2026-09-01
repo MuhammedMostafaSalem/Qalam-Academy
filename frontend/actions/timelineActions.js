@@ -49,20 +49,19 @@ export async function createTimelineAction(prevState, formData) {
         const year = formData.get("year");
         const titleAr = formData.get("titleAr");
         const titleEn = formData.get("titleEn");
-        const descriptionAr = formData.get("descriptionAr");
-        const descriptionEn = formData.get("descriptionEn");
+        const isActive = formData.get("isActive");
 
         const response = await authApi("/timeline", {
             method: "POST",
             body: JSON.stringify({
                 year: Number(year),
                 title: { ar: titleAr, en: titleEn },
-                description: descriptionAr || descriptionEn ? { ar: descriptionAr, en: descriptionEn } : undefined,
+                isActive: isActive === null ? true : isActive === "true",
             }),
         });
 
         revalidatePath("/about");
-        revalidatePath("/dashboard");
+        revalidatePath("/dashboard/journey");
 
         return {
             success: true,
@@ -84,13 +83,16 @@ export async function updateTimelineAction(id, prevState, formData) {
         const year = formData.get("year");
         const titleAr = formData.get("titleAr");
         const titleEn = formData.get("titleEn");
-        const descriptionAr = formData.get("descriptionAr");
-        const descriptionEn = formData.get("descriptionEn");
+        const sortOrder = formData.get("sortOrder");
+        const isActive = formData.get("isActive");
 
         const payload = {};
-        if (year) payload.year = Number(year);
-        if (titleAr || titleEn) payload.title = { ar: titleAr, en: titleEn };
-        if (descriptionAr || descriptionEn) payload.description = { ar: descriptionAr, en: descriptionEn };
+        if (formData.has("year") && year !== "") payload.year = Number(year);
+        if (formData.has("titleAr") || formData.has("titleEn")) {
+            payload.title = { ar: titleAr, en: titleEn };
+        }
+        if (formData.has("sortOrder") && sortOrder !== "") payload.sortOrder = Number(sortOrder);
+        if (formData.has("isActive")) payload.isActive = isActive === "true";
 
         const response = await authApi(`/timeline/${id}`, {
             method: "PATCH",
@@ -98,7 +100,7 @@ export async function updateTimelineAction(id, prevState, formData) {
         });
 
         revalidatePath("/about");
-        revalidatePath("/dashboard");
+        revalidatePath("/dashboard/journey");
 
         return {
             success: true,
@@ -122,7 +124,7 @@ export async function deleteTimelineAction(id) {
         });
 
         revalidatePath("/about");
-        revalidatePath("/dashboard");
+        revalidatePath("/dashboard/journey");
 
         return {
             success: true,
