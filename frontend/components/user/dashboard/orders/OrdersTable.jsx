@@ -157,7 +157,7 @@ const OrdersTable = () => {
                     <Table.Th>{isEn ? "Items Count" : "عدد العناصر"}</Table.Th>
                     <Table.Th>{isEn ? "Total" : "الإجمالي"}</Table.Th>
                     <Table.Th>{isEn ? "Date" : "التاريخ"}</Table.Th>
-                    <Table.Th>{isEn ? "Status" : "الحالة"}</Table.Th>
+                    {/* <Table.Th>{isEn ? "Status" : "الحالة"}</Table.Th> */}
                 </Table.Row>
             </Table.Head>
 
@@ -202,11 +202,11 @@ const OrdersTable = () => {
                                 {new Date(order.createdAt).toLocaleDateString(isEn ? "en-US" : "ar-EG")}
                             </Table.Td>
 
-                            <Table.Td>
+                            {/* <Table.Td>
                                 <span className={`rounded-full px-3 py-1 text-xs font-medium ${statusClass}`}>
                                     {statusLabel}
                                 </span>
-                            </Table.Td>
+                            </Table.Td> */}
 
                         </Table.Row>
                     );

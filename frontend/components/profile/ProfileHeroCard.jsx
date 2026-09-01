@@ -99,9 +99,9 @@ const ProfileHeroCard = () => {
                                 alt={`${user.firstName} ${user.lastName}`}
                                 width={120}
                                 height={120}
-                                className="h-[120px] w-[120px] rounded-3xl border border-border object-cover"
+                                className="h-[120px] w-[120px] rounded-3xl object-cover"
                             />
-                            <button
+                            {/* <button
                                 type="button"
                                 onClick={() => inputRef.current?.click()}
                                 disabled={loadingProfile}
@@ -109,7 +109,7 @@ const ProfileHeroCard = () => {
                                 className="absolute -bottom-2 -right-2 flex h-10 w-10 items-center justify-center rounded-full border-2 border-card bg-primary text-white shadow-lg transition hover:scale-105 disabled:cursor-wait disabled:opacity-60 rtl:-left-2 rtl:right-auto"
                             >
                                 <HiOutlineCamera size={21} />
-                            </button>
+                            </button> */}
                             <input
                                 ref={inputRef}
                                 type="file"

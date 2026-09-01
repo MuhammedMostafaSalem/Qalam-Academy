@@ -11,7 +11,7 @@ const normalizeWhatsAppNumber = (value) => {
     return digits;
 };
 
-export default function WhatsAppButton() {
+export default function WhatsAppButton({ visible }) {
     const { settings } = usePlatformSettings();
     const { language } = useLanguage();
     const number = normalizeWhatsAppNumber(settings.whatsapp);
@@ -27,7 +27,28 @@ export default function WhatsAppButton() {
             rel="noopener noreferrer"
             aria-label={label}
             title={label}
-            className="fixed bottom-6 right-6 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-xl transition hover:-translate-y-1 hover:scale-105 rtl:left-6 rtl:right-auto"
+            className={`
+                fixed
+                bottom-6
+                left-6
+                z-40
+                flex
+                h-14 w-14
+                items-center
+                justify-center
+                rounded-full
+                bg-[#25D366]
+                text-white
+                shadow-xl
+                transition
+                hover:-translate-y-1 hover:scale-105
+
+                ${visible
+                    ? "translate-y-0 opacity-100"
+                    : "pointer-events-none translate-y-6 opacity-0"
+                }
+                `
+            }
         >
             <FaWhatsapp size={30} aria-hidden="true" />
         </a>

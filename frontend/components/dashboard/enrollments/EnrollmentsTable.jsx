@@ -16,12 +16,10 @@ const EnrollmentsTable = () => {
         "Subscriber",
         "Course",
         "Enrollment Date",
-        "Actions",
     ] : [
         "المشترك",
         "الكورس",
         "تاريخ الاشتراك",
-        "الإجراءات",
     ];
 
     if (loading) {
@@ -85,16 +83,6 @@ const EnrollmentsTable = () => {
                                         {enrollment.createdAt
                                             ? new Date(enrollment.createdAt).toLocaleDateString(language === "en" ? "en-US" : "ar-EG")
                                             : "—"}
-                                    </Table.Td>
-
-                                    <Table.Td>
-                                        <ActionsTable
-                                            actions={
-                                                <div className="flex gap-3 justify-center items-center text-[20px]">
-                                                    {/* No delete action for enrollments */}
-                                                </div>
-                                            }
-                                        />
                                     </Table.Td>
                                 </Table.Row>
                             ))
