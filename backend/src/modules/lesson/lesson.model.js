@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const generateSlug = require("../../utils/generateSlug");
 
 const lessonSchema = new mongoose.Schema({
     // Relations
@@ -22,6 +23,11 @@ const lessonSchema = new mongoose.Schema({
             trim: true,
         },
     },
+    slug: {
+        type: String,
+        lowercase: true,
+        unique: true,
+    },
     description: {
         ar: {
             type: String,
@@ -39,6 +45,11 @@ const lessonSchema = new mongoose.Schema({
     video: {
         type: String,
         default: null,
+    },
+    videoYoutube: {
+        type: String,
+        default: null,
+        trim: true,
     },
     attachment: {
         type: String,
@@ -87,6 +98,13 @@ lessonSchema.index({
 lessonSchema.index({
     course: 1,
     isPublished: 1,
+});
+
+// Generate slug automatically
+lessonSchema.pre("validate", function () {
+    if (this.isModified("title") && this.title?.en) {
+        this.slug = generateSlug(this.title.en);
+    }
 });
 
 const Lesson = mongoose.model("Lesson", lessonSchema);
