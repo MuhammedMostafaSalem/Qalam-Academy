@@ -88,38 +88,6 @@ const CoursesHeroBackground = () => {
                     animate-float
                 "
             />
-            {/* Floating Shapes */}
-
-            <div
-                className="
-                    absolute
-                    left-20
-                    top-40
-                    h-20
-                    w-20
-                    rotate-12
-                    border
-                    border-primary/20
-                    animate-float
-                "
-            />
-
-            <div
-                className="
-                    absolute
-                    right-36
-                    top-56
-                    h-12
-                    w-12
-                    rounded-xl
-                    border
-                    border-secondary/30
-                    animate-float
-                "
-                style={{
-                    animationDelay: "1.5s",
-                }}
-            />
         </>
     );
 };

@@ -7,7 +7,7 @@ import { fadeUp } from "@/lib/animationHelpers";
 
 const AboutHero = () => {
     return (
-        <Section className="mt-[150px]">
+        <Section className="pt-[150px]">
             <Container>
 
                 <div

@@ -12,6 +12,7 @@ const Hero = () => {
             {...fadeIn()}
             className="
                 relative
+                isolate
                 overflow-hidden
                 min-h-screen
                 pt-[110px]
@@ -22,23 +23,26 @@ const Hero = () => {
 
             <HeroBackground />
 
-            <Container>
-                <div
-                    className="
-                        grid
-                        items-center
-                        gap-16
-                        lg:grid-cols-2
-                    "
-                >
-                    <HeroImage />
-                    <HeroContent />
-                </div>
+            <div className="relative z-10">
+                <Container>
+                    <div
+                        className="
+                            grid
+                            items-center
+                            gap-16
+                            lg:grid-cols-2
+                        "
+                    >
+                        <HeroImage />
+                        <HeroContent />
+                    </div>
 
 
-            </Container>
+                </Container>
+            
+                <HeroPartners />
+            </div>
 
-            <HeroPartners />
 
         </Section>
     )
