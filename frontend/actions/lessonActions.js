@@ -62,6 +62,59 @@ export async function getLessonByIdAction(id) {
 }
 
 // Create Lesson (Admin/Instructor)
+// export async function createLessonAction(prevState, formData) {
+//     try {
+//         const body = new FormData();
+
+//         body.append("title[ar]", formData.get("titleAr") || "");
+//         body.append("title[en]", formData.get("titleEn") || "");
+//         body.append("description[ar]", formData.get("descriptionAr") || "");
+//         body.append("description[en]", formData.get("descriptionEn") || "");
+
+//         const course = formData.get("course");
+//         if (course) body.append("course", course);
+
+//         const duration = formData.get("duration");
+//         if (duration) body.append("duration", duration);
+
+//         const isPreview = formData.get("isPreview");
+//         if (isPreview !== null && isPreview !== undefined) {
+//             body.append("isPreview", isPreview);
+//         }
+
+//         const isPublished = formData.get("isPublished");
+//         if (isPublished !== null && isPublished !== undefined) {
+//             body.append("isPublished", isPublished);
+//         }
+
+//         const sortOrder = formData.get("sortOrder");
+//         if (sortOrder) body.append("sortOrder", sortOrder);
+
+//         const video = formData.get("video");
+//         if (video instanceof File && video.size > 0) {
+//             body.append("video", video);
+//         }
+
+//         const response = await authApi("/lessons", {
+//             method: "POST",
+//             body,
+//         });
+
+//         return {
+//             success: true,
+//             data: response.data,
+//             message: response.message || "تم إنشاء الدرس بنجاح",
+//             errors: null,
+//         };
+//     } catch (error) {
+//         return {
+//             success: false,
+//             data: null,
+//             message: error?.message || "فشل إنشاء الدرس",
+//             errors: error?.errors || null,
+//         };
+//     }
+// }
 export async function createLessonAction(prevState, formData) {
     try {
         const body = new FormData();
@@ -90,9 +143,25 @@ export async function createLessonAction(prevState, formData) {
         const sortOrder = formData.get("sortOrder");
         if (sortOrder) body.append("sortOrder", sortOrder);
 
-        const video = formData.get("video");
-        if (video instanceof File && video.size > 0) {
-            body.append("video", video);
+        // التعامل مع الفيديو (ملف أو رابط يوتيوب)
+        const videoFile = formData.get("video");
+        if (videoFile instanceof File && videoFile.size > 0) {
+            body.append("video", videoFile);
+        }
+
+        const videoYoutube = formData.get("videoYoutube");
+        if (videoYoutube) {
+            body.append("videoYoutube", videoYoutube);
+        }
+
+        const thumbnail = formData.get("thumbnail");
+        if (thumbnail instanceof File && thumbnail.size > 0) {
+            body.append("thumbnail", thumbnail);
+        }
+
+        const attachment = formData.get("attachment");
+        if (attachment instanceof File && attachment.size > 0) {
+            body.append("attachment", attachment);
         }
 
         const response = await authApi("/lessons", {
@@ -117,6 +186,62 @@ export async function createLessonAction(prevState, formData) {
 }
 
 // Update Lesson (Admin/Instructor)
+// export async function updateLessonAction(id, prevState, formData) {
+//     try {
+//         const body = new FormData();
+
+//         const titleAr = formData.get("titleAr");
+//         const titleEn = formData.get("titleEn");
+//         if (titleAr) body.append("title[ar]", titleAr);
+//         if (titleEn) body.append("title[en]", titleEn);
+
+//         const descriptionAr = formData.get("descriptionAr");
+//         const descriptionEn = formData.get("descriptionEn");
+//         if (descriptionAr) body.append("description[ar]", descriptionAr);
+//         if (descriptionEn) body.append("description[en]", descriptionEn);
+
+//         const duration = formData.get("duration");
+//         if (duration) body.append("duration", duration);
+
+//         const isPreview = formData.get("isPreview");
+//         if (isPreview !== null && isPreview !== undefined) {
+//             body.append("isPreview", isPreview);
+//         }
+
+//         const isPublished = formData.get("isPublished");
+//         if (isPublished !== null && isPublished !== undefined) {
+//             body.append("isPublished", isPublished);
+//         }
+
+//         const sortOrder = formData.get("sortOrder");
+//         if (sortOrder) body.append("sortOrder", sortOrder);
+
+//         const video = formData.get("video");
+//         if (video instanceof File && video.size > 0) {
+//             body.append("video", video);
+//         }
+
+//         const response = await authApi(`/lessons/${id}`, {
+//             method: "PATCH",
+//             body,
+//         });
+
+//         return {
+//             success: true,
+//             data: response.data,
+//             message: response.message || "تم تحديث الدرس بنجاح",
+//             errors: null,
+//         };
+//     } catch (error) {
+//         return {
+//             success: false,
+//             data: null,
+//             message: error?.message || "فشل تحديث الدرس",
+//             errors: error?.errors || null,
+//         };
+//     }
+// }
+
 export async function updateLessonAction(id, prevState, formData) {
     try {
         const body = new FormData();
@@ -147,9 +272,24 @@ export async function updateLessonAction(id, prevState, formData) {
         const sortOrder = formData.get("sortOrder");
         if (sortOrder) body.append("sortOrder", sortOrder);
 
-        const video = formData.get("video");
-        if (video instanceof File && video.size > 0) {
-            body.append("video", video);
+        const videoFile = formData.get("video");
+        if (videoFile instanceof File && videoFile.size > 0) {
+            body.append("video", videoFile);
+        }
+
+        const videoYoutube = formData.get("videoYoutube");
+        if (videoYoutube !== null) {
+            body.append("videoYoutube", videoYoutube);
+        }
+
+        const thumbnail = formData.get("thumbnail");
+        if (thumbnail instanceof File && thumbnail.size > 0) {
+            body.append("thumbnail", thumbnail);
+        }
+
+        const attachment = formData.get("attachment");
+        if (attachment instanceof File && attachment.size > 0) {
+            body.append("attachment", attachment);
         }
 
         const response = await authApi(`/lessons/${id}`, {
