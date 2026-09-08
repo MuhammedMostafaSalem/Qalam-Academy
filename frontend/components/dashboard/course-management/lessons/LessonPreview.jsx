@@ -12,6 +12,14 @@ import {
 const LessonPreview = ({
     lesson,
 }) => {
+    // دالة بسيطة لاستخراج معرف يوتيوب من الروابط المختلفة
+const getYoutubeEmbedUrl = (url) => {
+    if (!url) return "";
+        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+        const match = url.match(regExp);
+        return (match && match[2].length === 11) ? `https://www.youtube.com/embed/${match[2]}` : url;
+    }
+
     return (
         <Section
             className="
@@ -43,14 +51,6 @@ const LessonPreview = ({
                     >
                         {lesson?.title || "Introduction to React"}
                     </h1>
-                    <p
-                        className="
-                            mt-2
-                            text-text-secondary
-                        "
-                    >
-                        {lesson?.type || "Video"} Lesson
-                    </p>
                 </div>
                 <span
                     className="
@@ -91,63 +91,29 @@ const LessonPreview = ({
                 "
             >
                 {
-                    lesson?.type === "Video"
-                        ?
-                        (
-                            <video
-                                controls
-                                className="
+                    lesson?.videoYoutube ? (
+                        <iframe
+                            src={getYoutubeEmbedUrl(lesson.videoYoutube)}
+                            title="YouTube video player"
+                            className="aspect-video w-full"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                        />
+                    ) : (
+                        <video
+                            controls
+                            className="
                                 aspect-video
                                 w-full
                             "
-                            >
-
-                                <source
-                                    src={lesson?.videoUrl}
-                                    type="video/mp4"
-                                />
-
-                                Your browser does not support video.
-
-                            </video>
-                        )
-                        :
-                        lesson?.type === "PDF"
-                            ?
-                            (
-                                <iframe
-                                    src={lesson?.fileUrl}
-                                    className="
-                                h-[600px]
-                                w-full
-                            "
-                                />
-                            )
-                            :
-                            (
-                                <div
-                                    className="
-                                min-h-[300px]
-
-                                flex
-                                items-center
-                                justify-center
-
-                                bg-background
-
-                                p-8
-
-                                text-center
-                            "
-                                >
-                                    <HiOutlineDocumentText
-                                        size={50}
-                                    />
-                                    <p>
-                                        معاينة المحتوى النصي
-                                    </p>
-                                </div>
-                            )
+                        >
+                            <source
+                                src={lesson.video}
+                                type="video/mp4"
+                            />
+                            Your browser does not support video.
+                        </video>
+                    )
                 }
             </div>
 

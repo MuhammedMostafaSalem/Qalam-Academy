@@ -207,7 +207,7 @@ const LessonsTable = ({ courseId, courseSlug }) => {
                                         actions={
                                             <div className="flex gap-3 justify-center items-center text-[20px]">
                                                 <HiOutlineEye
-                                                    onClick={() => router.push(`/dashboard/courses/${courseSlug}/lessons/${lesson._id}`)}
+                                                    onClick={() => router.push(`/dashboard/courses/${courseSlug}/lessons/${lesson.slug}`)}
                                                     className="text-primary cursor-pointer hover:opacity-80 transition"
                                                     title={isEn ? "View Lesson" : "عرض الدرس"}
                                                 />
