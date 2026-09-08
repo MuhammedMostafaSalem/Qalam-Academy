@@ -36,6 +36,13 @@ const lessonBaseObject = {
         .number()
         .min(0, "Duration cannot be negative")
         .optional(),
+
+    videoYoutube: z
+        .string()
+        .trim()
+        .url("Must be a valid URL") // اختياري لو عايز تتأكد إنه رابط سليم
+        .optional()
+        .nullable(),
 }
 
 // Fields allowed only in Update
