@@ -23,6 +23,10 @@ exports.createLesson = createOne(Lesson, {
         "description",
     ],
     beforeCreate: async ({ req, Model }) => {
+        if (req.body.videoYoutube) {
+            req.body.video = null;
+        }
+
         const course = await Course.findById(req.body.course);
         if (!course) {
             throw new ApiError(
@@ -30,6 +34,11 @@ exports.createLesson = createOne(Lesson, {
                 StatusCodes.NOT_FOUND
             );
         }
+
+        // التأكد من عدم إدخال الاثنين معاً (اختياري حسب رغبتك)
+        // if (req.body.video && req.body.videoYoutube) {
+        //     throw new ApiError("Cannot provide both video file and youtube link.", StatusCodes.BAD_REQUEST);
+        // }
 
         const lastLesson = await Model
             .findOne({
@@ -114,6 +123,21 @@ exports.updateLesson = updateOne(Lesson, {
     ],
 
     beforeUpdate: async ({ req, document, Model }) => {
+        // لو تم إرسال رابط يوتيوب جديد، نحذف ملف الفيديو القديم (اختياري حسب رغبتك)
+        if (req.body.videoYoutube) {
+            req.body.video = null; 
+        }
+        // أو لو تم رفع ملف فيديو جديد، نصفر رابط اليوتيوب
+        // (بتعرف لو الـ file موجود في الـ req.files أو الـ req.body)
+        if (req.files && req.files.video) {
+            req.body.videoYoutube = null;
+        }
+        
+        // التأكد من عدم إدخال الاثنين معاً (اختياري حسب رغبتك)
+        // if (req.body.video && req.body.videoYoutube) {
+        //     throw new ApiError("Cannot provide both video file and youtube link.", StatusCodes.BAD_REQUEST);
+        // }
+
         // Reorder lessons inside the same course
         if (
             req.body.sortOrder &&
