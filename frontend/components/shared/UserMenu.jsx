@@ -56,7 +56,7 @@ const UserMenu = () => {
     const dashboardRoutes = {
         admin: "/dashboard",
         instructor: "/dashboard",
-        student: "/user/profile",
+        student: "/user",
     }
 
     const isDashboardUser = ["admin", "instructor"].includes(user.role);
