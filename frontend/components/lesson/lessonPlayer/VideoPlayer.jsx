@@ -20,6 +20,43 @@ const VideoPlayer = ({ lesson }) => {
             ? `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:5000"}${lesson.thumbnail}`
             : null;
 
+    // Convert YouTube URL to embed URL
+    const getYoutubeEmbedUrl = (url) => {
+        if (!url) return null;
+
+        try {
+            const parsedUrl = new URL(url);
+
+            // youtu.be/JvA6iBb6gBc
+            if (parsedUrl.hostname === "youtu.be") {
+                const videoId = parsedUrl.pathname.slice(1);
+
+                return videoId
+                    ? `https://www.youtube.com/embed/${videoId}`
+                    : null;
+            }
+
+            // youtube.com/watch?v=JvA6iBb6gBc
+            if (
+                parsedUrl.hostname === "www.youtube.com" ||
+                parsedUrl.hostname === "youtube.com" ||
+                parsedUrl.hostname === "m.youtube.com"
+            ) {
+                const videoId = parsedUrl.searchParams.get("v");
+
+                return videoId
+                    ? `https://www.youtube.com/embed/${videoId}`
+                    : null;
+            }
+
+            return null;
+        } catch {
+            return null;
+        }
+    }
+
+    const youtubeUrl = getYoutubeEmbedUrl(lesson?.videoYoutube);
+
     useEffect(() => {
         const video = videoRef.current;
         if (!video) return;
@@ -49,7 +86,8 @@ const VideoPlayer = ({ lesson }) => {
     const { language } = useLanguage();
     const isEn = language === "en";
 
-    if (!videoUrl) {
+    // No video at all
+    if (!videoUrl && !youtubeUrl) {
         return (
             <div
                 className="
@@ -80,17 +118,34 @@ const VideoPlayer = ({ lesson }) => {
                 bg-black
             "
         >
-            {/* Video Element */}
-            <video
-                key={videoUrl}
-                ref={videoRef}
-                className="h-full w-full object-contain"
-                src={videoUrl}
-                poster={thumbnailUrl || undefined}
-                controls
-                playsInline
-                controlsList="nodownload"
-            />
+            {/* Local Video */}
+            {
+                videoUrl && (
+                    <video
+                        key={videoUrl}
+                        ref={videoRef}
+                        className="h-full w-full object-contain"
+                        src={videoUrl}
+                        poster={thumbnailUrl || undefined}
+                        controls
+                        playsInline
+                        controlsList="nodownload"
+                    />
+                )
+            }
+
+            {/* YouTube Video */}
+            {
+                !videoUrl && youtubeUrl && (
+                    <iframe
+                        className="h-full w-full"
+                        src={youtubeUrl}
+                        title={lesson?.title || "YouTube video"}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowFullScreen
+                    />
+                )
+            }
         </div>
     );
 };
