@@ -11,6 +11,7 @@ import { useActionState, useEffect, useRef, useState } from "react";
 import { createLessonAction, updateLessonAction } from "@/actions/lessonActions";
 import { useRouter } from "next/navigation";
 import useToast from "@/hooks/useToast";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const LessonForm = ({
     mode = "create",
@@ -20,6 +21,10 @@ const LessonForm = ({
 }) => {
     const router = useRouter();
     const { successMessage, errorMessage } = useToast();
+    const { language } = useLanguage();
+
+    const isEn = language === "en";
+    
     const formRef = useRef(null);
 
     // تحديد نوع الفيديو الافتراضي بناءً على البيانات الموجودة
@@ -56,10 +61,22 @@ const LessonForm = ({
         <Section className="glass rounded-3xl border border-border p-6">
             <div className="mb-8">
                 <h2 className="text-xl font-bold">
-                    {mode === "create" ? "إضافة درس جديد" : "تعديل الدرس"}
+                    {
+                        mode === "create"
+                        ? isEn
+                            ? "Add New Lesson"
+                            : "إضافة درس جديد"
+                        : isEn
+                            ? "Edit Lesson"
+                            : "تعديل الدرس"
+                    }
                 </h2>
                 <p className="mt-2 text-text-secondary">
-                    إدارة محتوى الدرس وإعداداته.
+                    {
+                        isEn
+                        ? "Manage lesson content and settings"
+                        : "إدارة محتوى الدرس وإعداداته"
+                    }
                 </p>
             </div>
 
@@ -76,7 +93,13 @@ const LessonForm = ({
 
                 {/* Title (Arabic) */}
                 <div>
-                    <label className="mb-2 block font-medium">عنوان الدرس (عربي)</label>
+                    <label className="mb-2 block font-medium">
+                        {
+                            isEn
+                            ? "Lesson Title (Arabic)"
+                            : "عنوان الدرس (عربي)"
+                        }
+                    </label>
                     <input
                         name="titleAr"
                         defaultValue={lesson?._translations?.title?.ar || lesson?.title?.ar || (typeof lesson?.title === "string" ? lesson?.title : "")}
@@ -87,7 +110,13 @@ const LessonForm = ({
 
                 {/* Title (English) */}
                 <div>
-                    <label className="mb-2 block font-medium">عنوان الدرس (إنجليزي)</label>
+                    <label className="mb-2 block font-medium">
+                        {
+                            isEn
+                            ? "Lesson Title (English)"
+                            : "عنوان الدرس (إنجليزي)"
+                        }
+                    </label>
                     <input
                         name="titleEn"
                         defaultValue={lesson?._translations?.title?.en || lesson?.title?.en || ""}
@@ -98,7 +127,13 @@ const LessonForm = ({
 
                 {/* Description (Arabic) */}
                 <div>
-                    <label className="mb-2 block font-medium">وصف الدرس (عربي)</label>
+                    <label className="mb-2 block font-medium">
+                        {
+                            isEn
+                            ? "Lesson Description (Arabic)"
+                            : "وصف الدرس (عربي)"
+                        }
+                    </label>
                     <textarea
                         name="descriptionAr"
                         rows={5}
@@ -110,7 +145,13 @@ const LessonForm = ({
 
                 {/* Description (English) */}
                 <div>
-                    <label className="mb-2 block font-medium">وصف الدرس (إنجليزي)</label>
+                    <label className="mb-2 block font-medium">
+                        {
+                            isEn
+                            ? "Lesson Description (English)"
+                            : "وصف الدرس (إنجليزي)"
+                        }
+                    </label>
                     <textarea
                         name="descriptionEn"
                         rows={5}
@@ -123,7 +164,13 @@ const LessonForm = ({
                 {/* Duration + Sort Order */}
                 <div className="grid gap-6 md:grid-cols-2">
                     <div>
-                        <label className="mb-2 block font-medium">مدة الدرس (بالدقائق)</label>
+                        <label className="mb-2 block font-medium">
+                            {
+                                isEn
+                                ? "Lesson Duration (minutes)"
+                                : "مدة الدرس (بالدقائق)"
+                            }
+                        </label>
                         <input
                             name="duration"
                             type="number"
@@ -133,13 +180,16 @@ const LessonForm = ({
                         />
                     </div>
                     <div>
-                        <label className="mb-2 block font-medium">الترتيب</label>
+                        <label className="mb-2 block font-medium">
+                            {isEn ? "Sort Order" : "الترتيب"}
+                        </label>
                         <input
                             name="sortOrder"
                             type="number"
                             defaultValue={lesson?.sortOrder ?? 1}
                             placeholder="1"
                             className="input-style"
+                            readOnly
                         />
                     </div>
                 </div>
@@ -148,7 +198,12 @@ const LessonForm = ({
                 <div className="p-4 rounded-2xl border border-border bg-background-alt/50 space-y-4">
                     <div className="flex items-center justify-between">
                         <label className="flex items-center gap-2 font-medium">
-                            <HiOutlineVideoCamera /> مصدر الفيديو
+                            <HiOutlineVideoCamera />
+                            {
+                                isEn
+                                ? "Video Source"
+                                : "مصدر الفيديو"
+                            }
                         </label>
                         <div className="flex gap-2 bg-background p-1 rounded-xl border border-border">
                             <button
@@ -158,7 +213,7 @@ const LessonForm = ({
                                     videoType === "file" ? "bg-primary text-white" : "text-text-secondary"
                                 }`}
                             >
-                                رفع ملف
+                                {isEn ? "Upload File" : "رفع ملف"}
                             </button>
                             <button
                                 type="button"
@@ -167,7 +222,11 @@ const LessonForm = ({
                                     videoType === "youtube" ? "bg-primary text-white" : "text-text-secondary"
                                 }`}
                             >
-                                رابط يوتيوب
+                                {
+                                    isEn
+                                    ? "YouTube Link"
+                                    : "رابط يوتيوب"
+                                }
                             </button>
                         </div>
                     </div>
@@ -180,7 +239,13 @@ const LessonForm = ({
                                 accept="video/*"
                                 className="input-style"
                             />
-                            <p className="mt-1 text-xs text-text-secondary">اختر ملف فيديو من جهازك (MP4, MKV, etc.)</p>
+                            <p className="mt-1 text-xs text-text-secondary">
+                                {
+                                    isEn
+                                    ? "Choose a video file from your device (MP4, MKV, etc.)"
+                                    : "اختر ملف فيديو من جهازك (MP4, MKV, إلخ.)"
+                                }
+                            </p>
                         </div>
                     ) : (
                         <div>
@@ -196,15 +261,29 @@ const LessonForm = ({
                                     className="input-style pr-10"
                                 />
                             </div>
-                            <p className="mt-1 text-xs text-text-secondary">الصق رابط فيديو يوتيوب مباشر</p>
+                            <p className="mt-1 text-xs text-text-secondary">
+                                {
+                                    isEn
+                                        ? "Paste a direct YouTube video URL"
+                                        : "الصق رابط فيديو يوتيوب مباشر"
+                                    }
+                            </p>
                         </div>
                     )}
 
                     {lesson?.video && (
                         <p className="text-sm text-text-secondary pt-2 border-t border-border">
-                            الفيديو الحالي:{" "}
+                            {
+                                isEn
+                                ? "Current video:"
+                                : "الفيديو الحالي:"
+                            }{" "}
                             <a href={lesson.video} target="_blank" rel="noopener noreferrer" className="text-primary underline">
-                                عرض الرابط / الملف الحالي
+                                {
+                                    isEn
+                                    ? "View current file / link"
+                                    : "عرض الرابط / الملف الحالي"
+                                }
                             </a>
                         </p>
                     )}
@@ -215,7 +294,12 @@ const LessonForm = ({
                     {/* Thumbnail Upload */}
                     <div className="p-4 rounded-2xl border border-border bg-background-alt/50 space-y-3">
                         <label className="flex items-center gap-2 font-medium">
-                            <HiOutlineCloudArrowUp /> الصورة المصغرة (Thumbnail) - اختياري
+                            <HiOutlineCloudArrowUp />
+                            {
+                                isEn
+                                ? "Thumbnail - Optional"
+                                : "الصورة المصغرة (Thumbnail) - اختياري"
+                            }
                         </label>
                         <input
                             name="thumbnail"
@@ -225,9 +309,17 @@ const LessonForm = ({
                         />
                         {lesson?.thumbnail && (
                             <p className="text-xs text-text-secondary">
-                                الصورة الحالية:{" "}
+                                {
+                                    isEn
+                                    ? "Current image:"
+                                    : "الصورة الحالية:"
+                                }{" "}
                                 <a href={lesson.thumbnail} target="_blank" rel="noopener noreferrer" className="text-primary underline">
-                                    عرض الصورة
+                                    {
+                                        isEn
+                                        ? "View Image"
+                                        : "عرض الصورة"
+                                    }
                                 </a>
                             </p>
                         )}
@@ -236,7 +328,10 @@ const LessonForm = ({
                     {/* Attachment Upload */}
                     <div className="p-4 rounded-2xl border border-border bg-background-alt/50 space-y-3">
                         <label className="flex items-center gap-2 font-medium">
-                            <HiOutlineDocumentText /> ملف الدرس (Attachment) - اختياري
+                            <HiOutlineDocumentText />
+                            {isEn
+                                ? "Lesson Attachment - Optional"
+                                : "ملف الدرس (Attachment) - اختياري"}
                         </label>
                         <input
                             name="attachment"
@@ -246,9 +341,13 @@ const LessonForm = ({
                         />
                         {lesson?.attachment && (
                             <p className="text-xs text-text-secondary">
-                                الملف الحالي:{" "}
+                                {isEn
+                                    ? "Current file:"
+                                    : "الملف الحالي:"}{" "}
                                 <a href={lesson.attachment} target="_blank" rel="noopener noreferrer" className="text-primary underline">
-                                    تحميل المرفق
+                                    {isEn
+                                        ? "Download Attachment"
+                                        : "تحميل المرفق"}
                                 </a>
                             </p>
                         )}
@@ -258,14 +357,20 @@ const LessonForm = ({
                 {/* Settings */}
                 <div className="grid gap-6 md:grid-cols-2">
                     <div>
-                        <label className="mb-2 block font-medium">الحالة</label>
+                        <label className="mb-2 block font-medium">
+                            {isEn ? "Status" : "الحالة"}
+                        </label>
                         <select
                             name="isPublished"
                             defaultValue={lesson?.isPublished ? "true" : "false"}
                             className="input-style"
                         >
-                            <option value="true">منشور</option>
-                            <option value="false">مسودة</option>
+                            <option value="true">
+                                {isEn ? "Published" : "منشور"}
+                            </option>
+                            <option value="false">
+                                {isEn ? "Draft" : "مسودة"}
+                            </option>
                         </select>
                     </div>
 
@@ -277,7 +382,11 @@ const LessonForm = ({
                             value="true"
                             className="h-5 w-5 accent-primary"
                         />
-                        <span>درس مجاني (معاينة)</span>
+                        <span>
+                            {isEn
+                                ? "Free Preview Lesson"
+                                : "درس مجاني (معاينة)"}
+                        </span>
                     </div>
                 </div>
 
@@ -288,14 +397,24 @@ const LessonForm = ({
                         onClick={() => router.back()}
                         className="rounded-2xl border border-border px-6 py-3 hover:bg-background-alt"
                     >
-                        إلغاء
+                        {isEn ? "Cancel" : "إلغاء"}
                     </button>
                     <button
                         type="submit"
                         disabled={isPending}
                         className="rounded-2xl bg-primary px-6 py-3 text-white hover:opacity-90 disabled:opacity-60"
                     >
-                        {isPending ? "جاري الحفظ..." : mode === "create" ? "حفظ الدرس" : "تحديث الدرس"}
+                        {isPending
+                            ? isEn
+                                ? "Saving..."
+                                : "جاري الحفظ..."
+                            : mode === "create"
+                                ? isEn
+                                    ? "Save Lesson"
+                                    : "حفظ الدرس"
+                                : isEn
+                                    ? "Update Lesson"
+                                    : "تحديث الدرس"}
                     </button>
                 </div>
             </form>
