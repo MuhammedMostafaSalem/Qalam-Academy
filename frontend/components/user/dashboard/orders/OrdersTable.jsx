@@ -182,7 +182,7 @@ const OrdersTable = () => {
                             </Table.Td>
 
                             <Table.Td>
-                                <div className="flex items-center gap-2">
+                                <div className="flex justify-center items-center gap-2">
                                     <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${Type.color}`}>
                                         <Type.icon size={20} />
                                     </div>
