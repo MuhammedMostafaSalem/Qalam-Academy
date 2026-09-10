@@ -93,6 +93,14 @@ const CourseActions = ({ course }) => {
                     : (isEn ? "Enroll Now" : "اشترك الآن")}
             </Button>
 
+            {/* مشاهدة الدروس لغير المشترك */}
+            <Button
+                className="gradient-button w-full"
+                onClick={() => router.push(`/courses/${course.slug}/lesson/${course.lessons?.[0]?._id}`)}
+            >
+                {isEn ? "Watch Lessons" : "مشاهدة الدروس"}
+            </Button>
+
             <Button
                 variant="outline"
                 className="w-full text-text-primary border-border hover:border-primary"
