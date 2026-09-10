@@ -40,7 +40,8 @@ const useLoginForm = () => {
                 instructor: "/dashboard",
                 student: "/user",
             };
-            const redirectPath = roleRedirects[state.data?.user?.role] || "/";
+            // const redirectPath = roleRedirects[state.data?.user?.role] || "/";
+            const redirectPath = "/";
             router.replace(redirectPath);
         } else {
             // console.log(state)
