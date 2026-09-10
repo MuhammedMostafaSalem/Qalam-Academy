@@ -80,7 +80,7 @@ const CoursesToolbar = () => {
                 setSearchQuery={setSearchQuery}
                 inputPlaceholder={isEn ? "Search courses..." : "ابحث عن كورس..."}
                 filters={
-                    <>
+                    <div className="flex flex-wrap gap-3 items-center">
                         <Select
                             options={categoryOptions}
                             value={categoryFilter}
@@ -101,7 +101,7 @@ const CoursesToolbar = () => {
                             value={featuredFilter}
                             onChange={(e) => setFeaturedFilter(e.target.value)}
                         />
-                    </>
+                    </div>
                 }
             />
         </div>
