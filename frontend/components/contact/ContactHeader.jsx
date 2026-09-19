@@ -1,29 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import SectionBadge from "@/components/sections/SectionBadge";
 import { heroAnimation } from "@/lib/animation/heroAnimation";
-import { getHeroByPageAction } from "@/actions/heroActions";
+import { usePublicHero } from "@/hooks/heroes/usePublicHero";
 
 import { useLanguage } from "@/providers/LanguageProvider";
 
 const ContactHeader = () => {
     const { language, localize } = useLanguage();
-    const [hero, setHero] = useState(null);
-
-    useEffect(() => {
-        const fetchHero = async () => {
-            try {
-                const res = await getHeroByPageAction("contact");
-                if (res.success && res.data) {
-                    setHero(res.data);
-                }
-            } catch (err) {
-                console.error("Failed to fetch contact hero", err);
-            }
-        };
-        fetchHero();
-    }, []);
+    const hero = usePublicHero("contact");
 
     const defaultTitle = language === "en" ? "We'd Love to Hear From You" : "يسعدنا التواصل معك";
     const defaultSubtitle = language === "en" ? "Contact Us" : "تواصل معنا";

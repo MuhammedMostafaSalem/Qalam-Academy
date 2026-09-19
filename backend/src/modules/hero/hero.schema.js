@@ -4,12 +4,14 @@ const { z } = require("zod");
 const pages = [
     "home",
     "about",
+    "services",
     "courses",
     "course-details",
     "products",
     "product-details",
     "blog",
     "blog-details",
+    "portfolio",
     "contact",
     "wishlist",
     "cart",
@@ -36,6 +38,12 @@ const textAlignments = [
     "center",
     "right",
 ];
+
+const formDataBoolean = z.preprocess((value) => {
+    if (value === "true") return true;
+    if (value === "false") return false;
+    return value;
+}, z.boolean());
 
 
 // Create Hero
@@ -131,9 +139,7 @@ const createHeroSchema = z.object({
         .enum(textAlignments)
         .optional(),
 
-    isActive: z
-        .boolean()
-        .optional(),
+    isActive: formDataBoolean.optional(),
 
     sortOrder: z
         .coerce
@@ -244,9 +250,7 @@ const updateHeroSchema = z.object({
         .enum(textAlignments)
         .optional(),
 
-    isActive: z
-        .boolean()
-        .optional(),
+    isActive: formDataBoolean.optional(),
 
     sortOrder: z
         .coerce

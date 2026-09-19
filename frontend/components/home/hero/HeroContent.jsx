@@ -1,30 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import HeroButtons from "./HeroButtons";
 import HeroStats from "./HeroStats";
 import { heroAnimation } from "@/lib/animation/heroAnimation";
-import { getHeroByPageAction } from "@/actions/heroActions";
+import { usePublicHero } from "@/hooks/heroes/usePublicHero";
 
 import { useLanguage } from "@/providers/LanguageProvider";
 
 const HeroContent = () => {
     const { language, localize } = useLanguage();
-    const [hero, setHero] = useState(null);
-
-    useEffect(() => {
-        const fetchHero = async () => {
-            try {
-                const res = await getHeroByPageAction("home");
-                if (res.success && res.data) {
-                    setHero(res.data);
-                }
-            } catch (err) {
-                console.error("Failed to fetch home hero", err);
-            }
-        };
-        fetchHero();
-    }, [language]);
+    const hero = usePublicHero("home");
 
     const title = localize(hero?.title);
     const description = localize(hero?.description);
@@ -74,7 +59,12 @@ const HeroContent = () => {
             </p>
 
             <div {...heroAnimation.buttons}>
-                <HeroButtons />
+                <HeroButtons
+                    primaryText={localize(hero?.buttonText)}
+                    primaryLink={hero?.buttonLink}
+                    secondaryText={localize(hero?.secondaryButtonText)}
+                    secondaryLink={hero?.secondaryButtonLink}
+                />
             </div>
 
             <div {...heroAnimation.buttons}>

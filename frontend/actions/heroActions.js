@@ -3,7 +3,69 @@
 import { authApi } from "@/services/authService";
 import { revalidatePath } from "next/cache";
 
-// Public: Get Hero by Page name (home, courses, blog, contact, services, portfolio, store, about)
+const heroTextFields = [
+    ["titleAr", "title.ar"],
+    ["titleEn", "title.en"],
+    ["subtitleAr", "subtitle.ar"],
+    ["subtitleEn", "subtitle.en"],
+    ["descriptionAr", "description.ar"],
+    ["descriptionEn", "description.en"],
+    ["buttonTextAr", "buttonText.ar"],
+    ["buttonTextEn", "buttonText.en"],
+    ["buttonLink", "buttonLink"],
+    ["secondaryButtonTextAr", "secondaryButtonText.ar"],
+    ["secondaryButtonTextEn", "secondaryButtonText.en"],
+    ["secondaryButtonLink", "secondaryButtonLink"],
+    ["layout", "layout"],
+    ["textAlignment", "textAlignment"],
+    ["sortOrder", "sortOrder"],
+    ["seoTitle", "seoTitle"],
+    ["seoDescription", "seoDescription"],
+];
+
+const heroFileFields = ["image", "backgroundImage", "video"];
+
+function buildHeroFormData(formData, { includePage = false } = {}) {
+    const body = new FormData();
+
+    if (includePage) {
+        body.append("page", formData.get("page") || "");
+    }
+
+    heroTextFields.forEach(([source, target]) => {
+        const value = formData.get(source);
+        if (value !== null) {
+            body.append(target, value);
+        }
+    });
+
+    body.append("isActive", formData.get("isActive") === "true" ? "true" : "false");
+
+    heroFileFields.forEach((field) => {
+        const file = formData.get(field);
+        if (file instanceof File && file.size > 0) {
+            body.append(field, file);
+        }
+    });
+
+    return body;
+}
+
+function revalidateHeroPages() {
+    [
+        "/",
+        "/about",
+        "/services",
+        "/courses",
+        "/portfolio",
+        "/store",
+        "/blog",
+        "/contact",
+        "/dashboard/heroes",
+    ].forEach((path) => revalidatePath(path));
+}
+
+// Public: Get Hero by API page key (the /store route uses "products")
 export async function getHeroByPageAction(page) {
     try {
         const response = await authApi(`/heroes/page/${page}`, {
@@ -65,38 +127,14 @@ export async function getHeroByIdAction(id) {
 // Admin: Create Hero
 export async function createHeroAction(prevState, formData) {
     try {
-        const body = new FormData();
-
-        const page = formData.get("page");
-        if (page) body.append("page", page);
-
-        const titleAr = formData.get("titleAr");
-        const titleEn = formData.get("titleEn");
-        if (titleAr) body.append("title.ar", titleAr);
-        if (titleEn) body.append("title.en", titleEn);
-
-        const subtitleAr = formData.get("subtitleAr");
-        const subtitleEn = formData.get("subtitleEn");
-        if (subtitleAr) body.append("subtitle.ar", subtitleAr);
-        if (subtitleEn) body.append("subtitle.en", subtitleEn);
-
-        const descriptionAr = formData.get("descriptionAr");
-        const descriptionEn = formData.get("descriptionEn");
-        if (descriptionAr) body.append("description.ar", descriptionAr);
-        if (descriptionEn) body.append("description.en", descriptionEn);
-
-        const image = formData.get("image");
-        if (image instanceof File && image.size > 0) {
-            body.append("image", image);
-        }
+        const body = buildHeroFormData(formData, { includePage: true });
 
         const response = await authApi("/heroes", {
             method: "POST",
             body,
         });
 
-        revalidatePath("/");
-        revalidatePath("/dashboard");
+        revalidateHeroPages();
 
         return {
             success: true,
@@ -115,38 +153,14 @@ export async function createHeroAction(prevState, formData) {
 // Admin: Update Hero
 export async function updateHeroAction(id, prevState, formData) {
     try {
-        const body = new FormData();
-
-        const titleAr = formData.get("titleAr");
-        const titleEn = formData.get("titleEn");
-        if (titleAr) body.append("title.ar", titleAr);
-        if (titleEn) body.append("title.en", titleEn);
-
-        const subtitleAr = formData.get("subtitleAr");
-        const subtitleEn = formData.get("subtitleEn");
-        if (subtitleAr) body.append("subtitle.ar", subtitleAr);
-        if (subtitleEn) body.append("subtitle.en", subtitleEn);
-
-        const descriptionAr = formData.get("descriptionAr");
-        const descriptionEn = formData.get("descriptionEn");
-        if (descriptionAr) body.append("description.ar", descriptionAr);
-        if (descriptionEn) body.append("description.en", descriptionEn);
-
-        const image = formData.get("image");
-        const removeImage = formData.get("removeImage");
-        if (removeImage === "true") {
-            body.append("image", "");
-        } else if (image instanceof File && image.size > 0) {
-            body.append("image", image);
-        }
+        const body = buildHeroFormData(formData);
 
         const response = await authApi(`/heroes/${id}`, {
             method: "PATCH",
             body,
         });
 
-        revalidatePath("/");
-        revalidatePath("/dashboard");
+        revalidateHeroPages();
 
         return {
             success: true,
@@ -169,8 +183,7 @@ export async function deleteHeroAction(id) {
             method: "DELETE",
         });
 
-        revalidatePath("/");
-        revalidatePath("/dashboard");
+        revalidateHeroPages();
 
         return {
             success: true,

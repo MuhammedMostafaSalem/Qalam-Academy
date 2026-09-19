@@ -3,10 +3,14 @@ import LessonTabs from "../lessonContent/LessonTabs";
 import LessonNavigation from "../LessonNavigation";
 import VideoPlayer from "./VideoPlayer";
 
-const LessonPlayer = ({ lesson, courseSlug, courseProgress, courseLessons }) => {
+const LessonPlayer = ({ lesson, courseSlug, courseProgress, courseLessons, onProgressUpdated, canTrackProgress }) => {
     return (
         <div className="flex flex-col">
-            <VideoPlayer lesson={lesson} />
+            <VideoPlayer
+                lesson={lesson}
+                onProgressUpdated={onProgressUpdated}
+                canTrackProgress={canTrackProgress}
+            />
 
             <div
                 className="

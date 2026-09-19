@@ -5,7 +5,7 @@ import Button from "@/components/ui/Button";
 import { HiArrowLeft, HiArrowRight, HiOutlineBookOpen } from "react-icons/hi2";
 import { useLanguage } from "@/providers/LanguageProvider";
 
-const HeroButtons = () => {
+const HeroButtons = ({ primaryText, primaryLink, secondaryText, secondaryLink }) => {
     const router = useRouter();
     const { language, isRtl } = useLanguage();
     const isEn = language === "en";
@@ -28,9 +28,9 @@ const HeroButtons = () => {
                     items-center
                     gap-2
                 "
-                onClick={() => router.push("/contact")}
+                onClick={() => router.push(primaryLink || "/contact")}
             >
-                <span>{isEn ? "Start Your Project" : "ابدأ مشروعك معنا"}</span>
+                <span>{primaryText || (isEn ? "Start Your Project" : "ابدأ مشروعك معنا")}</span>
                 {isRtl ? <HiArrowLeft size={20} /> : <HiArrowRight size={20} />}
             </Button>
 
@@ -41,16 +41,21 @@ const HeroButtons = () => {
                     items-center
                     gap-2
                 "
-                onClick={() =>
+                onClick={() => {
+                    if (secondaryLink) {
+                        router.push(secondaryLink);
+                        return;
+                    }
+
                     window.scrollTo({
                         top: 700,
                         behavior: "smooth",
-                    })
-                }
+                    });
+                }}
             >
                 <HiOutlineBookOpen size={20} />
 
-                <span>{isEn ? "Browse Articles" : "تصفح المقالات"}</span>
+                <span>{secondaryText || (isEn ? "Browse Articles" : "تصفح المقالات")}</span>
             </Button>
         </div>
     );

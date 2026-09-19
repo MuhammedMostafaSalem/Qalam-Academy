@@ -3,9 +3,11 @@ const Course = require("../course/course.model");
 const Lesson = require("../lesson/lesson.model");
 const Review = require("../review/review.model");
 const Enrollment = require("../enrollment/enrollment.model");
+const Progress = require("../progress/progress.model");
 const ApiError = require("../../utils/ApiError");
 const { StatusCodes } = require("http-status-codes");
 const translateDocument = require("../../utils/translateDocument");
+const { calculateCourseProgress } = require("../progress/progress.service");
 
 // Get Course Details
 exports.getCourseDetails = async (req, slug, userId = null, language = "ar") => {
@@ -50,13 +52,30 @@ exports.getCourseDetails = async (req, slug, userId = null, language = "ar") => 
 
     // Enrollment
     let enrollment = null;
+    let enrollmentProgress = null;
 
     if (userId) {
         enrollment = await Enrollment.findOne({
             user: userId,
             course: course._id,
         });
+
+        if (enrollment) {
+            enrollmentProgress = await calculateCourseProgress(userId, course._id);
+        }
     }
+
+    const lessonProgress = enrollment
+        ? await Progress.find({
+            user: userId,
+            course: course._id,
+            lesson: { $in: lessons.map((lesson) => lesson._id) },
+        })
+        : [];
+
+    const progressByLesson = new Map(
+        lessonProgress.map((item) => [String(item.lesson), item])
+    );
 
     // Format and translate Lessons
     const formattedLessons = lessons.map((lesson) => {
@@ -64,6 +83,7 @@ exports.getCourseDetails = async (req, slug, userId = null, language = "ar") => 
             "title",
             "description",
         ]);
+        const itemProgress = progressByLesson.get(String(lesson._id));
 
         return {
             _id: translatedLesson._id,
@@ -79,7 +99,10 @@ exports.getCourseDetails = async (req, slug, userId = null, language = "ar") => 
                 ? true
                 : translatedLesson.isPreview,
 
-            isCompleted: false,
+            isCompleted: Boolean(itemProgress?.completed),
+            watchedSeconds: itemProgress?.watchedSeconds || 0,
+            lastPosition: itemProgress?.lastPosition || 0,
+            completedAt: itemProgress?.completedAt || null,
         };
     });
 
@@ -96,7 +119,7 @@ exports.getCourseDetails = async (req, slug, userId = null, language = "ar") => 
         isEnrolled: !!enrollment,
 
         progress: enrollment
-            ? enrollment.progress
+            ? enrollmentProgress?.progress || 0
             : 0,
 
         lessons: formattedLessons,

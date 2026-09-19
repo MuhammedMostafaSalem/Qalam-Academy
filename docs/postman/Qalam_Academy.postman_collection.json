@@ -3939,7 +3939,7 @@
                 "{{courseId}}"
               ]
             },
-            "description": "## Purpose\nReturns the student's progress for a given course.\n\n## Authentication\nRequired. **Role:** student.\n\n## Path Parameters\n`courseId` - course ObjectId.\n\n## Responses\n**200** - `data: { progress, isCompleted, lessons }`. **404** - enrollment not found."
+            "description": "## Purpose\nReturns the student's recalculated progress for a given course, including per-lesson resume and completion state.\n\n## Authentication\nRequired. **Role:** student.\n\n## Path Parameters\n`courseId` - course ObjectId.\n\n## Responses\n**200** - `data: { progress, progressPercent, isCompleted, completedLessons, totalLessons, lessons }`. **404** - enrollment not found."
           },
           "response": [
             {
@@ -4090,7 +4090,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n  \"success\": true,\n  \"message\": \"Progress updated successfully.\",\n  \"data\": {\n    \"_id\": \"65d0...\",\n    \"watchedSeconds\": 300,\n    \"completed\": true\n  }\n}"
+              "body": "{\n  \"success\": true,\n  \"message\": \"Progress updated successfully.\",\n  \"data\": {\n    \"lesson\": {\n      \"_id\": \"65d0...\",\n      \"watchedSeconds\": 300,\n      \"lastPosition\": 120.5,\n      \"completed\": true\n    },\n    \"courseProgress\": {\n      \"progress\": 50,\n      \"progressPercent\": 50,\n      \"completedLessons\": 5,\n      \"totalLessons\": 10,\n      \"isCompleted\": false\n    }\n  }\n}"
             },
             {
               "name": "400 - Validation Error",
@@ -10779,7 +10779,7 @@
                 "{{heroPage}}"
               ]
             },
-            "description": "## Purpose\nReturns the active hero content for a given page (public).\n\n## Path Parameters\n`page` - one of home, about, courses, course-details, products, product-details, blog, blog-details, contact, wishlist, cart, checkout, login, register, forgot-password, reset-password, profile, dashboard.\n\n## Responses\n**200** - hero. **404** - no active hero for page."
+            "description": "## Purpose\nReturns the active hero content for a given page (public).\n\n## Path Parameters\n`page` - one of home, about, services, courses, course-details, products, product-details, blog, blog-details, portfolio, contact, wishlist, cart, checkout, login, register, forgot-password, reset-password, profile, dashboard.\n\n## Responses\n**200** - hero. **404** - no active hero for page."
           },
           "response": [
             {

@@ -41,13 +41,28 @@ export async function getCourseProgressAction(courseId) {
     }
 }
 
-// Update Lesson Progress (Student)
-export async function updateProgressAction(lessonId, isCompleted = true) {
+// Update lesson position/completion (Student). Automatic and manual completion
+// both use this endpoint and the same idempotent backend operation.
+export async function updateProgressAction({
+    lessonId,
+    watchedSeconds = 0,
+    lastPosition = 0,
+    completed = false,
+}) {
     try {
         const response = await authApi("/progress", {
             method: "POST",
-            body: JSON.stringify({ lesson: lessonId, isCompleted }),
+            body: JSON.stringify({
+                lesson: lessonId,
+                watchedSeconds: Math.max(0, Number(watchedSeconds) || 0),
+                lastPosition: Math.max(0, Number(lastPosition) || 0),
+                completed: Boolean(completed),
+            }),
         });
+
+        revalidatePath("/courses/[slug]", "page");
+        revalidatePath("/courses/[slug]/lesson/[lessonId]", "page");
+        revalidatePath("/user/my-courses");
 
         return {
             success: true,

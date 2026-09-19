@@ -8,7 +8,10 @@ const ProgressCard = ({ courseProgress }) => {
 
     const completedLessons = courseProgress?.completedLessons || 0;
     const totalLessons = courseProgress?.totalLessons || 0;
-    const progressPercent = courseProgress?.progressPercent || 0;
+    const progressPercent = Math.min(
+        100,
+        Math.max(0, courseProgress?.progressPercent ?? courseProgress?.progress ?? 0)
+    );
 
     return (
         <div

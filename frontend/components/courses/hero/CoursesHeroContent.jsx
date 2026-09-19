@@ -1,31 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import SectionBadge from "@/components/sections/SectionBadge";
 import HeroButtons from "./HeroButtons";
 import HeroFeatures from "./HeroFeatures";
 import { heroAnimation } from "@/lib/animation/heroAnimation";
-import { getHeroByPageAction } from "@/actions/heroActions";
+import { usePublicHero } from "@/hooks/heroes/usePublicHero";
 
 import { useLanguage } from "@/providers/LanguageProvider";
 
 const CoursesHeroContent = () => {
     const { language, localize } = useLanguage();
-    const [hero, setHero] = useState(null);
-
-    useEffect(() => {
-        const fetchHero = async () => {
-            try {
-                const res = await getHeroByPageAction("courses");
-                if (res.success && res.data) {
-                    setHero(res.data);
-                }
-            } catch (err) {
-                console.error("Failed to fetch courses hero", err);
-            }
-        };
-        fetchHero();
-    }, []);
+    const hero = usePublicHero("courses");
 
     const title = localize(hero?.title);
     const subtitle = localize(hero?.subtitle, language === "en" ? "Our Courses" : "كورساتنا");
@@ -77,7 +62,12 @@ const CoursesHeroContent = () => {
                 {description || defaultDescription}
             </p>
 
-            <HeroButtons />
+            <HeroButtons
+                primaryText={localize(hero?.buttonText)}
+                primaryLink={hero?.buttonLink}
+                secondaryText={localize(hero?.secondaryButtonText)}
+                secondaryLink={hero?.secondaryButtonLink}
+            />
             <HeroFeatures />
         </div>
     );

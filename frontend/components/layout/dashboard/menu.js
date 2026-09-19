@@ -13,6 +13,7 @@ import {
     HiOutlineUsers,
     HiOutlineEnvelope,
     HiOutlineMap,
+    HiOutlinePhoto,
 } from "react-icons/hi2";
 
 import { PiUsersThreeLight } from "react-icons/pi";
@@ -98,6 +99,12 @@ const menu = [
         section: { ar: "المحتوى", en: "Content" },
         roles: ["admin"],
         items: [
+            {
+                title: { ar: "هيرو الصفحات", en: "Page Heroes" },
+                href: "/dashboard/heroes",
+                icon: HiOutlinePhoto,
+                roles: ["admin"],
+            },
             {
                 title: { ar: "الخدمات", en: "Services" },
                 href: "/dashboard/services",

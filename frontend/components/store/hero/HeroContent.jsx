@@ -1,30 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import SectionBadge from "@/components/sections/SectionBadge";
 import SectionTitle from "@/components/sections/SectionTitle";
 import SectionDescription from "@/components/sections/SectionDescription";
-import { getHeroByPageAction } from "@/actions/heroActions";
+import { usePublicHero } from "@/hooks/heroes/usePublicHero";
 
 import { useLanguage } from "@/providers/LanguageProvider";
 
 const HeroContent = () => {
     const { language, localize } = useLanguage();
-    const [hero, setHero] = useState(null);
-
-    useEffect(() => {
-        const fetchHero = async () => {
-            try {
-                const res = await getHeroByPageAction("store");
-                if (res.success && res.data) {
-                    setHero(res.data);
-                }
-            } catch (err) {
-                console.error("Failed to fetch store hero", err);
-            }
-        };
-        fetchHero();
-    }, [language]);
+    const hero = usePublicHero("products");
 
     const title = localize(hero?.title);
     const subtitle = localize(hero?.subtitle, language === "en" ? "Digital Store" : "المتجر الرقمي");

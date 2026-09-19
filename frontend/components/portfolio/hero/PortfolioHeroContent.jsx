@@ -5,10 +5,21 @@ import HeroButtons from "./HeroButtons";
 import HeroStats from "./HeroStats";
 import { animations } from "@/lib/animations";
 import { useLanguage } from "@/providers/LanguageProvider";
+import { usePublicHero } from "@/hooks/heroes/usePublicHero";
 
 const PortfolioHeroContent = () => {
-    const { language } = useLanguage();
+    const { language, localize } = useLanguage();
     const isEn = language === "en";
+    const hero = usePublicHero("portfolio");
+
+    const subtitle = localize(hero?.subtitle, isEn ? "Our Portfolio" : "أعمالنا");
+    const title = localize(hero?.title);
+    const description = localize(
+        hero?.description,
+        isEn
+            ? "Explore a curated selection of solutions and applications built across various domains, ranging from learning platforms and enterprise management to cross-platform mobile apps."
+            : "استكشف مجموعة من المشاريع التي قمنا بتطويرها في مجالات مختلفة، بدايةً من منصات التعليم وإدارة الأعمال وحتى تطبيقات الهواتف والأنظمة المخصصة."
+    );
 
     return (
         <div
@@ -35,22 +46,30 @@ const PortfolioHeroContent = () => {
                     ${animations.transition}
                 `}
             >
-                {isEn ? "Our Portfolio" : "أعمالنا"}
+                {subtitle}
             </span>
 
             <h1
                 {...heroAnimation.title}
                 className="mt-6 max-w-2xl"
             >
-                <span className="block text-4xl md:text-5xl lg:text-[60px] text-text-primary">
-                    {isEn ? "Projects We Are Proud" : "مشاريع نفتخر"}
-                </span>
-
-                <span className="block mt-2 text-4xl md:text-5xl lg:text-[60px]">
-                    <span className="gradient-text">
-                        {isEn ? "To Build With Our Clients" : "ببنائها مع عملائنا"}
+                {title ? (
+                    <span className="block text-4xl md:text-5xl lg:text-[60px] text-text-primary">
+                        {title}
                     </span>
-                </span>
+                ) : (
+                    <>
+                        <span className="block text-4xl md:text-5xl lg:text-[60px] text-text-primary">
+                            {isEn ? "Projects We Are Proud" : "مشاريع نفتخر"}
+                        </span>
+
+                        <span className="block mt-2 text-4xl md:text-5xl lg:text-[60px]">
+                            <span className="gradient-text">
+                                {isEn ? "To Build With Our Clients" : "ببنائها مع عملائنا"}
+                            </span>
+                        </span>
+                    </>
+                )}
             </h1>
 
             <p
@@ -64,12 +83,15 @@ const PortfolioHeroContent = () => {
                     ${animations.transition}
                 `}
             >
-                {isEn
-                    ? "Explore a curated selection of solutions and applications built across various domains, ranging from learning platforms and enterprise management to cross-platform mobile apps."
-                    : "استكشف مجموعة من المشاريع التي قمنا بتطويرها في مجالات مختلفة، بدايةً من منصات التعليم وإدارة الأعمال وحتى تطبيقات الهواتف والأنظمة المخصصة."}
+                {description}
             </p>
 
-            <HeroButtons />
+            <HeroButtons
+                primaryText={localize(hero?.buttonText)}
+                primaryLink={hero?.buttonLink}
+                secondaryText={localize(hero?.secondaryButtonText)}
+                secondaryLink={hero?.secondaryButtonLink}
+            />
 
             <HeroStats />
         </div>

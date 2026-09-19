@@ -1,12 +1,11 @@
 "use client";
 
-import Link from "next/link";
 import Button from "@/components/ui/Button";
 import { HiArrowLeft, HiArrowRight } from "react-icons/hi2";
 import { useRouter } from "next/navigation";
 import { useLanguage } from "@/providers/LanguageProvider";
 
-const HeroButtons = () => {
+const HeroButtons = ({ primaryText, primaryLink, secondaryText, secondaryLink }) => {
     const router = useRouter();
     const { language, isRtl } = useLanguage();
     const isEn = language === "en";
@@ -22,18 +21,18 @@ const HeroButtons = () => {
             "
         >
             <Button
-                onClick={() => router.push("/contact")}
+                onClick={() => router.push(primaryLink || "/contact")}
                 className="gradient-button flex gap-2 items-center"
             >
-                <span>{isEn ? "Start Your Project" : "ابدأ مشروعك"}</span>
+                <span>{primaryText || (isEn ? "Start Your Project" : "ابدأ مشروعك")}</span>
                 {isRtl ? <HiArrowLeft size={20} /> : <HiArrowRight size={20} />}
             </Button>
 
             <Button
-                onClick={() => router.push("/services")}
+                onClick={() => router.push(secondaryLink || "/services")}
                 variant="ghost"
             >
-                {isEn ? "Our Services" : "خدماتنا"}
+                {secondaryText || (isEn ? "Our Services" : "خدماتنا")}
             </Button>
         </div>
     );

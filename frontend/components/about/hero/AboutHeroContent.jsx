@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import SectionBadge from "@/components/sections/SectionBadge";
 import SectionTitle from "@/components/sections/SectionTitle";
 import SectionDescription from "@/components/sections/SectionDescription";
@@ -8,28 +7,14 @@ import Button from "@/components/ui/Button";
 import { HiArrowRight, HiOutlinePlay } from "react-icons/hi2";
 import { useRouter } from "next/navigation";
 import { heroAnimation } from "@/lib/animation/heroAnimation";
-import { getHeroByPageAction } from "@/actions/heroActions";
+import { usePublicHero } from "@/hooks/heroes/usePublicHero";
 
 import { useLanguage } from "@/providers/LanguageProvider";
 
 const AboutHeroContent = () => {
     const router = useRouter();
     const { language, localize } = useLanguage();
-    const [hero, setHero] = useState(null);
-
-    useEffect(() => {
-        const fetchHero = async () => {
-            try {
-                const res = await getHeroByPageAction("about");
-                if (res.success && res.data) {
-                    setHero(res.data);
-                }
-            } catch (err) {
-                console.error("Failed to fetch about hero", err);
-            }
-        };
-        fetchHero();
-    }, []);
+    const hero = usePublicHero("about");
 
     const title = localize(hero?.title);
     const subtitle = localize(hero?.subtitle, language === "en" ? "About Us" : "من نحن");
@@ -105,23 +90,32 @@ const AboutHeroContent = () => {
                         justify-center
                         gap-2
                     "
-                    onClick={() => router.push("/contact")}
+                    onClick={() => router.push(hero?.buttonLink || "/contact")}
                 >
                     <HiArrowRight className="h-5 w-5" />
-                    <span>{language === "en" ? "Learn more about our journey" : "اعرف المزيد عن رحلتنا"}</span>
+                    <span>
+                        {localize(hero?.buttonText) || (language === "en" ? "Learn more about our journey" : "اعرف المزيد عن رحلتنا")}
+                    </span>
                 </Button>
 
                 <Button
                     variant={null}
                     size="lg"
                     className="flex items-center gap-2 text-text-secondary"
+                    onClick={() => {
+                        if (hero?.secondaryButtonLink) {
+                            router.push(hero.secondaryButtonLink);
+                        }
+                    }}
                 >
                     <HiOutlinePlay
                         size={18}
                         className="glass border-text-secondary rounded-full w-[30px] p-[5px]"
                     />
 
-                    <span>{language === "en" ? "Watch intro video" : "شاهد فيديو تعريفي"}</span>
+                    <span>
+                        {localize(hero?.secondaryButtonText) || (language === "en" ? "Watch intro video" : "شاهد فيديو تعريفي")}
+                    </span>
                 </Button>
             </div>
         </div>

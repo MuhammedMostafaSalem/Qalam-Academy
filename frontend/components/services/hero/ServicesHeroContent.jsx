@@ -11,10 +11,21 @@ import { heroAnimation } from "@/lib/animation/heroAnimation";
 import { cardAnimation } from "@/lib/animation/cardAnimation";
 import { animations } from "@/lib/animations";
 import { useLanguage } from "@/providers/LanguageProvider";
+import { usePublicHero } from "@/hooks/heroes/usePublicHero";
 
 const ServicesHeroContent = () => {
     const { language, localize } = useLanguage();
     const isEn = language === "en";
+    const hero = usePublicHero("services");
+
+    const subtitle = localize(hero?.subtitle, isEn ? "Our Services" : "خدماتنا");
+    const title = localize(hero?.title);
+    const description = localize(
+        hero?.description,
+        isEn
+            ? "We deliver a comprehensive suite of software services engineered to help companies and individuals digitally transform and achieve their goals efficiently."
+            : "نقدم مجموعة شاملة من الخدمات البرمجية المصممة خصيصًا لمساعدة الشركات والأفراد على التحول الرقمي وتحقيق أهدافهم بكفاءة."
+    );
 
     const features = [
         {
@@ -40,7 +51,7 @@ const ServicesHeroContent = () => {
     return (
         <div className="flex flex-col gap-6">
             <SectionBadge>
-                {isEn ? "Our Services" : "خدماتنا"}
+                {subtitle}
             </SectionBadge>
 
             <h1
@@ -49,7 +60,9 @@ const ServicesHeroContent = () => {
                     text-3xl leading-[1.5] md:text-[40px]
                 "
             >
-                {isEn ? (
+                {title ? (
+                    title
+                ) : isEn ? (
                     <>
                         Integrated Software Solutions
                         <br />
@@ -77,9 +90,7 @@ const ServicesHeroContent = () => {
                     text-text-secondary
                 "
             >
-                {isEn
-                    ? "We deliver a comprehensive suite of software services engineered to help companies and individuals digitally transform and achieve their goals efficiently."
-                    : "نقدم مجموعة شاملة من الخدمات البرمجية المصممة خصيصًا لمساعدة الشركات والأفراد على التحول الرقمي وتحقيق أهدافهم بكفاءة."}
+                {description}
             </p>
 
             {/* Features */}
