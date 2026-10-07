@@ -7,70 +7,124 @@ const forgotPasswordTemplate = require("../../templates/forgotPasswordTemplate")
 const sendEmail = require("../../utils/sendEmail");
 
 // Verify OTP
-const verifyOtp = async (email, otp, purpose) => {
-    // Find a user whose OTP has not expired yet
+const verifyOtp = async (req, email, otp, purpose) => {
     const user = await User.findOne({
         email,
         otpPurpose: purpose,
         otpExpires: { $gt: Date.now() },
-    }).select("+otp"); // Explicitly include OTP field
+    }).select("+otp +otpAttempts");
 
-    // If no user is found, OTP is invalid or expired
+    // OTP غير موجود أو منتهي
     if (!user) {
-        throw new ApiError("Invalid or expired OTP", StatusCodes.BAD_REQUEST);
+        throw new ApiError(req.t("auth.invalidOTP"), StatusCodes.BAD_REQUEST);
     }
 
-    // Compare the provided OTP with the hashed OTP stored in database
+    // الحساب موقوف
+    if (!user.isActive) {
+        throw new ApiError(
+            req.t("auth.accountSuspended"),
+            StatusCodes.FORBIDDEN
+        );
+    }
+
+    const MAX_ATTEMPTS = 5;
+
+    // مقارنة OTP
     const isMatch = await bcrypt.compare(otp, user.otp);
 
-    // If OTP does not match, throw an error
+    // OTP غلط
     if (!isMatch) {
-        throw new ApiError("Invalid OTP", StatusCodes.BAD_REQUEST);
+        user.otpAttempts += 1;
+
+        /*
+         * المحاولات:
+         *
+         * 1 -> remaining 4
+         * 2 -> remaining 3
+         * 3 -> remaining 2
+         * 4 -> remaining 1
+         * 5 -> remaining 0
+         * 6 -> Suspend account
+         */
+        // وصل للحد الأقصى
+        if (user.otpAttempts > MAX_ATTEMPTS) {
+            user.isActive = false;
+
+            // Destroy OTP completely
+            user.otp = undefined;
+            user.otpExpires = undefined;
+            user.otpResendTimeout = undefined;
+            user.otpPurpose = undefined;
+            // user.otpAttempts = 0;
+
+            await user.save();
+
+            throw new ApiError(req.t("auth.tooManyAttempts"), StatusCodes.FORBIDDEN);
+        }
+
+        await user.save();
+
+        const remainingAttempts = MAX_ATTEMPTS - user.otpAttempts;
+
+        throw new ApiError(
+            req.t("auth.remainingAttempts", {
+                remainingAttempts,
+            }),
+            StatusCodes.BAD_REQUEST,
+        );
     }
 
     // Email verification
     if (purpose === "email_verification") {
-        // Prevent verifying an already verified user
         if (user.isVerified) {
-            throw new ApiError("User already verified", StatusCodes.BAD_REQUEST);
+            throw new ApiError(req.t("auth.verifiedUser"), StatusCodes.BAD_REQUEST);
         }
-        // Mark user as verified
+
         user.isVerified = true;
+        user.isActive = true;
     }
 
-    // clear OTP fields
+    // Clear OTP data
     user.otp = undefined;
     user.otpExpires = undefined;
     user.otpResendTimeout = undefined;
     user.otpPurpose = undefined;
+    user.otpAttempts = 0;
 
     await user.save();
 
     return user;
-}
+};
 
 // Resend OTP
-const resendOtp = async (email, purpose) => {
+const resendOtp = async (req, email, purpose) => {
     // Find user by phone number
     const user = await User.findOne({ email });
 
     // If user does not exist
     if (!user) {
-        throw new ApiError("User not found", StatusCodes.NOT_FOUND);
+        throw new ApiError(req.t("auth.notFound"), StatusCodes.NOT_FOUND);
+    }
+
+    // الحساب محظور وغير مُفعّل
+    if (!user.isActive) {
+        throw new ApiError(
+            req.t("auth.accountSuspended"),
+            StatusCodes.FORBIDDEN
+        );
     }
 
     // If user is already verified, no need to resend OTP
     if (purpose === "email_verification" && user.isVerified) {
-        throw new ApiError("User already verified", StatusCodes.BAD_REQUEST);
+        throw new ApiError(req.t("auth.verifiedUser"), StatusCodes.BAD_REQUEST);
     }
-
 
     // Prevent OTP spam by checking resend timeout
     if (user.otpResendTimeout && user.otpResendTimeout > Date.now()) {
         const secondsLeft = Math.ceil((user.otpResendTimeout - Date.now()) / 1000);
         throw new ApiError(
-            `Please wait ${secondsLeft} seconds before requesting a new OTP`,
-            StatusCodes.TOO_MANY_REQUESTS
+            req.t("auth.otpResendTimeout", { seconds: secondsLeft }),
+            StatusCodes.TOO_MANY_REQUESTS,
         );
     }
 
@@ -81,19 +135,21 @@ const resendOtp = async (email, purpose) => {
     // Send OTP via email
     await sendEmail({
         email: user.email,
-        subject: purpose === "forgot_password"
-            ? "Reset Password OTP - Qalam Academy"
-            : "Verify Email OTP - Qalam Academy",
+        subject:
+            purpose === "forgot_password"
+                ? "Reset Password OTP - Qalam Academy"
+                : "Verify Email OTP - Qalam Academy",
         message: `Your OTP is ${otp}. It is valid for 10 minutes.`,
-        html: purpose === "forgot_password"
-            ? forgotPasswordTemplate(`${user.firstName} ${user.lastName}`, otp)
-            : verifyEmailTemplate(`${user.firstName} ${user.lastName}`, otp)
+        html:
+            purpose === "forgot_password"
+                ? forgotPasswordTemplate(`${user.firstName} ${user.lastName}`, otp)
+                : verifyEmailTemplate(`${user.firstName} ${user.lastName}`, otp),
     });
 
     return true;
-}
+};
 
 module.exports = {
     verifyOtp,
-    resendOtp
-}
+    resendOtp,
+};
