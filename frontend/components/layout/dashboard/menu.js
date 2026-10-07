@@ -15,8 +15,11 @@ import {
     HiOutlineMap,
     HiOutlinePhoto,
 } from "react-icons/hi2";
+import { TbSubtitles } from "react-icons/tb";
 
 import { PiUsersThreeLight } from "react-icons/pi";
+
+import { BsCardHeading } from "react-icons/bs";
 
 const menu = [
     {
@@ -99,6 +102,12 @@ const menu = [
         section: { ar: "المحتوى", en: "Content" },
         roles: ["admin"],
         items: [
+            {
+                title: { ar: "أقسام الصفحات", en: "Page Sections" },
+                href: "/dashboard/page-sections",
+                icon: BsCardHeading,
+                roles: ["admin"],
+            },
             {
                 title: { ar: "هيرو الصفحات", en: "Page Heroes" },
                 href: "/dashboard/heroes",
