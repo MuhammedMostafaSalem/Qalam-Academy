@@ -1,6 +1,7 @@
 "use client";
 
 import { resendOtpAction, verifyOtpAction } from "@/actions/authActions";
+import { useLanguage } from "@/providers/LanguageProvider";
 import { showToast } from "@/store/slices/toastSlice";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useActionState, useEffect, useState } from "react";
@@ -16,6 +17,9 @@ const useVerifyOtpForm = () => {
     const dispatch = useDispatch();
     const router = useRouter();
     const searchParams = useSearchParams();
+
+    const { language } = useLanguage();
+    const isEn = language === "en";
 
     const [state, formAction, isPending] = useActionState(verifyOtpAction, initialState);
     const [seconds, setSeconds] = useState(60);
@@ -55,13 +59,60 @@ const useVerifyOtpForm = () => {
         } else {
             // تحديث الأخطاء الخاصة بالحقول لو موجودة
             if (state.fieldErrors) {
-                setFieldErrors(state.fieldErrors);
+                const emailError = state.fieldErrors.email;
+                const otpError = state.fieldErrors.otp;
+                const purposeError = state.fieldErrors.purpose;
+
+
+                // setFieldErrors(state.fieldErrors);
+                setFieldErrors((prev) => ({
+                    ...prev,
+
+                    ...(emailError && {
+                        email:
+                            emailError === "Email is required"
+                                ? isEn
+                                    ? "Email is required"
+                                    : "البريد الإلكتروني مطلوب"
+                                : emailError === "Please enter a valid email address"
+                                    ? isEn
+                                        ? "Please enter a valid email address"
+                                        : "يرجى إدخال عنوان بريد إلكتروني صالح"
+                                    : emailError,
+                    }),
+                    
+                    ...(otpError && {
+                        otp:
+                            otpError === "OTP is required"
+                                ? isEn
+                                    ? "OTP is required"
+                                    : "رمز التحقق مطلوب"
+                                : otpError === "OTP must be exactly 6 digits"
+                                    ? isEn
+                                        ? "OTP must be exactly 6 digits"
+                                        : "رمز التحقق يجب أن يتكون من 6 أرقام بالضبط"
+                                    : otpError === "OTP must contain only numbers"
+                                        ? isEn
+                                            ? "OTP must contain only numbers"
+                                            : "رمز التحقق يجب أن يحتوي على أرقام فقط"
+                                        : otpError,
+                    }),
+
+                    ...(purposeError && {
+                        purpose:
+                            purposeError === "Invalid OTP purpose"
+                                ? isEn
+                                    ? "Invalid OTP purpose"
+                                    : "نوع رمز التحقق غير صالح"
+                                : purposeError,
+                    }),
+                }))
             }
             if (state.message !== "Validation failed") {
                 setErrors(state.message);
             }
         }
-    }, [state, router, dispatch]);
+    }, [state, router, dispatch, isEn]);
 
     const handleInputChange = (e) => {
         const { name } = e.target;
@@ -117,7 +168,8 @@ const useVerifyOtpForm = () => {
         errors,
         fieldErrors,
         handleInputChange,
-        handleResend
+        handleResend,
+        isEn
     };
 }
 

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { showToast } from "@/store/slices/toastSlice";
 import { forgotPasswordAction } from "@/actions/authActions";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const initialState = {
     success: false,
@@ -15,6 +16,9 @@ const initialState = {
 const useForgotPasswordForm = () => {
     const router = useRouter();
     const dispatch = useDispatch();
+
+    const { language } = useLanguage();
+    const isEn = language === "en";
 
     const [state, formAction, isPending] = useActionState(forgotPasswordAction, initialState);
     const [errors, setErrors] = useState(null);
@@ -43,10 +47,28 @@ const useForgotPasswordForm = () => {
                 setErrors(state.message);
             }
             if (state.fieldErrors) {
-                setFieldErrors(state.fieldErrors);
+                const emailError = state.fieldErrors.email;
+
+                // setFieldErrors(state.fieldErrors);
+                setFieldErrors((prev) => ({
+                    ...prev,
+
+                    ...(emailError && {
+                        email:
+                            emailError === "Email is required"
+                                ? isEn
+                                    ? "Email is required"
+                                    : "البريد الإلكتروني مطلوب"
+                                : emailError === "Please enter a valid email address"
+                                    ? isEn
+                                        ? "Please enter a valid email address"
+                                        : "يرجى إدخال عنوان بريد إلكتروني صالح"
+                                    : emailError,
+                    }),
+                }))
             }
         }
-    }, [state, router]);
+    }, [state, router, isEn]);
 
     const handleInputChange = (e) => {
         const { name } = e.target;
@@ -66,6 +88,7 @@ const useForgotPasswordForm = () => {
         errors,
         fieldErrors,
         handleInputChange,
+        isEn
     };
 };
 
