@@ -21,7 +21,7 @@ const AboutHero = () => {
 
                 </div>
 
-                <CompanyStats />
+                {/* <CompanyStats /> */}
 
             </Container>
         </Section>
