@@ -1,7 +1,8 @@
 import { fadeUp } from "@/lib/animationHelpers"
 import process from "./process"
 import ProcessCard from "./ProcessCard"
-const ProcessGrid = () => {
+
+const ProcessGrid = ({items}) => {
     return (
         <div {...fadeUp()} className="relative">
 
@@ -23,21 +24,31 @@ const ProcessGrid = () => {
             <div
                 className="
                     relative
-                    grid
+                    flex
+                    flex-wrap
+                    justify-center
                     gap-12
-                    grid-cols-1
-                    md:grid-cols-2
-                    lg:grid-cols-4
                     lg:gap-8
                 "
             >
-                {process.map((step, index) => (
-                    <ProcessCard
-                        key={index}
-                        index={index}
-                        step={step}
-                    />
-                ))}
+                {
+                    items?.isActive === true ?
+                        items?.items.map((step, index) => (
+                            <ProcessCard
+                                key={index}
+                                index={index}
+                                step={step}
+                                isActive={items?.isActive}
+                            />
+                        ))
+                    : process.map((step, index) => (
+                        <ProcessCard
+                            key={index}
+                            index={index}
+                            step={step}
+                        />
+                    ))
+                }
             </div>
 
         </div>
