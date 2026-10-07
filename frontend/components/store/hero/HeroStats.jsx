@@ -4,9 +4,12 @@ import { MdOutlineHighQuality } from "react-icons/md";
 import { FiDownload } from "react-icons/fi";
 import { GoShieldCheck } from "react-icons/go";
 import { useLanguage } from "@/providers/LanguageProvider";
+import usePageSection from "@/hooks/pageSections/usePageSection";
+import { getPageSectionIcon } from "@/lib/icons/pageSectionIcons";
 
 const HeroStats = () => {
     const { language } = useLanguage();
+    const { pageSection, loading, error } = usePageSection("store", "stats");
     const isEn = language === "en";
 
     const stats = [
@@ -32,56 +35,109 @@ const HeroStats = () => {
 
     return (
         <div className="mt-16 flex justify-center gap-5">
-            {stats.map((item, index) => {
-                const Icon = item.icon;
+            {
+                pageSection?.isActive === true ?
+                    pageSection?.items.map((item, index) => {
+                        const Icon = getPageSectionIcon(item.icon);
 
-                return (
-                    <div
-                        key={item.id}
-                        className="relative flex flex-col items-center text-center gap-2 pe-5"
-                    >
-                        <Icon
-                            size={18}
-                            className="
-                                text-accent
-                            "
-                        />
+                        return (
+                            <div
+                                key={index}
+                                className="relative flex flex-col items-center text-center gap-2 pe-5"
+                            >
+                                <Icon
+                                    size={18}
+                                    className="
+                                        text-accent
+                                    "
+                                />
 
-                        <h3 className="
-                            text-[10px]
-                            sm:text-[12px]
-                            md:text-[14px]
-                            leading-none
-                            text-text-primary
-                        ">
-                            {item.value}
-                        </h3>
+                                <h3 className="
+                                    text-[10px]
+                                    sm:text-[12px]
+                                    md:text-[14px]
+                                    leading-none
+                                    text-text-primary
+                                ">
+                                    {item?.content?.title}
+                                </h3>
 
-                        <p className="
-                            text-[8px]
-                            sm:text-[10px]
-                            md:text-[12px]
-                            text-text-secondary
-                        ">
-                            {item.label}
-                        </p>
+                                <p className="
+                                    text-[8px]
+                                    sm:text-[10px]
+                                    md:text-[12px]
+                                    text-text-secondary
+                                ">
+                                    {item?.content?.description}
+                                </p>
 
-                        {index !== stats.length - 1 && (
-                            <span
+                                {index !== pageSection?.items.length - 1 && (
+                                    <span
+                                        className="
+                                            absolute
+                                            left-0
+                                            top-1/2
+                                            -translate-y-1/2
+                                            h-[40px]
+                                            w-[1px]
+                                            bg-card-hover
+                                        "
+                                    />
+                                )}
+                            </div>
+                        );
+                    })
+                : stats.map((item, index) => {
+                    const Icon = item.icon;
+
+                    return (
+                        <div
+                            key={item.id}
+                            className="relative flex flex-col items-center text-center gap-2 pe-5"
+                        >
+                            <Icon
+                                size={18}
                                 className="
-                                    absolute
-                                    left-0
-                                    top-1/2
-                                    -translate-y-1/2
-                                    h-[40px]
-                                    w-[1px]
-                                    bg-card-hover
+                                    text-accent
                                 "
                             />
-                        )}
-                    </div>
-                );
-            })}
+
+                            <h3 className="
+                                text-[10px]
+                                sm:text-[12px]
+                                md:text-[14px]
+                                leading-none
+                                text-text-primary
+                            ">
+                                {item.value}
+                            </h3>
+
+                            <p className="
+                                text-[8px]
+                                sm:text-[10px]
+                                md:text-[12px]
+                                text-text-secondary
+                            ">
+                                {item.label}
+                            </p>
+
+                            {index !== stats.length - 1 && (
+                                <span
+                                    className="
+                                        absolute
+                                        left-0
+                                        top-1/2
+                                        -translate-y-1/2
+                                        h-[40px]
+                                        w-[1px]
+                                        bg-card-hover
+                                    "
+                                />
+                            )}
+                        </div>
+                    );
+                })
+            }
         </div>
     );
 };
