@@ -26,6 +26,7 @@ const contactRoutes = require("../modules/contact/contact.routes");
 const journeyRoutes = require("../modules/journey/journey.routes");
 const timelineRoutes = require("../modules/timeline/timeline.routes");
 const chooseRoutes = require("../modules/choose-us/choose.route");
+const pageSectionRoutes = require("../modules/page-section/page-section.route");
 
 const router = express.Router();
 
@@ -55,5 +56,6 @@ router.use("/contact", contactRoutes);
 router.use("/journey", journeyRoutes);
 router.use("/timeline", timelineRoutes);
 router.use("/choose", chooseRoutes);
+router.use("/page-sections", pageSectionRoutes);
 
 module.exports = router;
