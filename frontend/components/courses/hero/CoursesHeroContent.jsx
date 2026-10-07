@@ -7,9 +7,11 @@ import { heroAnimation } from "@/lib/animation/heroAnimation";
 import { usePublicHero } from "@/hooks/heroes/usePublicHero";
 
 import { useLanguage } from "@/providers/LanguageProvider";
+import usePageSection from "@/hooks/pageSections/usePageSection";
 
 const CoursesHeroContent = () => {
     const { language, localize } = useLanguage();
+    const { pageSection, loading, error } = usePageSection("courses", "hero");
     const hero = usePublicHero("courses");
 
     const title = localize(hero?.title);
@@ -68,7 +70,7 @@ const CoursesHeroContent = () => {
                 secondaryText={localize(hero?.secondaryButtonText)}
                 secondaryLink={hero?.secondaryButtonLink}
             />
-            <HeroFeatures />
+            <HeroFeatures items={pageSection} />
         </div>
     );
 };
