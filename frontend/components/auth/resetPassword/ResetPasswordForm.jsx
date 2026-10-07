@@ -14,8 +14,8 @@ import useResetPasswordForm from "@/hooks/auth/useResetPasswordForm";
 import { useLanguage } from "@/providers/LanguageProvider";
 
 const ResetPasswordForm = () => {
-    const { language } = useLanguage();
-    const isEn = language === "en";
+    // const { language } = useLanguage();
+    // const isEn = language === "en";
 
     const {
         token,
@@ -24,6 +24,7 @@ const ResetPasswordForm = () => {
         errors,
         fieldErrors,
         handleInputChange,
+        isEn
     } = useResetPasswordForm();
 
     return (

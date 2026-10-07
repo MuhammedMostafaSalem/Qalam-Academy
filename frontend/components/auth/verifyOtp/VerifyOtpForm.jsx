@@ -8,8 +8,8 @@ import useVerifyOtpForm from "@/hooks/auth/useVerifyOtpForm";
 import { useLanguage } from "@/providers/LanguageProvider";
 
 const VerifyOtpForm = () => {
-    const { language } = useLanguage();
-    const isEn = language === "en";
+    // const { language } = useLanguage();
+    // const isEn = language === "en";
 
     const {
         email,
@@ -20,7 +20,8 @@ const VerifyOtpForm = () => {
         errors,
         fieldErrors,
         handleInputChange,
-        handleResend
+        handleResend,
+        isEn
     } = useVerifyOtpForm();
 
     const errorMessage = errors || fieldErrors?.otp;

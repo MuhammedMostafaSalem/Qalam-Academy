@@ -12,18 +12,46 @@ import SectionDescription from "@/components/sections/SectionDescription";
 import useRegisterForm from "@/hooks/auth/useRegisterForm";
 import { useLanguage } from "@/providers/LanguageProvider";
 import { usePlatformSettings } from "@/providers/SettingsProvider";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
+
 
 const RegisterForm = () => {
-    const { language } = useLanguage();
+    // const { language } = useLanguage();
     const { settings } = usePlatformSettings();
-    const isEn = language === "en";
+    // const isEn = language === "en";
 
     const {
         formAction,
         loading,
         fieldErrors,
-        handleInputChange
+        handleInputChange,
+        handlePhoneChange,
+        formData,
+        isEn
     } = useRegisterForm();
+
+    console.log("formData.phone:", formData.phone);
+
+    /**
+     * Shared classes
+     * Same design as AuthInput
+     */
+    const inputClasses = `
+        !h-14
+        !w-full
+        !rounded-2xl
+        !border
+        !bg-background-alt
+        !px-5
+        !text-text-primary
+        !outline-none
+        !transition-all
+        !duration-300
+        focus:!border-primary
+        focus:!ring-2
+        focus:!ring-primary/20
+    `;
 
     if (settings.allowRegistration === false) {
         return (
@@ -66,6 +94,7 @@ const RegisterForm = () => {
                         placeholder={isEn ? "John" : "اكتب الاسم الأول"}
                         error={fieldErrors.firstName}
                         onChange={handleInputChange}
+                        value={formData.firstName}
                         required
                     />
                     <AuthInput
@@ -74,28 +103,186 @@ const RegisterForm = () => {
                         placeholder={isEn ? "Doe" : "اكتب الاسم الأخير"}
                         error={fieldErrors.lastName}
                         onChange={handleInputChange}
+                        value={formData.lastName}
                         required
                     />
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <AuthInput
-                        type="email"
+                        // type="text"
                         name="email"
                         label={isEn ? "Email Address" : "البريد الإلكتروني"}
                         placeholder="example@email.com"
                         error={fieldErrors.email}
                         onChange={handleInputChange}
+                        value={formData.email}
                         required
                     />
-                    <AuthInput
+                    {/* <AuthInput
                         name="phone"
                         label={isEn ? "Phone Number" : "رقم الهاتف"}
                         placeholder="+201000000000"
                         error={fieldErrors.phone}
                         onChange={handleInputChange}
+                        value={formData.phone}
                         required
+                    /> */}
+                    
+                    <div className="w-full">
+                    <label
+                        htmlFor="phone"
+                        className="mb-2 block text-sm font-medium"
+                    >
+                        {isEn
+                            ? "Phone Number"
+                            : "رقم الهاتف"}
+                    </label>
+
+                    <style>
+                        {`
+                            .phone-country-button .selected-flag:hover,
+                            .phone-country-button .selected-flag:focus,
+                            .phone-country-button.open .selected-flag,
+                            .react-tel-input .country-list .search-box {
+                                background-color: transparent !important;
+                            }
+
+                            .phone-country-button .selected-flag {
+                                padding: 0 8px;
+                            }
+
+                            .react-tel-input .selected-flag .arrow {
+                                right: 22px;
+                            }
+
+                            .react-tel-input .country-list .search {
+                                background-color: var(--color-card);
+                                display: flex;
+                                gap: 10px;
+                            }
+
+                            .react-tel-input .country-list .search-box {
+                                width: 90%;
+                                border-radius: 10px;
+                                border-color: var(--color-border) !important;
+                            }
+
+                            .react-tel-input .country-list .country:hover,
+                            .react-tel-input .country-list .country.highlight {
+                                background-color: var(--color-primary) !important;
+                            }
+
+                            .react-tel-input .country-list .country {
+                                display: flex;
+                                gap: 1px;
+                                align-items: center;
+                                flex-direction: row;
+                            }
+                            .react-tel-input .country-list .country .dial-code {
+                                color: unset;
+                            }
+
+                            .react-tel-input .country-list .flag {
+                                margin: 2px 15px 0;
+                            }
+
+                            .react-tel-input .country-list {
+                                width: 250px;
+                            }
+
+                            .react-tel-input .form-control {
+                                border-color: var(--color-border) !important;
+                            }
+                        `}
+                    </style>
+
+                    <PhoneInput
+                        country="eg"
+                        value={formData.phone}
+                        onChange={handlePhoneChange}
+                        enableSearch
+                        searchPlaceholder={
+                            isEn
+                                ? "Search country..."
+                                : "ابحث عن الدولة..."
+                        }
+                        inputProps={{
+                            name: "phone",
+                            id: "phone",
+                            required: true,
+                        }}
+                        placeholder="+20 100 000 0000"
+
+                        /*
+                         * Container
+                         */
+                        containerClass="
+                            !relative
+                            !w-full
+                        "
+
+                        /*
+                         * Input
+                         */
+                        inputClass={`
+                            ${inputClasses}
+
+                            ${
+                                isEn
+                                    ? "!pl-[60px] !pr-5"
+                                    : "!pr-[60px] !pl-5"
+                            }
+                        `}
+
+                        /*
+                         * Country selector
+                         */
+                        buttonClass={`
+                            phone-country-button
+                            !absolute
+                            !top-0
+                            !z-10
+                            !h-14
+                            !border
+                            !border-border
+                            !bg-transparent
+                            !shadow-none
+
+                            ${
+                                isEn
+                                    ? "!left-0 !right-auto !rounded-l-2xl !rounded-r-none"
+                                    : "!right-0 !left-auto !rounded-r-2xl !rounded-l-none"
+                            }
+
+                            hover:!bg-transparent
+                            focus:!bg-transparent
+                        `}
+
+                        /*
+                         * Country dropdown
+                         */
+                        dropdownClass="
+                            !z-50
+                            !mt-1
+                            !rounded-xl
+                            !border
+                            !border-border
+                            !bg-card
+                            !text-text-primary
+                            !shadow-lg
+                        "
                     />
+
+                    {fieldErrors.phone && (
+                        <p className="mt-1.5 text-sm text-error">
+                            {fieldErrors.phone}
+                        </p>
+                    )}
+                </div>
+
+
+
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -105,6 +292,7 @@ const RegisterForm = () => {
                         placeholder="Egypt"
                         error={fieldErrors.country}
                         onChange={handleInputChange}
+                        value={formData.country}
                         required
                     />
                     <AuthInput
@@ -113,6 +301,7 @@ const RegisterForm = () => {
                         placeholder="Cairo"
                         error={fieldErrors.city}
                         onChange={handleInputChange}
+                        value={formData.city}
                         required
                     />
                 </div>
@@ -123,6 +312,7 @@ const RegisterForm = () => {
                     placeholder={isEn ? "Street, Building..." : "شارع الجمهورية، عمارة 5..."}
                     error={fieldErrors.address}
                     onChange={handleInputChange}
+                    value={formData.address}
                     required
                 />
 
@@ -133,6 +323,7 @@ const RegisterForm = () => {
                     placeholder="••••••••"
                     error={fieldErrors.password}
                     onChange={handleInputChange}
+                    value={formData.password}
                     required
                 />
 

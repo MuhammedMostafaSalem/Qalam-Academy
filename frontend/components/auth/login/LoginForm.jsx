@@ -14,14 +14,16 @@ import useLoginForm from "@/hooks/auth/useLoginForm";
 import { useLanguage } from "@/providers/LanguageProvider";
 
 const LoginForm = () => {
-    const { language, isRtl } = useLanguage();
-    const isEn = language === "en";
+    // const { language, isRtl } = useLanguage();
+    // const isEn = language === "en";
 
     const {
         formAction,
         loading,
         fieldErrors,
         handleInputChange,
+        isEn,
+        isRtl
     } = useLoginForm();
 
     return (

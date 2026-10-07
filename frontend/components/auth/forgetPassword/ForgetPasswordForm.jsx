@@ -12,8 +12,8 @@ import useForgotPasswordForm from "@/hooks/auth/useForgotPasswordForm";
 import { useLanguage } from "@/providers/LanguageProvider";
 
 const ForgetPasswordForm = () => {
-    const { language } = useLanguage();
-    const isEn = language === "en";
+    // const { language } = useLanguage();
+    // const isEn = language === "en";
 
     const {
         formAction,
@@ -21,6 +21,7 @@ const ForgetPasswordForm = () => {
         errors,
         fieldErrors,
         handleInputChange,
+        isEn
     } = useForgotPasswordForm();
 
     const errorMessage = errors || fieldErrors.email;
