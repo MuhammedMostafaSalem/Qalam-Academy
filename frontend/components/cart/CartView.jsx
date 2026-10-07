@@ -33,46 +33,6 @@ import {
 } from "react-icons/hi2";
 import Image from "next/image";
 import Link from "next/link";
-
-const PAYMENT_METHODS = [
-    {
-        id: "card",
-        name: "بطاقة بنكية (فيزا / ماستركارد)",
-        description: "دفع آمن ومباشر عبر Paymob",
-        icon: HiOutlineCreditCard,
-        gateway: "paymob",
-        badge: "الأكثر استخداماً",
-    },
-    {
-        id: "wallet",
-        name: "محفظة إلكترونية (E-Wallet)",
-        description: "فودافون كاش، أورنج، اتصالات، وي باي",
-        icon: HiOutlineDevicePhoneMobile,
-        gateway: "paymob",
-    },
-    {
-        id: "fawry",
-        name: "فوري / أمان (Fawry)",
-        description: "الدفع عبر كود فوري في أي منفذ",
-        icon: HiOutlineBanknotes,
-        gateway: "paymob",
-    },
-    {
-        id: "paypal",
-        name: "PayPal (USD)",
-        description: "الدفع الدولي بالدولار عبر PayPal",
-        icon: HiOutlineGlobeAlt,
-        gateway: "paypal",
-    },
-    {
-        id: "cash",
-        name: "الدفع عند الاستلام / تحويل يدوي",
-        description: "إنشاء الطلب والدفع المباشر",
-        icon: HiOutlineBanknotes,
-        gateway: "cash",
-    },
-];
-
 import { useLanguage } from "@/providers/LanguageProvider";
 
 export default function CartView() {
@@ -85,6 +45,9 @@ export default function CartView() {
     const [isSubmittingCoupon, setIsSubmittingCoupon] = useState(false);
     const [isCheckoutLoading, setIsCheckoutLoading] = useState(false);
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("card");
+
+    // حالة رفع صورة الإيصال للدفع اليدوي
+    const [cashReceiptImage, setCashReceiptImage] = useState(null);
 
     const paymentMethods = [
         {
@@ -234,11 +197,27 @@ export default function CartView() {
                     errorMessage(res.message || (language === "en" ? "Failed to generate PayPal URL" : "فشل توليد رابط PayPal"));
                 }
             } else if (selectedPaymentMethod === "cash") {
-                const res = await createCashOrderAction(cart._id);
+                // التحقق من رفع صورة الإيصال أولاً قبل إتمام الطلب
+                if (!cashReceiptImage) {
+                    errorMessage(
+                        language === "en"
+                            ? "Please upload the payment receipt image first."
+                            : "برجاء رفع صورة إيصال التحويل أولاً قبل إتمام الطلب."
+                    );
+                    setIsCheckoutLoading(false);
+                    return;
+                }
+
+                const formData = new FormData();
+                // تم تعديل المفتاح هنا ليتطابق مع الـ Backend (paymentProof)
+                formData.append("paymentProof", cashReceiptImage);
+
+                const res = await createCashOrderAction(cart._id, formData);
                 if (res.success) {
                     successMessage(language === "en" ? "Order created successfully!" : "تم إنشاء الطلب بنجاح!");
                     router.push("/user/orders");
                 } else {
+                    console.log("Cash order creation failed:", res);
                     errorMessage(res.message || (language === "en" ? "Failed to create order" : "فشل إنشاء الطلب"));
                 }
             } else {
@@ -466,6 +445,50 @@ export default function CartView() {
                                         );
                                     })}
                                 </div>
+
+                                {/* ظهور تعليمات وأرقام التحويل وصورة الإيصال فقط عند اختيار الدفع اليدوي/الكاش */}
+                                {selectedPaymentMethod === "cash" && (
+                                    <div className="mt-6 p-4 rounded-2xl bg-card-hover border border-primary/30 space-y-4 animate-in fade-in duration-200">
+                                        <h5 className="font-semibold text-sm text-text-primary">
+                                            {language === "en" ? "Manual Transfer Instructions" : "تعليمات وأرقام التحويل اليدوي"}
+                                        </h5>
+
+                                        <div className="p-3.5 rounded-xl bg-background border border-border space-y-2 text-xs text-text-secondary leading-relaxed">
+                                            <p className="font-semibold text-text-primary">
+                                                {language === "en" 
+                                                    ? "Please transfer the total amount using one of the following methods:" 
+                                                    : "برجاء تحويل المبلغ الإجمالي باستخدام إحدى الوسائل التالية:"
+                                                }
+                                            </p>
+                                            <ul className="list-disc list-inside space-y-1 pr-1">
+                                                <li>
+                                                    <span className="font-medium text-text-primary">Vodafone Cash / E-Wallets:</span> <span dir="ltr" className="inline-block font-mono text-primary font-bold">01012345678</span>
+                                                </li>
+                                                <li>
+                                                    <span className="font-medium text-text-primary">InstaPay (IPN):</span> <span dir="ltr" className="inline-block font-mono text-primary font-bold">username@instapay</span>
+                                                </li>
+                                            </ul>
+                                            <p className="text-[11px] text-text-muted pt-1">
+                                                {language === "en"
+                                                    ? "After transferring, please upload your receipt screenshot below to verify and complete your order."
+                                                    : "بعد إتمام التحويل، برجاء رفع صورة إيصال التحويل بالأسفل ليتم مراجعة الطلب وتفعيله."
+                                                }
+                                            </p>
+                                        </div>
+
+                                        <div className="space-y-1">
+                                            <label className="text-xs text-text-secondary">
+                                                {language === "en" ? "Upload Receipt Image" : "رفع صورة إيصال التحويل"} <span className="text-error">*</span>
+                                            </label>
+                                            <input
+                                                type="file"
+                                                accept="image/*"
+                                                onChange={(e) => setCashReceiptImage(e.target.files[0])}
+                                                className="w-full text-xs text-text-secondary file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-primary file:text-white hover:file:bg-primary/90 cursor-pointer"
+                                            />
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </div>
 
