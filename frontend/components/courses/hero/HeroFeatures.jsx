@@ -4,8 +4,9 @@ import { fadeUp } from "@/lib/animationHelpers";
 import { heroCoursesFeatures } from "./heroCoursesFeatures";
 import { cardAnimation } from "@/lib/animation/cardAnimation";
 import { useLanguage } from "@/providers/LanguageProvider";
+import { getPageSectionIcon } from "@/lib/icons/pageSectionIcons";
 
-const HeroFeatures = () => {
+const HeroFeatures = ({items}) => {
     const { localize } = useLanguage();
 
     return (
@@ -19,51 +20,99 @@ const HeroFeatures = () => {
                 lg:grid-cols-4
             "
         >
-            {heroCoursesFeatures.map((feature, index) => {
-                const Icon = feature.icon;
+            {
+                items?.isActive === true ?
+                    items?.items.map((feature, index) => {
+                        const Icon = getPageSectionIcon(feature.icon);
 
-                return (
-                    <div
-                        key={index}
-                        {...cardAnimation(index)}
-                        className="
-                            flex
-                            items-center
-                            gap-4
-                        "
-                    >
-                        <div
-                            className="
-                                flex
-                                h-12
-                                w-12
-                                items-center
-                                justify-center
-                                rounded-xl
-                                bg-primary/10
-                                text-primary
-                            "
-                        >
-                            <Icon size={22} />
-                        </div>
-
-                        <div>
-                            <h3 className="font-semibold">
-                                {localize(feature.title)}
-                            </h3>
-
-                            <p
+                        return (
+                            <div
+                                key={index}
+                                {...cardAnimation(index)}
                                 className="
-                                    text-sm
-                                    text-text-secondary
+                                    flex
+                                    items-center
+                                    gap-4
                                 "
                             >
-                                {localize(feature.description)}
-                            </p>
+                                <div
+                                    className="
+                                        flex
+                                        h-12
+                                        w-12
+                                        items-center
+                                        justify-center
+                                        rounded-xl
+                                        bg-primary/10
+                                        text-primary
+                                    "
+                                >
+                                    <Icon size={22} />
+                                </div>
+
+                                <div>
+                                    <h3 className="font-semibold">
+                                        {feature?.content?.title || localize(feature.title)}
+                                    </h3>
+
+                                    <p
+                                        className="
+                                            text-sm
+                                            text-text-secondary
+                                        "
+                                    >
+                                        {feature?.content?.description || localize(feature.description)}
+                                    </p>
+                                </div>
+                            </div>
+                        );
+                    })
+                : heroCoursesFeatures.map((feature, index) => {
+                    const Icon = feature.icon;
+
+                    return (
+                        <div
+                            key={index}
+                            {...cardAnimation(index)}
+                            className="
+                                flex
+                                items-center
+                                gap-4
+                            "
+                        >
+                            <div
+                                className="
+                                    flex
+                                    h-12
+                                    w-12
+                                    items-center
+                                    justify-center
+                                    rounded-xl
+                                    bg-primary/10
+                                    text-primary
+                                "
+                            >
+                                <Icon size={22} />
+                            </div>
+
+                            <div>
+                                <h3 className="font-semibold">
+                                    {localize(feature.title)}
+                                </h3>
+
+                                <p
+                                    className="
+                                        text-sm
+                                        text-text-secondary
+                                    "
+                                >
+                                    {localize(feature.description)}
+                                </p>
+                            </div>
                         </div>
-                    </div>
-                );
-            })}
+                    );
+                })
+            }
         </div>
     );
 };
