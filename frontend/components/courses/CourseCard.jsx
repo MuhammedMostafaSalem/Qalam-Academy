@@ -58,6 +58,9 @@ const CourseCard = ({ course }) => {
         <article
             className="
                 group
+                flex
+                h-full
+                flex-col
                 overflow-hidden
                 rounded-3xl
                 border
@@ -110,7 +113,14 @@ const CourseCard = ({ course }) => {
             </div>
 
             {/* Content */}
-            <div className="p-6">
+            <div
+                className="
+                    flex
+                    flex-1
+                    flex-col
+                    p-6
+                "
+            >
                 {/* Meta */}
                 <div
                     className="
@@ -173,43 +183,49 @@ const CourseCard = ({ course }) => {
                 )}
 
                 {/* Rating */}
-                {course.rating > 0 && (
-                    <div className="mt-3 flex items-center gap-2">
-                        <div className="flex items-center gap-1">
-                            <HiStar className="text-accent" />
-                            <span className="font-semibold text-text-primary">
-                                {course.rating.toFixed(1)}
-                            </span>
+                <div className="mt-3 min-h-6">
+                    {course.rating > 0 && (
+                        <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-1">
+                                <HiStar className="text-accent" />
+
+                                <span className="font-semibold text-text-primary">
+                                    {course.rating.toFixed(1)}
+                                </span>
+                            </div>
+
+                            {course.reviewsCount > 0 && (
+                                <span className="text-sm text-text-secondary">
+                                    ({course.reviewsCount} {reviewsText})
+                                </span>
+                            )}
                         </div>
-                        {course.reviewsCount > 0 && (
-                            <span className="text-sm text-text-secondary">
-                                ({course.reviewsCount} {reviewsText})
-                            </span>
-                        )}
-                    </div>
-                )}
+                    )}
+                </div>
 
                 {/* Footer */}
                 <div
                     className="
-                        mt-6
+                        mt-auto
                         flex
                         items-center
                         justify-between
+                        pt-6
                     "
                 >
-                    <div>
-                        {course.originalPrice && course.originalPrice > course.price && (
-                            <p
-                                className="
-                                    text-sm
-                                    text-text-secondary
-                                    line-through
-                                "
-                            >
-                                {course.originalPrice} {currencyText}
-                            </p>
-                        )}
+                    <div className="min-h-[56px]">
+                        {course.originalPrice &&
+                            course.originalPrice > course.price && (
+                                <p
+                                    className="
+                                        text-sm
+                                        text-text-secondary
+                                        line-through
+                                    "
+                                >
+                                    {course.originalPrice} {currencyText}
+                                </p>
+                            )}
 
                         <p
                             className="
@@ -225,7 +241,10 @@ const CourseCard = ({ course }) => {
                     <button
                         type="button"
                         onClick={handleAddToCart}
-                        disabled={isAddingToCart || !(course?._id || course?.id)}
+                        disabled={
+                            isAddingToCart ||
+                            !(course?._id || course?.id)
+                        }
                         className="
                             flex
                             h-12
@@ -241,10 +260,17 @@ const CourseCard = ({ course }) => {
                             disabled:cursor-not-allowed
                             disabled:opacity-60
                         "
-                        aria-label={language === "en" ? "Add course to cart" : "إضافة الكورس إلى السلة"}
+                        aria-label={
+                            language === "en"
+                                ? "Add course to cart"
+                                : "إضافة الكورس إلى السلة"
+                        }
                         aria-busy={isAddingToCart}
                     >
-                        <HiShoppingCart size={20} className={isAddingToCart ? "animate-pulse" : ""} />
+                        <HiShoppingCart
+                            size={20}
+                            className={isAddingToCart ? "animate-pulse" : ""}
+                        />
                     </button>
                 </div>
             </div>
