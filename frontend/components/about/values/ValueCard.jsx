@@ -1,11 +1,12 @@
 "use client";
 
 import { cardAnimation } from "@/lib/animation/cardAnimation";
+import { getPageSectionIcon } from "@/lib/icons/pageSectionIcons";
 import { useLanguage } from "@/providers/LanguageProvider";
 
 const ValueCard = ({ value, index }) => {
     const { localize } = useLanguage();
-    const Icon = value.icon;
+    const Icon = getPageSectionIcon(value.icon) || value.icon;
 
     return (
         <article
@@ -58,7 +59,7 @@ const ValueCard = ({ value, index }) => {
                     text-text-primary
                 "
             >
-                {localize(value.title)}
+                {value?.content?.title || localize(value.title)}
             </h3>
 
             <p
@@ -68,7 +69,7 @@ const ValueCard = ({ value, index }) => {
                     text-sm
                 "
             >
-                {localize(value.description)}
+                {value?.content?.description || localize(value.description)}
             </p>
         </article>
     );
