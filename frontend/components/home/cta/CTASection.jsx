@@ -7,19 +7,21 @@ import Container from "@/components/ui/Container";
 import { HiArrowRight } from "react-icons/hi2";
 import { BsEnvelopeFill } from "react-icons/bs";
 import { useLanguage } from "@/providers/LanguageProvider";
+import usePageSection from "@/hooks/pageSections/usePageSection";
 
 const CTASection = () => {
     const { language, isRtl } = useLanguage();
+    const { pageSection, loading, error } = usePageSection("home", "cta");
     const copy = language === "en"
         ? {
             title: "Let’s turn your idea into reality",
-            description: "Contact us for a free project consultation, or start your learning journey with us.",
+            description: "Contact us for a free project consultation, or start your learning journey with us",
             placeholder: "Enter your email address",
             submit: "Send email",
         }
         : {
             title: "دعنا نحوّل فكرتك إلى واقع",
-            description: "تواصل معنا للحصول على استشارة مجانية لمشروعك، أو ابدأ رحلتك التعليمية معنا.",
+            description: "تواصل معنا للحصول على استشارة مجانية لمشروعك، أو ابدأ رحلتك التعليمية معنا",
             placeholder: "أدخل بريدك الإلكتروني",
             submit: "إرسال البريد الإلكتروني",
         };
@@ -27,7 +29,6 @@ const CTASection = () => {
     return (
         <Section className="pt-[80px]">
             <Container>
-
                 <div
                     className="
                         relative
@@ -91,7 +92,11 @@ const CTASection = () => {
                                         text-white
                                     "
                                 >
-                                    {copy.title}
+                                    {
+                                        pageSection?.isActive === true ?
+                                            pageSection.content.badge
+                                        : copy.title
+                                    }
                                 </h2>
 
                                 <p
@@ -101,7 +106,11 @@ const CTASection = () => {
                                         text-white/80
                                     "
                                 >
-                                    {copy.description}
+                                    {
+                                        pageSection?.isActive === true ?
+                                            pageSection.content.description
+                                        :copy.description
+                                    }
                                 </p>
 
                             </div>
@@ -122,7 +131,11 @@ const CTASection = () => {
                             >
                                 <input
                                     type="email"
-                                    placeholder={copy.placeholder}
+                                    placeholder={
+                                        pageSection?.isActive === true
+                                            ? pageSection.content.title
+                                        : copy.placeholder
+                                    }
                                     className="
                                         w-full
                                         bg-transparent

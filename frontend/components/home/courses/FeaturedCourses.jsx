@@ -5,9 +5,11 @@ import SectionHeader from "@/components/sections/SectionHeader";
 import CoursesSlider from "@/components/slider/CoursesSlider";
 import Container from "@/components/ui/Container";
 import { useLanguage } from "@/providers/LanguageProvider";
+import usePageSection from "@/hooks/pageSections/usePageSection";
 
 const FeaturedCourses = () => {
     const { language } = useLanguage();
+    const { pageSection, loading, error } = usePageSection("home", "courses");
     const copy = language === "en"
         ? {
             badge: "Our Courses",
@@ -24,13 +26,23 @@ const FeaturedCourses = () => {
 
     return (
         <Section className="pt-[80px]">
-
             <Container>
-
                 <SectionHeader
-                    badge={copy.badge}
-                    title={copy.title}
-                    description={copy.description}
+                    badge={
+                        pageSection?.isActive === true
+                            ? pageSection.content.badge
+                            : copy.badge
+                    }
+                    title={
+                        pageSection?.isActive === true
+                            ? pageSection.content.title
+                            : copy.title
+                    }
+                    description={
+                        pageSection?.isActive === true
+                            ? pageSection.content.description
+                            : copy.description
+                    }
                     button={copy.button}
                     href="/courses"
                     center
