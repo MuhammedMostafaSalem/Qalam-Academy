@@ -1,4 +1,5 @@
-const express = require('express');
+const express = require("express");
+
 const {
     createCashOrder,
     createPaymobCheckoutSession,
@@ -9,38 +10,152 @@ const {
     createPayPalCheckoutSession,
     verifyPayPalPayment,
     cancelOrder,
-} = require('./orders.controller');
+    approveCashOrder,
+} = require("./orders.controller");
+
 const {
     isAuthenticatedUser,
-    authorizeRoles
-} = require('../../middlewares/auth');
+    authorizeRoles,
+} = require("../../middlewares/auth");
+
+const uploadSingle = require(
+    "../../middlewares/uploadSingle"
+);
 
 const router = express.Router();
 
-// Webhook الخاص بـ Paymob (يجب أن يكون عاماً بدون حماية لأن Paymob هي التي ستستدعيه)
-router.post('/webhook/paymob', paymobWebhook);
+// ==========================================================
+// Paymob Webhook
+// Public Route
+// ==========================================================
 
-// جميع المسارات التالية تتطلب تسجيل الدخول
-router.use(isAuthenticatedUser);
+router.post(
+    "/webhook/paymob",
+    paymobWebhook
+);
 
-// 1) إنشاء طلب كاش
-router.route('/:cartId').post(authorizeRoles("student"), createCashOrder);
+// ==========================================================
+// Authentication
+// ==========================================================
 
-// 2) إنشاء جلسة دفع Paymob (card, wallet, fawry)
-router.route('/checkout-paymob/:cartId').post(authorizeRoles("student"), createPaymobCheckoutSession);
+router.use(
+    isAuthenticatedUser
+);
 
-// 3) جلب جميع الطلبات (لليوزر العادي عروض طلباته فقط، وللأدمن كل الطلبات)
-router.route('/').get(authorizeRoles("student", "instructor", "admin"), filterOrdersForLoggedUser, getAllOrders);
+// ==========================================================
+// Cash Order
+// ==========================================================
 
-// 4) جلب طلب معين بالـ ID
-router.route('/:id').get(authorizeRoles("student", "instructor", "admin"), getSpecificOrder);
+router
+    .route("/:cartId")
+    .post(
+        authorizeRoles("student"),
 
-// مسار إنشاء جلسة دفع باي بال
-router.route('/checkout-paypal/:cartId').post(authorizeRoles("student"), createPayPalCheckoutSession);
+        uploadSingle({
+            fieldName:
+                "paymentProof",
 
-// مسار تأكيد الدفع بعد عودة المستخدم من باي بال
-router.route('/paypal/success').post(authorizeRoles("student"), verifyPayPalPayment);
+            folder:
+                "orders-proofs",
 
-router.route('/:id/cancel').patch(authorizeRoles("student"), cancelOrder);
+            fileType:
+                "image",
+        }),
+
+        createCashOrder
+    );
+
+// ==========================================================
+// Approve Cash Order
+// ==========================================================
+
+router
+    .route("/:id/approve-cash")
+    .patch(
+        authorizeRoles("admin"),
+        approveCashOrder
+    );
+
+// ==========================================================
+// Paymob Checkout
+// ==========================================================
+
+router
+    .route(
+        "/checkout-paymob/:cartId"
+    )
+    .post(
+        authorizeRoles("student"),
+        createPaymobCheckoutSession
+    );
+
+// ==========================================================
+// Get All Orders
+// ==========================================================
+
+router
+    .route("/")
+    .get(
+        authorizeRoles(
+            "student",
+            "instructor",
+            "admin"
+        ),
+
+        filterOrdersForLoggedUser,
+
+        getAllOrders
+    );
+
+// ==========================================================
+// Get Specific Order
+// ==========================================================
+
+router
+    .route("/:id")
+    .get(
+        authorizeRoles(
+            "student",
+            "instructor",
+            "admin"
+        ),
+
+        getSpecificOrder
+    );
+
+// ==========================================================
+// PayPal Checkout
+// ==========================================================
+
+router
+    .route(
+        "/checkout-paypal/:cartId"
+    )
+    .post(
+        authorizeRoles("student"),
+        createPayPalCheckoutSession
+    );
+
+// ==========================================================
+// PayPal Success / Capture
+// ==========================================================
+
+router
+    .route("/paypal/success")
+    .post(
+        authorizeRoles("student"),
+        verifyPayPalPayment
+    );
+
+// ==========================================================
+// Cancel Order
+// ==========================================================
+
+router
+    .route("/:id/cancel")
+    .patch(
+        authorizeRoles("student"),
+        cancelOrder
+    );
 
 module.exports = router;
