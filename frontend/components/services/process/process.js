@@ -22,8 +22,8 @@ const process = [
         icon: HiOutlineClipboardDocumentCheck,
         title: { ar: "التخطيط والتصميم", en: "Planning & Design" },
         description: {
-            ar: "نضع خطة تنفيذ واضحة ونصمم تجربة مستخدم وواجهة احترافية قبل بدء التطوير.",
-            en: "We establish a clear execution roadmap and craft intuitive UI/UX designs before development.",
+            ar: "نضع خطة تنفيذ واضحة ونصمم تجربة مستخدم وواجهة احترافية قبل بدء التطوير",
+            en: "We establish a clear execution roadmap and craft intuitive UI/UX designs before development",
         },
     },
     {
