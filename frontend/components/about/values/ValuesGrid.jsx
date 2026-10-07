@@ -2,7 +2,7 @@ import { fadeUp } from "@/lib/animationHelpers"
 import ValueCard from "./ValueCard"
 import values from "./values"
 
-const ValuesGrid = () => {
+const ValuesGrid = ({items}) => {
     return (
         <div
             {...fadeUp()}
@@ -15,13 +15,23 @@ const ValuesGrid = () => {
                 lg:grid-cols-6
             "
         >
-            {values.map((value, index) => (
-                <ValueCard
-                    key={index}
-                    index={index}
-                    value={value}
-                />
-            ))}
+            {
+                items?.isActive === true ?
+                    items?.items.map((value, index) => (
+                        <ValueCard
+                            key={index}
+                            index={index}
+                            value={value}
+                        />
+                    ))
+                : values.map((value, index) => (
+                    <ValueCard
+                        key={index}
+                        index={index}
+                        value={value}
+                    />
+                ))
+            }
         </div>
     )
 }
