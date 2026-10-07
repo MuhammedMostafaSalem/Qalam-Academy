@@ -11,10 +11,12 @@ import {
 } from "react-icons/hi2";
 import { useRouter } from "next/navigation";
 import { useLanguage } from "@/providers/LanguageProvider";
+import usePageSection from "@/hooks/pageSections/usePageSection";
 
 const CTASection = () => {
     const router = useRouter();
     const { language, isRtl } = useLanguage();
+    const { pageSection, loading, error } = usePageSection("services", "cta");
     const isEn = language === "en";
 
     return (
@@ -52,15 +54,13 @@ const CTASection = () => {
 
                     {/* Content */}
                     <div className="relative z-10 mx-auto max-w-3xl">
-                        <SectionBadge
-                            className="
-                                border-white/20
-                                bg-white/10
-                                text-white
-                            "
-                        >
-                            {isEn ? "Start Your Project Now" : "ابدأ مشروعك الآن"}
-                        </SectionBadge>
+                        <p>
+                            {
+                                pageSection?.isActive === true
+                                ? pageSection.content.badge
+                                : isEn ? "Start Your Project Now" : "ابدأ مشروعك الآن"
+                            }
+                        </p>
 
                         <h2
                             className="
@@ -71,19 +71,23 @@ const CTASection = () => {
                                 lg:text-5xl
                             "
                         >
-                            {isEn ? (
-                                <>
-                                    Ready to turn your idea
-                                    <br />
-                                    into a successful product?
-                                </>
-                            ) : (
-                                <>
-                                    جاهز لتحويل فكرتك
-                                    <br />
-                                    إلى مشروع ناجح؟
-                                </>
-                            )}
+                            {
+                                pageSection?.isActive === true
+                                ? pageSection.content.title
+                                : isEn ? (
+                                    <>
+                                        Ready to turn your idea
+                                        <br />
+                                        into a successful product?
+                                    </>
+                                ) : (
+                                    <>
+                                        جاهز لتحويل فكرتك
+                                        <br />
+                                        إلى مشروع ناجح؟
+                                    </>
+                                )
+                            }
                         </h2>
 
                         <p
@@ -96,9 +100,13 @@ const CTASection = () => {
                                 text-white/80
                             "
                         >
-                            {isEn
-                                ? "Let our team help you build professional digital solutions tailored to your needs and business goals using the latest technologies and best practices."
-                                : "دع فريقنا يساعدك في بناء حلول رقمية احترافية تناسب احتياجاتك وتحقق أهداف عملك بأحدث التقنيات وأفضل الممارسات."}
+                            {
+                                pageSection?.isActive === true
+                                ? pageSection.content.description
+                                : isEn
+                                ? "Let our team help you build professional digital solutions tailored to your needs and business goals using the latest technologies and best practices"
+                                : "دع فريقنا يساعدك في بناء حلول رقمية احترافية تناسب احتياجاتك وتحقق أهداف عملك بأحدث التقنيات وأفضل الممارسات"
+                            }
                         </p>
 
                         {/* Actions */}
