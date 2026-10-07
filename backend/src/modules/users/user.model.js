@@ -5,134 +5,135 @@ const env = require("../../config/env");
 const generateSlug = require("../../utils/generateSlug");
 
 // User Schema Definition
-const userSchema = new mongoose.Schema({
-    firstName: {
-        type: String,
-        required: true,
-        trim: true,
-    },
-    lastName: {
-        type: String,
-        required: true,
-        trim: true,
-    },
-    slug: {
-        type: String,
-        unique: true,
-        lowercase: true,
-        index: true,
-    },
-    email: {
-        type: String,
-        required: true,
-        unique: true,
-        trim: true,
-        lowercase: true,
-    },
-    phone: {
-        type: String,
-        required: true,
-        unique: true,
-        trim: true,
-    },
-    country: {
-        type: String,
-        required: true,
-        trim: true,
-    },
-    city: {
-        type: String,
-        required: true,
-        trim: true,
-    },
-    address: {
-        type: String,
-        required: true,
-        trim: true,
-        maxlength: 300,
-    },
-    password: {
-        type: String,
-        required: true,
-        select: false,  // Exclude password field by default when querying
-    },
-    avatar: {
-        type: String,
-        default: null,
-    },
-    bio: {
-        type: String,
-        default: "",
-        maxlength: 500
-    },
-    wishlist: [
-        {
-            type: mongoose.Schema.ObjectId,
-            ref: 'Course',
+const userSchema = new mongoose.Schema(
+    {
+        firstName: {
+            type: String,
+            required: true,
+            trim: true,
         },
-    ],
-    themeMode: {
-        type: String,
-        enum: [
-            "light",
-            "dark",
+        lastName: {
+            type: String,
+            required: true,
+            trim: true,
+        },
+        slug: {
+            type: String,
+            unique: true,
+            lowercase: true,
+            index: true,
+        },
+        email: {
+            type: String,
+            required: true,
+            unique: true,
+            trim: true,
+            lowercase: true,
+        },
+        phone: {
+            type: String,
+            required: true,
+            unique: true,
+            trim: true,
+        },
+        country: {
+            type: String,
+            required: true,
+            trim: true,
+        },
+        city: {
+            type: String,
+            required: true,
+            trim: true,
+        },
+        address: {
+            type: String,
+            required: true,
+            trim: true,
+            maxlength: 300,
+        },
+        password: {
+            type: String,
+            required: true,
+            select: false, // Exclude password field by default when querying
+        },
+        avatar: {
+            type: String,
+            default: null,
+        },
+        bio: {
+            type: String,
+            default: "",
+            maxlength: 500,
+        },
+        wishlist: [
+            {
+                type: mongoose.Schema.ObjectId,
+                ref: "Course",
+            },
         ],
-        default: "dark",
+        themeMode: {
+            type: String,
+            enum: ["light", "dark"],
+            default: "dark",
+        },
+        role: {
+            type: String,
+            enum: ["admin", "instructor", "student"],
+            default: "student",
+        },
+        isVerified: {
+            type: Boolean,
+            default: false,
+        },
+        // Account status
+        // New users are active until they fail
+        // the allowed OTP attempts.
+        isActive: {
+            type: Boolean,
+            default: true, // <--- خليها true عشان اليوزر الجديد يقدر يدخل بعد ما يفعد إيميله
+            index: true,
+        },
+        otp: {
+            type: String,
+            select: false,
+        },
+        otpExpires: {
+            type: Date,
+            select: false,
+        },
+        otpResendTimeout: {
+            type: Date,
+            select: false,
+        },
+        otpAttempts: {
+            type: Number,
+            default: 0,
+            select: false,
+        },
+        resetPasswordToken: {
+            type: String,
+            select: false,
+        },
+        resetPasswordExpires: {
+            type: Date,
+            select: false,
+        },
+        otpPurpose: {
+            type: String,
+            enum: ["email_verification", "forgot_password"],
+            select: false,
+        },
     },
-    role: {
-        type: String,
-        enum: [
-            "admin",
-            "instructor",
-            "student",
-        ],
-        default: "student",
+    {
+        timestamps: true, // Automatically manage createdAt and updatedAt fields
     },
-    isVerified: {
-        type: Boolean,
-        default: false,
-    },
-    isActive: {
-        type: Boolean,
-        default: true,
-        index: true,
-    },
-    otp: {
-        type: String,
-        select: false,
-    },
-    otpExpires: {
-        type: Date,
-        select: false,
-    },
-    otpResendTimeout: {
-        type: Date,
-        select: false,
-    },
-    resetPasswordToken: {
-        type: String,
-        select: false,
-    },
-    resetPasswordExpires: {
-        type: Date,
-        select: false,
-    },
-    otpPurpose: {
-        type: String,
-        enum: ["email_verification", "forgot_password"],
-        select: false,
-    },
-}, {
-    timestamps: true // Automatically manage createdAt and updatedAt fields
-});
+);
 
 userSchema.pre("validate", function () {
-    if (
-        this.isModified("firstName") ||
-        this.isModified("lastName")
-    ) {
+    if (this.isModified("firstName") || this.isModified("lastName")) {
         this.slug = `${generateSlug(
-            `${this.firstName} ${this.lastName}`
+            `${this.firstName} ${this.lastName}`,
         )}-${this._id}`;
     }
 });
@@ -147,14 +148,14 @@ userSchema.pre("save", async function () {
         const salt = await bcrypt.genSalt(10);
         this.password = await bcrypt.hash(this.password, salt);
     } catch (err) {
-        console.log(err)
+        console.log(err);
     }
 });
 
 // Method to compare given password with the database hash
 userSchema.methods.comparePassword = async function (candidatePassword) {
     return await bcrypt.compare(candidatePassword, this.password);
-}
+};
 
 // Method to generate and hash OTP
 userSchema.methods.generateOtp = async function (purpose) {
@@ -168,7 +169,7 @@ userSchema.methods.generateOtp = async function (purpose) {
     this.otpPurpose = purpose;
 
     return otp;
-}
+};
 
 // Method to generate JWT token
 // userSchema.methods.generateAccessToken = function () {
@@ -179,12 +180,10 @@ userSchema.methods.generateOtp = async function (purpose) {
 //     );
 // }
 userSchema.methods.generateJWTToken = function () {
-    return jwt.sign(
-        { id: this._id },
-        env.jwtSecretToken,
-        { expiresIn: env.jwtExpiresInToken }
-    );
-}
+    return jwt.sign({ id: this._id }, env.jwtSecretToken, {
+        expiresIn: env.jwtExpiresInToken,
+    });
+};
 
 // method to generate Refresh JWT token
 // userSchema.methods.generateRefreshToken = function () {

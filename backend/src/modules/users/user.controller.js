@@ -176,8 +176,20 @@ exports.updateUserByAdmin = catchAsync(async (req, res, next) => {
         user.role = role;
     }
 
+    // Update account status
     if (isActive !== undefined) {
         user.isActive = isActive;
+
+        // If admin reactivates the account,
+        // reset OTP security state.
+        if (isActive === true) {
+            user.otpAttempts = 0;
+            user.otp = undefined;
+            user.otpExpires = undefined;
+            user.otpResendTimeout = undefined;
+            user.otpPurpose = undefined;
+            user.isVerified = true;
+        }
     }
 
     await user.save();
