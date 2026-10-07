@@ -87,10 +87,6 @@ const Footer = () => {
                                 <h2 className="text-2xl font-bold">
                                     {siteName}
                                 </h2>
-
-                                <p className="text-sm text-text-secondary">
-                                    {siteDescription}
-                                </p>
                             </div>
                         </div>
 
