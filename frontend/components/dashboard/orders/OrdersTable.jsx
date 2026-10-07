@@ -15,6 +15,9 @@ import { useAuth } from "@/providers/AuthProvider";
 import { useLanguage } from "@/providers/LanguageProvider";
 import DeleteModal from "@/components/ui/modal/DeleteModal";
 import useDeleteModal from "@/hooks/useDeleteModal";
+import { HiOutlineEye, HiOutlineCheckCircle, HiOutlineXMark } from "react-icons/hi2";
+import { approveCashOrderAction } from "@/actions/orderActions";
+
 
 const OrdersTable = () => {
     const { language } = useLanguage();
@@ -44,6 +47,8 @@ const OrdersTable = () => {
     const { successMessage, errorMessage } = useToast();
     const [cancellingId, setCancellingId] = useState(null);
     const { requestDelete } = useDeleteModal();
+    const [approvingId, setApprovingId] = useState(null);
+    const [selectedProof, setSelectedProof] = useState(null);
 
     const titleHead = isEn ? [
         "Order #",
@@ -52,7 +57,7 @@ const OrdersTable = () => {
         "Payment Method",
         "Status",
         "Order Date",
-        // ...(isInstructor ? [] : ["Actions"]),
+        ...(isInstructor ? [] : ["Actions"]),
     ] : [
         "رقم الطلب",
         "العميل",
@@ -60,8 +65,31 @@ const OrdersTable = () => {
         "طريقة الدفع",
         "الحالة",
         "تاريخ الطلب",
-        // ...(isInstructor ? [] : ["الإجراءات"]),
+        ...(isInstructor ? [] : ["الإجراءات"]),
     ];
+
+    const handleApproveCash = async (orderId) => {
+      setApprovingId(orderId);
+
+      const result = await approveCashOrderAction(orderId);
+
+      if (result.success) {
+          successMessage(
+              result.message ||
+              (isEn ? "Cash payment approved successfully" : "تم اعتماد الدفع الكاش بنجاح")
+          );
+
+          refetch();
+      } else {
+          errorMessage(
+              result.message ||
+              (isEn ? "Failed to approve payment" : "فشل اعتماد الدفع")
+          );
+      }
+
+      setApprovingId(null);
+  };
+
 
     const handleCancel = async (orderId) => {
         setCancellingId(orderId);
@@ -147,8 +175,30 @@ const OrdersTable = () => {
                                         </Table.Td>
 
                                         <Table.Td>
-                                            {PAYMENT_MAP[order.paymentMethodType] || order.paymentMethodType}
-                                        </Table.Td>
+                                          <div className="flex flex-col gap-2">
+                                              <span>
+                                                  {PAYMENT_MAP[order.paymentMethodType] || order.paymentMethodType}
+                                              </span>
+
+                                              {order.paymentMethodType === "cash" && (
+                                                  <div className="flex items-center gap-2">
+                                                      {order.paymentProofImage && (
+                                                          <button
+                                                              type="button"
+                                                              onClick={() => setSelectedProof(order.paymentProofImage)}
+                                                              className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg
+                                                                        bg-primary/10 text-primary hover:bg-primary/20 transition
+                                                                        text-xs font-semibold"
+                                                          >
+                                                              <HiOutlineEye size={16} />
+                                                              {isEn ? "View Proof" : "عرض الإيصال"}
+                                                          </button>
+                                                      )}
+                                                  </div>
+                                              )}
+                                          </div>
+                                      </Table.Td>
+
 
                                         <Table.Td>
                                             <span className={`px-2 py-1 rounded-full text-xs font-semibold ${status.class}`}>
@@ -184,6 +234,31 @@ const OrdersTable = () => {
                                                 />
                                             </Table.Td>
                                         )} */}
+
+                                        {!isInstructor && (
+                                          <Table.Td>
+                                              {order.paymentMethodType === "cash" && order.status === "pending" ? (
+                                                  <button
+                                                      type="button"
+                                                      disabled={approvingId === order._id}
+                                                      onClick={() => handleApproveCash(order._id)}
+                                                      className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl
+                                                                bg-success/10 text-success hover:bg-success/20
+                                                                transition text-xs font-semibold disabled:opacity-50"
+                                                  >
+                                                      <HiOutlineCheckCircle size={17} />
+
+                                                      {approvingId === order._id
+                                                          ? (isEn ? "Approving..." : "جاري الاعتماد...")
+                                                          : (isEn ? "Approve Payment" : "اعتماد الدفع")
+                                                      }
+                                                  </button>
+                                              ) : (
+                                                  <span className="text-xs text-text-muted">—</span>
+                                              )}
+                                          </Table.Td>
+                                      )}
+
                                     </Table.Row>
                                 );
                             })}
@@ -191,6 +266,42 @@ const OrdersTable = () => {
                     </Table>
 
                     {meta?.hasMore && <LoadMore />}
+                    {selectedProof && (
+                      <div
+                          className="fixed inset-0 z-[9999] bg-black/70 backdrop-blur-sm
+                                    flex items-center justify-center p-4"
+                          onClick={() => setSelectedProof(null)}
+                      >
+                          <div
+                              className="relative max-w-4xl max-h-[90vh] w-full
+                                        bg-background rounded-2xl p-4 shadow-2xl"
+                              onClick={(e) => e.stopPropagation()}
+                          >
+                              <button
+                                  type="button"
+                                  onClick={() => setSelectedProof(null)}
+                                  className="absolute -top-3 -right-3 z-10 w-9 h-9
+                                            rounded-full bg-error text-white flex items-center
+                                            justify-center shadow-lg hover:bg-error/90 transition"
+                              >
+                                  <HiOutlineXMark size={22} />
+                              </button>
+
+                              <div className="relative w-full h-[75vh]">
+                                  <img
+                                      src={
+                                          selectedProof.startsWith("http")
+                                              ? selectedProof
+                                              : `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:5000"}${selectedProof}`
+                                      }
+                                      alt={isEn ? "Payment Proof" : "إثبات الدفع"}
+                                      className="w-full h-full object-contain rounded-xl"
+                                  />
+                              </div>
+                          </div>
+                      </div>
+                  )}
+
                     <DeleteModal onConfirmAction={handleCancel} />
                 </div>
             )}
