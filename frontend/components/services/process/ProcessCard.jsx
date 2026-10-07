@@ -1,11 +1,12 @@
 "use client";
 
 import { cardAnimation } from "@/lib/animation/cardAnimation";
+import { getPageSectionIcon } from "@/lib/icons/pageSectionIcons";
 import { useLanguage } from "@/providers/LanguageProvider";
 
-const ProcessCard = ({ step, index }) => {
+const ProcessCard = ({ step, index, isActive }) => {
     const { localize } = useLanguage();
-    const Icon = step.icon;
+    const Icon = isActive === true ? getPageSectionIcon(step.icon) : step.icon;
 
     return (
         <article {...cardAnimation(index)} className="relative text-center">
@@ -52,7 +53,7 @@ const ProcessCard = ({ step, index }) => {
                         text-primary
                     "
                 >
-                    {step.number}
+                    {isActive === true ? index+1 :step.number}
                 </span>
 
                 <h3
@@ -63,7 +64,7 @@ const ProcessCard = ({ step, index }) => {
                         text-text-primary
                     "
                 >
-                    {localize(step.title)}
+                    {step?.content?.title || localize(step.title)}
                 </h3>
 
                 <p
@@ -73,7 +74,7 @@ const ProcessCard = ({ step, index }) => {
                         text-text-secondary
                     "
                 >
-                    {localize(step.description)}
+                    {step?.content?.description || localize(step.description)}
                 </p>
             </div>
         </article>
