@@ -12,9 +12,12 @@ import { cardAnimation } from "@/lib/animation/cardAnimation";
 import { animations } from "@/lib/animations";
 import { useLanguage } from "@/providers/LanguageProvider";
 import { usePublicHero } from "@/hooks/heroes/usePublicHero";
+import usePageSection from "@/hooks/pageSections/usePageSection";
+import { getPageSectionIcon } from "@/lib/icons/pageSectionIcons";
 
 const ServicesHeroContent = () => {
     const { language, localize } = useLanguage();
+    const { pageSection, loading, error } = usePageSection("services", "hero");
     const isEn = language === "en";
     const hero = usePublicHero("services");
 
@@ -101,56 +104,109 @@ const ServicesHeroContent = () => {
                     sm:grid-cols-3
                 "
             >
-                {features.map((feature, index) => {
-                    const Icon = feature.icon;
+                {
+                    pageSection?.isActive === true ?
+                        pageSection?.items.map((feature, index) => {
+                            const Icon = getPageSectionIcon(feature.icon);
 
-                    return (
-                        <div
-                            key={index}
-                            {...cardAnimation(index)}
-                            className="flex items-start gap-4"
-                        >
+                            return (
+                                <div
+                                    key={index}
+                                    {...cardAnimation(index)}
+                                    className="flex items-start gap-4"
+                                >
+                                    <div
+                                        className="
+                                            flex
+                                            h-14
+                                            w-14
+                                            items-center
+                                            justify-center
+                                            rounded-2xl
+                                            bg-primary/10
+                                            text-primary
+                                        "
+                                    >
+                                        <Icon className={`h-7 w-7 ${animations.hoverIcon}`} />
+                                    </div>
+
+                                    <div>
+                                        <h3
+                                            {...heroAnimation.title}
+                                            className="
+                                                font-bold
+                                                text-text-primary
+                                            "
+                                        >
+                                            {feature.content.title}
+                                        </h3>
+
+                                        <p
+                                            {...heroAnimation.description}
+                                            className="
+                                                mt-2
+                                                text-sm
+                                                leading-6
+                                                text-text-secondary
+                                            "
+                                        >
+                                            {feature.content.description}
+                                        </p>
+                                    </div>
+                                </div>
+                            );
+                        })
+                    : features.map((feature, index) => {
+                        const Icon = feature.icon;
+
+                        return (
                             <div
-                                className="
-                                    flex
-                                    h-14
-                                    w-14
-                                    items-center
-                                    justify-center
-                                    rounded-2xl
-                                    bg-primary/10
-                                    text-primary
-                                "
+                                key={index}
+                                {...cardAnimation(index)}
+                                className="flex items-start gap-4"
                             >
-                                <Icon className={`h-7 w-7 ${animations.hoverIcon}`} />
-                            </div>
-
-                            <div>
-                                <h3
-                                    {...heroAnimation.title}
+                                <div
                                     className="
-                                        font-bold
-                                        text-text-primary
+                                        flex
+                                        h-14
+                                        w-14
+                                        items-center
+                                        justify-center
+                                        rounded-2xl
+                                        bg-primary/10
+                                        text-primary
                                     "
                                 >
-                                    {feature.title}
-                                </h3>
+                                    <Icon className={`h-7 w-7 ${animations.hoverIcon}`} />
+                                </div>
 
-                                <p
-                                    {...heroAnimation.description}
-                                    className="
-                                        mt-2
-                                        text-sm
-                                        leading-6
-                                        text-text-secondary
-                                    "
-                                >
-                                    {feature.description}
-                                </p>
+                                <div>
+                                    <h3
+                                        {...heroAnimation.title}
+                                        className="
+                                            font-bold
+                                            text-text-primary
+                                        "
+                                    >
+                                        {feature.title}
+                                    </h3>
+
+                                    <p
+                                        {...heroAnimation.description}
+                                        className="
+                                            mt-2
+                                            text-sm
+                                            leading-6
+                                            text-text-secondary
+                                        "
+                                    >
+                                        {feature.description}
+                                    </p>
+                                </div>
                             </div>
-                        </div>
-                    );
-                })}
+                        );
+                    })
+                }
             </div>
         </div>
     );
