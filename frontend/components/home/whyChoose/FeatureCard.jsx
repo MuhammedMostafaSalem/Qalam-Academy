@@ -1,10 +1,11 @@
 "use client";
 
 import { cardAnimation } from "@/lib/animation/cardAnimation";
+import { getPageSectionIcon } from "@/lib/icons/pageSectionIcons";
 import { useLanguage } from "@/providers/LanguageProvider";
 
 const FeatureCard = ({ feature, index }) => {
-    const Icon = feature.icon;
+    const Icon = getPageSectionIcon(feature.icon) || feature.icon;
     const { localize } = useLanguage();
 
     const title = localize(feature.title);
@@ -53,7 +54,7 @@ const FeatureCard = ({ feature, index }) => {
                     text-primary
                 "
                 >
-                    {title}
+                    {feature?.content?.title || title}
                 </h3>
 
                 {/* Description */}
@@ -65,7 +66,7 @@ const FeatureCard = ({ feature, index }) => {
                     text-text-secondary
                 "
                 >
-                    {description}
+                    {feature?.content?.description || description}
                 </p>
             </div>
         </article>
