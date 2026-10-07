@@ -2,6 +2,7 @@
 
 import ChartsSection from "@/components/dashboard/home/ChartsSection";
 import PageHeader from "@/components/dashboard/PageHeader";
+import FullPageLoader from "@/components/ui/FullPageLoader";
 import StatsCards from "@/components/ui/StatsCards";
 import useAdminDashboard from "@/hooks/dashboard/useAdminDashboard";
 import { useAuth } from "@/providers/AuthProvider";
@@ -97,11 +98,7 @@ export default function AdminDashboardClientView() {
 
     if (loading) {
         return (
-            <div className="glass rounded-3xl border border-border p-6 shadow-sm">
-                <div className="flex justify-center items-center h-64">
-                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
-                </div>
-            </div>
+            <FullPageLoader />
         );
     }
 
