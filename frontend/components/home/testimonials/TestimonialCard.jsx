@@ -19,24 +19,38 @@ const TestimonialCard = ({ testimonial }) => {
     return (
         <article
             className="
+                min-h-[320px]
+                h-full
+                w-full
                 rounded-card
                 glass
-                p-8
+                p-6
                 flex
                 flex-col
+                justify-between
                 gap-3
             "
         >
             {/* Review */}
             <blockquote
+                // className="
+                //     line-clamp-3
+                //     flex-1
+                //     px-5
+                //     text-base
+                //     leading-8
+                //     text-text-secondary
+                // "
                 className="
+                    line-clamp-4
+                    min-h-[96px]
                     px-5
                     text-base
-                    leading-8
+                    leading-6
                     text-text-secondary
                 "
             >
-                "{review}"
+                {review}
             </blockquote>
 
             {/* Rating */}
