@@ -28,19 +28,28 @@ export async function signupAction(prevState, formData) {
         const city = formData.get("city");
         const address = formData.get("address");
 
+        const normalizedPhone = phone
+            ? `+${phone.replace(/\D/g, "")}`
+            : "";
+
+            console.log("phoneAction:", phone);
+            console.log("normalizedPhoneAction:", normalizedPhone);
+
         const response = await authApi("/auth/signup", {
             method: "POST",
             body: JSON.stringify({
                 firstName,
                 lastName,
                 email,
-                phone,
+                phone: normalizedPhone,
                 password,
                 country,
                 city,
                 address,
             }),
         });
+
+        console.log("signupAction response:", response);
 
         return {
             success: true,
