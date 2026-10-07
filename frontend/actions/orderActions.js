@@ -3,12 +3,16 @@
 import { authApi } from "@/services/authService";
 import { revalidatePath } from "next/cache";
 
-// Get All Orders (Admin)
+/* =========================================================
+   GET ALL ORDERS
+========================================================= */
+
 export async function getOrdersAction(queryString = "") {
     try {
         const response = await authApi(`/orders?${queryString}`, {
             method: "GET",
         });
+
         return {
             success: true,
             data: response.data,
@@ -24,12 +28,16 @@ export async function getOrdersAction(queryString = "") {
     }
 }
 
-// Get Order by ID
+/* =========================================================
+   GET ORDER BY ID
+========================================================= */
+
 export async function getOrderByIdAction(id) {
     try {
         const response = await authApi(`/orders/${id}`, {
             method: "GET",
         });
+
         return {
             success: true,
             data: response.data,
@@ -43,7 +51,10 @@ export async function getOrderByIdAction(id) {
     }
 }
 
-// Cancel Order
+/* =========================================================
+   CANCEL ORDER
+========================================================= */
+
 export async function cancelOrderAction(id) {
     try {
         const response = await authApi(`/orders/${id}/cancel`, {
@@ -55,114 +66,214 @@ export async function cancelOrderAction(id) {
 
         return {
             success: true,
-            message: response.message || "تم إلغاء الطلب بنجاح",
+            message:
+                response.message ||
+                "تم إلغاء الطلب بنجاح",
         };
     } catch (error) {
         return {
             success: false,
-            message: error?.message || "فشل إلغاء الطلب",
+            message:
+                error?.message ||
+                "فشل إلغاء الطلب",
         };
     }
 }
 
-// Create Cash Order
-export async function createCashOrderAction(cartId, shippingAddress = {}) {
+/* =========================================================
+   CREATE CASH ORDER
+========================================================= */
+
+export async function createCashOrderAction(
+    cartId,
+    formData
+) {
     try {
-        const response = await authApi(`/orders/${cartId}`, {
-            method: "POST",
-            body: JSON.stringify({ shippingAddress }),
-        });
+        const response = await authApi(
+            `/orders/${cartId}`,
+            {
+                method: "POST",
+                body: formData,
+            }
+        );
 
         revalidatePath("/user/orders");
 
         return {
             success: true,
             data: response.data,
-            message: response.message || "تم إنشاء الطلب بنجاح",
+            message:
+                response.message ||
+                "تم إنشاء الطلب بنجاح",
         };
     } catch (error) {
         return {
             success: false,
-            message: error?.message || "فشل إنشاء الطلب",
+            message:
+                error?.message ||
+                "فشل إنشاء الطلب",
         };
     }
 }
 
-// Create Paymob Checkout
-export async function checkoutPaymobAction(cartId, paymentType = "card", shippingAddress = {}) {
-    try {
-        const response = await authApi(`/orders/checkout-paymob/${cartId}`, {
-            method: "POST",
-            body: JSON.stringify({ paymentType, shippingAddress }),
-        });
+/* =========================================================
+   PAYMOB CHECKOUT
+========================================================= */
 
-        const redirect_url = response?.redirect_url || response?.data?.redirect_url;
-        const client_secret = response?.client_secret || response?.data?.client_secret;
-        const orderId = response?.orderId || response?.data?.orderId;
+export async function checkoutPaymobAction(
+    cartId,
+    paymentType = "card",
+    shippingAddress = {}
+) {
+    try {
+        const response = await authApi(
+            `/orders/checkout-paymob/${cartId}`,
+            {
+                method: "POST",
+                body: JSON.stringify({
+                    paymentType,
+                    shippingAddress,
+                }),
+            }
+        );
+
+        const redirect_url =
+            response?.redirect_url ||
+            response?.data?.redirect_url;
+
+        const client_secret =
+            response?.client_secret ||
+            response?.data?.client_secret;
+
+        const orderId =
+            response?.orderId ||
+            response?.data?.orderId;
 
         return {
             success: true,
-            data: response?.data || response,
+
+            data:
+                response?.data ||
+                response,
+
             redirect_url,
+
             client_secret,
+
             orderId,
-            message: response?.message || "تم إنشاء رابط الدفع",
+
+            message:
+                response?.message ||
+                "تم إنشاء رابط الدفع",
         };
     } catch (error) {
         return {
             success: false,
-            message: error?.message || "فشل إنشاء رابط الدفع",
+            message:
+                error?.message ||
+                "فشل إنشاء رابط الدفع",
         };
     }
 }
 
-// Create PayPal Checkout
-export async function checkoutPaypalAction(cartId, shippingAddress = {}) {
-    try {
-        const response = await authApi(`/orders/checkout-paypal/${cartId}`, {
-            method: "POST",
-            body: JSON.stringify({ shippingAddress }),
-        });
+/* =========================================================
+   PAYPAL CHECKOUT
+========================================================= */
 
-        const approvalUrl = response.approvalUrl
-            || response.approval_url
-            || response.data?.approvalUrl
-            || response.data?.approval_url;
-        const orderId = response.orderId || response.data?.orderId;
+export async function checkoutPaypalAction(
+    cartId,
+    shippingAddress = {}
+) {
+    try {
+        const response = await authApi(
+            `/orders/checkout-paypal/${cartId}`,
+            {
+                method: "POST",
+
+                body: JSON.stringify({
+                    shippingAddress,
+                }),
+            }
+        );
+
+        const approvalUrl =
+            response.approvalUrl ||
+            response.approval_url ||
+            response.data?.approvalUrl ||
+            response.data?.approval_url;
+
+        const orderId =
+            response.orderId ||
+            response.data?.orderId;
 
         if (!approvalUrl) {
             return {
                 success: false,
-                message: response.message || "لم يتم استلام رابط PayPal",
+                message:
+                    response.message ||
+                    "لم يتم استلام رابط PayPal",
             };
         }
 
         return {
             success: true,
-            data: response.data || response,
+
+            data:
+                response.data ||
+                response,
+
             approvalUrl,
+
             orderId,
-            message: response.message || "تم إنشاء رابط الدفع",
+
+            message:
+                response.message ||
+                "تم إنشاء رابط الدفع",
         };
     } catch (error) {
         return {
             success: false,
-            message: error?.message || "فشل إنشاء رابط الدفع",
+            message:
+                error?.message ||
+                "فشل إنشاء رابط الدفع",
         };
     }
 }
 
-// Capture an approved PayPal order after the user returns from PayPal.
-export async function verifyPaypalPaymentAction(orderId) {
+/* =========================================================
+   VERIFY PAYPAL PAYMENT
+========================================================= */
+
+export async function verifyPaypalPaymentAction(
+    orderId,
+    paypalOrderId
+) {
     if (!orderId) {
-        return { success: false, message: "Missing order ID" };
+        return {
+            success: false,
+            message: "Missing order ID",
+        };
+    }
+
+    if (!paypalOrderId) {
+        return {
+            success: false,
+            message: "Missing PayPal order ID",
+        };
     }
 
     try {
-        const response = await authApi("/orders/paypal/success", {
-            method: "POST",
-            body: JSON.stringify({ orderId }),
-        });
+        const response = await authApi(
+            "/orders/paypal/success",
+            {
+                method: "POST",
+
+                body: JSON.stringify({
+                    orderId,
+                    paypalOrderId,
+                }),
+            }
+        );
 
         revalidatePath("/user/orders");
         revalidatePath("/user/payment-history");
@@ -171,13 +282,58 @@ export async function verifyPaypalPaymentAction(orderId) {
 
         return {
             success: true,
+
             data: response.data,
-            message: response.message || "تم تأكيد الدفع عبر PayPal",
+
+            message:
+                response.message ||
+                "تم تأكيد الدفع عبر PayPal",
         };
     } catch (error) {
         return {
             success: false,
-            message: error?.message || "فشل تأكيد الدفع عبر PayPal",
+
+            message:
+                error?.message ||
+                "فشل تأكيد الدفع عبر PayPal",
+        };
+    }
+}
+
+/* =========================================================
+   APPROVE CASH ORDER
+========================================================= */
+
+export async function approveCashOrderAction(
+    orderId
+) {
+    try {
+        const response = await authApi(
+            `/orders/${orderId}/approve-cash`,
+            {
+                method: "PATCH",
+            }
+        );
+
+        revalidatePath("/dashboard/orders");
+        revalidatePath("/user/orders");
+
+        return {
+            success: true,
+
+            data: response.data,
+
+            message:
+                response.message ||
+                "تم اعتماد الدفع بنجاح",
+        };
+    } catch (error) {
+        return {
+            success: false,
+
+            message:
+                error?.message ||
+                "فشل اعتماد الدفع",
         };
     }
 }
