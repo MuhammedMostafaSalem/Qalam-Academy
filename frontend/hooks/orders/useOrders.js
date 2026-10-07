@@ -1,33 +1,55 @@
 "use client";
 
 import { getOrdersAction } from "@/actions/orderActions";
-import { useCallback, useEffect, useState } from "react";
+import {
+    useCallback,
+    useEffect,
+    useState,
+} from "react";
 
 const useOrders = (queryString = "") => {
     const [orders, setOrders] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const [meta, setMeta] = useState(null);
 
-    const fetchOrders = useCallback(async () => {
-        setLoading(true);
-        setError(null);
+    const [loading, setLoading] =
+        useState(true);
 
-        try {
-            const result = await getOrdersAction(queryString);
+    const [error, setError] =
+        useState(null);
 
-            if (result.success) {
-                setOrders(result.data);
-                setMeta(result.meta);
-            } else {
-                setError(result.message);
+    const [meta, setMeta] =
+        useState(null);
+
+    const fetchOrders = useCallback(
+        async () => {
+            setLoading(true);
+            setError(null);
+
+            try {
+                const result =
+                    await getOrdersAction(
+                        queryString
+                    );
+
+                if (result.success) {
+                    setOrders(
+                        result.data || []
+                    );
+
+                    setMeta(result.meta);
+                } else {
+                    setError(result.message);
+                }
+            } catch (err) {
+                setError(
+                    err?.message ||
+                        "حدث خطأ غير متوقع"
+                );
+            } finally {
+                setLoading(false);
             }
-        } catch (err) {
-            setError(err?.message || "حدث خطأ غير متوقع");
-        } finally {
-            setLoading(false);
-        }
-    }, [queryString]);
+        },
+        [queryString]
+    );
 
     useEffect(() => {
         fetchOrders();
