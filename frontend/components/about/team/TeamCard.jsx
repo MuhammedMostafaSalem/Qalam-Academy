@@ -40,7 +40,10 @@ const TeamCard = ({ member }) => {
         <article
             className="
                 group
+                flex
+                h-full
                 w-full
+                flex-col
                 rounded-2xl
                 border
                 border-border
@@ -53,7 +56,7 @@ const TeamCard = ({ member }) => {
             "
         >
             {/* Avatar */}
-            <div className="mx-auto mb-5 h-24 w-24 overflow-hidden rounded-full">
+            <div className="mx-auto mb-5 h-24 w-24 shrink-0 overflow-hidden rounded-full">
                 <Image
                     src={imageSrc}
                     alt={name}
@@ -65,12 +68,12 @@ const TeamCard = ({ member }) => {
             </div>
 
             {/* Name */}
-            <h3 className="text-lg font-bold text-text-primary">
+            <h3 className="line-clamp-2 min-h-[56px] text-lg font-bold text-text-primary">
                 {member.name}
             </h3>
 
             {/* Role */}
-            <p className="mt-1 text-sm text-primary">
+            <p className="mt-1 line-clamp-2 min-h-[40px] text-sm text-primary">
                 {member.role}
             </p>
 
