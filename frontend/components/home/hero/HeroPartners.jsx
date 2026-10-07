@@ -1,37 +1,34 @@
 "use client";
 
+import { getPartnersAction } from '@/actions/partnerActions';
 import { fadeUp } from '@/lib/animationHelpers';
 import { animations } from '@/lib/animations'
 import { useLanguage } from '@/providers/LanguageProvider';
+import { useEffect, useState } from 'react';
 
 const HeroPartners = () => {
     const { language } = useLanguage();
-    const partners = [
-        {
-            id: 1,
-            name: "SaaSMax",
-        },
-        {
-            id: 2,
-            name: "Uideck",
-        },
-        {
-            id: 3,
-            name: "Layers",
-        },
-        {
-            id: 4,
-            name: "Circle",
-        },
-        {
-            id: 5,
-            name: "Catalog",
-        },
-        {
-            id: 6,
-            name: "Luminous",
-        },
-    ];
+    const [partners, setPartners] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        getPartnersAction("limit=6").then((result) => {
+            if (result.success) setPartners(result.data);
+            setLoading(false);
+        });
+    }, [language]);
+
+    if (loading) {
+        return (
+            <div className="py-10 text-center text-text-secondary">
+                {language === "en" ? "Loading partners..." : "جاري تحميل الشركاء..."}
+            </div>
+        );
+    }
+
+    if (partners.length < 2) {
+        return null;
+    }
 
     return (
         <div
@@ -60,17 +57,16 @@ const HeroPartners = () => {
 
                 <div
                     className="
-                        grid
-                        grid-cols-2
-                        md:grid-cols-3
-                        lg:grid-cols-6
+                        flex
+                        flex-wrap
+                        justify-center
                         gap-8
                     "
                 >
                     {partners.map((partner) => (
                         <div
                             {...fadeUp(partner.id * 80)}
-                            key={partner.id}
+                            key={partner._id}
                             className={`
                                 flex
                                 justify-center
