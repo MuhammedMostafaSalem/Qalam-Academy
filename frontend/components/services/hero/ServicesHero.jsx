@@ -1,3 +1,4 @@
+"use client";
 import Section from "@/components/sections/Section"
 import Container from "@/components/ui/Container"
 import ServicesHeroContent from "./ServicesHeroContent"
