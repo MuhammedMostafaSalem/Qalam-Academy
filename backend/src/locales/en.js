@@ -13,7 +13,7 @@ module.exports = {
         deleted: "Course deleted successfully",
         notFound: "Course not found",
     },
-    
+
     courseDetails: {
         fetched: "Course details fetched successfully",
     },
@@ -33,7 +33,7 @@ module.exports = {
         deleted: "Category deleted successfully",
         notFound: "Category not found",
     },
-    
+
     blog: {
         fetched: "Blog fetched successfully",
         created: "Blog created successfully",
@@ -49,9 +49,9 @@ module.exports = {
         exist: "No cart exist for this user: ({{user}})",
         deleted: "Item removed from cart successfully",
         cleared: "Cart cleared successfully",
-        notFound: 'Cart not found',
+        notFound: "Cart not found",
         itemFound: `No Product Cart item found for this id: ({{id}})`,
-        invalidCoupon: 'Coupon is invalid or has expired',
+        invalidCoupon: "Coupon is invalid or has expired",
         removeCoupon: "Coupon removed successfully",
     },
 
@@ -98,6 +98,8 @@ module.exports = {
     },
 
     auth: {
+        registrationDisabled: "New account registration is currently disabled",
+        emailFailed: "We could not send the verification email. Please try again shortly",
         sentOtp: "otp sent to your email for verification",
         verifiedEmail: "User successfully verified",
         verifiedPassword: "OTP verified, you can reset your password now",
@@ -106,7 +108,8 @@ module.exports = {
         notmatchPassword: "Passwords do not match",
         notFound: "User not found",
         successMessage: "Reset password successfully",
-        invalidResetToken: "Invalid or expired reset token please send your email again",
+        invalidResetToken:
+            "Invalid or expired reset token please send your email again",
         verifyFisrt: "Please verify your account first",
         incorrectPass: "Password is incorrect",
         successLogin: "Logged in successfully",
@@ -115,6 +118,18 @@ module.exports = {
         invalidToken: "Invalid token. Please login again",
         roleNotAllowed: "Role ({{role}}) is not allowed to access this resource",
         logout: "Logged out successfully",
+        invalidOTP: "Invalid or expired OTP",
+        tooManyAttempts:
+            "Too many incorrect OTP attempts. Your account has been suspended for security reasons. Please contact Qalam Academy support to reactivate your account",
+        remainingAttempts:
+            "Invalid OTP. You have {{remainingAttempts}} attempt(s) left before your account is suspended",
+        verifiedUser: "User already verified",
+        otpResendTimeout: "Please wait {{seconds}} seconds before requesting a new OTP",
+        accountSuspended: "Your account is suspended and inactive. Please contact support for assistance",
+        signupLimiter:
+            "Too many accounts created from this IP, please try again after 15 minutes",
+        otpActionLimiter:
+            "Too many OTP requests from this IP, please try again after 15 minutes",
     },
 
     user: {
@@ -126,13 +141,15 @@ module.exports = {
         notAllowed: "You are not allowed to change another user's password",
         incorrectCurrentPassword: "Current password is incorrect",
         notMatchComfirmPassword: "Password confirmation does not match",
-        newPasswordDifferent: "New password must be different from current password",
+        newPasswordDifferent:
+            "New password must be different from current password",
         successMessagePassword: "Password changed successfully",
         fetchedThemeMode: "Theme mode fetched successfully",
         updatedThemeMode: "Theme mode updated successfully",
         cannotDeactivate: "You cannot deactivate your own account",
         cannotChangeOwnRole: "You cannot change your own admin role",
-        administratorDeactivatedAccount: "Your account has been deactivated by the administrator",
+        administratorDeactivatedAccount:
+            "Your account has been deactivated by the administrator",
     },
 
     order: {
@@ -151,6 +168,9 @@ module.exports = {
         alreadyCancelled: "Order already cancelled",
         notCancelled: "Paid orders can't be cancelled. Refund is required",
         cancelled: "Order cancelled successfully",
+        notAllowedToUpdateOrder: "You are not allowed to update this order",
+        paymentProofRequired: "Payment proof image is required for cash transfer orders",
+        paymentProofUploaded: "Payment proof uploaded successfully. Your order will be reviewed by the support team",
     },
 
     enrollment: {
@@ -169,7 +189,7 @@ module.exports = {
         deleted: "Partner deleted successfully",
         notFound: "Partner not found",
     },
-    
+
     portfolio: {
         fetched: "Portfolio fetched successfully",
         created: "Portfolio created successfully",
@@ -177,7 +197,7 @@ module.exports = {
         deleted: "Portfolio deleted successfully",
         notFound: "Portfolio not found",
     },
-    
+
     product: {
         fetched: "Product fetched successfully",
         created: "Product created successfully",
@@ -185,7 +205,7 @@ module.exports = {
         deleted: "Product deleted successfully",
         notFound: "Product not found",
     },
-    
+
     progress: {
         fetched: "Course progress fetched successfully",
         continueWatchingFetched: "Continue watching fetched successfully",
@@ -210,7 +230,7 @@ module.exports = {
         deleted: "Service deleted successfully",
         notFound: "Service not found",
     },
-    
+
     settings: {
         fetched: "Settings fetched successfully",
         themeFetched: "Theme fetched successfully",
@@ -228,7 +248,7 @@ module.exports = {
         deleted: "Team member deleted successfully",
         notFound: "Team member not found",
     },
-    
+
     timeline: {
         fetched: "Timeline fetched successfully",
         created: "Timeline created successfully",
@@ -236,10 +256,18 @@ module.exports = {
         deleted: "Timeline deleted successfully",
         notFound: "Timeline not found",
     },
-    
+
     wishlist: {
         fetched: "Wishlist fetched successfully",
         added: "Course added successfully to your wishlist",
         removed: "Course removed successfully from your wishlist",
+    },
+
+    pageSection: {
+        fetched: "Page section fetched successfully",
+        created: "Page section created successfully",
+        updated: "Page section updated successfully",
+        deleted: "Page section deleted successfully",
+        notFound: "Page section not found",
     },
 };
