@@ -5,27 +5,34 @@ import { whyChoose } from '@/constants/whyChoose';
 import FeatureCard from './FeatureCard';
 import { fadeUp } from '@/lib/animationHelpers';
 
-const FeaturesGrid = () => {
+const FeaturesGrid = ({items}) => {
     return (
         <div
             {...fadeUp()}
             className="
-                grid
-                grid-cols-1
+                flex
+                flex-wrap
+                justify-center
                 gap-6
-                sm:grid-cols-2
-                xl:grid-cols-4
-                place-items-center
-                justify-items-center
             "
         >
-            {whyChoose.map((feature, index) => (
-                <FeatureCard
-                    index={index}
-                    key={feature.id || index}
-                    feature={feature}
-                />
-            ))}
+            {
+                items?.isActive === true ?
+                    items?.items.map((feature, index) => (
+                        <FeatureCard
+                            index={index}
+                            key={feature._id || index}
+                            feature={feature}
+                        />
+                    ))
+                : whyChoose.map((feature, index) => (
+                    <FeatureCard
+                        index={index}
+                        key={feature.id || index}
+                        feature={feature}
+                    />
+                ))
+            }
         </div>
     );
 };
