@@ -1,16 +1,37 @@
+
+"use client";
+
 import LessonHeader from "../lessonContent/LessonHeader";
 import LessonTabs from "../lessonContent/LessonTabs";
 import LessonNavigation from "../LessonNavigation";
 import VideoPlayer from "./VideoPlayer";
+import TextLessonContent from "./TextLessonContent";
 
-const LessonPlayer = ({ lesson, courseSlug, courseProgress, courseLessons, onProgressUpdated, canTrackProgress }) => {
+const LessonPlayer = ({
+    lesson,
+    courseSlug,
+    courseProgress,
+    courseLessons,
+    onProgressUpdated,
+    canTrackProgress,
+}) => {
+    const isTextLesson = (lesson?.contentType || "video") === "text";
+
     return (
         <div className="flex flex-col">
-            <VideoPlayer
-                lesson={lesson}
-                onProgressUpdated={onProgressUpdated}
-                canTrackProgress={canTrackProgress}
-            />
+            {isTextLesson ? (
+                <TextLessonContent
+                    lesson={lesson}
+                    onProgressUpdated={onProgressUpdated}
+                    canTrackProgress={canTrackProgress}
+                />
+            ) : (
+                <VideoPlayer
+                    lesson={lesson}
+                    onProgressUpdated={onProgressUpdated}
+                    canTrackProgress={canTrackProgress}
+                />
+            )}
 
             <div
                 className="
@@ -28,7 +49,7 @@ const LessonPlayer = ({ lesson, courseSlug, courseProgress, courseLessons, onPro
                 </div>
 
                 <div className="mt-12">
-                    <LessonNavigation 
+                    <LessonNavigation
                         lesson={lesson}
                         courseSlug={courseSlug}
                         courseProgress={courseProgress}
