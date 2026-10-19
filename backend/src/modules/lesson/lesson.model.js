@@ -41,6 +41,47 @@ const lessonSchema = new mongoose.Schema({
         },
     },
 
+    // Lesson Content Type
+    contentType: {
+        type: String,
+        enum: ["video", "text"],
+        default: "video",
+        required: true,
+    },
+
+    // Text Lesson Content
+    content: {
+        ar: {
+            type: String,
+            default: "",
+            trim: true,
+        },
+        en: {
+            type: String,
+            default: "",
+            trim: true,
+        },
+    },
+
+    // Learning Points
+    learningPoints: {
+        type: [
+            {
+                ar: {
+                    type: String,
+                    trim: true,
+                    required: true,
+                },
+                en: {
+                    type: String,
+                    trim: true,
+                    required: true,
+                },
+            },
+        ],
+        default: [],
+    },
+
     // Media
     video: {
         type: String,
