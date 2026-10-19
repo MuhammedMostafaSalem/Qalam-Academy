@@ -10,7 +10,7 @@ const SidebarLogo = ({ collapsed }) => {
     const { language } = useLanguage();
     return (
         <Link
-            href="/dashboard"
+            href="/"
             className="
                 flex
                 items-center
