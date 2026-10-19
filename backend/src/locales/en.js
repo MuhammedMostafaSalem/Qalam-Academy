@@ -53,6 +53,8 @@ module.exports = {
         itemFound: `No Product Cart item found for this id: ({{id}})`,
         invalidCoupon: "Coupon is invalid or has expired",
         removeCoupon: "Coupon removed successfully",
+        alreadyHaveProduct: "You have already purchased this product",
+        alreadyHaveCourse: "You are already enrolled in this course"
     },
 
     choose: {

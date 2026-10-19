@@ -53,6 +53,8 @@ module.exports = {
         itemFound: "لم يتم العثور على عنصر في سلة التسوق لهذا المعرف: ({{id}})",
         invalidCoupon: 'الكوبون غير صالح أو منتهي الصلاحية',
         removeCoupon: "تمت إزالة الكوبون بنجاح",
+        alreadyHaveProduct: "لقد قمت بشراء هذا المنتج بالفعل",
+        alreadyHaveCourse: "أنت مسجل بالفعل في هذا الكورس"
     },
 
     choose: {
