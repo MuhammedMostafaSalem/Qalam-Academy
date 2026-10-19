@@ -166,7 +166,7 @@ const LessonsTable = ({ courseId, courseSlug }) => {
                                             text-primary
                                         "
                                     >
-                                        {lesson.type || "Video"}
+                                        {lesson.contentType || "Video"}
                                     </span>
                                 </Table.Td>
 
