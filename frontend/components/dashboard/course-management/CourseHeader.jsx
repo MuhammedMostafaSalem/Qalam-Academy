@@ -13,6 +13,7 @@ import {
 } from "react-icons/hi2";
 import { getCourseByIdAction } from "@/actions/courseActions";
 import { useLanguage } from "@/providers/LanguageProvider";
+import { getLessonsAction } from "@/actions/lessonActions";
 
 
 const FALLBACK_IMAGE = "https://images.unsplash.com/photo-1516321318423-f06f85e504b3";
@@ -22,7 +23,22 @@ const CourseHeader = ({ courseId, courseSlug }) => {
     const isEn = language === "en";
 
     const [course, setCourse] = useState(null);
+    const [lessons, setLessons] = useState([]);
     const [loading, setLoading] = useState(true);
+
+    const fetchLessons = async () => {
+        if (!courseId) return;
+        setLoading(true);
+        const result = await getLessonsAction(`course=${courseId}`);
+        if (result.success) {
+            setLessons(result.data || []);
+        }
+        setLoading(false);
+    };
+
+    useEffect(() => {
+        fetchLessons();
+    }, [courseId]);
 
     useEffect(() => {
         if (!courseId) return;
@@ -100,7 +116,7 @@ const CourseHeader = ({ courseId, courseSlug }) => {
             </Section>
         );
     }
-
+console.log(course)
     return (
         <Section
             className="
@@ -219,7 +235,8 @@ const CourseHeader = ({ courseId, courseSlug }) => {
                             <StatCard
                                 icon={HiOutlineVideoCamera}
                                 label={isEn ? "Lessons" : "الدروس"}
-                                value={course?.totalLessons ?? course?.lessonsCount ?? 0}
+                                // value={course?.totalLessons ?? course?.lessonsCount ?? 0}
+                                value={lessons.length}
                             />
                             <StatCard
                                 icon={HiOutlineUsers}
