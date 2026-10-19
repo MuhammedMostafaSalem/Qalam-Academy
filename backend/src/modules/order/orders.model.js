@@ -125,7 +125,7 @@ orderSchema.pre(/^find/, function () {
         select: "firstName lastName avatar email phone",
     }).populate({
         path: "cartItems.item",
-        select: "title image averageRating",
+        select: "title description image pdf averageRating",
     });
 });
 
