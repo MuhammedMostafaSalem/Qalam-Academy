@@ -48,7 +48,12 @@ const DashboardHeader = ({
 
     const handleAccount = () => {
         setOpen(false);
-        router.push("/profile");
+
+        if(user?.role === "admin" || user?.role === "instructor") {
+            router.push("/dashboard/profile");
+        } else {
+            router.push("/user/profile");
+        }
     };
 
     const handleLogout = async () => {
