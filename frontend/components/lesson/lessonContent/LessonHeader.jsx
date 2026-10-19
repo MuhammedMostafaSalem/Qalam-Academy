@@ -55,7 +55,7 @@ const LessonHeader = ({ lesson }) => {
             </h1>
 
             {/* Description */}
-            {description && (
+            {/* {description && (
                 <p
                     className="
                         max-w-3xl
@@ -65,7 +65,7 @@ const LessonHeader = ({ lesson }) => {
                 >
                     {description}
                 </p>
-            )}
+            )} */}
 
             {/* Meta */}
             <div
