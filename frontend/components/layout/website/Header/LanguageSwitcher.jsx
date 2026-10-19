@@ -29,7 +29,7 @@ const LanguageSwitcher = () => {
             `}
         >
             <MdOutlineLanguage size={18} />
-            <span>{language === "ar" ? "EN" : "عربي"}</span>
+            <span>{language === "ar" ? "EN" : "AR"}</span>
         </button>
     );
 };
