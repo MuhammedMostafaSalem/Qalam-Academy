@@ -10,7 +10,7 @@ const LessonSidebar = ({ lesson, courseSlug, courseProgress, courseLessons }) =>
     const courseTitle = localize(lesson?.course?.title, defaultCourseTitle);
 
     return (
-        <div className="flex h-screen flex-col">
+        <div className="flex h-full min-h-screen flex-col">
             {/* Header */}
             <div className="border-b border-border p-6">
                 <h2 className="text-xl font-bold">
