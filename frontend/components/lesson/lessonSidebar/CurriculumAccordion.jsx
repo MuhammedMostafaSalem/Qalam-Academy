@@ -1,16 +1,10 @@
 "use client";
 
-import { useState } from "react";
-import {
-    HiChevronDown,
-    HiChevronUp,
-} from "react-icons/hi2";
 import LessonItem from "./LessonItem";
 import { useLanguage } from "@/providers/LanguageProvider";
 
 const CurriculumAccordion = ({ courseProgress, courseLessons = [], currentLessonId, courseSlug }) => {
     const { language } = useLanguage();
-    const [openModule, setOpenModule] = useState(0);
 
     const lessons = (courseLessons && courseLessons.length > 0)
         ? courseLessons
@@ -24,77 +18,31 @@ const CurriculumAccordion = ({ courseProgress, courseLessons = [], currentLesson
         );
     }
 
-    const modules = [
-        {
-            id: 1,
-            title: language === "en" ? "Course Lessons" : "دروس الكورس",
-            lessons: lessons,
-        }
-    ];
+    const title = language === "en" ? "Course Lessons" : "دروس الكورس";
 
     return (
-        <div>
-            {modules.map((module, index) => {
-                const opened = openModule === index;
+        <div className="flex flex-col h-full">
+            {/* Header ثابت أو عنوان القسم */}
+            <div className="px-6 py-4 flex-shrink-0">
+                <h3 className="font-semibold">
+                    {title}
+                </h3>
+                <p className="mt-1 text-sm text-text-secondary">
+                    {lessons.length} {language === "en" ? "lessons" : "درس"}
+                </p>
+            </div>
 
-                return (
-                    <div
-                        key={module.id}
-                        className={`${
-                            index !== modules.length - 1
-                                ? "border-b border-border"
-                                : ""
-                        }`}
-                    >
-                        <button
-                            onClick={() =>
-                                setOpenModule(
-                                    opened ? null : index
-                                )
-                            }
-                            className="
-                                flex
-                                w-full
-                                items-center
-                                justify-between
-                                px-6
-                                py-5
-                                text-right
-                                hover:bg-background-alt
-                                transition
-                            "
-                        >
-                            <div>
-                                <h3 className="font-semibold">
-                                    {module.title}
-                                </h3>
-
-                                <p className="mt-1 text-sm text-text-secondary">
-                                    {module.lessons.length} {language === "en" ? "lessons" : "درس"}
-                                </p>
-                            </div>
-
-                            {opened
-                                ? <HiChevronUp />
-                                : <HiChevronDown />
-                            }
-                        </button>
-
-                        {opened && (
-                            <div>
-                                {module.lessons.map((lesson) => (
-                                    <LessonItem
-                                        key={lesson._id || lesson.id}
-                                        lesson={lesson}
-                                        currentLessonId={currentLessonId}
-                                        courseSlug={courseSlug}
-                                    />
-                                ))}
-                            </div>
-                        )}
-                    </div>
-                );
-            })}
+            {/* قائمة الدروس مع Scroll داخلي */}
+            <div className="flex-1 overflow-y-auto min-h-[350px]">
+                {lessons.map((lesson) => (
+                    <LessonItem
+                        key={lesson._id || lesson.id}
+                        lesson={lesson}
+                        currentLessonId={currentLessonId}
+                        courseSlug={courseSlug}
+                    />
+                ))}
+            </div>
         </div>
     );
 };
