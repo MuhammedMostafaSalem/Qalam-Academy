@@ -130,24 +130,35 @@ exports.getMyEnrollments = catchAsync(async (req, res, next) => {
 // @access  Private/User
 exports.getMyPurchasedProducts = catchAsync(async (req, res, next) => {
     // بنجاح الدفع، بنجاب كل الأوردرات المدفوعة للمستخدم ونستخرج منها المنتجات فقط
-    const orders = await Order.find({ user: req.user._id, isPaid: true, status: 'paid' })
-        .populate({
-            path: 'cartItems.item',
-        });
+    const orders = await Order.find({
+        user: req.user._id,
+        isPaid: true,
+        status: "paid",
+    }).populate({
+        path: "cartItems.item",
+        select: "title description image pdf averageRating",
+    });
     
     // تصفية واستخراج المنتجات المشتراة وتجميعها
     let purchasedProducts = [];
-    orders.forEach(order => {
-        order.cartItems.forEach(item => {
-            if (item.itemType === 'Product' && item.item) {
-                const translatedProduct = translateDocument(item.item, req.language, [
-                    'title',
-                    'description',
-                ]);
+    orders.forEach((order) => {
+        order.cartItems.forEach((item) => {
+            if (item.itemType === "Product" && item.item) {
+                const product = item.item;
+
+                const translatedProduct = translateDocument(
+                    product,
+                    req.language,
+                    ["title", "description"]
+                );
 
                 purchasedProducts.push({
-                    _id: `${order._id}-${item.item._id}`,
-                    product: translatedProduct,
+                    _id: `${order._id}-${product._id}`,
+                    product: {
+                        ...translatedProduct,
+                        _id: product._id,
+                        pdf: product.pdf || null,
+                    },
                     count: item.count,
                     price: item.price,
                     purchasedAt: order.paidAt || order.createdAt,
