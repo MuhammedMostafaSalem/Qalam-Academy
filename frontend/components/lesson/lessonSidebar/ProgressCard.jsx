@@ -1,6 +1,7 @@
 "use client";
 
 import { useLanguage } from "@/providers/LanguageProvider";
+import Link from "next/link";
 
 const ProgressCard = ({ courseProgress }) => {
     const { language } = useLanguage();
@@ -12,6 +13,9 @@ const ProgressCard = ({ courseProgress }) => {
         100,
         Math.max(0, courseProgress?.progressPercent ?? courseProgress?.progress ?? 0)
     );
+
+    // التحقق هل الكورس خلص ولا لأ
+    const isCompleted = progressPercent === 100 || (totalLessons > 0 && completedLessons >= totalLessons);
 
     return (
         <div
@@ -73,6 +77,31 @@ const ProgressCard = ({ courseProgress }) => {
                     {isEn ? "Lessons completed" : "درس مكتمل"}
                 </span>
             </div>
+
+            {/* زرار التوجيه يظهر فقط عند اكتمال الكورس */}
+            {isCompleted && (
+                <div className="mt-4 pt-3 border-t border-border">
+                    <Link
+                        href={`/user/certificates`} // عدّل الرابط حسب صفحتك المطلوبة
+                        className="
+                            flex 
+                            w-full 
+                            items-center 
+                            justify-center 
+                            rounded-xl 
+                            bg-primary 
+                            py-2.5 
+                            text-sm 
+                            font-medium 
+                            text-primary-foreground 
+                            transition-opacity 
+                            hover:opacity-90
+                        "
+                    >
+                        {isEn ? "View Certificate / Finish" : "عرض الشهادة / إنهاء الكورس"}
+                    </Link>
+                </div>
+            )}
         </div>
     );
 };
