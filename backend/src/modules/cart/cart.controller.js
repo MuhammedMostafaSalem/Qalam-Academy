@@ -5,6 +5,8 @@ const Product = require('../products/product.model');
 const Course = require('../course/course.model');
 const Cart = require('../cart/cart.model');
 const Coupon = require('../coupon/coupon.model');
+const Enrollment = require("../enrollment/enrollment.model");
+const Order = require("../order/orders.model");
 const { StatusCodes } = require('http-status-codes');
 const translateDocument = require('../../utils/translateDocument');
 
@@ -47,79 +49,138 @@ const calcTotalCartPrice = async (cart) => {
 // @desc    Add product/course to cart
 // @route   POST /api/cart
 // @access  Private/User
+
 exports.addProductToCart = catchAsync(async (req, res, next) => {
-    const { itemId, itemType, color } = req.body; // itemType لازم يتبعت يا 'Product' يا 'Course'
+    const { itemId, itemType } = req.body;
 
-    if (!['Product', 'Course'].includes(itemType)) {
-        return next(new ApiError(req.t("cart.validateitmeType"), StatusCodes.BAD_REQUEST));
+    // 1. Validate item type
+    if (!["Product", "Course"].includes(itemType)) {
+        return next(
+            new ApiError(
+                req.t("cart.validateitmeType"),
+                StatusCodes.BAD_REQUEST
+            )
+        );
     }
 
-    // 1) Find item based on type
-    let dbItem;
-    if (itemType === 'Product') {
-        dbItem = await Product.findById(itemId);
-    } else {
-        dbItem = await Course.findById(itemId);
-    }
+    // 2. Find the requested item
+    const Model = itemType === "Course" ? Course : Product;
+    const dbItem = await Model.findById(itemId);
 
     if (!dbItem) {
-        return next(new ApiError(req.t("cart.notDbItem", {
-            type: itemType
-        }), StatusCodes.NOT_FOUND));
+        return next(
+            new ApiError(
+                req.t("cart.notDbItem", { type: itemType }),
+                StatusCodes.NOT_FOUND
+            )
+        );
     }
 
-    // تحديد السعر (لو فيه discountPrice بنعتمدها، لو مش موجودة بنخد الـ price العادي)
-    const itemPrice = dbItem.discountPrice > 0 ? dbItem.discountPrice : dbItem.price;
+    // 3. Check whether the user already owns this item
+    if (itemType === "Course") {
+        // Check if the user is already enrolled in this course
+        const enrollmentExists = await Enrollment.exists({
+            user: req.user._id,
+            course: itemId,
+        });
 
-    // 1) Check if there is a cart for the logged user
-    let cart = await Cart.findOne({ cartOwner: req.user._id });
+        if (enrollmentExists) {
+            return next(
+                new ApiError(
+                    req.t("cart.alreadyHaveCourse"),
+                    StatusCodes.CONFLICT
+                )
+            );
+        }
+    } else {
+        // Check if the user already purchased this product
+        const purchasedProduct = await Order.exists({
+            user: req.user._id,
+            $or: [
+                { isPaid: true, status: "paid" },
+                {
+                    paymentStatus: "PAID",
+                    orderStatus: "COMPLETED",
+                },
+            ],
+            cartItems: {
+                $elemMatch: {
+                    item: itemId,
+                    itemType: "Product",
+                },
+            },
+        });
+
+        if (purchasedProduct) {
+            return next(
+                new ApiError(
+                    req.t("cart.alreadyHaveProduct"),
+                    StatusCodes.CONFLICT
+                )
+            );
+        }
+    }
+
+    // 4. Determine current item price
+    const itemPrice =
+        dbItem.discountPrice > 0
+            ? dbItem.discountPrice
+            : dbItem.price;
+
+    // 5. Find the user's cart
+    let cart = await Cart.findOne({
+        cartOwner: req.user._id,
+    });
 
     if (cart) {
-        // 2) Check if product exists in user cart
+        // 6. Check whether the item already exists in the cart
         const itemIndex = cart.products.findIndex(
-            (p) =>
-                p.item.toString() === itemId &&
-                p.itemType === itemType
+            (product) =>
+                product.item.toString() === itemId &&
+                product.itemType === itemType
         );
 
         if (itemIndex > -1) {
-            // Item exists, update quantity (لو كورسات غالباً الكمية بتكون 1، بس بنسيبها عامة)
-            const cartItem = cart.products[itemIndex];
-            cartItem.count += itemType === 'Course' ? 0 : 1; // الكورس غالباً count بتاعته بتبقى 1 ثابتة
-            cart.products[itemIndex] = cartItem;
+            // Products can increase quantity; courses remain quantity 1
+            if (itemType === "Product") {
+                cart.products[itemIndex].count += 1;
+            }
         } else {
-            // Add new item
+            // Add new item to existing cart
             cart.products.push({
                 item: itemId,
                 itemType,
                 price: itemPrice,
-                count: 1
+                count: 1,
             });
         }
     } else {
-        // No cart for user, create a new cart
+        // 7. Create a new cart
         cart = await Cart.create({
             cartOwner: req.user._id,
-            products: [{
-                item: itemId,
-                itemType,
-                price: itemPrice,
-                count: 1
-            }],
+            products: [
+                {
+                    item: itemId,
+                    itemType,
+                    price: itemPrice,
+                    count: 1,
+                },
+            ],
         });
     }
 
-    // Calculate total cart price
+    // 8. Recalculate cart totals
     await calcTotalCartPrice(cart);
 
+    // 9. Return response
     return sendResponse(res, {
         success: true,
         statusCode: StatusCodes.OK,
         message: req.t("cart.created"),
         data: cart,
         meta: {
-            totalCart: cart.products.length
-        }
+            totalCart: cart.products.length,
+        },
     });
 });
 
