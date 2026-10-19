@@ -124,11 +124,14 @@ const DownloadsTable = () => {
                         const Icon = getIcon(fileType);
                         const fileName = localize(enrollment.product?.title, "—");
 
-                        const rawPdf = enrollment.product?.pdf;
-                        const productId = enrollment.product?._id;
-                        const downloadUrl = rawPdf && productId
-                            ? `/api/downloads/products/${encodeURIComponent(productId)}`
-                            : null;
+                        const product = enrollment.product;
+                        const productId = product?._id;
+                        const hasPdf = Boolean(product?.pdf);
+
+                        const downloadUrl =
+                            hasPdf && productId
+                                ? `/api/downloads/products/${encodeURIComponent(productId)}`
+                                : null;
 
                         const dateLocale = language === "en" ? "en-US" : "ar-EG";
                         const purchaseDate = enrollment.purchasedAt || enrollment.createdAt
@@ -171,8 +174,11 @@ const DownloadsTable = () => {
                                                 {downloadUrl ? (
                                                     <a
                                                         href={downloadUrl}
-                                                        download
-                                                        title={language === "en" ? "Download File" : "تحميل الملف"}
+                                                        title={
+                                                            language === "en"
+                                                                ? "Download File"
+                                                                : "تحميل الملف"
+                                                        }
                                                         className="inline-flex text-primary transition hover:text-primary-hover"
                                                     >
                                                         <HiOutlineArrowDownTray size={18} />
