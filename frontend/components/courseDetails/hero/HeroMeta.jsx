@@ -19,11 +19,54 @@ const HeroMeta = ({ course }) => {
     const rating = course?.averageRating !== undefined && course?.averageRating !== null 
         ? Number(course.averageRating).toFixed(1) 
         : "0.0";
-    const duration = course?.duration 
-        ? (typeof course.duration === "number"
-            ? `${course.duration} ${isEn ? "hours" : "ساعة"}`
-            : course.duration)
-        : "—";
+    // const duration = course?.duration 
+    //     ? (typeof course.duration === "number"
+    //         ? `${course.duration} ${isEn ? "hours" : "ساعة"}`
+    //         : course.duration)
+    //     : "—";
+
+    const durationMinutes = Number(course?.duration ?? 0);
+
+    const duration = (() => {
+        if (!Number.isFinite(durationMinutes) || durationMinutes < 0) {
+            return "—";
+        }
+
+        const totalMinutes = Math.floor(durationMinutes);
+        const hours = Math.floor(totalMinutes / 60);
+        const minutes = totalMinutes % 60;
+
+        if (hours === 0 && minutes === 0) {
+            return isEn ? "0 minutes" : "0 دقيقة";
+        }
+
+        if (isEn) {
+            const parts = [];
+
+            if (hours > 0) {
+                parts.push(`${hours} ${hours === 1 ? "hour" : "hours"}`);
+            }
+
+            if (minutes > 0) {
+                parts.push(`${minutes} ${minutes === 1 ? "minute" : "minutes"}`);
+            }
+
+            return parts.join(" ");
+        }
+
+        const parts = [];
+
+        if (hours > 0) {
+            parts.push(`${hours} ${hours === 1 ? "ساعة" : "ساعات"}`);
+        }
+
+        if (minutes > 0) {
+            parts.push(`${minutes} دقيقة`);
+        }
+
+        return parts.join(" و ");
+    })();
+
 
     const metas = [
         {
@@ -38,18 +81,18 @@ const HeroMeta = ({ course }) => {
             title: `${totalStudents}`,
             subtitle: isEn ? "Students" : "طالب",
         },
-        {
-            id: "duration",
-            icon: HiOutlineClock,
-            title: duration,
-            subtitle: isEn ? "Course Duration" : "مدة الكورس",
-        },
-        {
-            id: "lessons",
-            icon: HiOutlineAcademicCap,
-            title: `${totalLessons}`,
-            subtitle: isEn ? "Lessons" : "درس",
-        },
+        // {
+        //     id: "duration",
+        //     icon: HiOutlineClock,
+        //     title: duration,
+        //     subtitle: isEn ? "Course Duration" : "مدة الكورس",
+        // },
+        // {
+        //     id: "lessons",
+        //     icon: HiOutlineAcademicCap,
+        //     title: `${totalLessons}`,
+        //     subtitle: isEn ? "Lessons" : "درس",
+        // },
     ];
 
     return (
@@ -57,9 +100,9 @@ const HeroMeta = ({ course }) => {
             {...fadeUp()}
             className="
                 mt-10
-                grid
+                flex
                 gap-6
-                sm:grid-cols-2
+                flex-col
             "
         >
             {metas.map((item, index) => (

@@ -11,6 +11,7 @@ const Lesson = require("./lesson.model");
 const Course = require("../course/course.model");
 const ApiError = require("../../utils/ApiError");
 const { StatusCodes } = require("http-status-codes");
+const updateCourseStats = require("../course/course-stats.service");
 
 // ========================================
 // Helpers
@@ -181,6 +182,10 @@ exports.createLesson = createOne(Lesson, {
         // The first lesson is a preview
         req.body.isPreview = lessonsCount === 0;
     },
+
+    afterCreate: async ({ document }) => {
+        await updateCourseStats(document.course);
+    },
 });
 
 // ========================================
@@ -249,6 +254,8 @@ exports.updateLesson = updateOne(Lesson, {
     translatableFields: ["title", "description", "content"],
 
     beforeUpdate: async ({ req, document, Model }) => {
+        req.previousCourseId = document.course.toString();
+
         const contentType =
             req.body.contentType || document.contentType || "video";
 
@@ -466,6 +473,14 @@ exports.updateLesson = updateOne(Lesson, {
                 req.body.isPreview === "true";
         }
     },
+
+    afterUpdate: async ({ req, document }) => {
+        // Update the old course statistics.
+        await updateCourseStats(req.previousCourseId);
+
+        // Update the current course statistics.
+        await updateCourseStats(document.course);
+    },
 });
 
 // ========================================
@@ -476,4 +491,8 @@ exports.deleteLesson = deleteOne(Lesson, {
     modelName: "lesson",
 
     fileFields: ["thumbnail", "video", "attachment"],
+
+    afterDelete: async ({ document }) => {
+        await updateCourseStats(document.course);
+    },
 });

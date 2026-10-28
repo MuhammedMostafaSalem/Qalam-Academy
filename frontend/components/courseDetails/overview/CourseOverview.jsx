@@ -15,7 +15,7 @@ const CourseOverview = ({ course }) => {
             <OverviewContent course={course} />
 
             {/* Sidebar */}
-            <aside
+            {/* <aside
                 className="
                     flex
                     flex-col
@@ -26,7 +26,7 @@ const CourseOverview = ({ course }) => {
                 "
             >
                 <CourseIncludes course={course} />
-            </aside>
+            </aside> */}
         </div>
     );
 };

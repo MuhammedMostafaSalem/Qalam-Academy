@@ -55,7 +55,7 @@ router
 router
     .route("/")
     .get(
-        isAuthenticatedUser,
+        // isAuthenticatedUser,
         getUsers
     )
 

@@ -1,10 +1,16 @@
 const rateLimit = require("express-rate-limit");
 const { StatusCodes } = require("http-status-codes");
+const {
+    signupLimiterEnv,
+    loginLimiterEnv,
+    otpActionLimiterEnv,
+    windowMsEnv
+} = require("../config/env");
 
 // حماية مسار التسجيل من البوتات والهجمات العشوائية
 const signupLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 دقيقة
-    max: 5, // أقصى حد 5 محاولات تسجيل من نفس الـ IP خلال 15 دقيقة
+    windowMs: windowMsEnv, // 15 دقيقة
+    max: signupLimiterEnv, // أقصى حد 5 محاولات تسجيل من نفس الـ IP خلال 15 دقيقة
     standardHeaders: true,
     legacyHeaders: false,
     handler: (req, res, next) => {
@@ -18,8 +24,8 @@ const signupLimiter = rateLimit({
 
 // حماية مسار الـ Login من الـ Brute-force
 const loginLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 دقيقة
-    max: 5, // 5 محاولات خطأ
+    windowMs: windowMsEnv, // 15 دقيقة
+    max: loginLimiterEnv, // 5 محاولات خطأ
     standardHeaders: true,
     legacyHeaders: false,
     handler: (req, res, next) => {
@@ -37,8 +43,8 @@ const loginLimiter = rateLimit({
 // It must be higher than 6 so the user's
 // 6th OTP attempt can reach verifyOtp().
 const otpActionLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 دقيقة
-    max: 10, // أقصى حد 10 طلبات إرسال إيميل لكل IP
+    windowMs: windowMsEnv, // 15 دقيقة
+    max: otpActionLimiterEnv, // أقصى حد 10 طلبات إرسال إيميل لكل IP
     standardHeaders: true,
     legacyHeaders: false,
     // message: { 

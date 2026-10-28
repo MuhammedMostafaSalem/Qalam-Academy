@@ -84,6 +84,16 @@ const env = {
     cloudinaryApiKey: process.env.CLOUDINARY_API_KEY,
 
     cloudinaryApiSecret: process.env.CLOUDINARY_API_SECRET,
+
+    signupLimiterEnv: Number(process.env.SIGBUP_LIMITER),
+
+    loginLimiterEnv: Number(process.env.LOGIN_LIMITER),
+
+    otpActionLimiterEnv: Number(process.env.OTP_ACTION_LIMITER),
+
+    windowMsEnv: Number(process.env.WINDOW_MS),
+
+    maxAttempts: process.env.MAX_ATTEMPTS,
 };
 
 module.exports = env;

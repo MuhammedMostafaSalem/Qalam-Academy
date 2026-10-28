@@ -57,7 +57,7 @@ const HeroImage = ({ course }) => {
             </div>
 
             {/* Floating Badge */}
-            <div
+            {/* <div
                 className={`
                     absolute
                     -bottom-6
@@ -79,7 +79,7 @@ const HeroImage = ({ course }) => {
                 <p className="text-sm text-text-secondary">
                     {trainingContentBadge}
                 </p>
-            </div>
+            </div> */}
         </div>
     );
 };

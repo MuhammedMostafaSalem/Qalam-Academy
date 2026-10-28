@@ -227,3 +227,29 @@ export async function getThemeAction() {
 export async function toggleThemeAction(themeMode) {
     return setThemeModeAction(themeMode);
 }
+
+
+export async function getAllUsersAction(queryString = "") {
+    try {
+        const response = await authApi(
+            `/users${queryString ? `?${queryString}` : ""}`,
+            {
+                method: "GET",
+            }
+        );
+
+        return {
+            success: true,
+            data: response.data,
+            meta: response.meta,
+            message: response.message,
+        };
+    } catch (error) {
+        return {
+            success: false,
+            message: error.message || "فشل جلب المستخدمين",
+            data: null,
+            meta: null,
+        };
+    }
+}

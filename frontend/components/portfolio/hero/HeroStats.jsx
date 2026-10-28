@@ -3,26 +3,30 @@
 import { cardAnimation } from "@/lib/animation/cardAnimation";
 import { animations } from "@/lib/animations";
 import { useLanguage } from "@/providers/LanguageProvider";
+import useUserStats from "@/hooks/users/useUserStats";
+import usePortfolios from "@/hooks/portfolio/usePortfolios";
 
 const HeroStats = () => {
     const { language } = useLanguage();
+    const { stats: userStats, loading } = useUserStats();
+    const { portfolios, error } = usePortfolios();
     const isEn = language === "en";
 
     const stats = [
         {
-            value: "350+",
+            value: `+${portfolios.length}`,
             label: isEn ? "Completed Projects" : "مشروع مكتمل",
         },
         {
-            value: "250+",
+            value: loading ? "..." : `+${userStats.students}`,
             label: isEn ? "Happy Clients" : "عميل سعيد",
         },
         {
-            value: "7+",
+            value: `+${process.env.NEXT_PUBLIC_YEARS_OF_EXPERIENCE}`,
             label: isEn ? "Years of Experience" : "سنوات خبرة",
         },
         {
-            value: "98%",
+            value: `${process.env.NEXT_PUBLIC_CLIENT_SATISFACTION}%`,
             label: isEn ? "Client Satisfaction" : "رضا العملاء",
         },
     ];

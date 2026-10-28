@@ -66,7 +66,7 @@ const AboutHeroImage = () => {
                 <div className="flex flex-col justify-end items-end gap-1">
 
                     <h3 className="text-3xl">
-                        +7
+                        +{process.env.NEXT_PUBLIC_YEARS_OF_EXPERIENCE}
                     </h3>
 
                     <p className="text-sm text-text-secondary">

@@ -7,32 +7,37 @@ import {
     HiOutlineAcademicCap,
 } from "react-icons/hi2";
 import { useLanguage } from "@/providers/LanguageProvider";
+import useUserStats from "@/hooks/users/useUserStats";
+import usePortfolios from "@/hooks/portfolio/usePortfolios";
 
 const HeroStats = () => {
     const { language } = useLanguage();
+    const { stats: userStats, loading } = useUserStats();
+    const { portfolios, error } = usePortfolios();
+
     const stats = [
         {
             id: 1,
             icon: HiOutlineAcademicCap,
-            value: "+25",
+            value: loading ? "..." : `+${userStats.instructors}`,
             label: language === "en" ? "Instructors" : "محاضرون",
         },
         {
             id: 2,
             icon: HiOutlineClock,
-            value: "+7",
+            value: `+${process.env.NEXT_PUBLIC_YEARS_OF_EXPERIENCE}`,
             label: language === "en" ? "Years of Experience" : "سنوات خبرة",
         },
         {
             id: 3,
             icon: HiOutlineUsers,
-            value: "+80",
+            value: loading ? "..." : `+${userStats.students}`,
             label: language === "en" ? "Happy Clients" : "عملاء سعداء",
         },
         {
             id: 4,
             icon: HiOutlineFolder,
-            value: "+150",
+            value: `+${portfolios.length}`,
             label: language === "en" ? "Completed Projects" : "مشاريع مكتملة",
         },
     ]
@@ -49,7 +54,7 @@ const HeroStats = () => {
                     >
                         <Icon
                             size={18}
-                            className="mb-2 text-accent"
+                            className="mb-2 text-primary"
                         />
 
                         <h3 className="text-[26px] leading-none text-text-primary">

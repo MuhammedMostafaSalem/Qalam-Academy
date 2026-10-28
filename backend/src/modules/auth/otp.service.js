@@ -5,6 +5,9 @@ const ApiError = require("../../utils/ApiError");
 const verifyEmailTemplate = require("../../templates/verifyEmailTemplate");
 const forgotPasswordTemplate = require("../../templates/forgotPasswordTemplate");
 const sendEmail = require("../../utils/sendEmail");
+const {
+    maxAttempts
+} = require("../../config/env");
 
 // Verify OTP
 const verifyOtp = async (req, email, otp, purpose) => {
@@ -27,7 +30,7 @@ const verifyOtp = async (req, email, otp, purpose) => {
         );
     }
 
-    const MAX_ATTEMPTS = 5;
+    const MAX_ATTEMPTS = maxAttempts;
 
     // مقارنة OTP
     const isMatch = await bcrypt.compare(otp, user.otp);
