@@ -48,6 +48,9 @@ export default function PublicHeader() {
               </Link>
             );
           })}
+          <Link className="nt-button nt-button-quiet nt-nav-cta nt-nav-login" href="/login" onClick={closeMenu}>
+            تسجيل الدخول
+          </Link>
           <Link className="nt-button nt-button-primary nt-nav-cta" href="/contact" onClick={closeMenu}>
             ابدأ مشروعك <span aria-hidden="true">↗</span>
           </Link>
