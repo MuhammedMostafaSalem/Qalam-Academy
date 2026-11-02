@@ -1,17 +1,7 @@
-import AdminSettingsClientView from "@/components/dashboard/settings/AdminSettingsClientView";
-import { generateSEOMetadata } from "@/utils/seo";
+import DashboardWorkspace from "@/components/norama/dashboard/DashboardWorkspace";
 
-export async function generateMetadata() {
-    return generateSEOMetadata({
-        path: "/dashboard/settings",
-        title: {
-            ar: "إعدادات المنصة وSEO",
-            en: "Platform & SEO Settings",
-        },
-        noIndex: true,
-    });
-}
+export const metadata = { title: "إعدادات الموقع", robots: { index: false, follow: false } };
 
-export default function AdminSettingsPage() {
-    return <AdminSettingsClientView />;
+export default function Page() {
+  return <DashboardWorkspace mode="settings" entity="settings" title="إعدادات الموقع" description="البيانات المعروضة ثابتة داخل الواجهة ولا يتم حفظ أي تغيير." />;
 }

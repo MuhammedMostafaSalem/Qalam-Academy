@@ -1,19 +1,7 @@
-import CategoryLayout from "@/components/layout/dashboard/CategoryLayout";
-import { generateSEOMetadata } from "@/utils/seo";
+import DashboardWorkspace from "@/components/norama/dashboard/DashboardWorkspace";
 
-export async function generateMetadata() {
-    return generateSEOMetadata({
-        path: "/dashboard/categories",
-        title: {
-            ar: "إدارة التصنيفات",
-            en: "Manage Categories",
-        },
-        noIndex: true,
-    });
-}
+export const metadata = { title: "إدارة التصنيفات", robots: { index: false, follow: false } };
 
-export default function AdminCategories() {
-    return (
-        <CategoryLayout />
-    )
+export default function Page() {
+  return <DashboardWorkspace mode="list" entity="categories" description="تصنيفات توضيحية ثابتة مرتبطة بنماذج المشاريع." />;
 }

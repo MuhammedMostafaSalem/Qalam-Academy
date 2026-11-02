@@ -1,5 +1,5 @@
-import AppLayout from "@/components/layout/website/AppLayout";
+import PublicLayout from "@/components/norama/public/PublicLayout";
 
 export default function WebsiteLayout({ children }) {
-    return <AppLayout>{children}</AppLayout>;
+  return <PublicLayout>{children}</PublicLayout>;
 }

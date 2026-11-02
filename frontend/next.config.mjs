@@ -1,12 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    serverActions: {
-      bodySizeLimit: "100mb",
-    },
-  },
+  output: "export",
   images: {
-    remotePatterns: [new URL("http://localhost:5000/**")],
+    unoptimized: true,
   },
 };
 

@@ -1,19 +1,7 @@
-import AdminUsersLayout from "@/components/layout/dashboard/AdminUsersLayout";
-import { generateSEOMetadata } from "@/utils/seo";
+import DashboardWorkspace from "@/components/norama/dashboard/DashboardWorkspace";
 
-export async function generateMetadata() {
-    return generateSEOMetadata({
-        path: "/dashboard/users",
-        title: {
-            ar: "إدارة المستخدمين والصلاحيات",
-            en: "Manage Users & Permissions",
-        },
-        noIndex: true,
-    });
-}
+export const metadata = { title: "إدارة المستخدمين", robots: { index: false, follow: false } };
 
-export default function AdminUsers () {
-    return (
-        <AdminUsersLayout />
-    )
+export default function Page() {
+  return <DashboardWorkspace mode="list" entity="users" description="لا توجد حسابات حقيقية في النسخة الثابتة؛ المعروض بيانات توضيحية فقط." />;
 }

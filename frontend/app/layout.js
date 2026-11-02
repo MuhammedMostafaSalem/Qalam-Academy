@@ -1,100 +1,37 @@
 import { Cairo, Inter } from "next/font/google";
-import AnimationProvider from "@/components/providers/AnimationProvider";
-import StoreProvider from "@/store/provider";
-import { AuthProvider } from "@/providers/AuthProvider";
-import { LanguageProvider } from "@/providers/LanguageProvider";
-import ThemeProvider from "@/providers/ThemeProvider";
 import "@/styles/globals.css";
-import Toast from "@/components/ui/Toast";
-import { cookies } from "next/headers";
-import { getPlatformThemeAction, getThemeModeAction } from "@/actions/themeActions";
-import { getSettingsAction } from "@/actions/settingsActions";
-import { SettingsProvider } from "@/providers/SettingsProvider";
-import MaintenanceGate from "@/components/shared/MaintenanceGate";
-import {
-  DEFAULT_THEME_MODE,
-  getRootThemeStyle,
-  normalizePalettePair,
-  normalizeThemeMode,
-  readThemeModeFromCookie,
-} from "@/constants/theme";
+import "@/styles/norama.css";
 
-const cairo = Cairo({
-  subsets: ["arabic"],
-  variable: "--font-cairo",
-});
+const cairo = Cairo({ subsets: ["arabic"], variable: "--font-cairo", display: "swap" });
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
 
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-});
+export const metadata = {
+  title: {
+    default: "Norama Tech | نبني ما هو قادم",
+    template: "%s | Norama Tech",
+  },
+  description: "استوديو تقني لتصميم وتطوير المواقع والمنتجات الرقمية وتجارب المستخدم.",
+  applicationName: "Norama Tech",
+  openGraph: {
+    type: "website",
+    locale: "ar_EG",
+    siteName: "Norama Tech",
+    title: "Norama Tech | نبني ما هو قادم",
+    description: "نحوّل الأفكار إلى تجارب رقمية تستحق أن تُستخدم.",
+  },
+};
 
-import { generateSEOMetadata, generateOrganizationJsonLd, generateWebSiteJsonLd } from "@/utils/seo";
-import JsonLd from "@/components/shared/JsonLd";
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: "#07111f",
+  colorScheme: "dark",
+};
 
-export async function generateMetadata() {
-  return generateSEOMetadata({ isRoot: true });
-}
-
-export default async function RootLayout({ children }) {
-  const cookieStore = await cookies();
-  const storedLang = cookieStore.get("NEXT_LOCALE")?.value || cookieStore.get("NEXT_LANG")?.value;
-  let lang = storedLang || "ar";
-  const hasAuthCookie = Boolean(cookieStore.get("Qalam_Token")?.value);
-
-  const [platformThemeResult, themeModeResult, settingsResult] = await Promise.all([
-    getPlatformThemeAction(),
-    hasAuthCookie ? getThemeModeAction() : Promise.resolve(null),
-    getSettingsAction(),
-  ]);
-
-  const initialPalettes = normalizePalettePair(
-    platformThemeResult?.success ? platformThemeResult.data : null
-  );
-  const initialMode = normalizeThemeMode(
-    themeModeResult?.success
-      ? themeModeResult.data?.themeMode
-      : readThemeModeFromCookie(cookieStore),
-    DEFAULT_THEME_MODE
-  );
-  if (!storedLang && ["ar", "en"].includes(settingsResult?.data?.defaultLanguage)) {
-    lang = settingsResult.data.defaultLanguage;
-  }
-  const dir = lang === "ar" ? "rtl" : "ltr";
-
+export default function RootLayout({ children }) {
   return (
-    <html
-      lang={lang}
-      dir={dir}
-      className={`scroll-smooth${initialMode === "dark" ? " dark" : ""}`}
-      data-scroll-behavior="smooth"
-      data-theme={initialMode}
-      style={{
-        ...getRootThemeStyle(initialPalettes),
-        colorScheme: initialMode,
-      }}
-    >
-      <body className={`${cairo.variable} ${inter.variable}`}>
-        <JsonLd data={generateOrganizationJsonLd(settingsResult?.data, lang)} />
-        <JsonLd data={generateWebSiteJsonLd(settingsResult?.data, lang)} />
-        <StoreProvider>
-          <LanguageProvider initialLang={lang}>
-            <SettingsProvider initialSettings={settingsResult?.success ? settingsResult.data : null}>
-              <AuthProvider>
-                <ThemeProvider
-                  initialMode={initialMode}
-                  initialPalettes={initialPalettes}
-                >
-                  <AnimationProvider>
-                    <MaintenanceGate>{children}</MaintenanceGate>
-                    <Toast />
-                  </AnimationProvider>
-                </ThemeProvider>
-              </AuthProvider>
-            </SettingsProvider>
-          </LanguageProvider>
-        </StoreProvider>
-      </body>
+    <html lang="ar" dir="rtl" className="scroll-smooth" data-scroll-behavior="smooth">
+      <body className={`${cairo.variable} ${inter.variable}`}>{children}</body>
     </html>
   );
 }

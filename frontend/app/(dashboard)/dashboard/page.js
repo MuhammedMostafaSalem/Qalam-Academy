@@ -1,21 +1,7 @@
-import AdminDashboardClientView from "@/components/dashboard/home/AdminDashboardClientView";
-import { generateSEOMetadata } from "@/utils/seo";
+import DashboardWorkspace from "@/components/norama/dashboard/DashboardWorkspace";
 
-export async function generateMetadata() {
-    return generateSEOMetadata({
-        path: "/dashboard",
-        title: {
-            ar: "لوحة التحكم الرئيسية",
-            en: "Admin Dashboard",
-        },
-        description: {
-            ar: "إحصائيات المنصة، الدورات، الطلاب، والإيرادات في أكاديمية قلم.",
-            en: "Platform overview, metrics, course analytics, and revenue on Qalam Academy.",
-        },
-        noIndex: true,
-    });
-}
+export const metadata = { title: "لوحة الإدارة", robots: { index: false, follow: false } };
 
-export default function DashboardPage() {
-    return <AdminDashboardClientView />;
+export default function Page() {
+  return <DashboardWorkspace mode="overview" />;
 }

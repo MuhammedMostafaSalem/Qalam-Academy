@@ -1,5 +1,5 @@
-import UserDashboardLayout from "@/components/layout/user/UserDashboardLayout";
+import AccountShell from "@/components/norama/dashboard/AccountShell";
 
 export default function UserLayout({ children }) {
-    return <UserDashboardLayout>{children}</UserDashboardLayout>;
+  return <AccountShell>{children}</AccountShell>;
 }

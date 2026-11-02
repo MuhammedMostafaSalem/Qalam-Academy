@@ -1,5 +1,5 @@
-import DashboardLayout from "@/components/layout/dashboard/DashboardLayout";
+import DashboardShell from "@/components/norama/dashboard/DashboardShell";
 
 export default function AdminLayout({ children }) {
-    return <DashboardLayout>{children}</DashboardLayout>;
+  return <DashboardShell>{children}</DashboardShell>;
 }

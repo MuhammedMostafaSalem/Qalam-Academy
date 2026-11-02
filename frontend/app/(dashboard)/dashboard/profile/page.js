@@ -1,30 +1,7 @@
-import ProfileHeader from "@/components/dashboard/profile/ProfileHeader";
-import PasswordCard from "@/components/profile/PasswordCard";
-import PersonalInfoCard from "@/components/profile/PersonalInfoCard";
-import ProfileHeroCard from "@/components/profile/ProfileHeroCard";
-import { generateSEOMetadata } from "@/utils/seo";
-import Breadcrumb from "@/components/ui/Breadcrumb";
+import DashboardWorkspace from "@/components/norama/dashboard/DashboardWorkspace";
 
-export async function generateMetadata() {
-    return generateSEOMetadata({
-        path: "/dashboard/profile",
-        title: {
-            ar: "الملف الشخصي للمشرف",
-            en: "Admin Profile",
-        },
-        noIndex: true,
-    });
-}
+export const metadata = { title: "الملف الشخصي للإدارة", robots: { index: false, follow: false } };
 
-export default function AdminProfile () {
-    return (
-        <div className="p-[20px] flex flex-col gap-4">
-            {/* <ProfileHeader /> */}
-            <ProfileHeroCard />
-            {/* تعديل البيانات الشخصية */}
-            <PersonalInfoCard />
-            {/* مسؤولة عن تغيير كلمة المرور فقط */}
-            <PasswordCard />
-        </div>
-    )
+export default function Page() {
+  return <DashboardWorkspace mode="form" entity="profile" title="الملف الشخصي" description="واجهة إعدادات للمعاينة فقط؛ لا توجد بيانات مدير أو حفظ للتغييرات." />;
 }

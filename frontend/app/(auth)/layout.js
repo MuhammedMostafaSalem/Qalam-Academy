@@ -1,14 +1,15 @@
-import ThemeToggle from "@/components/shared/ThemeToggle";
-import LanguageSwitcher from "@/components/layout/website/Header/LanguageSwitcher";
+import Link from "next/link";
+import BrandLink from "@/components/norama/BrandLink";
 
 export default function AuthLayout({ children }) {
-    return (
-        <>
-            <div className="fixed right-4 top-4 z-50 flex items-center gap-2 rtl:right-auto rtl:left-4">
-                <LanguageSwitcher />
-                <ThemeToggle compact />
-            </div>
-            {children}
-        </>
-    );
+  return (
+    <main className="nt-auth-frame">
+      <section className="nt-auth-aside">
+        <BrandLink />
+        <div className="nt-auth-aside-copy"><span className="nt-overline">NORAMA TECH</span><h2>تقنية أوضح.<br /><span>تجربة أفضل.</span></h2><p>واجهات الحسابات هنا للمعاينة فقط، دون تسجيل أو حفظ بيانات.</p></div>
+        <Link href="/" className="nt-auth-back">← العودة إلى الموقع</Link>
+      </section>
+      <section className="nt-auth-main">{children}</section>
+    </main>
+  );
 }

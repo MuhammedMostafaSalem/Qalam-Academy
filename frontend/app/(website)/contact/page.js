@@ -1,24 +1,7 @@
-import ContactHero from "@/components/contact/ContactHero";
-import { generateSEOMetadata } from "@/utils/seo";
+import ContactPage from "@/components/norama/public/ContactPage";
 
-export async function generateMetadata() {
-    return generateSEOMetadata({
-        path: "/contact",
-        title: {
-            ar: "تواصل معنا",
-            en: "Contact Us",
-        },
-        description: {
-            ar: "هل لديك أي استفسار أو ترغب في الانضمام إلينا؟ تواصل مع فريق أكاديمية قلم الآن.",
-            en: "Have questions or want to partner with us? Reach out to the Qalam Academy team today.",
-        },
-    });
-}
+export const metadata = { title: "تواصل معنا", description: "تواصل مع Norama Tech وشاركنا تفاصيل فكرتك." };
 
-export default function Contact() {
-    return (
-        <>
-            <ContactHero />
-        </>
-    )
+export default function Page() {
+  return <ContactPage />;
 }

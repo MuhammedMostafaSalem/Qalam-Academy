@@ -1,24 +1,7 @@
-import VerifyOtpLayout from "@/components/layout/auth/VerifyOtpLayout";
-import { generateSEOMetadata } from "@/utils/seo";
+import AuthScreen from "@/components/norama/auth/AuthScreen";
 
-export async function generateMetadata() {
-    return generateSEOMetadata({
-        path: "/verify-otp",
-        title: {
-            ar: "التحقق من رمز OTP",
-            en: "Verify OTP",
-        },
-        description: {
-            ar: "تأكيد رمز التحقق الخاص بحسابك في أكاديمية قلم.",
-            en: "Verify your OTP code for Qalam Academy account authentication.",
-        },
-        noIndex: true,
-    });
-}
+export const metadata = { title: "التحقق من الحساب", robots: { index: false, follow: false } };
 
-export default function VerifyOtp() {
-    return (
-        <VerifyOtpLayout />
-    );
-
+export default function Page() {
+  return <AuthScreen variant="verify" />;
 }

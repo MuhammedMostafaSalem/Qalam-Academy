@@ -1,34 +1,10 @@
-import FeaturedCourses from "@/components/home/courses/FeaturedCourses";
-import CTASection from "@/components/home/cta/CTASection";
-import Hero from "@/components/home/hero/Hero";
-import PortfolioSection from "@/components/home/portfolio/PortfolioSection";
-import Services from "@/components/home/services/Services";
-import TestimonialsSection from "@/components/home/testimonials/TestimonialsSection";
-import WhyChooseSection from "@/components/home/whyChoose/WhyChooseSection";
-import ContinueWatching from "@/components/home/continueWatching/ContinueWatching";
-import { generateSEOMetadata } from "@/utils/seo";
+import HomePage from "@/components/norama/public/HomePage";
 
-export async function generateMetadata() {
-  return generateSEOMetadata({
-    path: "/",
-    title: {
-      ar: "الرئيسية | منصة تعليمية رائدة لتطوير المهارات",
-      en: "Home | Leading Educational Platform",
-    },
-  });
-}
+export const metadata = {
+  title: "الرئيسية",
+  description: "Norama Tech — استوديو تقني لتصميم وتطوير تجارب رقمية عملية.",
+};
 
-export default function Home() {
-  return (
-    <>
-      <Hero />
-      <ContinueWatching />
-      <Services />
-      <FeaturedCourses />
-      <PortfolioSection />
-      <WhyChooseSection />
-      <TestimonialsSection />
-      <CTASection />
-    </>
-  );
+export default function Page() {
+  return <HomePage />;
 }

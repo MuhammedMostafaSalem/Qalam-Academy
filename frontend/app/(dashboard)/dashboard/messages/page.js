@@ -1,17 +1,7 @@
-import AdminMessagesClientView from "@/components/dashboard/messages/AdminMessagesClientView";
-import { generateSEOMetadata } from "@/utils/seo";
+import DashboardWorkspace from "@/components/norama/dashboard/DashboardWorkspace";
 
-export async function generateMetadata() {
-    return generateSEOMetadata({
-        path: "/dashboard/messages",
-        title: {
-            ar: "الرسائل والتواصل",
-            en: "Messages & Inquiries",
-        },
-        noIndex: true,
-    });
-}
+export const metadata = { title: "رسائل التواصل", robots: { index: false, follow: false } };
 
-export default function AdminMessagesPage() {
-    return <AdminMessagesClientView />;
+export default function Page() {
+  return <DashboardWorkspace mode="list" entity="messages" description="لا يتم استقبال رسائل من نموذج التواصل في هذه النسخة." />;
 }
